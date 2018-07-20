@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+
+    <h1> user profile for {{ user.username }}</h1>
+    {% if user == current_user or current_user.has_admin_role() %}
+    <a href="{{ url_for('user_edit', username=user.username) }}">edit profile</a>
+    {% endif %}
+    <hr>
+    Roles: <ul>
+
+    {% for role in user.roles %}
+    <li>{{ role.name }} ({{ role.description }})</li>
+    {% endfor %}
+
+    </ul>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'bootstrap/base.html' %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+{% block title %}
+    {% if title %}
+        {{ title }}
+    {% else %}
+        Default title!
+    {% endif %}
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-default">
+        <ul class="nav navbar-nav">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('user', username=current_user.username) }}">Profile</a></li>
+            {% if current_user.is_anonymous %}
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            {% else %}
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% endif %}
+        </ul> 
+
+    {% if current_user.is_authenticated and current_user.has_admin_role() %}
+        (admin)
+    {% endif %}
+    </nav>
+
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% block app_content %}{% endblock %}
+    </div>
+{% endblock %}
