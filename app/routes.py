@@ -1,11 +1,10 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
-from app.forms import LoginForm, CreateUserForm, EditProfileForm, SettingsForm
+from app.forms import LoginForm, CreateUserForm, EditProfileForm, EditProfileFormAdmin, SettingsForm
 from app.models import User, Role, GeneralSetting
 from flask_login import current_user, login_user, login_required, logout_user
 from datetime import datetime
 from werkzeug.urls import url_parse
-from sqlalchemy import any_
 
 @app.before_request
 def before_request():
@@ -73,7 +72,12 @@ def user_profile(username):
 @login_required
 def user_edit(username):
     if current_user.has_admin_role() or current_user.username == username:
-        form = EditProfileForm()
+
+        if current_user.has_admin_role():
+            form = EditProfileFormAdmin()
+        else:
+            form = EditProfileForm()
+
         user = User.query.filter_by(username=username).first_or_404()
 
         if form.validate_on_submit():
@@ -82,15 +86,16 @@ def user_edit(username):
             if(form.password.data):
                 user.set_password(form.password.data)
 
-            new_user_roles = Role.query.filter(Role.id.in_(form.roles.data)).all()
+            if current_user.has_admin_role():
+                new_user_roles = Role.query.filter(Role.id.in_(form.roles.data)).all()
 
-            admin_role = Role.query.get(1)
-        
-            if username == current_user.username and current_user.has_admin_role() and admin_role not in new_user_roles:
-                new_user_roles.append(admin_role)
-                flash("You can't revoke your own admin role.")
+                admin_role = Role.query.get(1)
+            
+                if username == current_user.username and current_user.has_admin_role() and admin_role not in new_user_roles:
+                    new_user_roles.append(admin_role)
+                    flash("You can't revoke your own admin role.")
 
-            user.roles = new_user_roles
+                user.roles = new_user_roles
 
             db.session.commit()
             flash("Your changes have been saved.")
@@ -99,11 +104,12 @@ def user_edit(username):
         elif request.method == "GET":
             form.about.data = user.about
 
-            user_roles = []
-            for role in user.roles:
-                user_roles.append(str(role.id))
+            if current_user.has_admin_role():
+                user_roles = []
+                for role in user.roles:
+                    user_roles.append(str(role.id))
 
-            form.roles.data = user_roles
+                form.roles.data = user_roles
 
         return render_template("user_edit.html", form=form, user=user, title=page_title("Edit profile"))
     else:

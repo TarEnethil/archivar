@@ -1,5 +1,6 @@
 from app import db
-from models import Role
+from app.models import User, Role
+from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, PasswordField, BooleanField, SubmitField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, EqualTo
@@ -29,6 +30,13 @@ class EditProfileForm(FlaskForm):
     password = PasswordField("Password")
     password2 = PasswordField("Password again", validators=[EqualTo("password")])
 
+    submit = SubmitField("Submit")
+
+class EditProfileFormAdmin(FlaskForm):
+    about = TextAreaField("About", validators=[Length(min=0, max=1000)])
+    password = PasswordField("Password")
+    password2 = PasswordField("Password again", validators=[EqualTo("password")])
+
     role_choices = []
 
     all_roles = Role.query.all()
@@ -36,6 +44,7 @@ class EditProfileForm(FlaskForm):
         role_choices.append((str(role.id), role.name))
 
     roles = SelectMultipleField("Roles", choices=role_choices)
+
     submit = SubmitField("Submit")
 
 class SettingsForm(FlaskForm):

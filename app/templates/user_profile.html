@@ -9,7 +9,15 @@
         edit profile
     </a>
     {% endif %}
+    
     <hr>
+
+    {% if user.about %}
+    <p class="text">
+        {{ user.about }}
+    </p>
+    {% endif %}
+
     Roles: <ul>
 
     {% for role in user.roles %}
