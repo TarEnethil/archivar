@@ -36,6 +36,15 @@ class User(UserMixin, db.Model):
     def has_special_role(self):
         return self.has_role(4)
 
+    def is_map_admin(self):
+        return self.has_admin_role() or self.has_map_role()
+
+    def is_event_admin(self):
+        return self.has_admin_role() or self.has_event_role()
+
+    def has_access_to_some_settings(self):
+        return self.has_admin_role() or self.has_map_role()
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

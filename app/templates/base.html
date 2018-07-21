@@ -15,25 +15,52 @@
                 <li><a href="{{ url_for('index') }}">Home</a></li>
 
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('user.user_profile', username=current_user.username) }}">Profile</a></li>
+                <li><a href="{{ url_for('map.index') }}">Map</a></li>
                 {% endif %}
+
             </ul> 
 
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated and current_user.has_admin_role() %}
-                <li><a href="{{ url_for('user.user_list') }}">Users</a></li>
-                <li><a href="{{ url_for('settings') }}">Settings</a></li>
+                <li><a href="{{ url_for('user.list') }}">Users</a></li>
                 {% endif %}
 
+                {% if current_user.has_access_to_some_settings() %}
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                      Settings <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if current_user.has_admin_role() %}
+                        <li>
+                            <a href="{{ url_for('settings') }}">General</a>
+                        </li>
+                        {% endif %}
+                        {% if current_user.is_map_admin() %}
+                        <li>
+                            <a href="{{ url_for('map.settings') }}">Map</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </li>
+                {% endif %}
+            
                 {% if current_user.is_anonymous %}
                 <li><a href="{{ url_for('login') }}">Login</a></li>
                 {% else %}
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                      {{ current_user.username }} <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('user.profile', username=current_user.username) }}">Profile</a></li>
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    </ul>
+                </li>
                 {% endif %}
             </ul>
-    
     </div>
-    </nav>-
+    </nav>
 </nav>
 {% endblock %}
 

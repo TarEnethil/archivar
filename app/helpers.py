@@ -7,6 +7,11 @@ def redirect_non_admins():
         flash("Operation not permitted.")
         redirect(url_for("index"))
 
+def redirect_non_map_admins():
+    if not current_user.is_map_admin():
+        flash("Operation not permitted.")
+        redirect(url_for("index"))
+
 def page_title(dynamic_part=None):
     static_part = GeneralSetting.query.get(1).title
 

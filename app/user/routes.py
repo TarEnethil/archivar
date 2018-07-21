@@ -9,14 +9,14 @@ from datetime import datetime
 
 @bp.route("/profile/<username>")
 @login_required
-def user_profile(username):
+def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
 
     return render_template("user/profile.html", user=user, title=page_title("User profile"))
 
 @bp.route("/edit/<username>", methods=["GET", "POST"])
 @login_required
-def user_edit(username):
+def edit(username):
     if current_user.has_admin_role() or current_user.username == username:
 
         if current_user.has_admin_role():
@@ -54,7 +54,7 @@ def user_edit(username):
             db.session.commit()
             flash("Your changes have been saved.")
 
-            return redirect(url_for("user.user_profile", username=username))
+            return redirect(url_for("user.profile", username=username))
         elif request.method == "GET":
             form.about.data = user.about
 
@@ -72,7 +72,7 @@ def user_edit(username):
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
-def user_create():
+def create():
     redirect_non_admins()
 
     form = CreateUserForm()
@@ -86,6 +86,13 @@ def user_create():
     form.roles.choices = role_choices
 
     if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+
+        if user != None:
+            flash("Username already exists.")
+            form.username.data = ""
+            return render_template('user/create.html', form=form, title=page_title("Create new user"))
+
         new_user = User(username=form.username.data)
         new_user.set_password(form.password.data)
 
@@ -98,13 +105,13 @@ def user_create():
         db.session.commit()
 
         flash("New user " + new_user.username + " created.")
-        return redirect(url_for('user.user_list'))
+        return redirect(url_for('user.list'))
     else:
         return render_template("user/create.html", form=form, title=page_title("Create new user"))
 
 @bp.route("/list")
 @login_required
-def user_list():
+def list():
     redirect_non_admins()
 
     users = User.query.all()
