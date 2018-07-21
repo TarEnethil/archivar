@@ -51,6 +51,11 @@ class Role(db.Model):
     name = db.Column(db.String(64), index=True, unique=True)
     description = db.Column(db.String(256))
 
+class GeneralSetting(db.Model):
+    __tablename__ = "general_settings"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64))
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

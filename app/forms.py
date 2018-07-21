@@ -38,4 +38,8 @@ class EditProfileForm(FlaskForm):
     roles = SelectMultipleField("Roles", choices=role_choices)
     submit = SubmitField("Submit")
 
+class SettingsForm(FlaskForm):
+    title = StringField("Title", validators=[Length(max=64)])
+    submit = SubmitField("Submit")
+
 

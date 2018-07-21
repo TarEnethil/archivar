@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
-from app.forms import LoginForm, CreateUserForm, EditProfileForm
-from app.models import User, Role
+from app.forms import LoginForm, CreateUserForm, EditProfileForm, SettingsForm
+from app.models import User, Role, GeneralSetting
 from flask_login import current_user, login_user, login_required, logout_user
 from datetime import datetime
 from werkzeug.urls import url_parse
@@ -13,16 +13,24 @@ def before_request():
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
 
-def redirectNonAdmins():
+def redirect_non_admins():
     if not current_user.has_admin_role():
         flash("Operation not permitted.")
         redirect(url_for("index"))
+
+def page_title(dynamic_part=None):
+    static_part = GeneralSetting.query.get(1).title
+
+    if dynamic_part != None:
+        return static_part + " - " + dynamic_part
+    else:
+        return static_part   
 
 @app.route("/")
 @app.route("/index")
 @login_required
 def index():
-    return render_template("index.html", title="Home")
+    return render_template("index.html", title=page_title("Home"))
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -47,7 +55,7 @@ def login():
             flash("Welcome, {}!".format(user.username))
             return redirect(next_page)
 
-    return render_template("login.html", title="Login", form=form)
+    return render_template("login.html", title=page_title("Login"), form=form)
 
 @app.route("/logout")
 def logout():
@@ -59,7 +67,7 @@ def logout():
 def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
 
-    return render_template("user_profile.html", user=user)
+    return render_template("user_profile.html", user=user, title=page_title("User profile"))
 
 @app.route("/user/edit/<username>", methods=["GET", "POST"])
 @login_required
@@ -97,7 +105,7 @@ def user_edit(username):
 
             form.roles.data = user_roles
 
-        return render_template("user_edit.html", form=form, user=user)
+        return render_template("user_edit.html", form=form, user=user, title=page_title("Edit profile"))
     else:
         flash("You dont have the neccessary role to perform this action.")
         return redirect(url_for("index"))
@@ -105,7 +113,7 @@ def user_edit(username):
 @app.route("/user/create", methods=["GET", "POST"])
 @login_required
 def user_create():
-    redirectNonAdmins()
+    redirect_non_admins()
 
     form = CreateUserForm()
 
@@ -126,18 +134,71 @@ def user_create():
 
 
     elif request.method == "GET":
-        return render_template("user_create.html", form=form)
+        return render_template("user_create.html", form=form, title=page_title("Create new user"))
 
     return
 
-@app.route("/userlist")
+@app.route("/user/list")
 @login_required
 def user_list():
-    redirectNonAdmins()
+    redirect_non_admins()
 
     users = User.query.all()
 
-    return render_template("user_list.html", users=users)
+    return render_template("user_list.html", users=users, title=page_title("User list"))
+
+@app.route("/settings", methods=["GET", "POST"])
+@login_required
+def settings():
+    redirect_non_admins()
+
+    form = SettingsForm()
+    settings = GeneralSetting.query.get(1)
+
+    if form.validate_on_submit():
+        settings.title = form.title.data
+
+        flash("Settings changed.")
+
+        db.session.commit()
+    elif request.method == "GET":
+        form.title.data = settings.title
+
+    
+    return render_template("settings.html", form=form, title=page_title("General settings"))
+
+@app.route("/__install__")
+def install():
+    if not GeneralSetting.query.get(1):
+        setting = GeneralSetting(title="My Page")
+
+        admin_role = Role(name="Admin")
+        map_role = Role(name="Map")
+        event_role = Role(name="Event")
+        special_role = Role(name="Special")
+
+        db.session.add(setting)
+        db.session.add(admin_role)
+        db.session.add(map_role)
+        db.session.add(event_role)
+        db.session.add(special_role)
+
+        db.session.commit()
+
+        admin = User(username="Tar")
+        admin.set_password("1234")
+        admin.roles = [Role.query.get(1)]
+
+        db.session.add(admin)
+
+        db.session.commit()
+
+        flash("Install successful")
+
+        return redirect(url_for("index"))
+    else:
+        flash("Setup was already executed.")
+        return redirect(url_for("index"))
 
 @app.route("/test", methods=["GET", "POST"])
 def test():

@@ -18,7 +18,8 @@
 
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated and current_user.has_admin_role() %}
-                <li><a href="{{ url_for('user_list')}}">Users</a></li>
+                <li><a href="{{ url_for('user_list') }}">Users</a></li>
+                <li><a href="{{ url_for('settings') }}">Settings</a></li>
                 {% endif %}
 
                 {% if current_user.is_anonymous %}
