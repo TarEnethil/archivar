@@ -3,6 +3,11 @@
 {% block app_content %}
     <h1>List of users </h1>
 
+    <a href="{{ url_for('user_create') }}" class="btn btn-default">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        Create new user
+    </a>
+
     <table class="table">
         <thead>
             <tr>
@@ -16,7 +21,7 @@
             <tr>
                 <td> {{ user.username }}</td>
                 <td>
-                    <a href="{{ url_for('user', username=user.username) }}" class="btn btn-default">
+                    <a href="{{ url_for('user_profile', username=user.username) }}" class="btn btn-default">
                         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                         Show Profile
                     </a>

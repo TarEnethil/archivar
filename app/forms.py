@@ -10,9 +10,23 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField("Member me?")
     submit = SubmitField("Sign in ")
 
+class CreateUserForm(FlaskForm):
+    username = StringField("Username", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    password2 = PasswordField("Password again", validators=[EqualTo("password")])
+
+    role_choices = []
+
+    all_roles = Role.query.all()
+    for role in all_roles:
+        role_choices.append((str(role.id), role.name))
+
+    roles = SelectMultipleField("Roles", choices=role_choices)
+    submit = SubmitField("Submit")
+
 class EditProfileForm(FlaskForm):
     about = TextAreaField("About", validators=[Length(min=0, max=1000)])
-    password = PasswordField("Password", validators=[EqualTo("password2")])
+    password = PasswordField("Password")
     password2 = PasswordField("Password again", validators=[EqualTo("password")])
 
     role_choices = []

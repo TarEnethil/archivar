@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
-from app.forms import LoginForm, EditProfileForm
+from app.forms import LoginForm, CreateUserForm, EditProfileForm
 from app.models import User, Role
 from flask_login import current_user, login_user, login_required, logout_user
 from datetime import datetime
@@ -12,6 +12,11 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+
+def redirectNonAdmins():
+    if not current_user.has_admin_role():
+        flash("Operation not permitted.")
+        redirect(url_for("index"))
 
 @app.route("/")
 @app.route("/index")
@@ -49,14 +54,14 @@ def logout():
     logout_user()
     return redirect(url_for("index"))
 
-@app.route("/user/<username>")
+@app.route("/user/profile/<username>")
 @login_required
-def user(username):
+def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
 
-    return render_template("user.html", user=user)
+    return render_template("user_profile.html", user=user)
 
-@app.route("/user/<username>/edit", methods=["GET", "POST"])
+@app.route("/user/edit/<username>", methods=["GET", "POST"])
 @login_required
 def user_edit(username):
     if current_user.has_admin_role() or current_user.username == username:
@@ -64,10 +69,10 @@ def user_edit(username):
         user = User.query.filter_by(username=username).first_or_404()
 
         if form.validate_on_submit():
-            current_user.about = form.about.data
+            user.about = form.about.data
 
             if(form.password.data):
-                current_user.set_password(form.password.data)
+                user.set_password(form.password.data)
 
             new_user_roles = Role.query.filter(Role.id.in_(form.roles.data)).all()
 
@@ -82,7 +87,7 @@ def user_edit(username):
             db.session.commit()
             flash("Your changes have been saved.")
 
-            return redirect(url_for("user", username=username))
+            return redirect(url_for("user_profile", username=username))
         elif request.method == "GET":
             form.about.data = user.about
 
@@ -92,22 +97,47 @@ def user_edit(username):
 
             form.roles.data = user_roles
 
-        return render_template("edit_profile.html", form=form, user=user)
+        return render_template("user_edit.html", form=form, user=user)
     else:
         flash("You dont have the neccessary role to perform this action.")
         return redirect(url_for("index"))
 
+@app.route("/user/create", methods=["GET", "POST"])
+@login_required
+def user_create():
+    redirectNonAdmins()
+
+    form = CreateUserForm()
+
+    if form.validate_on_submit():
+        new_user = User(username=form.username.data)
+        new_user.set_password(form.password.data)
+
+        new_user_roles = Role.query.filter(Role.id.in_(form.roles.data)).all()
+        new_user.roles = new_user_roles
+
+        new_user.created = datetime.utcnow()
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("New user " + new_user.username + " created.")
+        return redirect(url_for('user_list'))
+
+
+    elif request.method == "GET":
+        return render_template("user_create.html", form=form)
+
+    return
 
 @app.route("/userlist")
 @login_required
 def user_list():
-    if not current_user.has_admin_role():
-        flash("Operation not permitted.")
-        redirect(url_for("index"))
+    redirectNonAdmins()
 
     users = User.query.all()
 
-    return render_template("userlist.html", users=users)
+    return render_template("user_list.html", users=users)
 
 @app.route("/test", methods=["GET", "POST"])
 def test():
