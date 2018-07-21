@@ -1,6 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
-from app.forms import LoginForm, CreateUserForm, EditProfileForm, EditProfileFormAdmin, SettingsForm, InstallForm
+from helpers import page_title, redirect_non_admins
+from app.forms import LoginForm, SettingsForm, InstallForm
 from app.models import User, Role, GeneralSetting
 from flask_login import current_user, login_user, login_required, logout_user
 from datetime import datetime
@@ -11,19 +12,6 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
-
-def redirect_non_admins():
-    if not current_user.has_admin_role():
-        flash("Operation not permitted.")
-        redirect(url_for("index"))
-
-def page_title(dynamic_part=None):
-    static_part = GeneralSetting.query.get(1).title
-
-    if dynamic_part != None:
-        return static_part + " - " + dynamic_part
-    else:
-        return static_part   
 
 @app.route("/")
 @app.route("/index")
@@ -59,110 +47,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("index"))
-
-@app.route("/user/profile/<username>")
-@login_required
-def user_profile(username):
-    user = User.query.filter_by(username=username).first_or_404()
-
-    return render_template("user_profile.html", user=user, title=page_title("User profile"))
-
-@app.route("/user/edit/<username>", methods=["GET", "POST"])
-@login_required
-def user_edit(username):
-    if current_user.has_admin_role() or current_user.username == username:
-
-        if current_user.has_admin_role():
-            form = EditProfileFormAdmin()
-
-            role_choices = []
-
-            all_roles = Role.query.all()
-            for role in all_roles:
-                role_choices.append((str(role.id), role.name))
-
-            form.roles.choices = role_choices
-        else:
-            form = EditProfileForm()
-
-        user = User.query.filter_by(username=username).first_or_404()
-
-        if form.validate_on_submit():
-            user.about = form.about.data
-
-            if(form.password.data):
-                user.set_password(form.password.data)
-
-            if current_user.has_admin_role():
-                new_user_roles = Role.query.filter(Role.id.in_(form.roles.data)).all()
-
-                admin_role = Role.query.get(1)
-            
-                if username == current_user.username and current_user.has_admin_role() and admin_role not in new_user_roles:
-                    new_user_roles.append(admin_role)
-                    flash("You can't revoke your own admin role.")
-
-                user.roles = new_user_roles
-
-            db.session.commit()
-            flash("Your changes have been saved.")
-
-            return redirect(url_for("user_profile", username=username))
-        elif request.method == "GET":
-            form.about.data = user.about
-
-            if current_user.has_admin_role():
-                user_roles = []
-                for role in user.roles:
-                    user_roles.append(str(role.id))
-
-                form.roles.data = user_roles
-
-        return render_template("user_edit.html", form=form, user=user, title=page_title("Edit profile"))
-    else:
-        flash("You dont have the neccessary role to perform this action.")
-        return redirect(url_for("index"))
-
-@app.route("/user/create", methods=["GET", "POST"])
-@login_required
-def user_create():
-    redirect_non_admins()
-
-    form = CreateUserForm()
-
-    role_choices = []
-
-    all_roles = Role.query.all()
-    for role in all_roles:
-        role_choices.append((str(role.id), role.name))
-
-    form.roles.choices = role_choices
-
-    if form.validate_on_submit():
-        new_user = User(username=form.username.data)
-        new_user.set_password(form.password.data)
-
-        new_user_roles = Role.query.filter(Role.id.in_(form.roles.data)).all()
-        new_user.roles = new_user_roles
-
-        new_user.created = datetime.utcnow()
-
-        db.session.add(new_user)
-        db.session.commit()
-
-        flash("New user " + new_user.username + " created.")
-        return redirect(url_for('user_list'))
-    else:
-        return render_template("user_create.html", form=form, title=page_title("Create new user"))
-
-@app.route("/user/list")
-@login_required
-def user_list():
-    redirect_non_admins()
-
-    users = User.query.all()
-
-    return render_template("user_list.html", users=users, title=page_title("User list"))
 
 @app.route("/settings", methods=["GET", "POST"])
 @login_required

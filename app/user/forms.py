@@ -1,0 +1,30 @@
+from app import db
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, PasswordField, SubmitField, SelectMultipleField
+from wtforms.validators import DataRequired, Length, EqualTo
+
+class CreateUserForm(FlaskForm):
+    username = StringField("Username", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    password2 = PasswordField("Password again", validators=[EqualTo("password")])
+
+    # choices are populated later
+    roles = SelectMultipleField("Roles")
+    submit = SubmitField("Submit")
+
+class EditProfileForm(FlaskForm):
+    about = TextAreaField("About", validators=[Length(min=0, max=1000)])
+    password = PasswordField("Password")
+    password2 = PasswordField("Password again", validators=[EqualTo("password")])
+
+    submit = SubmitField("Submit")
+
+class EditProfileFormAdmin(FlaskForm):
+    about = TextAreaField("About", validators=[Length(min=0, max=1000)])
+    password = PasswordField("Password")
+    password2 = PasswordField("Password again", validators=[EqualTo("password")])
+
+    # choices are populated later
+    roles = SelectMultipleField("Roles")
+
+    submit = SubmitField("Submit")

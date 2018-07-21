@@ -15,13 +15,13 @@
                 <li><a href="{{ url_for('index') }}">Home</a></li>
 
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('user_profile', username=current_user.username) }}">Profile</a></li>
+                <li><a href="{{ url_for('user.user_profile', username=current_user.username) }}">Profile</a></li>
                 {% endif %}
             </ul> 
 
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated and current_user.has_admin_role() %}
-                <li><a href="{{ url_for('user_list') }}">Users</a></li>
+                <li><a href="{{ url_for('user.user_list') }}">Users</a></li>
                 <li><a href="{{ url_for('settings') }}">Settings</a></li>
                 {% endif %}
 

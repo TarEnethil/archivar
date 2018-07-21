@@ -11,32 +11,6 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField("Member me?")
     submit = SubmitField("Sign in ")
 
-class CreateUserForm(FlaskForm):
-    username = StringField("Username", validators=[DataRequired()])
-    password = PasswordField("Password", validators=[DataRequired()])
-    password2 = PasswordField("Password again", validators=[EqualTo("password")])
-
-    # choices are populated later
-    roles = SelectMultipleField("Roles")
-    submit = SubmitField("Submit")
-
-class EditProfileForm(FlaskForm):
-    about = TextAreaField("About", validators=[Length(min=0, max=1000)])
-    password = PasswordField("Password")
-    password2 = PasswordField("Password again", validators=[EqualTo("password")])
-
-    submit = SubmitField("Submit")
-
-class EditProfileFormAdmin(FlaskForm):
-    about = TextAreaField("About", validators=[Length(min=0, max=1000)])
-    password = PasswordField("Password")
-    password2 = PasswordField("Password again", validators=[EqualTo("password")])
-
-    # choices are populated later
-    roles = SelectMultipleField("Roles")
-
-    submit = SubmitField("Submit")
-
 class SettingsForm(FlaskForm):
     title = StringField("Title", validators=[Length(max=64)])
     submit = SubmitField("Submit")
