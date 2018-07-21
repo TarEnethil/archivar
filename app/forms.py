@@ -16,13 +16,8 @@ class CreateUserForm(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired()])
     password2 = PasswordField("Password again", validators=[EqualTo("password")])
 
-    role_choices = []
-
-    all_roles = Role.query.all()
-    for role in all_roles:
-        role_choices.append((str(role.id), role.name))
-
-    roles = SelectMultipleField("Roles", choices=role_choices)
+    # choices are populated later
+    roles = SelectMultipleField("Roles")
     submit = SubmitField("Submit")
 
 class EditProfileForm(FlaskForm):
@@ -37,13 +32,8 @@ class EditProfileFormAdmin(FlaskForm):
     password = PasswordField("Password")
     password2 = PasswordField("Password again", validators=[EqualTo("password")])
 
-    role_choices = []
-
-    all_roles = Role.query.all()
-    for role in all_roles:
-        role_choices.append((str(role.id), role.name))
-
-    roles = SelectMultipleField("Roles", choices=role_choices)
+    # choices are populated later
+    roles = SelectMultipleField("Roles")
 
     submit = SubmitField("Submit")
 

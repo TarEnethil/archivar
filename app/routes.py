@@ -75,6 +75,14 @@ def user_edit(username):
 
         if current_user.has_admin_role():
             form = EditProfileFormAdmin()
+
+            role_choices = []
+
+            all_roles = Role.query.all()
+            for role in all_roles:
+                role_choices.append((str(role.id), role.name))
+
+            form.roles.choices = role_choices
         else:
             form = EditProfileForm()
 
@@ -123,6 +131,14 @@ def user_create():
 
     form = CreateUserForm()
 
+    role_choices = []
+
+    all_roles = Role.query.all()
+    for role in all_roles:
+        role_choices.append((str(role.id), role.name))
+
+    form.roles.choices = role_choices
+
     if form.validate_on_submit():
         new_user = User(username=form.username.data)
         new_user.set_password(form.password.data)
@@ -137,12 +153,8 @@ def user_create():
 
         flash("New user " + new_user.username + " created.")
         return redirect(url_for('user_list'))
-
-
-    elif request.method == "GET":
+    else:
         return render_template("user_create.html", form=form, title=page_title("Create new user"))
-
-    return
 
 @app.route("/user/list")
 @login_required
@@ -167,7 +179,7 @@ def settings():
         flash("Settings changed.")
 
         db.session.commit()
-    elif request.method == "GET":
+    else:
         form.title.data = settings.title
 
     

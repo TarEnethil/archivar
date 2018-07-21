@@ -9,7 +9,7 @@
         edit profile
     </a>
     {% endif %}
-    
+
     <hr>
 
     {% if user.about %}
@@ -18,6 +18,9 @@
     </p>
     {% endif %}
 
+
+    {% if current_user.has_admin_role() %}
+    <hr>
     Roles: <ul>
 
     {% for role in user.roles %}
@@ -25,5 +28,11 @@
     {% endfor %}
 
     </ul>
+
+    <p>
+        Created: {{ user.created }} <br />
+        Last seen: {{ user.last_seen }}
+    </p>
+    {% endif %}
 
 {% endblock %}
