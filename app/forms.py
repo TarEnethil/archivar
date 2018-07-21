@@ -41,4 +41,10 @@ class SettingsForm(FlaskForm):
     title = StringField("Title", validators=[Length(max=64)])
     submit = SubmitField("Submit")
 
+class InstallForm(FlaskForm):
+    admin_name = StringField("Admin username", validators=[DataRequired()])
+    admin_password = PasswordField("Password", validators=[DataRequired(), EqualTo("admin_password2")])
+    admin_password2 = PasswordField("Password again", validators=[DataRequired()])
+
+    submit = SubmitField("Submit")
 

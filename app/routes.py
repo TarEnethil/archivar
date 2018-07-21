@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
-from app.forms import LoginForm, CreateUserForm, EditProfileForm, EditProfileFormAdmin, SettingsForm
+from app.forms import LoginForm, CreateUserForm, EditProfileForm, EditProfileFormAdmin, SettingsForm, InstallForm
 from app.models import User, Role, GeneralSetting
 from flask_login import current_user, login_user, login_required, logout_user
 from datetime import datetime
@@ -51,7 +51,6 @@ def login():
             if not next_page or url_parse(next_page).netloc != '':
                 next_page = url_for("index")
 
-            flash("Welcome, {}!".format(user.username))
             return redirect(next_page)
 
     return render_template("login.html", title=page_title("Login"), form=form)
@@ -185,35 +184,40 @@ def settings():
     
     return render_template("settings.html", form=form, title=page_title("General settings"))
 
-@app.route("/__install__")
+@app.route("/__install__", methods=["GET", "POST"])
 def install():
     if not GeneralSetting.query.get(1):
-        setting = GeneralSetting(title="My Page")
+        form = InstallForm()
 
-        admin_role = Role(name="Admin")
-        map_role = Role(name="Map")
-        event_role = Role(name="Event")
-        special_role = Role(name="Special")
+        if form.validate_on_submit():
+            setting = GeneralSetting(title="My Page")
 
-        db.session.add(setting)
-        db.session.add(admin_role)
-        db.session.add(map_role)
-        db.session.add(event_role)
-        db.session.add(special_role)
+            admin_role = Role(name="Admin")
+            map_role = Role(name="Map")
+            event_role = Role(name="Event")
+            special_role = Role(name="Special")
 
-        db.session.commit()
+            db.session.add(setting)
+            db.session.add(admin_role)
+            db.session.add(map_role)
+            db.session.add(event_role)
+            db.session.add(special_role)
 
-        admin = User(username="Tar")
-        admin.set_password("1234")
-        admin.roles = [Role.query.get(1)]
+            db.session.commit()
 
-        db.session.add(admin)
+            admin = User(username=form.admin_name.data)
+            admin.set_password(form.admin_password.data)
+            admin.roles = [Role.query.get(1)]
 
-        db.session.commit()
+            db.session.add(admin)
 
-        flash("Install successful")
+            db.session.commit()
 
-        return redirect(url_for("index"))
+            flash("Install successful. You can now log in and check the settings.")
+
+            return redirect(url_for("index"))
+
+        return render_template("install.html", form=form, title="Install")
     else:
         flash("Setup was already executed.")
         return redirect(url_for("index"))
