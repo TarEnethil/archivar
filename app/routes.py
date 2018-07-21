@@ -98,6 +98,17 @@ def user_edit(username):
         return redirect(url_for("index"))
 
 
+@app.route("/userlist")
+@login_required
+def user_list():
+    if not current_user.has_admin_role():
+        flash("Operation not permitted.")
+        redirect(url_for("index"))
+
+    users = User.query.all()
+
+    return render_template("userlist.html", users=users)
+
 @app.route("/test", methods=["GET", "POST"])
 def test():
     if current_user.is_authenticated == True:
