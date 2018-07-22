@@ -1,8 +1,9 @@
 from app import app, db
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
+from app.helpers import LessThanOrEqual, GreaterThanOrEqual
 from wtforms import StringField, TextAreaField, SubmitField, SelectMultipleField, IntegerField
-from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, InputRequired
+from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, InputRequired, NumberRange
 
 def icon_is_valid(filename):
     if not "." in filename:
@@ -15,9 +16,9 @@ class MapSettingsForm(FlaskForm):
     api_key = StringField("GoogleMaps API Key", validators=[InputRequired(), Length(max=64)])
 
     # TODO: validation
-    min_zoom = IntegerField("Min Zoom Level", validators=[InputRequired()])
-    max_zoom = IntegerField("Max Zoom Level", validators=[InputRequired()])
-    default_zoom = IntegerField("Min Zoom Level", validators=[InputRequired()])
+    min_zoom = IntegerField("Min Zoom Level", validators=[InputRequired(), NumberRange(min=0, max=20), LessThanOrEqual("max_zoom")])
+    max_zoom = IntegerField("Max Zoom Level", validators=[InputRequired(), NumberRange(min=0, max=20), GreaterThanOrEqual("min_zoom")])
+    default_zoom = IntegerField("Default Zoom Level", validators=[InputRequired(), NumberRange(min=0, max=20), LessThanOrEqual("max_zoom"), GreaterThanOrEqual("min_zoom")])
 
     tiles_path = StringField("directory/path for map tiles (relative to data/map)")
 

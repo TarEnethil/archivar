@@ -11,7 +11,7 @@ import os
 @bp.route("/")
 @login_required
 def index():
-    return render_template("index.html")
+    return render_template("map/index.html")
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
@@ -96,3 +96,11 @@ def node_edit(id):
 @login_required
 def node_icon(filename):
     return send_from_directory(app.config["MAPNODES_DIR"], filename)
+
+@bp.route("/tile/<filename>")
+@login_required
+def tile(filename):
+    #print(app.config["MAPTILES_DIR"] + " --- " + filename)
+
+    #print(os.path.isfile(os.path.join(app.config["MAPTILES_DIR"], filename)))
+    return send_from_directory(app.config["MAPTILES_DIR"], filename)

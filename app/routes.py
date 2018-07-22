@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify
+from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
 from app import app, db
 from helpers import page_title, redirect_non_admins
 from app.forms import LoginForm, SettingsForm, InstallForm
@@ -113,6 +113,10 @@ def install():
     else:
         flash("Setup was already executed.")
         return redirect(url_for("index"))
+
+@app.route("/static_files/<path:filename>")
+def static_files(filename):
+    return send_from_directory(app.config["STATIC_DIR"], filename)
 
 @app.route("/test", methods=["GET", "POST"])
 def test():
