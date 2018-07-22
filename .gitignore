@@ -1,6 +1,6 @@
 *.pyc
 app/*.pyc
-data/map
+data/map/*
 data/mapnodes/*.png
 data/mapnodes/*.jpg
 data/mapnodes/*.gif
