@@ -86,13 +86,6 @@ def create():
     form.roles.choices = role_choices
 
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-
-        if user != None:
-            flash("Username already exists.")
-            form.username.data = ""
-            return render_template('user/create.html', form=form, title=page_title("Create new user"))
-
         new_user = User(username=form.username.data)
         new_user.set_password(form.password.data)
 

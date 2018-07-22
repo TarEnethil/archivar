@@ -1,2 +1,5 @@
 *.pyc
 app/*.pyc
+data/mapnodes/*.png
+data/mapnodes/*.jpg
+data/mapnodes/*.gif
