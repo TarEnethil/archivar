@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
 from helpers import page_title, redirect_non_admins
 from app.forms import LoginForm, SettingsForm, InstallForm
-from app.models import User, Role, GeneralSetting
+from app.models import User, Role, GeneralSetting, MapSetting
 from flask_login import current_user, login_user, login_required, logout_user
 from datetime import datetime
 from werkzeug.urls import url_parse
@@ -58,13 +58,14 @@ def settings():
 
     if form.validate_on_submit():
         settings.title = form.title.data
+        settings.world_name = form.world_name.data
 
         flash("Settings changed.")
 
         db.session.commit()
     else:
         form.title.data = settings.title
-
+        form.world_name.data = settings.world_name
     
     return render_template("settings.html", form=form, title=page_title("General settings"))
 
@@ -86,6 +87,13 @@ def install():
             db.session.add(map_role)
             db.session.add(event_role)
             db.session.add(special_role)
+
+            map_setting = MapSetting(api_key="<your API key here>",
+                                        min_zoom=0,
+                                        max_zoom=0,
+                                        default_zoom=0)
+
+            db.session.add(map_setting)
 
             db.session.commit()
 

@@ -1,8 +1,8 @@
 from app import app, db
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
-from wtforms import StringField, TextAreaField, SubmitField, SelectMultipleField
-from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
+from wtforms import StringField, TextAreaField, SubmitField, SelectMultipleField, IntegerField
+from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, InputRequired
 
 def icon_is_valid(filename):
     if not "." in filename:
@@ -10,6 +10,18 @@ def icon_is_valid(filename):
 
     if not filename.rsplit(".", 1)[1].lower() in app.config["MAPNODES_FILE_EXT"]:
         raise ValidationError("Invalid file extension. File must be one of the following types: " + str(app.config["MAPNODES_FILE_EXT"]))
+
+class MapSettingsForm(FlaskForm):
+    api_key = StringField("GoogleMaps API Key", validators=[InputRequired(), Length(max=64)])
+
+    # TODO: validation
+    min_zoom = IntegerField("Min Zoom Level", validators=[InputRequired()])
+    max_zoom = IntegerField("Max Zoom Level", validators=[InputRequired()])
+    default_zoom = IntegerField("Min Zoom Level", validators=[InputRequired()])
+
+    tiles_path = StringField("directory/path for map tiles (relative to data/map)")
+
+    submit = SubmitField("submit")
 
 class MapNodeTypeCreateForm(FlaskForm):
     name = StringField("node name", validators=[DataRequired(), Length(max=64)])
@@ -31,3 +43,4 @@ class MapNodeTypeEditForm(FlaskForm):
     def validate_icon(self, icon):
         if icon.data:
             icon_is_valid(icon.data.filename)
+

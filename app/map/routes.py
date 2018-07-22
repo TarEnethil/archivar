@@ -2,8 +2,8 @@ from flask import render_template, flash, redirect, url_for, request, jsonify, s
 from app import app, db
 from app.map import bp
 from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, map_node_filename
-from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm
-from app.models import User, Role, MapNodeType
+from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm
+from app.models import User, Role, MapNodeType, MapSetting
 from flask_login import current_user, login_required
 from werkzeug import secure_filename
 import os
@@ -13,14 +13,35 @@ import os
 def index():
     return render_template("index.html")
 
-@bp.route("/settings")
+@bp.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
     redirect_non_map_admins()
 
+    form = MapSettingsForm()
+
+    settings = MapSetting.query.get(1)
+
+    if form.validate_on_submit():
+        settings.api_key = form.api_key.data 
+        settings.min_zoom = form.min_zoom.data 
+        settings.max_zoom = form.max_zoom.data 
+        settings.default_zoom = form.default_zoom.data 
+        settings.tiles_path = form.tiles_path.data 
+
+        db.session.commit()
+
+        flash("Map settings have been changed.")
+
+    form.api_key.data = settings.api_key
+    form.min_zoom.data = settings.min_zoom
+    form.max_zoom.data = settings.max_zoom
+    form.default_zoom.data = settings.default_zoom
+    form.tiles_path.data = settings.tiles_path
+
     node_types = MapNodeType.query.all()
 
-    return render_template("map/settings.html", node_types=node_types, title=page_title("Map settings"))
+    return render_template("map/settings.html", form=form, node_types=node_types, title=page_title("Map settings"))
 
 @bp.route("/node/create", methods=["GET", "POST"])
 @login_required

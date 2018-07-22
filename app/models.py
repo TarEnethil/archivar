@@ -64,6 +64,16 @@ class GeneralSetting(db.Model):
     __tablename__ = "general_settings"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64))
+    world_name = db.Column(db.String(64))
+
+class MapSetting(db.Model):
+    __tablename__ = "map_settings"
+    id = db.Column(db.Integer, primary_key=True)
+    api_key = db.Column(db.String(64))
+    min_zoom = db.Column(db.Integer)
+    max_zoom = db.Column(db.Integer)
+    default_zoom = db.Column(db.Integer)
+    tiles_path = db.Column(db.String(128))
 
 class MapNodeType(db.Model):
     __tablename__ = "map_node_types"

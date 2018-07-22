@@ -33,7 +33,7 @@
                 </li>
                 {% endif %}
 
-                {% if current_user.has_access_to_some_settings() %}
+                {% if current_user.is_authenticated and current_user.has_access_to_some_settings() %}
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                       Settings <span class="caret"></span>
