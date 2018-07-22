@@ -65,6 +65,13 @@ class GeneralSetting(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64))
 
+class MapNodeType(db.Model):
+    __tablename__ = "map_node_types"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    description = db.Column(db.String(256))
+    icon_file = db.Column(db.String(64))
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

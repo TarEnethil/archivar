@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Map settings</h1>
+    <h2>GoogleMaps settings</h2>
+    TODO
+    <hr>
+    
+    <h2>Node Types</h2>
+    <a href="{{ url_for('map.node_create')}}" class="btn btn-default">
+        <span class="glpyhicon glyphicon-plus" aria-hidden="true"></span>
+        New Node Type
+    </a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <td>Icon</td>
+                <td>Name (+Description)</td>
+                <td>Actions</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for node_type in node_types %}
+            <tr>
+                <td>
+                    <img src="{{ url_for('map.node_icon', filename=node_type.icon_file) }}" alt="{{ node_type.name }}">
+                </td>
+                <td>  {{ node_type.name  }}
+                    {% if node_type.description != "" %}
+                    ({{ node_type.description }})
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('map.node_edit', id=node_type.id) }}" class="btn btn-default">
+                        <span class="glpyhicon glyphicon-pencil" aria-hidden="true"></span>
+                        Edit
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
