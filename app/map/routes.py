@@ -23,7 +23,6 @@ def settings():
     settings = MapSetting.query.get(1)
 
     if form.validate_on_submit():
-        settings.api_key = form.api_key.data 
         settings.min_zoom = form.min_zoom.data 
         settings.max_zoom = form.max_zoom.data 
         settings.default_zoom = form.default_zoom.data 
@@ -33,7 +32,6 @@ def settings():
 
         flash("Map settings have been changed.")
 
-    form.api_key.data = settings.api_key
     form.min_zoom.data = settings.min_zoom
     form.max_zoom.data = settings.max_zoom
     form.default_zoom.data = settings.default_zoom

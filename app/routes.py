@@ -88,10 +88,7 @@ def install():
             db.session.add(event_role)
             db.session.add(special_role)
 
-            map_setting = MapSetting(api_key="<your API key here>",
-                                        min_zoom=0,
-                                        max_zoom=0,
-                                        default_zoom=0)
+            map_setting = MapSetting(min_zoom=0, max_zoom=0, default_zoom=0)
 
             db.session.add(map_setting)
 
