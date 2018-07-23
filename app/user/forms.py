@@ -20,14 +20,14 @@ class CreateUserForm(FlaskForm):
             raise ValidationError("Username already in use.")
 
 class EditProfileForm(FlaskForm):
-    about = TextAreaField("About", validators=[Length(min=0, max=1000)])
+    about = TextAreaField("About", validators=[Length(min=0, max=1000)], render_kw={"rows": 15})
     password = PasswordField("Password")
     password2 = PasswordField("Password again", validators=[EqualTo("password")])
 
     submit = SubmitField("Submit")
 
 class EditProfileFormAdmin(FlaskForm):
-    about = TextAreaField("About", validators=[Length(min=0, max=1000)])
+    about = TextAreaField("About", validators=[Length(min=0, max=1000)], render_kw={"rows": 15})
     password = PasswordField("Password")
     password2 = PasswordField("Password again", validators=[EqualTo("password")])
 

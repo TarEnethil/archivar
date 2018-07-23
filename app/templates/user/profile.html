@@ -1,5 +1,18 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+{% if user.about %}
+<script type="text/javascript">
+    var about_user = document.getElementById('about_user')
+    about_user.innerHTML = marked(about_user.innerHTML);
+</script>
+
+{% endif %}
+{% endblock %}
+
 {% block app_content %}
 
     <h1> user profile for {{ user.username }}</h1>
@@ -13,8 +26,8 @@
     <hr>
 
     {% if user.about %}
-    <p class="text">
-        {{ user.about }}
+    <p id="about_user">
+{{ user.about }}
     </p>
     {% endif %}
 
