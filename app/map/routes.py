@@ -11,7 +11,9 @@ import os
 @bp.route("/")
 @login_required
 def index():
-    return render_template("map/index.html")
+    settings = MapSetting.query.get(1)
+
+    return render_template("map/index.html", settings=settings, title=page_title("Worldmap"))
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
@@ -26,7 +28,11 @@ def settings():
         settings.min_zoom = form.min_zoom.data 
         settings.max_zoom = form.max_zoom.data 
         settings.default_zoom = form.default_zoom.data 
-        settings.tiles_path = form.tiles_path.data 
+
+        if form.tiles_path.data.endswith("/") or not form.tiles_path.data:
+            settings.tiles_path = form.tiles_path.data
+        else:
+            settings.tiles_path = form.tiles_path.data + "/"
 
         db.session.commit()
 
@@ -95,7 +101,7 @@ def node_edit(id):
 def node_icon(filename):
     return send_from_directory(app.config["MAPNODES_DIR"], filename)
 
-@bp.route("/tile/<filename>")
+@bp.route("/tile/<path:filename>")
 @login_required
 def tile(filename):
     return send_from_directory(app.config["MAPTILES_DIR"], filename)
