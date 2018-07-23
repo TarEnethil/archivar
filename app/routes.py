@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify, s
 from app import app, db
 from helpers import page_title, redirect_non_admins
 from app.forms import LoginForm, SettingsForm, InstallForm
-from app.models import User, Role, GeneralSetting, MapSetting
+from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType
 from flask_login import current_user, login_user, login_required, logout_user
 from datetime import datetime
 from werkzeug.urls import url_parse
@@ -94,6 +94,26 @@ def install():
                                         default_zoom=0)
 
             db.session.add(map_setting)
+
+            # TODO: maybe remove the default icons as well
+            if form.default_mapnodes.data:
+                village = MapNodeType(name="Village", description="A small village with not more than 1000 inhabitants", icon_file="village.png")
+                town = MapNodeType(name="Town", description="Towns usually have up to 5000 people living in them", icon_file="town.png")
+                city = MapNodeType(name="City", description="Cities can have up to 10000 residents", icon_file="city.png")
+                capital = MapNodeType(name="Capital", description="Capital city of a country or region", icon_file="capital.png")
+                poi = MapNodeType(name="PoI", description="A particular point of interest", icon_file="poi.png")
+                quest = MapNodeType(name="Quest", description="An old school quest marker", icon_file="quest.png")
+                note = MapNodeType(name="Note", description="For additional information", icon_file="note.png")
+
+                db.session.add(village)
+                db.session.add(town)
+                db.session.add(city)
+                db.session.add(capital)
+                db.session.add(poi)
+                db.session.add(quest)
+                db.session.add(note)
+
+                flash("7 default map nodes were added.", "success")
 
             db.session.commit()
 

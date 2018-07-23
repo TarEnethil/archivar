@@ -90,7 +90,7 @@ def node_edit(id):
 
     form.name.data = node.name
     form.description.data = node.description
-    return render_template("map/node_edit.html", form=form, node_type=node, title=page_title("Create map node type"))
+    return render_template("map/node_edit.html", form=form, node_type=node, title=page_title("Edit map node type"))
 
 @bp.route("/node/icon/<filename>")
 @login_required
@@ -100,7 +100,4 @@ def node_icon(filename):
 @bp.route("/tile/<filename>")
 @login_required
 def tile(filename):
-    #print(app.config["MAPTILES_DIR"] + " --- " + filename)
-
-    #print(os.path.isfile(os.path.join(app.config["MAPTILES_DIR"], filename)))
     return send_from_directory(app.config["MAPTILES_DIR"], filename)

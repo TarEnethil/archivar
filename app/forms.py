@@ -2,7 +2,7 @@ from app import db
 from app.models import User, Role
 from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField, BooleanField, SubmitField, SelectMultipleField
+from wtforms import StringField, TextAreaField, PasswordField, BooleanField, SubmitField, SelectMultipleField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo
 
 class LoginForm(FlaskForm):
@@ -20,6 +20,8 @@ class InstallForm(FlaskForm):
     admin_name = StringField("Admin username", validators=[DataRequired()])
     admin_password = PasswordField("Password", validators=[DataRequired(), EqualTo("admin_password2")])
     admin_password2 = PasswordField("Password again", validators=[DataRequired()])
+
+    default_mapnodes = BooleanField("Install default map node types (city, village,...)")
 
     submit = SubmitField("Submit")
 
