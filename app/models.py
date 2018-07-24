@@ -16,6 +16,7 @@ class User(UserMixin, db.Model):
     about = db.Column(db.String(1000))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     created = db.Column(db.DateTime, default=datetime.utcnow)
+    must_change_password = db.Column(db.Boolean, default=True)
     
     roles = db.relationship("Role", secondary=user_role_assoc, backref="users")
 

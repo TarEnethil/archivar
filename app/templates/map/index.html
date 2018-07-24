@@ -27,7 +27,11 @@
         layers: [
           new TileLayer({
             source: new XYZ({
+              {% if settings.tiles_path %}
               url: '{{ url_for("map.tile", filename="") }}{{ settings.tiles_path }}tile_{z}_{x}-{y}.png'
+              {% else %}
+              url: '{{ url_for("map.tile", filename="") }}tile_{z}_{x}-{y}.png'
+              {% endif %}
             })
           })
         ],

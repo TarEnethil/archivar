@@ -40,6 +40,12 @@ def edit(username):
             if(form.password.data):
                 user.set_password(form.password.data)
 
+                if current_user.username == user.username:
+                    user.must_change_password = False
+                elif current_user.has_admin_role():
+                    # user must reset password after it has been changed by an admin
+                    user.must_change_password = True
+
             if current_user.has_admin_role():
                 new_user_roles = Role.query.filter(Role.id.in_(form.roles.data)).all()
 

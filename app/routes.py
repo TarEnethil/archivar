@@ -13,6 +13,11 @@ def before_request():
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
 
+        url = url_for("user.edit", username=current_user.username)
+        if current_user.must_change_password and request.path != url:
+            flash("You must change your password before proceeding")
+            return redirect(url)
+
 @app.route("/")
 @app.route("/index")
 @login_required
