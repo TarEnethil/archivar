@@ -90,7 +90,7 @@ class MapNode(db.Model):
     name = db.Column(db.String(64))
     description = db.Column(db.String(10000))
     node_type = db.Column(db.Integer, db.ForeignKey("map_node_types.id"))
-    is_approved = db.Column(db.Boolean, default=False)
+    is_visible = db.Column(db.Boolean, default=False)
 
 @login.user_loader
 def load_user(id):

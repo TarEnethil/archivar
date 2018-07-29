@@ -122,6 +122,7 @@ def install():
             admin = User(username=form.admin_name.data)
             admin.set_password(form.admin_password.data)
             admin.roles = [Role.query.get(1)]
+            admin.must_change_password = False
 
             db.session.add(admin)
 

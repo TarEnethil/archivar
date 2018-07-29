@@ -2,7 +2,7 @@ from app import app, db
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
 from app.helpers import LessThanOrEqual, GreaterThanOrEqual
-from wtforms import StringField, TextAreaField, SubmitField, SelectField, IntegerField, HiddenField
+from wtforms import StringField, TextAreaField, SubmitField, SelectField, IntegerField, HiddenField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, InputRequired, NumberRange
 
 def icon_is_valid(filename):
@@ -28,6 +28,18 @@ class MapNodeCreateForm(FlaskForm):
 
     coord_x = HiddenField(validators=[InputRequired()])
     coord_y = HiddenField(validators=[InputRequired()])    
+
+    submit = SubmitField("submit")
+
+class MapNodeCreateFormAdmin(FlaskForm):
+    name = StringField("node name", validators=[Length(max=64),InputRequired()])
+    description = TextAreaField("description", validators=[Length(min=0, max=10000)], render_kw={"rows": 10})
+    node_type = SelectField("node type", validators=[InputRequired(),NumberRange(min=1,message="Choose a valid node type")],coerce=int)
+
+    is_visible = BooleanField("Is approved / visible (to anyone)")
+
+    coord_x = HiddenField(validators=[InputRequired()])
+    coord_y = HiddenField(validators=[InputRequired()])
 
     submit = SubmitField("submit") 
 

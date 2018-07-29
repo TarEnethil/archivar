@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify, s
 from app import app, db
 from app.map import bp
 from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, map_node_filename, gen_node_type_choices
-from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeCreateForm
+from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeCreateForm, MapNodeCreateFormAdmin
 from app.models import User, Role, MapNodeType, MapSetting, MapNode
 from flask_login import current_user, login_required
 from werkzeug import secure_filename
@@ -50,7 +50,10 @@ def settings():
 @bp.route("/node/create/<x>/<y>", methods=["GET", "POST"])
 @login_required
 def node_create(x, y):
-    form = MapNodeCreateForm()
+    if current_user.is_map_admin():
+        form = MapNodeCreateFormAdmin()
+    else:
+        form = MapNodeCreateForm()
 
     form.coord_x.data = x
     form.coord_y.data = y
@@ -60,10 +63,20 @@ def node_create(x, y):
     if form.validate_on_submit():
         new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data)
 
+        if current_user.is_map_admin():
+            new_node.is_visible = form.is_visible.data
+
+            if new_node.is_visible:
+                message = "Node was created."
+            else:
+                message = "Node was created, it is only visible to map admins."
+        else:
+            message = "Node was created. Until approved, it is only visible to map admins and you."
+
         db.session.add(new_node)
         db.session.commit()
 
-        return jsonify(data={'success' : True, 'message': 'Node was created.'})
+        return jsonify(data={'success' : True, 'message': message})
     elif request.method == "POST":
         return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors}) 
 
