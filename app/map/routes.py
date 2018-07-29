@@ -61,7 +61,7 @@ def node_create(x, y):
     form.node_type.choices = gen_node_type_choices()
 
     if form.validate_on_submit():
-        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data)
+        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, created_by=current_user)
 
         if current_user.is_map_admin():
             new_node.is_visible = form.is_visible.data

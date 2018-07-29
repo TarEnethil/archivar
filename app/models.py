@@ -91,6 +91,12 @@ class MapNode(db.Model):
     description = db.Column(db.String(10000))
     node_type = db.Column(db.Integer, db.ForeignKey("map_node_types.id"))
     is_visible = db.Column(db.Boolean, default=False)
+    created = db.Column(db.DateTime, default=datetime.utcnow)
+    created_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_by = db.relationship("User", foreign_keys=[created_by_id])
+    edited = db.Column(db.DateTime, default=datetime.utcnow)
+    edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    edited_by = db.relationship("User", foreign_keys=[edited_by_id])
 
 @login.user_loader
 def load_user(id):
