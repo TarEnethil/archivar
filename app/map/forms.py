@@ -2,7 +2,7 @@ from app import app, db
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
 from app.helpers import LessThanOrEqual, GreaterThanOrEqual
-from wtforms import StringField, TextAreaField, SubmitField, SelectMultipleField, IntegerField
+from wtforms import StringField, TextAreaField, SubmitField, SelectField, IntegerField, HiddenField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, InputRequired, NumberRange
 
 def icon_is_valid(filename):
@@ -21,9 +21,19 @@ class MapSettingsForm(FlaskForm):
 
     submit = SubmitField("submit")
 
+class MapNodeCreateForm(FlaskForm):
+    name = StringField("node name", validators=[Length(max=64),InputRequired()])
+    description = TextAreaField("description", validators=[Length(min=0, max=10000)], render_kw={"rows": 10})
+    node_type = SelectField("node type", validators=[InputRequired(),NumberRange(min=1,message="Choose a valid node type")],coerce=int)
+
+    coord_x = HiddenField(validators=[InputRequired()])
+    coord_y = HiddenField(validators=[InputRequired()])    
+
+    submit = SubmitField("submit") 
+
 class MapNodeTypeCreateForm(FlaskForm):
-    name = StringField("node name", validators=[DataRequired(), Length(max=64)])
-    description = StringField("node description", validators=[Length(max=256)])
+    name = StringField("node type name", validators=[DataRequired(), Length(max=64)])
+    description = StringField("node type description", validators=[Length(max=256)])
     icon = FileField("icon (x by x pixels recommended)", validators=[FileRequired()])
 
     submit = SubmitField("submit")
@@ -32,8 +42,8 @@ class MapNodeTypeCreateForm(FlaskForm):
         icon_is_valid(icon.data.filename)        
 
 class MapNodeTypeEditForm(FlaskForm):
-    name = StringField("node name", validators=[DataRequired(), Length(max=64)])
-    description = StringField("node description", validators=[Length(max=256)])
+    name = StringField("node type name", validators=[DataRequired(), Length(max=64)])
+    description = StringField("node type description", validators=[Length(max=256)])
     icon = FileField("icon (x by x pixels recommended)")
 
     submit = SubmitField("submit")

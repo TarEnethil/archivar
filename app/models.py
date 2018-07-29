@@ -82,6 +82,16 @@ class MapNodeType(db.Model):
     description = db.Column(db.String(256))
     icon_file = db.Column(db.String(64))
 
+class MapNode(db.Model):
+    __tablename__ = "map_nodes"
+    id = db.Column(db.Integer, primary_key=True)
+    coord_x = db.Column(db.Float)
+    coord_y = db.Column(db.Float)
+    name = db.Column(db.String(64))
+    description = db.Column(db.String(10000))
+    node_type = db.Column(db.Integer, db.ForeignKey("map_node_types.id"))
+    is_approved = db.Column(db.Boolean, default=False)
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

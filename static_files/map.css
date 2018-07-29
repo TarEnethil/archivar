@@ -1,3 +1,51 @@
 .navbar {
     margin-bottom:0 !important;
 }
+
+#map {
+    height:100%;
+    position:fixed;
+    width:100%;
+}
+
+#nodeform {
+    width:35%;
+    top:10%;
+    left:50%;
+    margin-left:-17.5%;
+    
+    position:absolute;
+    z-index:5000;
+    display:none;
+}
+
+#messagebox {
+    z-index:500000;
+    position:absolute;
+    width:80%;
+    padding:0;
+    left:50%;
+    margin-left:-40%;
+}
+
+#messagebox p {
+    opacity:0.95;
+    text-align:center;
+}
+
+.close-link {
+    display:block;
+    text-align:right;
+    color:#000000;
+    padding:10px 10px 0px 0px;
+}
+
+.close-link:hover,
+.close-link:focus {
+    color:#ab0000;
+    cursor:pointer;
+}
+
+.panel-heading h2 {
+    margin-top:0;
+}

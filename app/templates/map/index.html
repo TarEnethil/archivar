@@ -7,7 +7,15 @@
 {% endblock %}
 
 {% block content %}
-  <div id="map" class="map"></div>
+  <div id="map" class="map">
+      <div id="messagebox"></div>
+      <div id="nodeform" class="panel">
+        <a class="close-link">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+        <div id="nodeform_content"></div>
+      </div>
+  </div>
 {% endblock %}
 
 {% block scripts %}
@@ -21,25 +29,206 @@
     var TileLayer = ol.layer.Tile
     var XYZ = ol.source.XYZ
     var View = ol.View
+    var Icon = ol.style.Icon
+    var Style = ol.style.Style
+    var Feature = ol.Feature
+    var Point = ol.geom.Point
+    var VectorLayer = ol.layer.Vector
+    var VectorSource = ol.source.Vector
+    var Overlay = ol.Overlay
 
-    var map = new Map({
-        target: 'map',
-        layers: [
-          new TileLayer({
-            source: new XYZ({
-              {% if settings.tiles_path %}
-              url: '{{ url_for("map.tile", filename="") }}{{ settings.tiles_path }}tile_{z}_{x}-{y}.png'
-              {% else %}
-              url: '{{ url_for("map.tile", filename="") }}tile_{z}_{x}-{y}.png'
-              {% endif %}
-            })
-          })
-        ],
-        view: new View({
-          center: [-472202, 7530279],
-          zoom: {{ settings.default_zoom }}
+    var _map;
+
+    function global_message(msgOptions) {
+      if(msgOptions.msg == undefined)
+          msgOptions.msg = "";
+
+      if(msgOptions.mode == undefined)
+          msgOptions.mode = 'fadeBoth';
+
+      if(msgOptions.delay == undefined)
+          msgOptions.delay = 4000;
+
+      if(msgOptions.msgtype == undefined)
+          msgOptions.msgtype = 'info'
+
+      if(msgOptions.mode == 'fadeBoth') {
+          $("<p />").addClass("alert").addClass("alert-" + msgOptions.msgtype).css("display", "none").html(msgOptions.msg).appendTo("#messagebox").fadeIn( 500, function() {
+              $(this).delay(msgOptions.delay).fadeOut(500, function() {
+                $(this).remove();
+              })
+          });
+      }
+
+      if(msgOptions.mode == 'fadeIn') {
+          $("<p />").addClass("alert").addClass("alert-" + msgOptions.msgtype).css("display", "none").html(msgOptions.msg).appendTo("#messagebox").fadeIn(500);
+      }
+    }
+
+    function global_success_message(message) {
+      global_message({
+        msg : message,
+        msgtype : "success",
+        mode : "fadeBoth"
+      });
+    }
+
+    function global_error_message(message) {
+      global_message({
+        msg : message,
+        msgtype : "danger",
+        mode : "fadeIn"
+      });
+    }
+
+    function nodeform_error_message(message) {
+      $("<p />").addClass("alert").addClass("alert-danger").css("display", "none").html(message).appendTo("#form_messagebox").fadeIn(500);
+    }
+
+    function evaluate_nodeform_success(data) {
+      if (data.success == true) {
+        global_success_message("server message: " + data.message);
+        hide_nodeform();
+      }
+      else {
+        // iterate over data.errors -> keys are names of the <input> for which there are errors
+        for (var key in data.errors) {
+          // part 1: general error message for the field
+          var msg = data.message + " for " + key + ": "
+          if (data.errors.hasOwnProperty(key)) {
+            // data.errors.key is an array of error messages, append all of them
+            for (var i = 0; i < data.errors[key].length; i++)
+              msg += data.errors[key][i] + "<br>"
+
+            // generate a message for every <input> with errors
+            nodeform_error_message(msg);
+          }
+        }
+      }        
+    }
+
+    function show_nodeform() {
+      $("#nodeform").show();
+    }
+
+    function hide_nodeform() {
+      $("#nodeform").hide();
+    }
+
+    function evaluate_nodeform_error(data) {
+      global_error_message(data);
+    }
+
+    function attach_form_listener(event) {
+      console.log("loaded new form functions");
+      $('form').submit(function (e) {
+          var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
+          $.ajax({
+              type: "POST",
+              url: url.replace("x_coord", event.coordinate[0]).replace("y_coord", event.coordinate[1]),
+              data: $('.create_node_form form').serialize(),
+              success: function(data) {
+                evaluate_nodeform_success(data.data)
+              },
+              error: function(data) {
+                evaluate_nodeform_error(data.data)
+              }
+          });
+          e.preventDefault();
+      });
+      
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", $("#csrf_token").attr("value"));
+              }
+          }
+      });
+
+      $(".close-link").click(function() {
+        hide_nodeform();
+      })
+    }
+
+    var iconFeature = new Feature({
+      geometry: new Point([0, 0]),
+      name: 'Test'
+    });
+
+    var iconStyle = new Style({
+      image: new Icon(({
+        anchor: [0.5, 0.5],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        src: '{{ url_for("map.node_type_icon", filename="city.png") }}'
+      }))
+    });
+
+    iconFeature.setStyle(iconStyle);
+
+    function init() {
+      var vectorSource = new VectorSource({
+        wrapX: false,
+        features: [iconFeature]
+      });
+
+      var vectorLayer = new VectorLayer({
+        source: vectorSource
+      });
+
+      var tileLayer = new TileLayer({
+        source: new XYZ({
+          wrapX: false,
+          {% if settings.tiles_path %}
+          url: '{{ url_for("map.tile", filename="") }}{{ settings.tiles_path }}tile_{z}_{x}-{y}.png'
+          {% else %}
+          url: '{{ url_for("map.tile", filename="") }}tile_{z}_{x}-{y}.png'
+          {% endif %}
         })
       });
+
+      _map = new Map({
+        target: 'map',
+        layers: [tileLayer, vectorLayer],
+        view: new View({
+          center: [0, 0],
+          zoom: {{ settings.default_zoom }},
+          minZoom: {{ settings.min_zoom }},
+          maxZoom: {{ settings.max_zoom }}
+        }),
+        controls: ol.control.defaults({
+          attribution: false,
+          zoom: false,
+          rotate: false
+        })
+      });
+
+      _map.on('singleclick', function(e) {
+        var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
+        $("#nodeform_content").load(url.replace("x_coord", e.coordinate[0]).replace("y_coord", e.coordinate[1]), function() {
+            attach_form_listener(e);
+            show_nodeform();
+        });
+      });
+
+      console.log("init done.");
+    }    
+
+    function createIcon(coords) {
+      var iconFeature = new Feature({
+        geometry: new Point([coords[0], coords[1]]),
+        name: 'IDK'
+      });
+
+      iconFeature.setStyle(iconStyle);
+
+      vectorSource.addFeature(iconFeature);
+      console.log("added.");
+    }
+
+    $(document).ready(function() {
+      init();
+    });
 </script>
 
 {% endblock %}

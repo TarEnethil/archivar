@@ -1,6 +1,6 @@
 from app import app
 from flask import flash, redirect
-from models import GeneralSetting
+from models import GeneralSetting, MapNodeType
 from flask_login import current_user
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError
@@ -27,10 +27,8 @@ def page_title(dynamic_part=None):
 def map_node_filename(filename_from_form):
     filename = secure_filename(filename_from_form)
 
-    base_filename = filename
-
     counter = 1
-    while os.path.isfile(os.path.join(app.config["MAPNODES_DIR"], base_filename)):
+    while os.path.isfile(os.path.join(app.config["MAPNODES_DIR"], filename)):
         split = filename.rsplit(".", 1)
 
         # fancy duplication avoidance (tm)
@@ -38,6 +36,16 @@ def map_node_filename(filename_from_form):
         counter += 1
 
     return filename
+
+def gen_node_type_choices():
+    choices = [(0, "choose...")]
+
+    node_types = MapNodeType.query.all()
+
+    for node_type in node_types:
+        choices.append((node_type.id, node_type.name))
+
+    return choices
 
 class LessThanOrEqual(object):
     def __init__(self, comp_value_field_name):

@@ -1,8 +1,10 @@
-{% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
-{% block app_content %}
-    <h1>Create new map node type</h1>
+<div class="panel-heading">
+    <h2>Create new map node</h2>
+</div>
 
+<div class="panel-body create_node_form">
+    <div id="form_messagebox"></div>
     {{ wtf.quick_form(form) }}
-{% endblock %}
+</div>

@@ -1,9 +1,9 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
 from app import app, db
 from app.map import bp
-from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, map_node_filename
-from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm
-from app.models import User, Role, MapNodeType, MapSetting
+from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, map_node_filename, gen_node_type_choices
+from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeCreateForm
+from app.models import User, Role, MapNodeType, MapSetting, MapNode
 from flask_login import current_user, login_required
 from werkzeug import secure_filename
 import os
@@ -47,9 +47,31 @@ def settings():
 
     return render_template("map/settings.html", form=form, node_types=node_types, title=page_title("Map settings"))
 
-@bp.route("/node/create", methods=["GET", "POST"])
+@bp.route("/node/create/<x>/<y>", methods=["GET", "POST"])
 @login_required
-def node_create():
+def node_create(x, y):
+    form = MapNodeCreateForm()
+
+    form.coord_x.data = x
+    form.coord_y.data = y
+
+    form.node_type.choices = gen_node_type_choices()
+
+    if form.validate_on_submit():
+        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data)
+
+        db.session.add(new_node)
+        db.session.commit()
+
+        return jsonify(data={'success' : True, 'message': 'Node was created.'})
+    elif request.method == "POST":
+        return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors}) 
+
+    return render_template("map/node_create.html", form=form, x=x, y=y)
+
+@bp.route("/node_type/create", methods=["GET", "POST"])
+@login_required
+def node_type_create():
     redirect_non_map_admins()
     
     form = MapNodeTypeCreateForm()
@@ -66,11 +88,11 @@ def node_create():
         flash('"' + form.name.data + '" was successfully created.')
         return redirect(url_for('map.settings'))
     
-    return render_template("map/node_create.html", form=form, title=page_title("Create map node type"))
+    return render_template("map/node_type_create.html", form=form, title=page_title("Create map node type"))
 
-@bp.route("/node/edit/<id>", methods=["GET", "POST"])
+@bp.route("/node_type/edit/<id>", methods=["GET", "POST"])
 @login_required
-def node_edit(id):
+def node_type_edit(id):
     redirect_non_map_admins()
 
     form = MapNodeTypeEditForm()
@@ -94,11 +116,11 @@ def node_edit(id):
 
     form.name.data = node.name
     form.description.data = node.description
-    return render_template("map/node_edit.html", form=form, node_type=node, title=page_title("Edit map node type"))
+    return render_template("map/node_type_edit.html", form=form, node_type=node, title=page_title("Edit map node type"))
 
-@bp.route("/node/icon/<filename>")
+@bp.route("/node_type/icon/<filename>")
 @login_required
-def node_icon(filename):
+def node_type_icon(filename):
     return send_from_directory(app.config["MAPNODES_DIR"], filename)
 
 @bp.route("/tile/<path:filename>")
