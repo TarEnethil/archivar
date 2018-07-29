@@ -38,6 +38,7 @@
     var Overlay = ol.Overlay
 
     var _map;
+    var _map_node_types;
 
     function global_message(msgOptions) {
       if(msgOptions.msg == undefined)
@@ -150,6 +151,31 @@
       })
     }
 
+    function gen_icon_style(filename) {
+      var url = '{{ url_for("map.node_type_icon", filename="xyz.zyx") }}';
+
+      var iconStyle = new Style({
+      image: new Icon(({
+          anchor: [0.5, 0.5],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          src: url.replace("xyz.zyx", filename)
+        }))
+      });
+
+      return iconStyle;
+    }
+
+    function load_map_node_types() {
+      $.getJSON("{{ url_for('map.node_type_json') }}", function(data) {
+        _map_node_types = data;
+
+        for (var nt in _map_node_types) {
+          _map_node_types[nt].iconstyle = gen_icon_style(nt.icon_file);
+        }
+      });
+    }
+
     var iconFeature = new Feature({
       geometry: new Point([0, 0]),
       name: 'Test'
@@ -207,7 +233,7 @@
         var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
         $("#nodeform_content").load(url.replace("x_coord", e.coordinate[0]).replace("y_coord", e.coordinate[1]), function() {
             attach_form_listener(e);
-            show_nodeform();
+            show_nodeform()
         });
       });
 

@@ -131,6 +131,18 @@ def node_type_edit(id):
     form.description.data = node.description
     return render_template("map/node_type_edit.html", form=form, node_type=node, title=page_title("Edit map node type"))
 
+@bp.route("/node_type/json")
+@login_required
+def node_type_json():
+    all_types = MapNodeType.query.all()
+
+    all_types_dict = {}
+
+    for node_type in all_types:
+        all_types_dict[node_type.id] = node_type.to_dict()
+
+    return jsonify(all_types_dict)
+
 @bp.route("/node_type/icon/<filename>")
 @login_required
 def node_type_icon(filename):

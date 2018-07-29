@@ -82,6 +82,16 @@ class MapNodeType(db.Model):
     description = db.Column(db.String(256))
     icon_file = db.Column(db.String(64))
 
+    def to_dict(self):
+        dic = {
+            "id" : self.id,
+            "name" : self.name,
+            "description" : self.description,
+            "icon_file" : self.icon_file
+        }
+
+        return dic
+
 class MapNode(db.Model):
     __tablename__ = "map_nodes"
     id = db.Column(db.Integer, primary_key=True)
