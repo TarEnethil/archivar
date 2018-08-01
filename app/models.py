@@ -73,7 +73,8 @@ class MapSetting(db.Model):
     min_zoom = db.Column(db.Integer)
     max_zoom = db.Column(db.Integer)
     default_zoom = db.Column(db.Integer)
-    tiles_path = db.Column(db.String(128))
+    tiles_path = db.Column(db.String(128), default="tile_{z}_{x}-{y}.png")
+    external_provider = db.Column(db.Boolean, default=False)
 
 class MapNodeType(db.Model):
     __tablename__ = "map_node_types"

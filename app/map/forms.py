@@ -1,7 +1,7 @@
 from app import app, db
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
-from app.helpers import LessThanOrEqual, GreaterThanOrEqual
+from app.helpers import LessThanOrEqual, GreaterThanOrEqual, XYZ_Validator
 from wtforms import StringField, TextAreaField, SubmitField, SelectField, IntegerField, HiddenField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, InputRequired, NumberRange
 
@@ -17,7 +17,8 @@ class MapSettingsForm(FlaskForm):
     max_zoom = IntegerField("Max Zoom Level", validators=[InputRequired(), NumberRange(min=0, max=20), GreaterThanOrEqual("min_zoom")])
     default_zoom = IntegerField("Default Zoom Level", validators=[InputRequired(), NumberRange(min=0, max=20), LessThanOrEqual("max_zoom"), GreaterThanOrEqual("min_zoom")])
 
-    tiles_path = StringField("directory/path for map tiles (relative to data/map)")
+    external_provider = BooleanField("Use external map provider")
+    tiles_path = StringField("Provider pattern (internal: relative to data/map/, external: full url for an {x}{y}{z} map provider)", validators=[InputRequired(), XYZ_Validator()])
 
     submit = SubmitField("submit")
 

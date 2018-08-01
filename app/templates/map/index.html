@@ -49,15 +49,21 @@
           msgOptions.msgtype = 'info'
 
       if(msgOptions.mode == 'fadeBoth') {
-          $("<p />").addClass("alert").addClass("alert-" + msgOptions.msgtype).css("display", "none").html(msgOptions.msg).appendTo("#messagebox").fadeIn( 500, function() {
-              $(this).delay(msgOptions.delay).fadeOut(500, function() {
-                $(this).remove();
-              })
-          });
+        $("<p />").addClass("alert").addClass("alert-" + msgOptions.msgtype).css("display", "none").html(msgOptions.msg).appendTo("#messagebox").fadeIn( 500, function() {
+            $(this).delay(msgOptions.delay).fadeOut(500, function() {
+              $(this).remove();
+            })
+        });
       }
 
       if(msgOptions.mode == 'fadeIn') {
-          $("<p />").addClass("alert").addClass("alert-" + msgOptions.msgtype).css("display", "none").html(msgOptions.msg).appendTo("#messagebox").fadeIn(500);
+        $("<p />").addClass("alert").addClass("alert-" + msgOptions.msgtype).css("display", "none").html(msgOptions.msg).appendTo("#messagebox").fadeIn(500, function() {
+          $(this).click(function() {
+            $(this).fadeOut(500, function() {
+              $(this).remove();
+            })
+          })
+        });
       }
     }
 
@@ -195,8 +201,6 @@
         marker.setIcon(_map_node_types[node_type_id].iconstyle_private);
       }
 
-
-      console.log(marker);
       return marker;
     }
 
@@ -222,10 +226,10 @@
         closePopupOnClick: false,
       });
 
-      {% if settings.tiles_path %}
-        var url = '{{ url_for("map.tile", filename="") }}{{ settings.tiles_path }}tile_{z}_{x}-{y}.png';
+      {% if settings.external_provider %}
+        var url = '{{ settings.tiles_path }}'
       {% else %}
-        var url = '{{ url_for("map.tile", filename="") }}tile_{z}_{x}-{y}.png';
+        var url = '{{ url_for("map.tile", filename="") }}{{ settings.tiles_path }}';
       {% endif %}
 
       L.tileLayer(url, {
@@ -246,9 +250,6 @@
 
       load_map_node_types(function() {
         load_map_nodes(function() {
-          console.log(_map_node_types);
-          console.log(_nodes);
-          console.log(_marker_layer);
           _marker_layer.addTo(_map);
 
           console.log("init done.");

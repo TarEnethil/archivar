@@ -47,6 +47,11 @@ def gen_node_type_choices():
 
     return choices
 
+class XYZ_Validator(object):
+    def __call__(self, form, field):
+        if not "{x}" in field.data or not "{y}" in field.data or not "{z}" in field.data:
+            raise ValidationError("The tile provider needs the arguments {x} {y} and {z}")
+
 class LessThanOrEqual(object):
     def __init__(self, comp_value_field_name):
         self.comp_value_field_name = comp_value_field_name

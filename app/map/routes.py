@@ -28,20 +28,18 @@ def settings():
         settings.min_zoom = form.min_zoom.data 
         settings.max_zoom = form.max_zoom.data 
         settings.default_zoom = form.default_zoom.data 
-
-        if form.tiles_path.data.endswith("/") or not form.tiles_path.data:
-            settings.tiles_path = form.tiles_path.data
-        else:
-            settings.tiles_path = form.tiles_path.data + "/"
+        settings.external_provider = form.external_provider.data
+        settings.tiles_path = form.tiles_path.data
 
         db.session.commit()
 
         flash("Map settings have been changed.")
-
-    form.min_zoom.data = settings.min_zoom
-    form.max_zoom.data = settings.max_zoom
-    form.default_zoom.data = settings.default_zoom
-    form.tiles_path.data = settings.tiles_path
+    elif request.method == "GET":
+        form.min_zoom.data = settings.min_zoom
+        form.max_zoom.data = settings.max_zoom
+        form.default_zoom.data = settings.default_zoom
+        form.external_provider.data = settings.external_provider
+        form.tiles_path.data = settings.tiles_path
 
     node_types = MapNodeType.query.all()
 
