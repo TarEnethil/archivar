@@ -8,12 +8,12 @@ import os
 
 def redirect_non_admins():
     if not current_user.has_admin_role():
-        flash("Operation not permitted.")
+        flash("Operation not permitted.", "danger")
         redirect(url_for("index"))
 
 def redirect_non_map_admins():
     if not current_user.is_map_admin():
-        flash("Operation not permitted.")
+        flash("Operation not permitted.", "danger")
         redirect(url_for("index"))
 
 def page_title(dynamic_part=None):

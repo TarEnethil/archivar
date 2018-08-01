@@ -15,7 +15,7 @@ def before_request():
 
         url = url_for("user.edit", username=current_user.username)
         if current_user.must_change_password and request.path != url:
-            flash("You must change your password before proceeding")
+            flash("You must change your password before proceeding", "warning")
             return redirect(url)
 
 @app.route("/")
@@ -35,7 +35,7 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
 
         if user is None or not user.check_password(form.password.data):
-            flash("Invalid username or password")
+            flash("Invalid username or password", "danger")
             return redirect(request.full_path)
         else:
             login_user(user, remember=form.remember_me.data)
@@ -65,7 +65,7 @@ def settings():
         settings.title = form.title.data
         settings.world_name = form.world_name.data
 
-        flash("Settings changed.")
+        flash("Settings changed.", "success")
 
         db.session.commit()
     else:
@@ -115,7 +115,7 @@ def install():
                 db.session.add(quest)
                 db.session.add(note)
 
-                flash("7 default map nodes were added.", "success")
+                flash("7 default map nodes were added.", "info")
 
             db.session.commit()
 
@@ -128,13 +128,13 @@ def install():
 
             db.session.commit()
 
-            flash("Install successful. You can now log in and check the settings.")
+            flash("Install successful. You can now log in and check the settings.", "success")
 
             return redirect(url_for("index"))
 
         return render_template("install.html", form=form, title="Install")
     else:
-        flash("Setup was already executed.")
+        flash("Setup was already executed.", "danger")
         return redirect(url_for("index"))
 
 @app.route("/static_files/<path:filename>")

@@ -53,12 +53,12 @@ def edit(username):
             
                 if username == current_user.username and current_user.has_admin_role() and admin_role not in new_user_roles:
                     new_user_roles.append(admin_role)
-                    flash("You can't revoke your own admin role.")
+                    flash("You can't revoke your own admin role.", "danger")
 
                 user.roles = new_user_roles
 
             db.session.commit()
-            flash("Your changes have been saved.")
+            flash("Your changes have been saved.", "success")
 
             return redirect(url_for("user.profile", username=username))
         elif request.method == "GET":
@@ -73,7 +73,7 @@ def edit(username):
 
         return render_template("user/edit.html", form=form, user=user, title=page_title("Edit profile"))
     else:
-        flash("You dont have the neccessary role to perform this action.")
+        flash("You dont have the neccessary role to perform this action.", "danger")
         return redirect(url_for("index"))
 
 @bp.route("/create", methods=["GET", "POST"])
@@ -103,7 +103,7 @@ def create():
         db.session.add(new_user)
         db.session.commit()
 
-        flash("New user " + new_user.username + " created.")
+        flash("New user " + new_user.username + " created.", "success")
         return redirect(url_for('user.list'))
     else:
         return render_template("user/create.html", form=form, title=page_title("Create new user"))

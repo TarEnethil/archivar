@@ -33,7 +33,7 @@ def settings():
 
         db.session.commit()
 
-        flash("Map settings have been changed.")
+        flash("Map settings have been changed.", "success")
     elif request.method == "GET":
         form.min_zoom.data = settings.min_zoom
         form.max_zoom.data = settings.max_zoom
@@ -96,7 +96,7 @@ def node_type_create():
         db.session.commit()
         form.icon.data.save(os.path.join(app.config["MAPNODES_DIR"], filename))
 
-        flash('"' + form.name.data + '" was successfully created.')
+        flash('"' + form.name.data + '" was successfully created.', "success")
         return redirect(url_for('map.settings'))
     
     return render_template("map/node_type_create.html", form=form, title=page_title("Create map node type"))
@@ -122,11 +122,12 @@ def node_type_edit(id):
             node.icon_file = new_filename
 
         db.session.commit()
-        flash('"' + form.name.data + '" was successfully edited.')
+        flash('"' + form.name.data + '" was successfully edited.', "success")
         return redirect(url_for('map.settings'))
+    elif request.method == "GET":
+        form.name.data = node.name
+        form.description.data = node.description
 
-    form.name.data = node.name
-    form.description.data = node.description
     return render_template("map/node_type_edit.html", form=form, node_type=node, title=page_title("Edit map node type"))
 
 @bp.route("/node_type/json")
