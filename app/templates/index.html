@@ -1,6 +1,26 @@
 {% extends "base.html" %}
 
-{% block app_content %}
-    <h1>Hello, {{ current_user.username }}!</h1>
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+{% if settings.welcome_page %}
+<script type="text/javascript">
+    options = {
+        sanitize: true
+    }
+
+    var welcome_page = document.getElementById('welcome_page')
+    welcome_page.innerHTML = marked(welcome_page.innerHTML, options);
+</script>
+
+{% endif %}
+{% endblock %}
+
+{% block app_content %}
+{% if settings.welcome_page %}
+    <div id="welcome_page">
+{{ settings.welcome_page }}
+    </div>
+{% endif %}
 {% endblock %}

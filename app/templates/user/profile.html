@@ -6,8 +6,12 @@
 
 {% if user.about %}
 <script type="text/javascript">
+    options = {
+        sanitize: true
+    }
+
     var about_user = document.getElementById('about_user')
-    about_user.innerHTML = marked(about_user.innerHTML);
+    about_user.innerHTML = marked(about_user.innerHTML, options);
 </script>
 
 {% endif %}

@@ -22,7 +22,8 @@ def before_request():
 @app.route("/index")
 @login_required
 def index():
-    return render_template("index.html", title=page_title("Home"))
+    settings = GeneralSetting.query.get(1)
+    return render_template("index.html", settings=settings, title=page_title("Home"))
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -64,6 +65,7 @@ def settings():
     if form.validate_on_submit():
         settings.title = form.title.data
         settings.world_name = form.world_name.data
+        settings.welcome_page = form.welcome_page.data
 
         flash("Settings changed.", "success")
 
@@ -71,6 +73,7 @@ def settings():
     else:
         form.title.data = settings.title
         form.world_name.data = settings.world_name
+        form.welcome_page.data = settings.welcome_page
     
     return render_template("settings.html", form=form, title=page_title("General settings"))
 
@@ -80,7 +83,7 @@ def install():
         form = InstallForm()
 
         if form.validate_on_submit():
-            setting = GeneralSetting(title="My Page")
+            setting = GeneralSetting(title="My Page", welcome_page="# Hello there!")
 
             admin_role = Role(name="Admin")
             map_role = Role(name="Map")

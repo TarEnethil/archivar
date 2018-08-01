@@ -66,6 +66,7 @@ class GeneralSetting(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64))
     world_name = db.Column(db.String(64))
+    welcome_page = db.Column(db.Text)
 
 class MapSetting(db.Model):
     __tablename__ = "map_settings"
