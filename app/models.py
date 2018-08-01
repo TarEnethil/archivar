@@ -108,6 +108,25 @@ class MapNode(db.Model):
     edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     edited_by = db.relationship("User", foreign_keys=[edited_by_id])
 
+    def to_dict(self):
+        dic = {
+            "id" : self.id,
+            "x" : self.coord_x,
+            "y" : self.coord_y,
+            "name" : self.name,
+            "desc" : self.description,
+            "node_type" : self.node_type,
+            "visible" : self.is_visible,
+            "created" : self.created,
+            "created_by" : self.created_by.username
+        }
+
+        if (self.edited_by):
+            dic["edited"] = self.edited,
+            dic["edited_by"] = self.edited_by.username
+
+        return dic
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

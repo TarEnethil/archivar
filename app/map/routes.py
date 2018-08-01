@@ -143,6 +143,21 @@ def node_type_json():
 
     return jsonify(all_types_dict)
 
+@bp.route("/node/json")
+@login_required
+def node_json():
+    if current_user.is_map_admin():
+        nodes = MapNode.query.all()
+    else:
+        nodes = MapNode.query.filter(or_(MapNode.is_visible == true, MapNode.created_by_id == current_user.id))
+
+    nodes_dict = {}
+
+    for node in nodes:
+        nodes_dict[node.id] = node.to_dict()
+
+    return jsonify(nodes_dict)
+
 @bp.route("/node_type/icon/<filename>")
 @login_required
 def node_type_icon(filename):

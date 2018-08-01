@@ -4,40 +4,35 @@
 {% block styles %}
 {{ super() }}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static_files', filename='map.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
+   integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+   crossorigin=""/>
 {% endblock %}
 
 {% block content %}
   <div id="map" class="map">
-      <div id="messagebox"></div>
-      <div id="nodeform" class="panel">
-        <a class="close-link">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-        <div id="nodeform_content"></div>
-      </div>
+  </div>
+
+  <div id="messagebox"></div>
+  <div id="nodeform" class="panel">
+    <a class="close-link">
+      <span class="glyphicon glyphicon-remove"></span>
+    </a>
+    <div id="nodeform_content"></div>
   </div>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 
-<script src="{{ url_for('static_files', filename='ol.js') }}"></script>
+<script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"
+   integrity="sha512-tAGcCfR4Sc5ZP5ZoVz0quoZDYX5aCtEm/eu1KhSLj2c9eFrylXZknQYmxUssFaVJKvvc0dJQixhGjG2yXWiV9Q=="
+   crossorigin=""></script>
 
 <script type="module">
-    // defines
-    var Map = ol.Map
-    var TileLayer = ol.layer.Tile
-    var XYZ = ol.source.XYZ
-    var View = ol.View
-    var Icon = ol.style.Icon
-    var Style = ol.style.Style
-    var Feature = ol.Feature
-    var Point = ol.geom.Point
-    var VectorLayer = ol.layer.Vector
-    var VectorSource = ol.source.Vector
-    var Overlay = ol.Overlay
-
     var _map;
+    var _nodes;
+    var _marker_layer;
     var _map_node_types;
 
     function global_message(msgOptions) {
@@ -126,7 +121,7 @@
           var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
           $.ajax({
               type: "POST",
-              url: url.replace("x_coord", event.coordinate[0]).replace("y_coord", event.coordinate[1]),
+              url: url.replace("x_coord", event.latlng.lat).replace("y_coord", event.latlng.lng),
               data: $('.create_node_form form').serialize(),
               success: function(data) {
                 evaluate_nodeform_success(data.data)
@@ -151,106 +146,115 @@
       })
     }
 
-    function gen_icon_style(filename) {
+    function gen_icon_style(icon_fn, priv=false) {
       var url = '{{ url_for("map.node_type_icon", filename="xyz.zyx") }}';
 
-      var iconStyle = new Style({
-      image: new Icon(({
-          anchor: [0.5, 0.5],
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'pixels',
-          src: url.replace("xyz.zyx", filename)
-        }))
-      });
+      if (priv == false) {
+        var icon_style = L.icon({
+          iconUrl: url.replace("xyz.zyx", icon_fn),
+          // TODO: get this info from image (+settings maybe)
+          iconSize: [35, 35],
+          iconAnchor: [17, 35]
+        });
+      }
 
-      return iconStyle;
+      if (priv == true) {
+        var icon_style = L.icon({
+          // TODO: get this info from image (+settings maybe)
+          iconUrl: url.replace("xyz.zyx", icon_fn),
+          className: "private",
+          iconSize: [35, 35],
+          iconAnchor: [17, 35]
+        });
+      }
+
+      return icon_style;
     }
 
-    function load_map_node_types() {
+    function load_map_node_types(cb) {
+      console.log("start loading node types");
       $.getJSON("{{ url_for('map.node_type_json') }}", function(data) {
         _map_node_types = data;
 
         for (var nt in _map_node_types) {
-          _map_node_types[nt].iconstyle = gen_icon_style(nt.icon_file);
+          _map_node_types[nt].iconstyle = gen_icon_style(_map_node_types[nt].icon_file);
+          _map_node_types[nt].iconstyle_private = gen_icon_style(_map_node_types[nt].icon_file, true);
         }
+
+        console.log("finished loading node types");
+        cb();
       });
     }
 
-    var iconFeature = new Feature({
-      geometry: new Point([0, 0]),
-      name: 'Test'
-    });
+    function gen_marker(x, y, node_type_id, visible) {
+      var marker = L.marker([x, y]);
 
-    var iconStyle = new Style({
-      image: new Icon(({
-        anchor: [0.5, 0.5],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'pixels',
-        src: '{{ url_for("map.node_type_icon", filename="city.png") }}'
-      }))
-    });
+      if (visible == true) {
+        marker.setIcon(_map_node_types[node_type_id].iconstyle);
+      } else {
+        marker.setIcon(_map_node_types[node_type_id].iconstyle_private);
+      }
 
-    iconFeature.setStyle(iconStyle);
+
+      console.log(marker);
+      return marker;
+    }
+
+    function load_map_nodes(cb) {
+      console.log("start loading nodes");
+      $.getJSON("{{ url_for('map.node_json') }}", function(data) {
+        _nodes = data;
+
+        for (var nid in _nodes) {
+          _nodes[nid].marker = gen_marker(_nodes[nid].x, _nodes[nid].y, _nodes[nid].node_type, _nodes[nid].visible);
+          _marker_layer.addLayer(_nodes[nid].marker);
+        }
+
+        console.log("finished loading nodes");
+        cb();
+      });
+    }
 
     function init() {
-      var vectorSource = new VectorSource({
-        wrapX: false,
-        features: [iconFeature]
+      _map = L.map('map', {
+        center: [0.0, 0.0],
+        zoom: {{ settings.default_zoom }},
+        closePopupOnClick: false,
       });
 
-      var vectorLayer = new VectorLayer({
-        source: vectorSource
-      });
+      {% if settings.tiles_path %}
+        var url = '{{ url_for("map.tile", filename="") }}{{ settings.tiles_path }}tile_{z}_{x}-{y}.png';
+      {% else %}
+        var url = '{{ url_for("map.tile", filename="") }}tile_{z}_{x}-{y}.png';
+      {% endif %}
 
-      var tileLayer = new TileLayer({
-        source: new XYZ({
-          wrapX: false,
-          {% if settings.tiles_path %}
-          url: '{{ url_for("map.tile", filename="") }}{{ settings.tiles_path }}tile_{z}_{x}-{y}.png'
-          {% else %}
-          url: '{{ url_for("map.tile", filename="") }}tile_{z}_{x}-{y}.png'
-          {% endif %}
-        })
-      });
-
-      _map = new Map({
-        target: 'map',
-        layers: [tileLayer, vectorLayer],
-        view: new View({
-          center: [0, 0],
-          zoom: {{ settings.default_zoom }},
+      L.tileLayer(url, {
+          maxZoom: {{ settings.max_zoom }},
           minZoom: {{ settings.min_zoom }},
-          maxZoom: {{ settings.max_zoom }}
-        }),
-        controls: ol.control.defaults({
-          attribution: false,
-          zoom: false,
-          rotate: false
-        })
-      });
+          noWrap: true,
+      }).addTo(_map);
 
-      _map.on('singleclick', function(e) {
+      _marker_layer = L.layerGroup();
+
+      _map.on('click', function(e) {
         var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
-        $("#nodeform_content").load(url.replace("x_coord", e.coordinate[0]).replace("y_coord", e.coordinate[1]), function() {
+        $("#nodeform_content").load(url.replace("x_coord", e.latlng.lat).replace("y_coord", e.latlng.lng), function() {
             attach_form_listener(e);
             show_nodeform()
         });
       });
 
-      console.log("init done.");
-    }    
+      load_map_node_types(function() {
+        load_map_nodes(function() {
+          console.log(_map_node_types);
+          console.log(_nodes);
+          console.log(_marker_layer);
+          _marker_layer.addTo(_map);
 
-    function createIcon(coords) {
-      var iconFeature = new Feature({
-        geometry: new Point([coords[0], coords[1]]),
-        name: 'IDK'
+          console.log("init done.");
+        });
       });
-
-      iconFeature.setStyle(iconStyle);
-
-      vectorSource.addFeature(iconFeature);
-      console.log("added.");
-    }
+    }    
 
     $(document).ready(function() {
       init();
