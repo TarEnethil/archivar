@@ -6,6 +6,7 @@ from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSetting
 from app.models import User, Role, MapNodeType, MapSetting, MapNode
 from flask_login import current_user, login_required
 from werkzeug import secure_filename
+from datetime import datetime
 import os
 
 @bp.route("/")
@@ -99,6 +100,9 @@ def node_edit(id):
 
         node.coord_x = form.coord_x.data
         node.coord_y = form.coord_y.data
+
+        node.edited = datetime.utcnow()
+        node.edited_by = current_user
 
         if current_user.is_map_admin():
             node.is_visible = form.is_visible.data

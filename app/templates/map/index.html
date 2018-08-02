@@ -263,12 +263,10 @@
       var sure = confirm("Delete node " + id + "?");
     }
 
-    function gen_popup(id, name, description, created, created_by, edit_func, edited=undefined, edited_by=undefined) {
+    function gen_popup(id, name, description, created, created_by, edited=undefined, edited_by=undefined) {
       var pop = $("<div />");
       pop.append("<h2>" + name + "</h2>");
       pop.append("<p>" + description + "</p>");
-
-      console.log(edit_func);
 
       var edit_btn = $("<a />").addClass("btn btn-default node-edit-btn").attr("data", id);
       edit_btn.append('<span class="glyphicon glyphicon-pencil"></span>');
@@ -284,6 +282,14 @@
       btns.append(delete_btn);
       {% endif %}
 
+      var info = $("<div />").addClass("popup_info")
+
+      info.append('<span>created by ' + created_by + ' (' + created + ')</span>')
+
+      if (edited != undefined)
+        info.append('<br><span>edited by ' + edited_by + ' (' + edited + ')</span>')
+
+      pop.append(info);
       pop.append(btns);
 
       return pop.html();
@@ -296,7 +302,7 @@
 
         for (var nid in _nodes) {
           _nodes[nid].marker = gen_marker(_nodes[nid].x, _nodes[nid].y, _nodes[nid].node_type, _nodes[nid].visible);
-          _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, load_edit_form), { minWidth: 200 });
+          _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, _nodes[nid].edited, _nodes[nid].edited_by), { minWidth: 200 });
           _marker_layer.addLayer(_nodes[nid].marker);
         }
 

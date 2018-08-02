@@ -68,6 +68,10 @@
     color:#000;
 }
 
+.leaflet-popup-content .popup_info {
+    font-size:.8em;
+}
+
 #loading {
     height:100%;
     width:100%;
