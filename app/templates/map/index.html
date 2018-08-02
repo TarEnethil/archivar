@@ -101,8 +101,9 @@
 
     function evaluate_nodeform_success(data) {
       if (data.success == true) {
-        global_success_message("server message: " + data.message);
+        global_success_message("server message: " + data.message + " markers will be reloaded automatically.");
         hide_nodeform();
+        reload_markers();
       }
       else {
         // iterate over data.errors -> keys are names of the <input> for which there are errors
@@ -247,6 +248,19 @@
       }
 
       return marker;
+    }
+
+    function delete_markers() {
+      _marker_layer.clearLayers()
+    }
+
+    function reload_markers() {
+      loading();
+      delete_markers();
+
+      load_map_nodes(function() {
+        hide_loading();
+      })
     }
 
     function load_edit_form(id) {
