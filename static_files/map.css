@@ -13,7 +13,6 @@
     top:10%;
     left:50%;
     margin-left:-17.5%;
-    
     position:absolute;
     z-index:5000;
     display:none;
@@ -53,4 +52,58 @@
 .private {
     background:rgba(255, 150, 150, 0.5);
     border-radius:10px;
+}
+
+.leaflet-popup-content h2 {
+    font-size:1.2em;
+    font-weight:bold;
+}
+
+.leaflet-popup-content nav {
+    margin-top:10px;
+}
+
+.leaflet-popup-content .btn {
+    padding:3px 6px;
+    color:#000;
+}
+
+#loading {
+    height:100%;
+    width:100%;
+    position:fixed;
+    z-index:9999;
+    background:rgba(30, 30, 30, 0.7);
+}
+
+.lds-dual-ring {
+    display: inline-block;
+    position:relative;
+    width: 64px;
+    height: 64px;
+    left:50%;
+    top:50%;
+    margin-left:-32px;
+    margin-top:-32px;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 46px;
+  height: 46px;
+  margin: 1px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

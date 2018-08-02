@@ -10,6 +10,10 @@
 {% endblock %}
 
 {% block content %}
+  <div id="loading">
+    <div class="lds-dual-ring"></div>
+  </div>
+
   <div id="map" class="map">
   </div>
 
@@ -34,6 +38,14 @@
     var _nodes;
     var _marker_layer;
     var _map_node_types;
+
+    function loading() {
+      $('#loading').show();
+    }
+
+    function hide_loading() {
+      $('#loading').fadeOut(250);
+    }
 
     function global_message(msgOptions) {
       if(msgOptions.msg == undefined)
@@ -121,7 +133,7 @@
       global_error_message(data);
     }
 
-    function attach_form_listener(event) {
+    function attach_new_form_listener(event) {
       console.log("loaded new form functions");
       $('form').submit(function (e) {
           var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
@@ -129,6 +141,37 @@
               type: "POST",
               url: url.replace("x_coord", event.latlng.lat).replace("y_coord", event.latlng.lng),
               data: $('.create_node_form form').serialize(),
+              success: function(data) {
+                evaluate_nodeform_success(data.data)
+              },
+              error: function(data) {
+                evaluate_nodeform_error(data.data)
+              }
+          });
+          e.preventDefault();
+      });
+      
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", $("#csrf_token").attr("value"));
+              }
+          }
+      });
+
+      $(".close-link").click(function() {
+        hide_nodeform();
+      })
+    }
+
+    function attach_edit_form_listener(id) {
+      console.log("loaded edit form functions");
+      $('form').submit(function (e) {
+          var url = "{{ url_for('map.node_edit', id='-42') }}"
+          $.ajax({
+              type: "POST",
+              url: url.replace("-42", id),
+              data: $('.edit_node_form form').serialize(),
               success: function(data) {
                 evaluate_nodeform_success(data.data)
               },
@@ -160,7 +203,8 @@
           iconUrl: url.replace("xyz.zyx", icon_fn),
           // TODO: get this info from image (+settings maybe)
           iconSize: [35, 35],
-          iconAnchor: [17, 35]
+          iconAnchor: [18, 35],
+          popupAnchor: [0, -35]
         });
       }
 
@@ -170,7 +214,8 @@
           iconUrl: url.replace("xyz.zyx", icon_fn),
           className: "private",
           iconSize: [35, 35],
-          iconAnchor: [17, 35]
+          iconAnchor: [18, 35],
+          popupAnchor: [0, -35]
         });
       }
 
@@ -204,6 +249,46 @@
       return marker;
     }
 
+    function load_edit_form(id) {
+      loading();
+      var url = "{{ url_for('map.node_edit', id='-42') }}"
+      $("#nodeform_content").load(url.replace("-42", id), function() {
+          attach_edit_form_listener(id);
+          show_nodeform();
+          hide_loading();
+      });
+    }
+
+    function delete_node(id) {
+      var sure = confirm("Delete node " + id + "?");
+    }
+
+    function gen_popup(id, name, description, created, created_by, edit_func, edited=undefined, edited_by=undefined) {
+      var pop = $("<div />");
+      pop.append("<h2>" + name + "</h2>");
+      pop.append("<p>" + description + "</p>");
+
+      console.log(edit_func);
+
+      var edit_btn = $("<a />").addClass("btn btn-default node-edit-btn").attr("data", id);
+      edit_btn.append('<span class="glyphicon glyphicon-pencil"></span>');
+      edit_btn.append(' edit');
+
+      var delete_btn = $("<a />").addClass("btn btn-danger node-delete-btn").attr("data", id).css("float", "right");
+      delete_btn.append('<span class="glyphicon glyphicon-remove-circle"></span>');
+      delete_btn.append(' delete');
+
+      var btns = $("<nav />").append(edit_btn);
+
+      {% if current_user.is_map_admin() %}
+      btns.append(delete_btn);
+      {% endif %}
+
+      pop.append(btns);
+
+      return pop.html();
+    }
+
     function load_map_nodes(cb) {
       console.log("start loading nodes");
       $.getJSON("{{ url_for('map.node_json') }}", function(data) {
@@ -211,6 +296,7 @@
 
         for (var nid in _nodes) {
           _nodes[nid].marker = gen_marker(_nodes[nid].x, _nodes[nid].y, _nodes[nid].node_type, _nodes[nid].visible);
+          _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, load_edit_form), { minWidth: 200 });
           _marker_layer.addLayer(_nodes[nid].marker);
         }
 
@@ -241,10 +327,12 @@
       _marker_layer = L.layerGroup();
 
       _map.on('click', function(e) {
+        loading();
         var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
         $("#nodeform_content").load(url.replace("x_coord", e.latlng.lat).replace("y_coord", e.latlng.lng), function() {
-            attach_form_listener(e);
-            show_nodeform()
+            attach_new_form_listener(e);
+            show_nodeform();
+            hide_loading();
         });
       });
 
@@ -252,6 +340,17 @@
         load_map_nodes(function() {
           _marker_layer.addTo(_map);
 
+          $("div").on("click", '.node-edit-btn', function(event) {
+            load_edit_form($(this).attr("data"));
+            event.stopPropagation();
+          });
+
+          $("div").on("click", '.node-delete-btn', function(event) {
+            delete_node($(this).attr("data"));
+            event.stopPropagation();
+          });
+
+          hide_loading();
           console.log("init done.");
         });
       });

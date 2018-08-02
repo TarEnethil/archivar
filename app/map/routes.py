@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify, s
 from app import app, db
 from app.map import bp
 from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, map_node_filename, gen_node_type_choices
-from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeCreateForm, MapNodeCreateFormAdmin
+from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeCreateForm, MapNodeCreateFormAdmin, MapNodeEditForm, MapNodeEditFormAdmin
 from app.models import User, Role, MapNodeType, MapSetting, MapNode
 from flask_login import current_user, login_required
 from werkzeug import secure_filename
@@ -79,6 +79,47 @@ def node_create(x, y):
         return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors}) 
 
     return render_template("map/node_create.html", form=form, x=x, y=y)
+
+@bp.route("/node/edit/<id>", methods=["GET", "POST"])
+@login_required
+def node_edit(id):
+    if current_user.is_map_admin():
+        form = MapNodeEditFormAdmin()
+    else:
+        form = MapNodeEditForm()
+
+    form.node_type.choices = gen_node_type_choices()
+
+    node = MapNode.query.filter_by(id=id).first_or_404();
+
+    if form.validate_on_submit():
+        node.name = form.name.data
+        node.description = form.description.data
+        node.node_type = form.node_type.data
+
+        node.coord_x = form.coord_x.data
+        node.coord_y = form.coord_y.data
+
+        if current_user.is_map_admin():
+            node.is_visible = form.is_visible.data
+
+        db.session.commit()
+
+        return jsonify(data={'success' : True, 'message': "Node was edited."})
+    elif request.method == "POST":
+        return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors}) 
+    
+    form.name.data = node.name
+    form.description.data = node.description
+    form.node_type.data = node.node_type
+
+    form.coord_x.data = node.coord_x
+    form.coord_y.data = node.coord_y
+
+    if current_user.is_map_admin():
+        form.is_visible.data = node.is_visible
+
+    return render_template("map/node_edit.html", form=form)
 
 @bp.route("/node_type/create", methods=["GET", "POST"])
 @login_required

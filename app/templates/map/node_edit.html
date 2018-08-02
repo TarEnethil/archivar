@@ -1,0 +1,10 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+
+<div class="panel-heading">
+    <h2>Edit node</h2>
+</div>
+
+<div class="panel-body edit_node_form">
+    <div id="form_messagebox"></div>
+    {{ wtf.quick_form(form) }}
+</div>
