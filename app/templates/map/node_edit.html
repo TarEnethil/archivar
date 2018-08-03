@@ -6,5 +6,9 @@
 
 <div class="panel-body edit_node_form">
     <div id="form_messagebox"></div>
+    <a class="btn btn-default" id="btn-move-node" data="{{ node.id }}">
+        <span class="glyphicon glyphicon-move"></span>
+        move node
+    </a>
     {{ wtf.quick_form(form) }}
 </div>

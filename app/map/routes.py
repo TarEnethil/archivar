@@ -123,7 +123,7 @@ def node_edit(id):
     if current_user.is_map_admin():
         form.is_visible.data = node.is_visible
 
-    return render_template("map/node_edit.html", form=form)
+    return render_template("map/node_edit.html", form=form, node=node)
 
 @bp.route("/node_type/create", methods=["GET", "POST"])
 @login_required

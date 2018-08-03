@@ -54,6 +54,10 @@
     border-radius:10px;
 }
 
+.crosshair {
+    cursor: crosshair;
+}
+
 .leaflet-popup-content h2 {
     font-size:1.2em;
     font-weight:bold;
@@ -110,4 +114,18 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+#bottom-menu {
+    position:fixed;
+    bottom:10px;
+    right:10px;
+}
+
+#btn-cancel-add-node {
+    display:none;
+}
+
+#bottom-menu .btn {
+    float:right;
 }

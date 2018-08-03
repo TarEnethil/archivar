@@ -24,6 +24,19 @@
     </a>
     <div id="nodeform_content"></div>
   </div>
+
+  <div id="bottom-menu">
+    <a id="btn-add-node" class="btn btn-default">
+      <span class="glyphicon glyphicon-plus"></span>
+      new node
+    </a>
+
+    <a id="btn-cancel-add-node" class="btn btn-warning">
+      <span class="glyphicon glyphicon-remove"></span>
+      cancel
+    </a>
+  </div>
+ 
 {% endblock %}
 
 {% block scripts %}
@@ -38,6 +51,7 @@
     var _nodes;
     var _marker_layer;
     var _map_node_types;
+    var _nextAction;
 
     function loading() {
       $('#loading').show();
@@ -97,6 +111,16 @@
 
     function nodeform_error_message(message) {
       $("<p />").addClass("alert").addClass("alert-danger").css("display", "none").html(message).appendTo("#form_messagebox").fadeIn(500);
+    }
+
+    function nodeform_warning_message(message) {
+      $("<p />").addClass("alert").addClass("alert-warning").css("display", "none").html(message).appendTo("#form_messagebox").fadeIn(500);
+    }
+
+    function fadeout_global_message(message_class) {
+      $("." + message_class).fadeOut(500, function() {
+        $("." + message_class).remove();
+      })
     }
 
     function evaluate_nodeform_success(data) {
@@ -167,6 +191,11 @@
 
     function attach_edit_form_listener(id) {
       console.log("loaded edit form functions");
+      $("#btn-move-node").click(function() {
+        hide_nodeform();
+        setNextAction("moveNode");
+      });
+
       $('form').submit(function (e) {
           var url = "{{ url_for('map.node_edit', id='-42') }}"
           $.ajax({
@@ -325,11 +354,54 @@
       });
     }
 
+    function setNextAction(act) {
+      if(act == "newNode") {
+        fadeout_global_message("move-node-info");
+
+        global_message({
+          msg : "click on where you want to create the node.",
+          msgtype : "info new-node-info",
+          mode : "fadeIn"
+        });
+
+        $("#map").addClass("crosshair");
+
+        $("#btn-cancel-add-node").show();
+        $("#btn-add-node").hide();
+
+        _nextAction = act;
+      } else if(act == "moveNode" && _nextAction != "moveNode") {
+        fadeout_global_message("new-node-info");
+
+        global_message({
+          msg : "click on where you want to move the node.",
+          msgtype : "info move-node-info",
+          mode : "fadeIn"
+        });
+
+        $("#btn-cancel-add-node").hide();
+        $("#btn-add-node").show();
+
+        $("#map").addClass("crosshair");
+
+        _nextAction = act;
+      } else {
+        fadeout_global_message("new-node-info");
+        fadeout_global_message("move-node-info"); 
+        _nextAction = undefined;
+        
+        $("#map").removeClass("crosshair");
+
+        $("#btn-cancel-add-node").hide();
+        $("#btn-add-node").show();
+      }
+    }
+
     function init() {
       _map = L.map('map', {
         center: [0.0, 0.0],
         zoom: {{ settings.default_zoom }},
-        closePopupOnClick: false,
+        closePopupOnClick: true,
       });
 
       {% if settings.external_provider %}
@@ -347,25 +419,47 @@
       _marker_layer = L.layerGroup();
 
       _map.on('click', function(e) {
-        loading();
-        var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
-        $("#nodeform_content").load(url.replace("x_coord", e.latlng.lat).replace("y_coord", e.latlng.lng), function() {
-            attach_new_form_listener(e);
-            show_nodeform();
-            hide_loading();
-        });
+        console.log("click, next action is " + _nextAction);
+        if (_nextAction == "moveNode") {
+          setNextAction("none");
+          $("#coord_x").val(e.latlng.lat);
+          $("#coord_y").val(e.latlng.lng);
+          show_nodeform();
+          nodeform_warning_message("you need to submit to save the new position!");
+        }
+
+        if (_nextAction == "newNode") {
+          loading();
+          var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
+          $("#nodeform_content").load(url.replace("x_coord", e.latlng.lat).replace("y_coord", e.latlng.lng), function() {
+              attach_new_form_listener(e);
+              show_nodeform();
+              hide_loading();
+          });
+          setNextAction("none");
+        }        
       });
 
       load_map_node_types(function() {
         load_map_nodes(function() {
           _marker_layer.addTo(_map);
 
+          $("#btn-add-node").click(function() {
+            setNextAction("newNode");
+          });
+
+          $("#btn-cancel-add-node").click(function() {
+            setNextAction("none");
+          });
+
           $("div").on("click", '.node-edit-btn', function(event) {
+            setNextAction("none");
             load_edit_form($(this).attr("data"));
             event.stopPropagation();
           });
 
           $("div").on("click", '.node-delete-btn', function(event) {
+            setNextAction("none");
             delete_node($(this).attr("data"));
             event.stopPropagation();
           });
