@@ -113,8 +113,8 @@
       $("<p />").addClass("alert").addClass("alert-danger").css("display", "none").html(message).appendTo("#form_messagebox").fadeIn(500);
     }
 
-    function nodeform_warning_message(message) {
-      $("<p />").addClass("alert").addClass("alert-warning").css("display", "none").html(message).appendTo("#form_messagebox").fadeIn(500);
+    function nodeform_warning_message(message, extraclass="") {
+      $("<p />").addClass("alert").addClass("alert-warning").addClass(extraclass).css("display", "none").html(message).appendTo("#form_messagebox").fadeIn(500);
     }
 
     function fadeout_global_message(message_class) {
@@ -425,7 +425,9 @@
           $("#coord_x").val(e.latlng.lat);
           $("#coord_y").val(e.latlng.lng);
           show_nodeform();
-          nodeform_warning_message("you need to submit to save the new position!");
+
+          if($(".move-warning").length == 0)
+            nodeform_warning_message("you need to submit to save the new position!", "move-warning");
         }
 
         if (_nextAction == "newNode") {
@@ -452,16 +454,17 @@
             setNextAction("none");
           });
 
-          $("div").on("click", '.node-edit-btn', function(event) {
+          $("div").one("click", '.node-edit-btn', function(event) {
+            console.log(event);
             setNextAction("none");
             load_edit_form($(this).attr("data"));
-            event.stopPropagation();
+            L.DomEvent.stop(event);
           });
 
-          $("div").on("click", '.node-delete-btn', function(event) {
+          $("div").one("click", '.node-delete-btn', function(event) {
             setNextAction("none");
             delete_node($(this).attr("data"));
-            event.stopPropagation();
+            L.DomEvent.stop(event);
           });
 
           hide_loading();
