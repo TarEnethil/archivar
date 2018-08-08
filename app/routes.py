@@ -96,19 +96,19 @@ def install():
             db.session.add(event_role)
             db.session.add(special_role)
 
-            map_setting = MapSetting(min_zoom=0, max_zoom=0, default_zoom=0)
+            map_setting = MapSetting(min_zoom=0, max_zoom=0, default_zoom=0, icon_anchor=0)
 
             db.session.add(map_setting)
 
             # TODO: maybe remove the default icons as well
             if form.default_mapnodes.data:
-                village = MapNodeType(name="Village", description="A small village with not more than 1000 inhabitants", icon_file="village.png")
-                town = MapNodeType(name="Town", description="Towns usually have up to 5000 people living in them", icon_file="town.png")
-                city = MapNodeType(name="City", description="Cities can have up to 10000 residents", icon_file="city.png")
-                capital = MapNodeType(name="Capital", description="Capital city of a country or region", icon_file="capital.png")
-                poi = MapNodeType(name="PoI", description="A particular point of interest", icon_file="poi.png")
-                quest = MapNodeType(name="Quest", description="An old school quest marker", icon_file="quest.png")
-                note = MapNodeType(name="Note", description="For additional information", icon_file="note.png")
+                village = MapNodeType(name="Village", description="A small village with not more than 1000 inhabitants", icon_file="village.png", icon_height=35, icon_width=35)
+                town = MapNodeType(name="Town", description="Towns usually have up to 5000 people living in them", icon_file="town.png", icon_height=35, icon_width=35)
+                city = MapNodeType(name="City", description="Cities can have up to 10000 residents", icon_file="city.png", icon_height=35, icon_width=35)
+                capital = MapNodeType(name="Capital", description="Capital city of a country or region", icon_file="capital.png", icon_height=35, icon_width=35)
+                poi = MapNodeType(name="PoI", description="A particular point of interest", icon_file="poi.png", icon_height=35, icon_width=35)
+                quest = MapNodeType(name="Quest", description="An old school quest marker", icon_file="quest.png", icon_height=35, icon_width=35)
+                note = MapNodeType(name="Note", description="For additional information", icon_file="note.png", icon_height=35, icon_width=35)
 
                 db.session.add(village)
                 db.session.add(town)

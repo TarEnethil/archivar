@@ -55,7 +55,7 @@
 }
 
 .crosshair {
-    cursor: crosshair;
+    cursor: crosshair !important;
 }
 
 .leaflet-popup-content h2 {

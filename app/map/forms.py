@@ -17,6 +17,8 @@ class MapSettingsForm(FlaskForm):
     max_zoom = IntegerField("Max Zoom Level", validators=[InputRequired(), NumberRange(min=0, max=20), GreaterThanOrEqual("min_zoom")])
     default_zoom = IntegerField("Default Zoom Level", validators=[InputRequired(), NumberRange(min=0, max=20), LessThanOrEqual("max_zoom"), GreaterThanOrEqual("min_zoom")])
 
+    icon_anchor = SelectField("Icon Anchor", choices=[(0, "bottom"), (1, "center")],coerce=int)
+
     external_provider = BooleanField("Use external map provider")
     tiles_path = StringField("Provider pattern (internal: relative to data/map/, external: full url for an {x}{y}{z} map provider)", validators=[InputRequired(), XYZ_Validator()])
 

@@ -3,18 +3,25 @@ from app import app, db
 from app.map import bp
 from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, map_node_filename, gen_node_type_choices
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeCreateForm, MapNodeCreateFormAdmin, MapNodeEditForm, MapNodeEditFormAdmin
-from app.models import User, Role, MapNodeType, MapSetting, MapNode
+from app.models import User, Role, GeneralSetting, MapNodeType, MapSetting, MapNode
 from flask_login import current_user, login_required
 from werkzeug import secure_filename
 from datetime import datetime
+from PIL import Image
 import os
 
 @bp.route("/")
 @login_required
 def index():
-    settings = MapSetting.query.get(1)
+    settings = GeneralSetting.query.get(1)
+    mapsettings = MapSetting.query.get(1)
 
-    return render_template("map/index.html", settings=settings, title=page_title("Worldmap"))
+    if settings.world_name:
+        title = "Map of " + settings.world_name
+    else:
+        title = "Worldmap"
+
+    return render_template("map/index.html", settings=mapsettings, title=page_title(title))
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
@@ -28,7 +35,8 @@ def settings():
     if form.validate_on_submit():
         settings.min_zoom = form.min_zoom.data 
         settings.max_zoom = form.max_zoom.data 
-        settings.default_zoom = form.default_zoom.data 
+        settings.default_zoom = form.default_zoom.data
+        settings.icon_anchor = form.icon_anchor.data
         settings.external_provider = form.external_provider.data
         settings.tiles_path = form.tiles_path.data
 
@@ -39,6 +47,7 @@ def settings():
         form.min_zoom.data = settings.min_zoom
         form.max_zoom.data = settings.max_zoom
         form.default_zoom.data = settings.default_zoom
+        form.icon_anchor.data = settings.icon_anchor
         form.external_provider.data = settings.external_provider
         form.tiles_path.data = settings.tiles_path
 
@@ -150,12 +159,16 @@ def node_type_create():
 
     if form.validate_on_submit():
         filename = map_node_filename(form.icon.data.filename)
+        filepath = os.path.join(app.config["MAPNODES_DIR"], filename)
+        form.icon.data.save(filepath)
 
-        new_map_node_type = MapNodeType(name=form.name.data, description=form.description.data, icon_file=filename)
+        icon = Image.open(filepath)
+        width, height = icon.size
+
+        new_map_node_type = MapNodeType(name=form.name.data, description=form.description.data, icon_file=filename, icon_width=width, icon_height=height)
 
         db.session.add(new_map_node_type)
         db.session.commit()
-        form.icon.data.save(os.path.join(app.config["MAPNODES_DIR"], filename))
 
         flash('"' + form.name.data + '" was successfully created.', "success")
         return redirect(url_for('map.settings'))
@@ -176,11 +189,17 @@ def node_type_edit(id):
 
         if form.icon.data:
             new_filename = map_node_filename(form.icon.data.filename)
-            form.icon.data.save(os.path.join(app.config["MAPNODES_DIR"], new_filename))
+            filepath = os.path.join(app.config["MAPNODES_DIR"], filename)
+            form.icon.data.save(filepath)
+
+            icon = Image.open(filepath)
+            width, height = icon.size
 
             os.remove(os.path.join(app.config["MAPNODES_DIR"], node.icon_file))
 
             node.icon_file = new_filename
+            node.icon_width = width
+            node.icon_height = height
 
         db.session.commit()
         flash('"' + form.name.data + '" was successfully edited.', "success")

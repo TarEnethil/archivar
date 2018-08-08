@@ -74,6 +74,7 @@ class MapSetting(db.Model):
     min_zoom = db.Column(db.Integer)
     max_zoom = db.Column(db.Integer)
     default_zoom = db.Column(db.Integer)
+    icon_anchor = db.Column(db.Integer)
     tiles_path = db.Column(db.String(128), default="tile_{z}_{x}-{y}.png")
     external_provider = db.Column(db.Boolean, default=False)
 
@@ -83,13 +84,17 @@ class MapNodeType(db.Model):
     name = db.Column(db.String(64))
     description = db.Column(db.String(256))
     icon_file = db.Column(db.String(64))
+    icon_width = db.Column(db.Integer)
+    icon_height = db.Column(db.Integer)
 
     def to_dict(self):
         dic = {
             "id" : self.id,
             "name" : self.name,
             "description" : self.description,
-            "icon_file" : self.icon_file
+            "icon_file" : self.icon_file,
+            "icon_width": self.icon_width,
+            "icon_height": self.icon_height
         }
 
         return dic

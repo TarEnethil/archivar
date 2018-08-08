@@ -234,16 +234,32 @@
       })
     }
 
-    function gen_icon_style(icon_fn, priv=false) {
+    function icon_anchor(width, height) {
+      {% if settings.icon_anchor == 1 %} {# icon anchor is center #}
+      return [width/2, height/2]
+      {% else %} {# icon anchor is bottom or invalid #}
+      return [width/2, height]
+      {% endif %}
+    }
+
+    function popup_anchor(width, height) {
+      {% if settings.icon_anchor == 1 %} {# icon anchor is center #}
+      return [0, (height/2)*-1]
+      {% else %} {# icon anchor is bottom or invalid #}
+      return [0, height*-1]
+      {% endif %}
+    }
+
+    function gen_icon_style(icon_fn, icon_width, icon_height, priv=false) {
       var url = '{{ url_for("map.node_type_icon", filename="xyz.zyx") }}';
 
       if (priv == false) {
         var icon_style = L.icon({
           iconUrl: url.replace("xyz.zyx", icon_fn),
           // TODO: get this info from image (+settings maybe)
-          iconSize: [35, 35],
-          iconAnchor: [18, 35],
-          popupAnchor: [0, -35]
+          iconSize: [icon_width, icon_height],
+          iconAnchor: icon_anchor(icon_width, icon_height),
+          popupAnchor: popup_anchor(icon_width, icon_height)
         });
       }
 
@@ -252,9 +268,9 @@
           // TODO: get this info from image (+settings maybe)
           iconUrl: url.replace("xyz.zyx", icon_fn),
           className: "private",
-          iconSize: [35, 35],
-          iconAnchor: [18, 35],
-          popupAnchor: [0, -35]
+          iconSize: [icon_width, icon_height],
+          iconAnchor: icon_anchor(icon_width, icon_height),
+          popupAnchor: popup_anchor(icon_width, icon_height)
         });
       }
 
@@ -267,8 +283,8 @@
         _map_node_types = data;
 
         for (var nt in _map_node_types) {
-          _map_node_types[nt].iconstyle = gen_icon_style(_map_node_types[nt].icon_file);
-          _map_node_types[nt].iconstyle_private = gen_icon_style(_map_node_types[nt].icon_file, true);
+          _map_node_types[nt].iconstyle = gen_icon_style(_map_node_types[nt].icon_file, _map_node_types[nt].icon_width, _map_node_types[nt].icon_height);
+          _map_node_types[nt].iconstyle_private = gen_icon_style(_map_node_types[nt].icon_file, _map_node_types[nt].icon_width, _map_node_types[nt].icon_height, true);
         }
 
         console.log("finished loading node types");
