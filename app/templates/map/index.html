@@ -101,11 +101,11 @@
       });
     }
 
-    function global_error_message(message) {
+    function global_error_message(message, fadeOut=false) {
       global_message({
         msg : message,
         msgtype : "danger",
-        mode : "fadeIn"
+        mode : fadeOut ? "fadeBoth" : "fadeIn"
       });
     }
 
@@ -146,6 +146,15 @@
       }        
     }
 
+    function evaluate_node_delete_success(data) {
+      if (data.success == true) {
+        global_success_message("server message: " + data.message + " markers will be reloaded automatically.");
+        reload_markers();
+      } else {
+        global_error_message("server message: " + data.message, true)
+      }
+    }
+
     function show_nodeform() {
       $("#nodeform").show();
     }
@@ -154,7 +163,7 @@
       $("#nodeform").hide();
     }
 
-    function evaluate_nodeform_error(data) {
+    function evaluate_ajax_error(data) {
       global_error_message(data);
     }
 
@@ -170,7 +179,7 @@
                 evaluate_nodeform_success(data.data)
               },
               error: function(data) {
-                evaluate_nodeform_error(data.data)
+                evaluate_ajax_error(data.data)
               }
           });
           e.preventDefault();
@@ -206,7 +215,7 @@
                 evaluate_nodeform_success(data.data)
               },
               error: function(data) {
-                evaluate_nodeform_error(data.data)
+                evaluate_ajax_error(data.data)
               }
           });
           e.preventDefault();
@@ -303,7 +312,21 @@
     }
 
     function delete_node(id) {
-      var sure = confirm("Delete node " + id + "?");
+      var sure = confirm("Delete " + _nodes[id].name + "?");
+
+      if (sure) {
+        var url = "{{ url_for('map.node_delete', id='-42') }}"
+          $.ajax({
+              type: "POST",
+              url: url.replace("-42", id),
+              success: function(data) {
+                evaluate_node_delete_success(data.data)
+              },
+              error: function(data) {
+                evaluate_ajax_error(data.data)
+              }
+          });
+      }
     }
 
     function gen_popup(id, name, description, created, created_by, edited=undefined, edited_by=undefined) {

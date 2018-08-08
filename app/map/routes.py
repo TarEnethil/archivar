@@ -125,6 +125,22 @@ def node_edit(id):
 
     return render_template("map/node_edit.html", form=form, node=node)
 
+@bp.route("/node/delete/<id>", methods=["POST"])
+@login_required
+def node_delete(id):
+    if not current_user.is_map_admin():
+        return jsonify(data={'success': False, 'message': "You dont have the necessary role to do that."})
+
+    node = MapNode.query.get(id)
+
+    if not node:
+        return jsonify(data={'success': False, 'message': "No such id to delete."})
+
+    db.session.delete(node)
+    db.session.commit()
+
+    return jsonify(data={"success": True, 'message': "Node was deleted."})
+
 @bp.route("/node_type/create", methods=["GET", "POST"])
 @login_required
 def node_type_create():
