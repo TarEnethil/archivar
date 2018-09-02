@@ -8,6 +8,7 @@ from flask_login import current_user, login_required
 from werkzeug import secure_filename
 from datetime import datetime
 from PIL import Image
+from sqlalchemy import or_
 import os
 
 @bp.route("/")
@@ -154,7 +155,7 @@ def node_delete(id):
 @login_required
 def node_type_create():
     redirect_non_map_admins()
-    
+
     form = MapNodeTypeCreateForm()
 
     if form.validate_on_submit():
@@ -172,7 +173,7 @@ def node_type_create():
 
         flash('"' + form.name.data + '" was successfully created.', "success")
         return redirect(url_for('map.settings'))
-    
+
     return render_template("map/node_type_create.html", form=form, title=page_title("Create map node type"))
 
 @bp.route("/node_type/edit/<id>", methods=["GET", "POST"])
@@ -228,7 +229,7 @@ def node_json():
     if current_user.is_map_admin():
         nodes = MapNode.query.all()
     else:
-        nodes = MapNode.query.filter(or_(MapNode.is_visible == true, MapNode.created_by_id == current_user.id))
+        nodes = MapNode.query.filter(or_(MapNode.is_visible == True, MapNode.created_by_id == current_user.id))
 
     nodes_dict = {}
 
