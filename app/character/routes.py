@@ -67,3 +67,12 @@ def edit(id):
             form.dm_notes.data = char.dm_notes
 
         return render_template("character/edit.html", form=form, title=page_title("Edit character"))
+
+@bp.route("/list", methods=["GET"])
+@login_required
+def list():
+    redirect_non_admins()
+
+    chars = Character.query.all()
+
+    return render_template("character/list.html", chars=chars, title=page_title("Characters and parties"))

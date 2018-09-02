@@ -50,7 +50,7 @@ def edit(username):
                 new_user_roles = Role.query.filter(Role.id.in_(form.roles.data)).all()
 
                 admin_role = Role.query.get(1)
-            
+
                 if username == current_user.username and current_user.has_admin_role() and admin_role not in new_user_roles:
                     new_user_roles.append(admin_role)
                     flash("You can't revoke your own admin role.", "danger")
