@@ -43,7 +43,7 @@
     {% if char.description %}
     <hr>
     <h2>Description</h2>
-    <p id="char_description">
+    <p id="char_description" class="custom-markdown">
 {{ char.description }}
     </p>
     {% endif %}
@@ -52,7 +52,7 @@
         {% if char.dm_notes %}
         <hr>
         <h2>DM Notes</h2>
-        <p id="char_dm_notes">
+        <p id="char_dm_notes" class="custom-markdown">
 {{ char.dm_notes }}
         </p>
         {% endif %}
