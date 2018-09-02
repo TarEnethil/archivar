@@ -74,7 +74,7 @@ def settings():
         form.title.data = settings.title
         form.world_name.data = settings.world_name
         form.welcome_page.data = settings.welcome_page
-    
+
     return render_template("settings.html", form=form, title=page_title("General settings"))
 
 @app.route("/__install__", methods=["GET", "POST"])
