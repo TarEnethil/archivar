@@ -143,7 +143,7 @@
             nodeform_error_message(msg);
           }
         }
-      }        
+      }
     }
 
     function evaluate_node_delete_success(data) {
@@ -184,7 +184,7 @@
           });
           e.preventDefault();
       });
-      
+
       $.ajaxSetup({
           beforeSend: function(xhr, settings) {
               if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
@@ -220,7 +220,7 @@
           });
           e.preventDefault();
       });
-      
+
       $.ajaxSetup({
           beforeSend: function(xhr, settings) {
               if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
@@ -256,7 +256,6 @@
       if (priv == false) {
         var icon_style = L.icon({
           iconUrl: url.replace("xyz.zyx", icon_fn),
-          // TODO: get this info from image (+settings maybe)
           iconSize: [icon_width, icon_height],
           iconAnchor: icon_anchor(icon_width, icon_height),
           popupAnchor: popup_anchor(icon_width, icon_height)
@@ -265,7 +264,6 @@
 
       if (priv == true) {
         var icon_style = L.icon({
-          // TODO: get this info from image (+settings maybe)
           iconUrl: url.replace("xyz.zyx", icon_fn),
           className: "private",
           iconSize: [icon_width, icon_height],
@@ -324,6 +322,7 @@
           attach_edit_form_listener(id);
           show_nodeform();
           hide_loading();
+          $("#btn-move-node").detach().appendTo(".edit_node_form form");
       });
     }
 
@@ -428,7 +427,7 @@
         fadeout_global_message("new-node-info");
         fadeout_global_message("move-node-info"); 
         _nextAction = undefined;
-        
+
         $("#map").removeClass("crosshair");
 
         $("#btn-cancel-add-node").hide();
@@ -478,7 +477,7 @@
               hide_loading();
           });
           setNextAction("none");
-        }        
+        }
       });
 
       load_map_node_types(function() {
@@ -510,7 +509,7 @@
           console.log("init done.");
         });
       });
-    }    
+    }
 
     $(document).ready(function() {
       init();
