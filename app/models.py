@@ -17,8 +17,9 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     created = db.Column(db.DateTime, default=datetime.utcnow)
     must_change_password = db.Column(db.Boolean, default=True)
-    
+
     roles = db.relationship("Role", secondary=user_role_assoc, backref="users")
+    characters = db.relationship("Character", backref="user")
 
     def has_role(self, roleId):
         role = Role.query.get(roleId)
@@ -133,6 +134,21 @@ class MapNode(db.Model):
             dic["edited_by"] = self.edited_by.username
 
         return dic
+
+class Character(db.Model):
+    __tablename__ = "characters"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    player = db.relationship("User")
+
+    created = db.Column(db.DateTime, default=datetime.utcnow)
+    edited = db.Column(db.DateTime, default=datetime.utcnow)
+
+    name = db.Column(db.String(250))
+    race = db.Column(db.String(100))
+    class_ = db.Column(db.String(100))
+    description = db.Column(db.Text)
+    dm_notes = db.Column(db.Text)
 
 @login.user_loader
 def load_user(id):

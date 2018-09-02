@@ -19,4 +19,7 @@ app.register_blueprint(user_bp, url_prefix="/user")
 from app.map import bp as map_bp
 app.register_blueprint(map_bp, url_prefix="/map")
 
+from app.character import bp as character_bp
+app.register_blueprint(character_bp, url_prefix="/character")
+
 from app import routes, models

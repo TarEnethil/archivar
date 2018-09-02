@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script type="text/javascript">
+    options = {
+        sanitize: true
+    }
+
+    {% if char.description %}
+    var char_desc = document.getElementById('char_description')
+    char_desc.innerHTML = marked(char_desc.innerHTML, options);
+    {% endif %}
+
+    {% if char.dm_notes and current_user.has_admin_role() %}
+    var dm_notes = document.getElementById('char_dm_notes')
+    dm_notes.innerHTML = marked(dm_notes.innerHTML, options);
+    {% endif %}
+</script>
+{% endblock %}
+
+{% block app_content %}
+
+    <h1>{{ char.name }}</h1>
+    {% if user == current_user or current_user.has_admin_role() %}
+    <a href="{{ url_for('character.edit', id=char.id) }}" class="btn btn-default">
+        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+        edit character
+    </a>
+    {% endif %}
+
+    <hr>
+        <h2>Info</h2>
+        <ul>
+            <li>Name: {{ char.name }}</li>
+            <li>Race: {{ char.race }}</li>
+            <li>Class: {{ char.class_ }}</li>
+            <li>Player: {{ char.player.username }}</li>
+        </ul>
+
+    {% if char.description %}
+    <hr>
+    <h2>Description</h2>
+    <p id="char_description">
+{{ char.description }}
+    </p>
+    {% endif %}
+
+    {% if current_user.has_admin_role() %}
+        {% if char.dm_notes %}
+        <hr>
+        <h2>DM Notes</h2>
+        <p id="char_dm_notes">
+{{ char.dm_notes }}
+        </p>
+        {% endif %}
+
+    <hr>
+    <p>
+        <h2>Misc</h2>
+        Created: {{ char.created }} <br />
+        Edited: {{ char.edited }}
+    </p>
+    {% endif %}
+
+{% endblock %}
