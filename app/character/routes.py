@@ -2,8 +2,8 @@ from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.character import bp
 from app.helpers import page_title, redirect_non_admins
-from app.character.forms import CreateCharacterForm, EditCharacterForm, EditCharacterFormAdmin
-from app.models import User, Role, GeneralSetting, Character
+from app.character.forms import CreateCharacterForm, EditCharacterForm, EditCharacterFormAdmin, PartyForm
+from app.models import User, Role, GeneralSetting, Character, Party
 from flask_login import current_user, login_required
 from datetime import datetime
 
@@ -74,5 +74,40 @@ def list():
     redirect_non_admins()
 
     chars = Character.query.all()
+    parties = Party.query.all()
 
-    return render_template("character/list.html", chars=chars, title=page_title("Characters and parties"))
+    return render_template("character/list.html", chars=chars, parties=parties, title=page_title("Characters and parties"))
+
+@bp.route("/party/create", methods=["GET", "POST"])
+@login_required
+def party_create():
+    redirect_non_admins()
+
+    form = PartyForm()
+
+    all_characters = Character.query.all()
+    char_choices = []
+    for char in all_characters:
+        char_choices.append((char.id, char.name))
+
+        form.members.choices = char_choices
+
+    if form.validate_on_submit():
+        members = Character.query.filter(Character.id.in_(form.members.data)).all()
+
+        new_party = Party(name=form.name.data, description=form.description.data, members=members)
+
+        db.session.add(new_party)
+        db.session.commit()
+
+        flash("Party was created.")
+        return redirect(url_for("character.list"))
+
+    return render_template("character/party_create.html", form=form, title=page_title("Create party"))
+
+@bp.route("/party/<int:id>", methods=["GET"])
+@login_required
+def party_view(id):
+    party = Party.query.filter_by(id=id).first_or_404()
+
+    return render_template("character/party_view.html", party=party, title=page_title("View party"))

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+{% if party.description %}
+<script type="text/javascript">
+    options = {
+        sanitize: true
+    }
+
+    var welcome_page = document.getElementById('description')
+    welcome_page.innerHTML = marked(welcome_page.innerHTML, options);
+</script>
+
+{% endif %}
+{% endblock %}
+
+{% block app_content %}
+<h1>{{ party.name }}</h1>
+
+<h2>Description</h2>
+{% if party.description %}
+    <div id="description">
+{{ party.description }}
+    </div>
+{% else %}
+<p>No description.</p>
+{% endif %}
+
+<h2>Members</h2>
+{% if party.members %}
+<ul>
+    {% for member in party.members %}
+    <li>
+        <a href="{{ url_for('character.view', id=member.id) }}">{{ member.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No members.</p>
+{% endif %}
+{% endblock %}

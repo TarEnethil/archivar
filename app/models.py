@@ -8,6 +8,10 @@ user_role_assoc = db.Table("user_role_assoc",
                     db.Column("user_id", db.Integer, db.ForeignKey("users.id")),
                     db.Column("role_id", db.Integer, db.ForeignKey("roles.id")))
 
+character_party_assoc = db.Table("character_party_assoc",
+                    db.Column("character_id", db.Integer, db.ForeignKey("characters.id")),
+                    db.Column("party_id", db.Integer, db.ForeignKey("parties.id")))
+
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -144,11 +148,19 @@ class Character(db.Model):
     created = db.Column(db.DateTime, default=datetime.utcnow)
     edited = db.Column(db.DateTime, default=datetime.utcnow)
 
+    parties = db.relationship("Party", secondary=character_party_assoc, backref="members")
+
     name = db.Column(db.String(250))
     race = db.Column(db.String(100))
     class_ = db.Column(db.String(100))
     description = db.Column(db.Text)
     dm_notes = db.Column(db.Text)
+
+class Party(db.Model):
+    __tablename__ = "parties"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
 
 @login.user_loader
 def load_user(id):

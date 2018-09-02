@@ -30,7 +30,7 @@ class MapNodeCreateForm(FlaskForm):
     node_type = SelectField("node type", validators=[InputRequired(),NumberRange(min=1,message="Choose a valid node type")],coerce=int)
 
     coord_x = HiddenField(validators=[InputRequired()])
-    coord_y = HiddenField(validators=[InputRequired()])    
+    coord_y = HiddenField(validators=[InputRequired()])
 
     submit = SubmitField("submit")
 
@@ -44,7 +44,7 @@ class MapNodeCreateFormAdmin(FlaskForm):
     coord_x = HiddenField(validators=[InputRequired()])
     coord_y = HiddenField(validators=[InputRequired()])
 
-    submit = SubmitField("submit") 
+    submit = SubmitField("submit")
 
 class MapNodeEditForm(FlaskForm):
     name = StringField("node name", validators=[Length(max=64),InputRequired()])
@@ -52,7 +52,7 @@ class MapNodeEditForm(FlaskForm):
     node_type = SelectField("node type", validators=[InputRequired(),NumberRange(min=1,message="Choose a valid node type")],coerce=int)
 
     coord_x = HiddenField(validators=[InputRequired()])
-    coord_y = HiddenField(validators=[InputRequired()])    
+    coord_y = HiddenField(validators=[InputRequired()])
 
     submit = SubmitField("submit")
 

@@ -40,6 +40,20 @@
             <li>Player: {{ char.player.username }}</li>
         </ul>
 
+        {% if char.parties %}
+        <h3>Parties</h3>
+
+        <ul>
+            {% for party in char.parties %}
+            <li>
+                <a href="{{ url_for('character.party_view', id=party.id) }}">{{ party.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Character is in no parties.</p>
+        {% endif %}
+
     {% if char.description %}
     <hr>
     <h2>Description</h2>
