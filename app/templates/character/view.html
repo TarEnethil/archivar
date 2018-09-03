@@ -37,7 +37,7 @@
             <li>Name: {{ char.name }}</li>
             <li>Race: {{ char.race }}</li>
             <li>Class: {{ char.class_ }}</li>
-            <li>Player: {{ char.player.username }}</li>
+            <li>Player: <a href="{{ url_for('user.profile', username=char.player.username) }}">{{ char.player.username }}</a></li>
         </ul>
 
         {% if char.parties %}
