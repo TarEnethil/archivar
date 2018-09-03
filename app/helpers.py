@@ -1,6 +1,6 @@
 from app import app
 from flask import flash, redirect
-from models import GeneralSetting, MapNodeType
+from models import GeneralSetting, MapNodeType, Character
 from flask_login import current_user
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError
@@ -44,6 +44,16 @@ def gen_node_type_choices():
 
     for node_type in node_types:
         choices.append((node_type.id, node_type.name))
+
+    return choices
+
+def gen_party_members_choices():
+    choices = []
+
+    characters = Character.query.all()
+
+    for char in characters:
+        choices.append((char.id, char.name + " ("+ char.player.username +")"))
 
     return choices
 

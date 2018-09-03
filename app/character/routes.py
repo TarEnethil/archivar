@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.character import bp
-from app.helpers import page_title, redirect_non_admins
+from app.helpers import page_title, redirect_non_admins, gen_party_members_choices
 from app.character.forms import CreateCharacterForm, EditCharacterForm, EditCharacterFormAdmin, PartyForm
 from app.models import User, Role, GeneralSetting, Character, Party
 from flask_login import current_user, login_required
@@ -84,13 +84,7 @@ def party_create():
     redirect_non_admins()
 
     form = PartyForm()
-
-    all_characters = Character.query.all()
-    char_choices = []
-    for char in all_characters:
-        char_choices.append((char.id, char.name))
-
-        form.members.choices = char_choices
+    form.members.choices = gen_party_members_choices()
 
     if form.validate_on_submit():
         members = Character.query.filter(Character.id.in_(form.members.data)).all()
@@ -113,13 +107,7 @@ def party_edit(id):
     party = Party.query.filter_by(id=id).first_or_404()
 
     form = PartyForm()
-
-    all_characters = Character.query.all()
-    char_choices = []
-    for char in all_characters:
-        char_choices.append((char.id, char.name))
-
-        form.members.choices = char_choices
+    form.members.choices = gen_party_members_choices()
 
     if form.validate_on_submit():
         party.name = form.name.data
@@ -129,7 +117,7 @@ def party_edit(id):
         party.members = members
 
         db.session.commit()
-        flash("Party was changed.")
+        flash("Party was changed.", "success")
         return redirect(url_for("character.list"))
 
     elif request.method == "GET":
