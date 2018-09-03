@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+<script>
+var simplemde = new SimpleMDE({
+    element: document.getElementById("description"),
+    toolbar: ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "quote", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide"],
+    spellChecker: false,
+    status: false
+});
+</script>
+{% endblock %}
+
+{% block app_content %}
+    <h1>Edit party</h1>
+
+    {{ wtf.quick_form(form) }}
+{% endblock %}

@@ -105,6 +105,46 @@ def party_create():
 
     return render_template("character/party_create.html", form=form, title=page_title("Create party"))
 
+@bp.route("/party/edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def party_edit(id):
+    redirect_non_admins()
+
+    party = Party.query.filter_by(id=id).first_or_404()
+
+    form = PartyForm()
+
+    all_characters = Character.query.all()
+    char_choices = []
+    for char in all_characters:
+        char_choices.append((char.id, char.name))
+
+        form.members.choices = char_choices
+
+    if form.validate_on_submit():
+        party.name = form.name.data
+        party.description = form.description.data
+
+        members = Character.query.filter(Character.id.in_(form.members.data)).all()
+        party.members = members
+
+        db.session.commit()
+        flash("Party was changed.")
+        return redirect(url_for("character.list"))
+
+    elif request.method == "GET":
+        form.name.data = party.name
+        form.description.data = party.description
+
+        members = []
+
+        for m in party.members:
+            members.append(m.id)
+
+        form.members.data = members
+
+    return render_template("character/party_edit.html", form=form, title=page_title("Edit party"))
+
 @bp.route("/party/<int:id>", methods=["GET"])
 @login_required
 def party_view(id):
