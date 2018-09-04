@@ -81,15 +81,21 @@
 
     {% if current_user.has_admin_role() %}
     <hr>
-     <h2>Roles</h2>
-     <ul>
+    <h2>Roles</h2>
+
+    {% if user.roles %}
+    <ul>
 
     {% for role in user.roles %}
-    <li>{{ role.name }} ({{ role.description }})</li>
+        <li>{{ role.name }} ({{ role.description }})</li>
     {% endfor %}
 
     </ul>
+    {% else %}
+    <p>User has no special rolls.</p>
+    {% endif %}
 
+    <h2>Misc</h2>
     <p>
         Created: {{ user.created }} <br />
         Last seen: {{ user.last_seen }}

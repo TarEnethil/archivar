@@ -1,6 +1,6 @@
 from app import app
 from flask import flash, redirect
-from models import GeneralSetting, MapNodeType, Character
+from app.models import GeneralSetting, MapNodeType, Character
 from flask_login import current_user
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError

@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
 from app import app, db
-from helpers import page_title, redirect_non_admins
+from app.helpers import page_title, redirect_non_admins
 from app.forms import LoginForm, SettingsForm, InstallForm
 from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType
 from flask_login import current_user, login_user, login_required, logout_user
