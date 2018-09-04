@@ -94,7 +94,7 @@ def party_create():
         db.session.add(new_party)
         db.session.commit()
 
-        flash("Party was created.")
+        flash("Party was created.", "success")
         return redirect(url_for("character.list"))
 
     return render_template("character/party_create.html", form=form, title=page_title("Create party"))
