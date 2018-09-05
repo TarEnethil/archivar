@@ -1,6 +1,6 @@
 from app import app
 from flask import flash, redirect
-from app.models import GeneralSetting, MapNodeType, Character
+from app.models import GeneralSetting, MapNodeType, Character, Party, Session
 from flask_login import current_user
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError
@@ -56,6 +56,38 @@ def gen_party_members_choices():
         choices.append((char.id, char.name + " ("+ char.player.username +")"))
 
     return choices
+
+def gen_participant_choices():
+    choices = []
+
+    parties = Party.query.all()
+
+    for party in parties:
+        if len(party.members) == 0:
+            continue
+
+        p = (party.name, [])
+
+        for member in party.members:
+            p[1].append((member.id, member.name))
+
+        choices.append(p)
+
+    no_party_chars = Character.query.filter(Character.parties==None).all()
+
+    if len(no_party_chars) > 0:
+        p = ("No party", [])
+
+        for char in no_party_chars:
+            p[1].append((char.id, char.name))
+
+        choices.append(p)
+
+    return choices
+
+def get_session_number(code):
+    q = Session.query.filter(Session.code == code)
+    return q.count()
 
 class XYZ_Validator(object):
     def __call__(self, form, field):

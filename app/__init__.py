@@ -25,4 +25,7 @@ app.register_blueprint(character_bp, url_prefix="/character")
 from app.party import bp as party_bp
 app.register_blueprint(party_bp, url_prefix="/party")
 
+from app.session import bp as session_bp
+app.register_blueprint(session_bp, url_prefix="/session")
+
 from app import routes, models
