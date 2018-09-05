@@ -108,6 +108,7 @@ def install():
                 capital = MapNodeType(name="Capital", description="Capital city of a country or region", icon_file="capital.png", icon_height=35, icon_width=35)
                 poi = MapNodeType(name="PoI", description="A particular point of interest", icon_file="poi.png", icon_height=35, icon_width=35)
                 quest = MapNodeType(name="Quest", description="An old school quest marker", icon_file="quest.png", icon_height=35, icon_width=35)
+                ruins = MapNodeType(name="ruins", description="Forgotten and abandoned ruins", icon_file="ruins.png", icon_height=35, icon_width=35)
                 note = MapNodeType(name="Note", description="For additional information", icon_file="note.png", icon_height=35, icon_width=35)
 
                 db.session.add(village)
@@ -116,6 +117,7 @@ def install():
                 db.session.add(capital)
                 db.session.add(poi)
                 db.session.add(quest)
+                db.session.add(ruins)
                 db.session.add(note)
 
                 flash("7 default map nodes were added.", "info")

@@ -46,7 +46,7 @@
         <ul>
             {% for party in char.parties %}
             <li>
-                <a href="{{ url_for('character.party_view', id=party.id) }}">{{ party.name }}</a>
+                <a href="{{ url_for('party.view', id=party.id) }}">{{ party.name }}</a>
             </li>
             {% endfor %}
         </ul>

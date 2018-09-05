@@ -22,4 +22,7 @@ app.register_blueprint(map_bp, url_prefix="/map")
 from app.character import bp as character_bp
 app.register_blueprint(character_bp, url_prefix="/character")
 
+from app.party import bp as party_bp
+app.register_blueprint(party_bp, url_prefix="/party")
+
 from app import routes, models
