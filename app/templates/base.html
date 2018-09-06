@@ -20,6 +20,7 @@
                 <li><a href="{{ url_for('index') }}">Home</a></li>
 
                 {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('session.index') }}">Sessions</a></li>
                 <li><a href="{{ url_for('map.index') }}">Map</a></li>
                 {% endif %}
 

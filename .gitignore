@@ -3,6 +3,7 @@ app/*.pyc
 *.db
 *.sh
 migrations/
+venv/
 data/map/*
 !data/map/.gitkeep
 data/mapnodes/*

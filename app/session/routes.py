@@ -7,6 +7,14 @@ from app.models import User, Role, GeneralSetting, Character, Party, Session
 from flask_login import current_user, login_required
 from datetime import datetime
 
+@bp.route("/", methods=["GET"])
+@login_required
+def index():
+    sessions_past = Session.query.filter(Session.date < datetime.now()).order_by(Session.date.desc()).all()
+    sessions_future = Session.query.filter(Session.date > datetime.now()).order_by(Session.date.desc()).all()
+
+    return render_template("session/list.html", sessions_past=sessions_past, sessions_future=sessions_future, title=page_title("Sessions"))
+
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
@@ -30,7 +38,7 @@ def create():
         db.session.commit()
 
         flash("Session was created.", "success")
-        return redirect(url_for("index"))
+        return redirect(url_for("sessin.index"))
 
     return render_template("session/create.html", form=form, title=page_title("Create session"))
 
@@ -58,7 +66,7 @@ def edit(id):
 
         db.session.commit()
         flash("Session was changed.", "success")
-        return redirect(url_for("index"))
+        return redirect(url_for("session.index"))
     elif request.method == "GET":
         form.title.data = session.title
         form.code.data = session.code
