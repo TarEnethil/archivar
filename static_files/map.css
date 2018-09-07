@@ -76,6 +76,11 @@
     font-size:.8em;
 }
 
+.marker_icon {
+    max-height:25px;
+    max-width:25px;
+}
+
 #loading {
     height:100%;
     width:100%;

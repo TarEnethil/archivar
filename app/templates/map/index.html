@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
    integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
    crossorigin=""/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
 {% endblock %}
 
 {% block content %}
@@ -45,6 +46,8 @@
 <script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"
    integrity="sha512-tAGcCfR4Sc5ZP5ZoVz0quoZDYX5aCtEm/eu1KhSLj2c9eFrylXZknQYmxUssFaVJKvvc0dJQixhGjG2yXWiV9Q=="
    crossorigin=""></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
 <script type="module">
     var _map;
@@ -233,6 +236,18 @@
         hide_nodeform();
       })
     }
+    $.fn.selectpicker.Constructor.BootstrapVersion = '3';
+    function prep_node_type_select() {
+      var fake_url = '{{ url_for("map.node_type_icon", filename="xyz.zyx") }}';
+      $("#node_type option").each(function() {
+        var v = $(this).prop("value");
+        if (v != 0) {
+          $(this).attr("data-content", '<img src="' + fake_url.replace("xyz.zyx", _map_node_types[v].icon_file) + '" class="marker_icon" /> ' + $(this).html());
+        }
+      })
+
+      $('#node_type').selectpicker();
+    }
 
     function icon_anchor(width, height) {
       {% if settings.icon_anchor == 1 %} {# icon anchor is center #}
@@ -320,9 +335,10 @@
       var url = "{{ url_for('map.node_edit', id='-42') }}"
       $("#nodeform_content").load(url.replace("-42", id), function() {
           attach_edit_form_listener(id);
+          prep_node_type_select();
+          $("#btn-move-node").detach().appendTo(".edit_node_form form");
           show_nodeform();
           hide_loading();
-          $("#btn-move-node").detach().appendTo(".edit_node_form form");
       });
     }
 
@@ -473,6 +489,7 @@
           var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
           $("#nodeform_content").load(url.replace("x_coord", e.latlng.lat).replace("y_coord", e.latlng.lng), function() {
               attach_new_form_listener(e);
+              prep_node_type_select();
               show_nodeform();
               hide_loading();
           });
