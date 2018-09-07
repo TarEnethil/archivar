@@ -1,4 +1,5 @@
 from app import db
+from flask import url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
@@ -101,7 +102,7 @@ class MapNodeType(db.Model):
             "id" : self.id,
             "name" : self.name,
             "description" : self.description,
-            "icon_file" : self.icon_file,
+            "icon_file" : url_for("map.node_type_icon", filename=self.icon_file),
             "icon_width": self.icon_width,
             "icon_height": self.icon_height
         }

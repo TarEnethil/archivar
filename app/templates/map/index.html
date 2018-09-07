@@ -56,6 +56,8 @@
     var _map_node_types;
     var _nextAction;
 
+    $.fn.selectpicker.Constructor.BootstrapVersion = '3';
+
     function loading() {
       $('#loading').show();
     }
@@ -236,13 +238,12 @@
         hide_nodeform();
       })
     }
-    $.fn.selectpicker.Constructor.BootstrapVersion = '3';
+
     function prep_node_type_select() {
-      var fake_url = '{{ url_for("map.node_type_icon", filename="xyz.zyx") }}';
       $("#node_type option").each(function() {
         var v = $(this).prop("value");
         if (v != 0) {
-          $(this).attr("data-content", '<img src="' + fake_url.replace("xyz.zyx", _map_node_types[v].icon_file) + '" class="marker_icon" /> ' + $(this).html());
+          $(this).attr("data-content", '<img src="' + _map_node_types[v].icon_file + '" class="marker_icon" /> ' + $(this).html());
         }
       })
 
@@ -266,11 +267,9 @@
     }
 
     function gen_icon_style(icon_fn, icon_width, icon_height, priv=false) {
-      var url = '{{ url_for("map.node_type_icon", filename="xyz.zyx") }}';
-
       if (priv == false) {
         var icon_style = L.icon({
-          iconUrl: url.replace("xyz.zyx", icon_fn),
+          iconUrl: icon_fn,
           iconSize: [icon_width, icon_height],
           iconAnchor: icon_anchor(icon_width, icon_height),
           popupAnchor: popup_anchor(icon_width, icon_height)
@@ -279,7 +278,7 @@
 
       if (priv == true) {
         var icon_style = L.icon({
-          iconUrl: url.replace("xyz.zyx", icon_fn),
+          iconUrl: icon_fn,
           className: "private",
           iconSize: [icon_width, icon_height],
           iconAnchor: icon_anchor(icon_width, icon_height),
