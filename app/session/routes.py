@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.session import bp
-from app.helpers import page_title, redirect_non_admins, gen_participant_choices, get_session_number
+from app.helpers import page_title, redirect_non_admins, gen_participant_choices, get_session_number, get_previous_session_id, get_next_session_id
 from app.session.forms import SessionForm
 from app.models import User, Role, GeneralSetting, Character, Party, Session
 from flask_login import current_user, login_required
@@ -40,7 +40,7 @@ def create():
         db.session.commit()
 
         flash("Session was created.", "success")
-        return redirect(url_for("sessin.index"))
+        return redirect(url_for("session.index"))
 
     return render_template("session/create.html", form=form, title=page_title("Create session"))
 
@@ -91,5 +91,7 @@ def edit(id):
 @login_required
 def view(id):
     session = Session.query.filter_by(id=id).first_or_404()
+    prev_session_id = get_previous_session_id(session.date, session.code)
+    next_session_id = get_next_session_id(session.date, session.code)
 
-    return render_template("session/view.html", session=session, title=page_title("View session"))
+    return render_template("session/view.html", session=session, prev=prev_session_id, next=next_session_id, title=page_title("View session"))

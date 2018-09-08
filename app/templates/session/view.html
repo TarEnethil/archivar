@@ -34,6 +34,21 @@
 </a>
 {% endif %}
 
+{% if prev %}
+<a href="{{ url_for('session.view', id=prev) }}" class="btn btn-default">
+    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+    Previous session
+</a>
+{% endif %}
+
+{% if next %}
+<a href="{{ url_for('session.view', id=next) }}" class="btn btn-default">
+    <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+    Previous session
+</a>
+{% endif %}
+
+
 <h2>Summary</h2>
 {% if session.summary %}
     <div id="summary" class="custom-markdown">

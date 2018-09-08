@@ -4,6 +4,7 @@ from app.models import GeneralSetting, MapNodeType, Character, Party, Session
 from flask_login import current_user
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError
+from sqlalchemy import and_
 import os
 
 def flash_no_permission():
@@ -93,6 +94,22 @@ def gen_participant_choices():
 def get_session_number(code):
     q = Session.query.filter(Session.code == code)
     return q.count()
+
+def get_previous_session_id(date, code):
+    q = Session.query.filter(and_(Session.code == code, Session.date < date)).order_by(Session.date.desc()).first()
+
+    if q:
+        return q.id
+    else:
+        return
+
+def get_next_session_id(date, code):
+    q = Session.query.filter(and_(Session.code == code, Session.date > date)).order_by(Session.date.asc()).first()
+
+    if q:
+        return q.id
+    else:
+        return
 
 class XYZ_Validator(object):
     def __call__(self, form, field):
