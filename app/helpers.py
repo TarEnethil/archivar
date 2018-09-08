@@ -1,20 +1,22 @@
 from app import app
-from flask import flash, redirect
+from flask import flash, redirect, url_for
 from app.models import GeneralSetting, MapNodeType, Character, Party, Session
 from flask_login import current_user
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError
 import os
 
+def redirect_no_permission():
+    flash("No permission for this action.", "danger")
+    redirect(url_for("index"))
+
 def redirect_non_admins():
     if not current_user.has_admin_role():
-        flash("Operation not permitted.", "danger")
-        redirect(url_for("index"))
+        redirect_no_permission()
 
 def redirect_non_map_admins():
     if not current_user.is_map_admin():
-        flash("Operation not permitted.", "danger")
-        redirect(url_for("index"))
+        redirect_no_permission()
 
 def page_title(dynamic_part=None):
     static_part = GeneralSetting.query.get(1).title

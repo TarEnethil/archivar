@@ -1,14 +1,14 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
 from app import app, db
 from app.map import bp
-from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, map_node_filename, gen_node_type_choices
+from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, redirect_no_permission, map_node_filename, gen_node_type_choices
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeCreateForm, MapNodeCreateFormAdmin, MapNodeEditForm, MapNodeEditFormAdmin
 from app.models import User, Role, GeneralSetting, MapNodeType, MapSetting, MapNode
 from flask_login import current_user, login_required
 from werkzeug import secure_filename
 from datetime import datetime
 from PIL import Image
-from sqlalchemy import or_
+from sqlalchemy import or_, not_, and_
 import os
 
 @bp.route("/")
@@ -101,7 +101,10 @@ def node_edit(id):
 
     form.node_type.choices = gen_node_type_choices()
 
-    node = MapNode.query.filter_by(id=id).first_or_404();
+    node = MapNode.query.filter_by(id=id).first_or_404()
+
+    if node.is_visible == False and node.created_by.has_admin_role():
+        redirect_no_permission()
 
     if form.validate_on_submit():
         node.name = form.name.data
@@ -121,7 +124,7 @@ def node_edit(id):
 
         return jsonify(data={'success' : True, 'message': "Node was edited."})
     elif request.method == "POST":
-        return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors}) 
+        return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors})
 
     form.name.data = node.name
     form.description.data = node.description
@@ -226,10 +229,16 @@ def node_type_json():
 @bp.route("/node/json")
 @login_required
 def node_json():
-    if current_user.is_map_admin():
+    admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+
+    admin_ids = [a.id for a in admins]
+
+    if current_user.has_admin_role():
         nodes = MapNode.query.all()
+    elif current_user.is_map_admin():
+        nodes = MapNode.query.filter(not_(and_(MapNode.is_visible == False, MapNode.created_by_id.in_(admin_ids))))
     else:
-        nodes = MapNode.query.filter(or_(MapNode.is_visible == True, MapNode.created_by_id == current_user.id))
+        nodes = MapNode.query.filter(or_(MapNode.is_visible == True, MapNode.created_by_id == current_user.id)).all()
 
     nodes_dict = {}
 
