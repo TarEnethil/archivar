@@ -79,7 +79,9 @@ def edit(username):
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
-    redirect_non_admins()
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
 
     form = CreateUserForm()
 
@@ -111,7 +113,9 @@ def create():
 @bp.route("/list")
 @login_required
 def list():
-    redirect_non_admins()
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
 
     users = User.query.all()
 

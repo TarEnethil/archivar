@@ -57,7 +57,9 @@ def logout():
 @app.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
-    redirect_non_admins()
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
 
     form = SettingsForm()
     settings = GeneralSetting.query.get(1)

@@ -71,7 +71,9 @@ def edit(id):
 @bp.route("/list", methods=["GET"])
 @login_required
 def list():
-    redirect_non_admins()
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
 
     chars = Character.query.all()
     parties = Party.query.all()
@@ -81,7 +83,9 @@ def list():
 @bp.route("/party/create", methods=["GET", "POST"])
 @login_required
 def party_create():
-    redirect_non_admins()
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
 
     form = PartyForm()
     form.members.choices = gen_party_members_choices()
@@ -102,7 +106,9 @@ def party_create():
 @bp.route("/party/edit/<int:id>", methods=["GET", "POST"])
 @login_required
 def party_edit(id):
-    redirect_non_admins()
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
 
     party = Party.query.filter_by(id=id).first_or_404()
 

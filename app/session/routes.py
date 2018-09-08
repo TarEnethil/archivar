@@ -18,7 +18,9 @@ def index():
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
-    redirect_non_admins()
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
 
     form = SessionForm()
     form.participants.choices = gen_participant_choices()
@@ -45,7 +47,9 @@ def create():
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
 def edit(id):
-    redirect_non_admins()
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
 
     session = Session.query.filter_by(id=id).first_or_404()
 
