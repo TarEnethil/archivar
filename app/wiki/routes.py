@@ -139,7 +139,6 @@ def search_tag(tag):
 @login_required
 def recent():
     created = get_recently_created()
-    print created
     edited = get_recently_edited()
 
     return render_template("wiki/recent.html", nav=(prepare_wiki_nav(), WikiSearchForm()), created=created, edited=edited, title=page_title("Recent changes"))

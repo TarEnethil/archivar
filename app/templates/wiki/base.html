@@ -43,7 +43,12 @@ $(document).ready(function() {
 
             <h2>Static links</h2>
             <ul class="nav nav-pills nav-stacked">
+                <li><a href="{{ url_for('wiki.create') }}">New page</a></li>
                 <li><a href="{{ url_for('wiki.recent') }}">Recent changes</a></li>
+
+                {% if current_user.is_wiki_admin() %}
+                <li><a href="{{ url_for('wiki.settings') }}">Settings</a></li>
+                {% endif %}
             </ul>
 
             <h2>Articles</h1>
