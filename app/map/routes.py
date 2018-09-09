@@ -44,6 +44,7 @@ def settings():
         settings.icon_anchor = form.icon_anchor.data
         settings.external_provider = form.external_provider.data
         settings.tiles_path = form.tiles_path.data
+        settings.default_visible = form.default_visible.data
 
         db.session.commit()
 
@@ -55,6 +56,7 @@ def settings():
         form.icon_anchor.data = settings.icon_anchor
         form.external_provider.data = settings.external_provider
         form.tiles_path.data = settings.tiles_path
+        form.default_visible = settings.default_visible
 
     node_types = MapNodeType.query.all()
 
@@ -84,7 +86,13 @@ def node_create(x, y):
             else:
                 message = "Node was created, it is only visible to map admins."
         else:
-            message = "Node was created. Until approved, it is only visible to map admins and you."
+            msetting = MapSetting.query.get(1)
+            new_node.is_visible = msetting.default_visible
+
+            if new_node.is_visible:
+                message = "Node was createtd."
+            else:
+                message = "Node was created. Until approved, it is only visible to map admins and you."
 
         db.session.add(new_node)
         db.session.commit()
@@ -92,6 +100,10 @@ def node_create(x, y):
         return jsonify(data={'success' : True, 'message': message})
     elif request.method == "POST":
         return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors})
+    else:
+        if current_user.is_map_admin():
+            msetting = MapSetting.query.get(1)
+            form.is_visible.data = msetting.default_visible
 
     return render_template("map/node_create.html", form=form, x=x, y=y)
 

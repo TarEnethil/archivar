@@ -45,9 +45,9 @@ def create():
         flash("Wiki entry was added.", "success")
         return redirect(url_for("wiki.index"))
     elif request.method == "GET":
-        wsettings = WikiSetting.query.get(1)
-
-        form.is_visible.data = wsettings.default_visible
+        if current_user.is_wiki_admin():
+            wsettings = WikiSetting.query.get(1)
+            form.is_visible.data = wsettings.default_visible
 
     return render_template("wiki/create.html", form=form, nav=prepare_wiki_nav(), title=page_title("Create wiki entry"))
 

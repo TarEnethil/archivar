@@ -22,6 +22,8 @@ class MapSettingsForm(FlaskForm):
     external_provider = BooleanField("Use external map provider")
     tiles_path = StringField("Provider pattern (internal: relative to data/map/, external: full url for an {x}{y}{z} map provider)", validators=[InputRequired(), XYZ_Validator()])
 
+    default_visible = BooleanField("New nodes are visible by default")
+
     submit = SubmitField("submit")
 
 class MapNodeCreateForm(FlaskForm):

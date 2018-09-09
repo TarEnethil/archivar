@@ -93,6 +93,7 @@ class MapSetting(db.Model):
     icon_anchor = db.Column(db.Integer)
     tiles_path = db.Column(db.String(128), default="tile_{z}_{x}-{y}.png")
     external_provider = db.Column(db.Boolean, default=False)
+    default_visible = db.Column(db.Boolean, default=False)
 
 class MapNodeType(db.Model):
     __tablename__ = "map_node_types"
