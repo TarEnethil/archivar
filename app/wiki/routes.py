@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.wiki import bp
 from app.helpers import page_title, redirect_non_admins, redirect_non_wiki_admins, flash_no_permission, prepare_wiki_nav, search_wiki_tag
-from app.wiki.forms import WikiEntryForm, WikiSettingsForm
+from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm
 from app.models import User, Role, GeneralSetting, Character, Party, WikiEntry, WikiSetting
 from flask_login import current_user, login_required
 from datetime import datetime
@@ -49,7 +49,7 @@ def create():
             wsettings = WikiSetting.query.get(1)
             form.is_visible.data = wsettings.default_visible
 
-    return render_template("wiki/create.html", form=form, nav=prepare_wiki_nav(), title=page_title("Create wiki entry"))
+    return render_template("wiki/create.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), title=page_title("Create wiki entry"))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -103,7 +103,7 @@ def edit(id):
         if current_user.has_admin_role():
             form.dm_content.data = wikientry.dm_content
 
-    return render_template("wiki/edit.html", form=form, nav=prepare_wiki_nav(), entry=wikientry, title=page_title("Edit wiki entry"))
+    return render_template("wiki/edit.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), entry=wikientry, title=page_title("Edit wiki entry"))
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
@@ -118,14 +118,20 @@ def view(id):
         flash_no_permission()
         return redirect(url_for(no_perm))
 
-    return render_template("wiki/view.html", entry=wikientry, nav=prepare_wiki_nav(), title=page_title("View wiki entry"))
+    return render_template("wiki/view.html", entry=wikientry, nav=(prepare_wiki_nav(), WikiSearchForm()), title=page_title("View wiki entry"))
+
+@bp.route("/search/<string:text>", methods=["GET"])
+@login_required
+def search_text(text):
+    flash("triggered with " + text)
+    return redirect(url_for("wiki.index"))
 
 @bp.route("/tag/<string:tag>", methods=["GET"])
 @login_required
 def search_tag(tag):
     results = search_wiki_tag(tag)
 
-    return render_template("wiki/tag.html", nav=prepare_wiki_nav(), results=results, tag=tag, title=page_title("Search for tag"))
+    return render_template("wiki/tag.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results, tag=tag, title=page_title("Search for tag"))
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required

@@ -1,6 +1,6 @@
 from app import db
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField, SubmitField, BooleanField, DateTimeField
+from wtforms import StringField, TextAreaField, PasswordField, SubmitField, BooleanField, DateTimeField, RadioField
 from wtforms_components import SelectMultipleField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, InputRequired
 
@@ -18,3 +18,9 @@ class WikiSettingsForm(FlaskForm):
     default_visible = BooleanField("New wiki entries are visible by default")
 
     submit = SubmitField("Submit")
+
+class WikiSearchForm(FlaskForm):
+    searchterm = StringField("", validators=[InputRequired()])
+    tags = RadioField(choices=[('text', "Text"), ('tag', "Tags")], default='text')
+
+    submit = SubmitField("Search")

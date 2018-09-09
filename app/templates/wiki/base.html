@@ -6,11 +6,41 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static_files', filename='wiki.css') }}">
 {% endblock %}
 
+{% block scripts %}
+{{ super () }}
+<script type="text/javascript">
+$(document).ready(function() {
+    $("label[for=searchterm]").remove();
+    $("#searchterm").attr("placeholder", "search for ...");
+
+    $("#sidebar-wrapper form").submit(function(e) {
+        text_url = "{{ url_for('wiki.search_text', text='textxyz') }}";
+        tag_url = "{{ url_for('wiki.search_tag', tag='tagxyz') }}";
+
+        if ($("#tags-0").prop("checked") == true) {
+            $(location).attr('href', text_url.replace("textxyz", $("#searchterm").val()));
+        } else if ($("#tags-1").prop("checked") == true) {
+            $(location).attr('href', tag_url.replace("tagxyz", $("#searchterm").val()));
+        }
+        else {
+            alert("Check one of the checkboxes.");
+        }
+
+        e.preventDefault();
+        return false;
+    });
+});
+</script>
+{% endblock %}
+
 {% block content %}
     <div id="wrapper">
         <div id="sidebar-wrapper">
             <h2>Search</h2>
-            TODO
+            {% if nav[1] %}
+                {{ wtf.quick_form(nav[1]) }}
+            {% endif %}
+
             <h2>Articles</h1>
             <ul class="nav nav-pills nav-stacked" id="stacked-menu">
                 {% if entry and entry.id == 1 %}
@@ -19,8 +49,8 @@
                 <li><a href="{{ url_for('wiki.view', id=1) }}">Main Page</a></li>
                 {% endif %}
 
-                {% if nav %}
-                    {% for cat in nav %}
+                {% if nav[0] %}
+                    {% for cat in nav[0] %}
                         {% if cat != "" %}
                         <li>
                             <a data-toggle="collapse" data-parent="#stacked-menu" href="#c_{{cat}}">{{ cat }} <span class="caret arrow"></span></a>
@@ -30,7 +60,7 @@
                             <ul class="nav nav-pills nav-stacked collapse" id="c_{{cat}}">
                             {% endif %}
 
-                            {% for link in nav[cat] %}
+                            {% for link in nav[0][cat] %}
                                 {% if entry and entry.id == link[0] %}
                                 <li class="active"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
                                 {% else %}
@@ -42,7 +72,7 @@
                         {% endif %}
                     {% endfor %}
 
-                    {% for link in nav[""] %}
+                    {% for link in nav[0][""] %}
                         {% if entry and entry.id == link[0] %}
                         <li class="active"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
                         {% else %}
