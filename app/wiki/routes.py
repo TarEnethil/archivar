@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.wiki import bp
-from app.helpers import page_title, redirect_non_admins, redirect_non_wiki_admins, flash_no_permission, prepare_wiki_nav, search_wiki_tag
+from app.helpers import page_title, redirect_non_admins, redirect_non_wiki_admins, flash_no_permission, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm
 from app.models import User, Role, GeneralSetting, Character, Party, WikiEntry, WikiSetting
 from flask_login import current_user, login_required
@@ -123,15 +123,17 @@ def view(id):
 @bp.route("/search/<string:text>", methods=["GET"])
 @login_required
 def search_text(text):
-    flash("triggered with " + text)
-    return redirect(url_for("wiki.index"))
+    results = search_wiki_text(text)
+    results = prepare_search_result(text, results)
+
+    return render_template("wiki/search_text.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results, term=text, title=page_title("Search for tag"))
 
 @bp.route("/tag/<string:tag>", methods=["GET"])
 @login_required
 def search_tag(tag):
     results = search_wiki_tag(tag)
 
-    return render_template("wiki/tag.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results, tag=tag, title=page_title("Search for tag"))
+    return render_template("wiki/search_tag.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results, tag=tag, title=page_title("Search for tag"))
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required

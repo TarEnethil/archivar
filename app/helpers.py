@@ -140,15 +140,52 @@ def prepare_wiki_nav():
 
     return OrderedDict(sorted(cat_dict.items(), key=lambda t: t[0]))
 
+def search_wiki_text(text):
+    if current_user.has_admin_role():
+        entries = WikiEntry.query.filter(WikiEntry.content.contains(text))
+    elif current_user.has_wiki_role():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        entries = WikiEntry.query.filter(not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))), WikiEntry.content.contains(text))
+    else:
+        entries = WikiEntry.query.filter(or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id), WikiEntry.content.contains(text))
+
+    entries = entries.with_entities(WikiEntry.id, WikiEntry.title, WikiEntry.content).order_by(WikiEntry.edited.desc())
+
+    print entries
+
+    return entries.all()
+
+def get_search_context(term, entry_text):
+    pos = entry_text.find(term)
+
+    if pos == -1:
+        return "ERROR, SHOULD NOT HAPPEN"
+
+    left = max(0, pos - 25)
+    right = min(pos + 25, len(entry_text))
+
+    return entry_text[left:right]
+
+def prepare_search_result(term, entries):
+    results = []
+
+    for entry in entries:
+        if term in entry[2]:
+            results.append((entry[0], entry[1], get_search_context(term, entry[2])))
+
+    return results
+
+
 def search_wiki_tag(tag):
     if current_user.has_admin_role():
         entries = WikiEntry.query.filter(WikiEntry.tags.contains(tag))
     elif current_user.has_wiki_role():
         admins = User.query.filter(User.roles.contains(Role.query.get(1)))
         admin_ids = [a.id for a in admins]
-        entries = WikiEntry.query.filter(not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))))
+        entries = WikiEntry.query.filter(not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))), WikiEntry.tags.contains(tag))
     else:
-        entries = WikiEntry.query.filter(or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id))
+        entries = WikiEntry.query.filter(or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id), WikiEntry.tags.contains(tag))
 
     entries = entries.with_entities(WikiEntry.id, WikiEntry.title).order_by(WikiEntry.edited.desc()).all()
 
