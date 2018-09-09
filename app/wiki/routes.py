@@ -7,6 +7,8 @@ from app.models import User, Role, GeneralSetting, Character, Party, WikiEntry, 
 from flask_login import current_user, login_required
 from datetime import datetime
 
+no_perm = "wiki.index"
+
 @bp.route("/", methods=["GET"])
 @login_required
 def index():
@@ -58,11 +60,11 @@ def edit(id):
 
     if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for("index"))
+        return redirect(url_for(no_perm))
 
     if not current_user.is_wiki_admin() and wikientry.is_visible == False and not wikientry.created_by == current_user:
         flash_no_permission()
-        return redirect(url_for("index"))
+        return redirect(url_for(no_perm))
 
     if not current_user.is_wiki_admin():
         del form.is_visible
@@ -110,11 +112,11 @@ def view(id):
 
     if not current_user.is_wiki_admin() and wikientry.is_visible == False and not wikientry.created_by == current_user:
         flash_no_permission()
-        return redirect(url_for("index"))
+        return redirect(url_for(no_perm))
 
     if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for("index"))
+        return redirect(url_for(no_perm))
 
     return render_template("wiki/view.html", entry=wikientry, nav=prepare_wiki_nav(), title=page_title("View wiki entry"))
 

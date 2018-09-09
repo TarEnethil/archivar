@@ -7,6 +7,8 @@ from app.models import User, Role, GeneralSetting, Character, Party, Session
 from flask_login import current_user, login_required
 from datetime import datetime
 
+no_perm = "session.index"
+
 @bp.route("/", methods=["GET"])
 @login_required
 def index():
@@ -20,7 +22,7 @@ def index():
 def create():
     deny_access = redirect_non_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     form = SessionForm()
     form.participants.choices = gen_participant_choices()
@@ -49,7 +51,7 @@ def create():
 def edit(id):
     deny_access = redirect_non_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     session = Session.query.filter_by(id=id).first_or_404()
 

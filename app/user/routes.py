@@ -7,6 +7,8 @@ from app.models import User, Role, GeneralSetting
 from flask_login import current_user, login_required
 from datetime import datetime
 
+no_perm = "index"
+
 @bp.route("/profile/<username>")
 @login_required
 def profile(username):
@@ -18,7 +20,6 @@ def profile(username):
 @login_required
 def edit(username):
     if current_user.has_admin_role() or current_user.username == username:
-
         if current_user.has_admin_role():
             form = EditProfileFormAdmin()
 
@@ -74,14 +75,14 @@ def edit(username):
         return render_template("user/edit.html", form=form, user=user, title=page_title("Edit profile"))
     else:
         flash("You dont have the neccessary role to perform this action.", "danger")
-        return redirect(url_for("index"))
+        return redirect(url_for(no_perm))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
     deny_access = redirect_non_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     form = CreateUserForm()
 
@@ -115,7 +116,7 @@ def create():
 def list():
     deny_access = redirect_non_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     users = User.query.all()
 

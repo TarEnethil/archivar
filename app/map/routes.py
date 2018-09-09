@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
 from app import app, db
 from app.map import bp
-from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, flash_no_permission, map_node_filename, gen_node_type_choices
+from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, map_node_filename, gen_node_type_choices, flash_no_permission
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeCreateForm, MapNodeCreateFormAdmin, MapNodeEditForm, MapNodeEditFormAdmin
 from app.models import User, Role, GeneralSetting, MapNodeType, MapSetting, MapNode
 from flask_login import current_user, login_required
@@ -10,6 +10,8 @@ from datetime import datetime
 from PIL import Image
 from sqlalchemy import or_, not_, and_
 import os
+
+no_perm = "index"
 
 @bp.route("/")
 @login_required
@@ -107,11 +109,11 @@ def node_edit(id):
 
     if not current_user.has_admin_role() and current_user.has_map_role() and node.is_visible == False and node.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     if not current_user.is_map_admin() and node.is_visible == False and not node.created_by == current_user:
         flash_no_permission()
-        redirect(url_for("index"))
+        redirect(url_for(no_perm))
 
     if form.validate_on_submit():
         node.name = form.name.data
@@ -166,7 +168,7 @@ def node_delete(id):
 def node_type_create():
     deny_access = redirect_non_map_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     form = MapNodeTypeCreateForm()
 
@@ -193,7 +195,7 @@ def node_type_create():
 def node_type_edit(id):
     deny_access = redirect_non_map_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     form = MapNodeTypeEditForm()
     node = MapNodeType.query.filter_by(id=id).first_or_404()

@@ -7,12 +7,14 @@ from app.models import User, Role, GeneralSetting, Character, Party
 from flask_login import current_user, login_required
 from datetime import datetime
 
+no_perm = "character.list"
+
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
     deny_access = redirect_non_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     form = PartyForm()
     form.members.choices = gen_party_members_choices()
@@ -35,7 +37,7 @@ def create():
 def edit(id):
     deny_access = redirect_non_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     party = Party.query.filter_by(id=id).first_or_404()
 

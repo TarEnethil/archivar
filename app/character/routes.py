@@ -1,11 +1,13 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.character import bp
-from app.helpers import page_title, redirect_non_admins, gen_party_members_choices
+from app.helpers import page_title, redirect_non_admins, gen_party_members_choices, flash_no_permission
 from app.character.forms import CreateCharacterForm, EditCharacterForm, EditCharacterFormAdmin, PartyForm
 from app.models import User, Role, GeneralSetting, Character, Party
 from flask_login import current_user, login_required
 from datetime import datetime
+
+no_perm = "index"
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
@@ -36,8 +38,8 @@ def edit(id):
     char = Character.query.filter_by(id=id).first_or_404()
 
     if current_user.id != char.user_id and current_user.has_admin_role() == False:
-        flash("You don't have the necessary permission for that action.", "danger")
-        return redirect(url_for("index"))
+        flash_no_permission()
+        return redirect(url_for(no_perm))
 
     if current_user.has_admin_role():
         form = EditCharacterFormAdmin()
@@ -73,7 +75,7 @@ def edit(id):
 def list():
     deny_access = redirect_non_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     chars = Character.query.all()
     parties = Party.query.all()
@@ -85,7 +87,7 @@ def list():
 def party_create():
     deny_access = redirect_non_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     form = PartyForm()
     form.members.choices = gen_party_members_choices()
@@ -108,7 +110,8 @@ def party_create():
 def party_edit(id):
     deny_access = redirect_non_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        flash_no_permission()
+        return redirect(url_for(no_perm))
 
     party = Party.query.filter_by(id=id).first_or_404()
 
