@@ -155,15 +155,3 @@ def install():
 @app.route("/static_files/<path:filename>")
 def static_files(filename):
     return send_from_directory(app.config["STATIC_DIR"], filename)
-
-@app.route("/test", methods=["GET", "POST"])
-def test():
-    if current_user.is_authenticated == True:
-        x = { "eins" : "hallo", "zwei" : 2}
-        return jsonify(x)
-    else:
-        return "no"
-
-@app.route("/ajax")
-def ajax():
-    return render_template("ajax.html")
