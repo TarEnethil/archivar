@@ -19,3 +19,26 @@
 .partymember-select {
     width:80% !important;
 }
+
+.phb-style h1,
+.phb-style h2,
+.phb-style h3 {
+    color: #58180d;
+}
+
+.phb-style h2,
+.phb-style h3 {
+    border-bottom:2px solid #c9ad6a;
+}
+
+.phb-style {
+    border-left-color:#58180d;
+    background:#eee9d3;
+}
+
+.phb-style a,
+.phb-style a:focus,
+.phb-style a:active {
+    color:#58180d;
+    text-decoration:underline;
+}
