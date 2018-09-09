@@ -1,10 +1,10 @@
 from app import app
 from flask import flash, redirect, url_for
-from app.models import GeneralSetting, MapNodeType, Character, Party, Session
+from app.models import GeneralSetting, MapNodeType, Character, Party, Session, WikiEntry, User, Role
 from flask_login import current_user
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError
-from sqlalchemy import and_
+from sqlalchemy import and_, or_, not_
 import os
 
 def flash_no_permission():
@@ -116,6 +116,27 @@ def get_next_session_id(date, code):
         return q.id
     else:
         return
+
+def prepare_wiki_nav():
+    admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+    admin_ids = [a.id for a in admins]
+
+    if current_user.has_admin_role():
+        entries = WikiEntry.query.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).filter(WikiEntry.id != 1).all()
+    elif current_user.has_wiki_role():
+        entries = WikiEntry.query.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).filter(WikiEntry.id != 1, not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids)))).all()
+    else:
+        entries = WikiEntry.query.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).filter(WikiEntry.id != 1, or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id)).all()
+
+    cat_dict = {}
+
+    for entry in entries:
+        if entry[0] not in cat_dict:
+            cat_dict[entry[0]] = []
+
+        cat_dict[entry[0]].append(entry[1:3])
+
+    return cat_dict
 
 class XYZ_Validator(object):
     def __call__(self, form, field):

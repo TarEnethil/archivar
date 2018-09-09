@@ -89,7 +89,7 @@ def node_create(x, y):
 
         return jsonify(data={'success' : True, 'message': message})
     elif request.method == "POST":
-        return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors}) 
+        return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors})
 
     return render_template("map/node_create.html", form=form, x=x, y=y)
 
@@ -108,6 +108,10 @@ def node_edit(id):
     if not current_user.has_admin_role() and current_user.has_map_role() and node.is_visible == False and node.created_by.has_admin_role():
         flash_no_permission()
         return redirect(url_for('index'))
+
+    if not current_user.is_map_admin() and node.is_visible == False and not node.created_by == current_user:
+        flash_no_permission()
+        redirect(url_for("index"))
 
     if form.validate_on_submit():
         node.name = form.name.data

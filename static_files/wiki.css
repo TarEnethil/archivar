@@ -1,0 +1,43 @@
+#wrapper {
+    display:flex;
+    align-items: stretch;
+    width:100%;
+}
+
+#sidebar-wrapper {
+    position:fixed;
+    width:250px;
+    height:100%;
+    flex-shrink:0;
+}
+
+#content-wrapper {
+    position:relative;
+    padding:0 200px 10px 100px;
+    margin-left:250px;
+    flex-grow:1;
+}
+
+#sidebar-wrapper .nav > li > a {
+    padding:2px 10px;
+}
+
+
+#sidebar-wrapper a {
+    color:#333;
+}
+
+#sidebar-wrapper a:hover {
+    color:#000;
+}
+
+#sidebar-wrapper .active a,
+#sidebar-wrapper .active a:hover,
+#sidebar-wrapper .active a:focus {
+    background:#ddd !important;
+    font-weight:bold;
+}
+
+#sidebar-wrapper li ul li {
+    padding-left:15px;
+}

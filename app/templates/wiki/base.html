@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static_files', filename='wiki.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div id="wrapper">
+        <div id="sidebar-wrapper">
+            <ul class="nav nav-pills nav-stacked" id="stacked-menu">
+                {% if entry and entry.id == 1 %}
+                <li class="active"><a href="{{ url_for('wiki.view', id=1) }}">Main Page</a></li>
+                {% else %}
+                <li><a href="{{ url_for('wiki.view', id=1) }}">Main Page</a></li>
+                {% endif %}
+
+                {% if nav %}
+                    {% for cat in nav %}
+                        {% if cat != "" %}
+                        <li>
+                            <a data-toggle="collapse" data-parent="#stacked-menu" href="#c_{{cat}}">{{ cat }} <span class="caret arrow"></span></a>
+                            {% if entry and entry.category == cat %}
+                            <ul class="nav nav-pills nav-stacked collapse in" id="c_{{cat}}">
+                            {% else %}
+                            <ul class="nav nav-pills nav-stacked collapse" id="c_{{cat}}">
+                            {% endif %}
+
+                            {% for link in nav[cat] %}
+                                {% if entry and entry.id == link[0] %}
+                                <li class="active"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                                {% else %}
+                                <li><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for link in nav[""] %}
+                        {% if entry and entry.id == link[0] %}
+                        <li class="active"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                        {% else %}
+                        <li><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+
+        <div id="content-wrapper">
+        {% block app_content %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+
+                {% if category != "message" %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% else %}
+                    <div class="alert alert-info">No cat: {{ message }}</div>
+                {% endif %}
+
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        {% endblock %}
+        </div>
+    </div>
+{% endblock %}

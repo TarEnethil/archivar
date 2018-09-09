@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.wiki import bp
-from app.helpers import page_title, redirect_non_admins, redirect_non_wiki_admins, flash_no_permission
+from app.helpers import page_title, redirect_non_admins, redirect_non_wiki_admins, flash_no_permission, prepare_wiki_nav
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm
 from app.models import User, Role, GeneralSetting, Character, Party, WikiEntry, WikiSetting
 from flask_login import current_user, login_required
@@ -42,8 +42,12 @@ def create():
 
         flash("Wiki entry was added.", "success")
         return redirect(url_for("wiki.index"))
+    elif request.method == "GET":
+        wsettings = WikiSetting.query.get(1)
 
-    return render_template("wiki/create.html", form=form, title=page_title("Create wiki entry"))
+        form.is_visible.data = wsettings.default_visible
+
+    return render_template("wiki/create.html", form=form, nav=prepare_wiki_nav(), title=page_title("Create wiki entry"))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -56,7 +60,7 @@ def edit(id):
         flash_no_permission()
         return redirect(url_for("index"))
 
-    if not current_user.is_wiki_admin() and wikientry.is_visible == False:
+    if not current_user.is_wiki_admin() and wikientry.is_visible == False and not wikientry.created_by == current_user:
         flash_no_permission()
         return redirect(url_for("index"))
 
@@ -94,14 +98,22 @@ def edit(id):
         if current_user.has_admin_role():
             form.dm_content.data = wikientry.dm_content
 
-    return render_template("wiki/edit.html", form=form, title=page_title("Edit wiki entry"))
+    return render_template("wiki/edit.html", form=form, nav=prepare_wiki_nav(), entry=wikientry, title=page_title("Edit wiki entry"))
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
 def view(id):
     wikientry = WikiEntry.query.filter_by(id=id).first_or_404()
 
-    return render_template("wiki/view.html", entry=wikientry, title=page_title("View wiki entry"))
+    if not current_user.is_wiki_admin() and wikientry.is_visible == False and not wikientry.created_by == current_user:
+        flash_no_permission()
+        redirect(url_for("index"))
+
+    if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
+        flash_no_permission()
+        redirect(url_for("index"))
+
+    return render_template("wiki/view.html", entry=wikientry, nav=prepare_wiki_nav(), title=page_title("View wiki entry"))
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
