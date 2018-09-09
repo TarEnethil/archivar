@@ -152,8 +152,6 @@ def search_wiki_text(text):
 
     entries = entries.with_entities(WikiEntry.id, WikiEntry.title, WikiEntry.content).order_by(WikiEntry.edited.desc())
 
-    print entries
-
     return entries.all()
 
 def get_search_context(term, entry_text):
