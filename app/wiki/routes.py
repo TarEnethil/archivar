@@ -110,11 +110,11 @@ def view(id):
 
     if not current_user.is_wiki_admin() and wikientry.is_visible == False and not wikientry.created_by == current_user:
         flash_no_permission()
-        redirect(url_for("index"))
+        return redirect(url_for("index"))
 
     if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
         flash_no_permission()
-        redirect(url_for("index"))
+        return redirect(url_for("index"))
 
     return render_template("wiki/view.html", entry=wikientry, nav=prepare_wiki_nav(), title=page_title("View wiki entry"))
 

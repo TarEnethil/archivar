@@ -5,6 +5,7 @@ from flask_login import current_user
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError
 from sqlalchemy import and_, or_, not_
+from collections import OrderedDict
 import os
 
 def flash_no_permission():
@@ -122,11 +123,13 @@ def prepare_wiki_nav():
     admin_ids = [a.id for a in admins]
 
     if current_user.has_admin_role():
-        entries = WikiEntry.query.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).filter(WikiEntry.id != 1).all()
+        entries = WikiEntry.query.filter(WikiEntry.id != 1)
     elif current_user.has_wiki_role():
-        entries = WikiEntry.query.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).filter(WikiEntry.id != 1, not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids)))).all()
+        entries = WikiEntry.query.filter(WikiEntry.id != 1, not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))))
     else:
-        entries = WikiEntry.query.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).filter(WikiEntry.id != 1, or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id)).all()
+        entries = WikiEntry.query.filter(WikiEntry.id != 1, or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id))
+
+    entries = entries.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).order_by(WikiEntry.title.asc())
 
     cat_dict = {}
 
@@ -136,7 +139,7 @@ def prepare_wiki_nav():
 
         cat_dict[entry[0]].append(entry[1:3])
 
-    return cat_dict
+    return OrderedDict(sorted(cat_dict.items(), key=lambda t: t[0]))
 
 class XYZ_Validator(object):
     def __call__(self, form, field):
