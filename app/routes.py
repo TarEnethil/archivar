@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify, s
 from app import app, db
 from app.helpers import page_title, redirect_non_admins
 from app.forms import LoginForm, SettingsForm, InstallForm
-from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType
+from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry
 from flask_login import current_user, login_user, login_required, logout_user
 from datetime import datetime
 from werkzeug.urls import url_parse
@@ -89,18 +89,22 @@ def install():
 
             admin_role = Role(name="Admin")
             map_role = Role(name="Map")
+            wiki_role = Role(name="Wiki")
             event_role = Role(name="Event")
             special_role = Role(name="Special")
 
             db.session.add(setting)
             db.session.add(admin_role)
             db.session.add(map_role)
+            db.session.add(wiki_role)
             db.session.add(event_role)
             db.session.add(special_role)
 
             map_setting = MapSetting(min_zoom=0, max_zoom=0, default_zoom=0, icon_anchor=0)
+            wiki_setting = WikiSetting(default_visible=False)
 
             db.session.add(map_setting)
+            db.session.add(wiki_setting)
 
             # TODO: maybe remove the default icons as well
             if form.default_mapnodes.data:
@@ -122,7 +126,7 @@ def install():
                 db.session.add(ruins)
                 db.session.add(note)
 
-                flash("7 default map nodes were added.", "info")
+                flash("8 default map nodes were added.", "info")
 
             db.session.commit()
 
@@ -133,6 +137,10 @@ def install():
 
             db.session.add(admin)
 
+            db.session.commit()
+
+            wiki_home = WikiEntry(title="Wiki index page", content="Feel free to edit this...", is_visible=True, created_by_id=1, edited_by_id=1)
+            db.session.add(wiki_home)
             db.session.commit()
 
             flash("Install successful. You can now log in and check the settings.", "success")

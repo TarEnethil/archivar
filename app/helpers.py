@@ -22,6 +22,12 @@ def redirect_non_map_admins():
         return True
     return False
 
+def redirect_non_wiki_admins():
+    if not current_user.is_wiki_admin():
+        flash_no_permission()
+        return True
+    return False
+
 def page_title(dynamic_part=None):
     static_part = GeneralSetting.query.get(1).title
 

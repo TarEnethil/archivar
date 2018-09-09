@@ -13,7 +13,7 @@ character_party_assoc = db.Table("character_party_assoc",
                     db.Column("character_id", db.Integer, db.ForeignKey("characters.id")),
                     db.Column("party_id", db.Integer, db.ForeignKey("parties.id")))
 
-session_character_assoc = db.Table("session_character_assoc", 
+session_character_assoc = db.Table("session_character_assoc",
                     db.Column("session_id", db.Integer, db.ForeignKey("sessions.id")),
                     db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
 
@@ -41,20 +41,26 @@ class User(UserMixin, db.Model):
     def has_map_role(self):
         return self.has_role(2)
 
-    def has_event_role(self):
+    def has_wiki_role(self):
         return self.has_role(3)
 
-    def has_special_role(self):
+    def has_event_role(self):
         return self.has_role(4)
+
+    def has_special_role(self):
+        return self.has_role(5)
 
     def is_map_admin(self):
         return self.has_admin_role() or self.has_map_role()
+
+    def is_wiki_admin(self):
+        return self.has_admin_role() or self.has_wiki_role()
 
     def is_event_admin(self):
         return self.has_admin_role() or self.has_event_role()
 
     def has_access_to_some_settings(self):
-        return self.has_admin_role() or self.has_map_role()
+        return self.has_admin_role() or self.has_map_role() or self.has_wiki_role()
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -176,6 +182,28 @@ class Session(db.Model):
     dm_notes = db.Column(db.Text)
     date = db.Column(db.DateTime)
     participants = db.relationship("Character", secondary=session_character_assoc, backref="sessions")
+
+class WikiSetting(db.Model):
+    __tablename__ = "wiki_settings"
+    id = db.Column(db.Integer, primary_key=True)
+    default_visible = db.Column(db.Boolean, default=False)
+
+class WikiEntry(db.Model):
+    __tablename__ = "wiki_entries"
+    id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime, default=datetime.utcnow)
+    created_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_by = db.relationship("User", foreign_keys=[created_by_id])
+    edited = db.Column(db.DateTime, default=datetime.utcnow)
+    edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    edited_by = db.relationship("User", foreign_keys=[edited_by_id])
+
+    title = db.Column(db.String(255))
+    category = db.Column(db.String(100))
+    is_visible = db.Column(db.Boolean)
+    content = db.Column(db.Text)
+    dm_content = db.Column(db.Text)
+    tags = db.Column(db.String(255))
 
 @login.user_loader
 def load_user(id):

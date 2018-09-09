@@ -105,7 +105,7 @@ def node_edit(id):
 
     node = MapNode.query.filter_by(id=id).first_or_404()
 
-    if node.is_visible == False and node.created_by.has_admin_role():
+    if not current_user.has_admin_role() and current_user.has_map_role() and node.is_visible == False and node.created_by.has_admin_role():
         flash_no_permission()
         return redirect(url_for('index'))
 
