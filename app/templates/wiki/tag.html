@@ -1,0 +1,17 @@
+{% extends "wiki/base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    {{ super() }}
+
+    <h1>Entries matching '{{ tag }}'</h1>
+    {% if results %}
+    <ul>
+        {% for result in results %}
+        <li><a href="{{ url_for('wiki.view', id=result[0]) }}">{{ result[1] }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No articles with this tag were found.</p>
+    {% endif %}
+{% endblock %}

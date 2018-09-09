@@ -206,6 +206,9 @@ class WikiEntry(db.Model):
     dm_content = db.Column(db.Text)
     tags = db.Column(db.String(255))
 
+    def split_tags(self):
+        return self.tags.split(" ")
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

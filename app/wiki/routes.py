@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.wiki import bp
-from app.helpers import page_title, redirect_non_admins, redirect_non_wiki_admins, flash_no_permission, prepare_wiki_nav
+from app.helpers import page_title, redirect_non_admins, redirect_non_wiki_admins, flash_no_permission, prepare_wiki_nav, search_wiki_tag
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm
 from app.models import User, Role, GeneralSetting, Character, Party, WikiEntry, WikiSetting
 from flask_login import current_user, login_required
@@ -119,6 +119,13 @@ def view(id):
         return redirect(url_for(no_perm))
 
     return render_template("wiki/view.html", entry=wikientry, nav=prepare_wiki_nav(), title=page_title("View wiki entry"))
+
+@bp.route("/tag/<string:tag>", methods=["GET"])
+@login_required
+def search_tag(tag):
+    results = search_wiki_tag(tag)
+
+    return render_template("wiki/tag.html", nav=prepare_wiki_nav(), results=results, tag=tag, title=page_title("Search for tag"))
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required

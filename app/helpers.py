@@ -119,17 +119,16 @@ def get_next_session_id(date, code):
         return
 
 def prepare_wiki_nav():
-    admins = User.query.filter(User.roles.contains(Role.query.get(1)))
-    admin_ids = [a.id for a in admins]
-
     if current_user.has_admin_role():
         entries = WikiEntry.query.filter(WikiEntry.id != 1)
     elif current_user.has_wiki_role():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
         entries = WikiEntry.query.filter(WikiEntry.id != 1, not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))))
     else:
         entries = WikiEntry.query.filter(WikiEntry.id != 1, or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id))
 
-    entries = entries.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).order_by(WikiEntry.title.asc())
+    entries = entries.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).order_by(WikiEntry.title.asc()).all()
 
     cat_dict = {}
 
@@ -140,6 +139,20 @@ def prepare_wiki_nav():
         cat_dict[entry[0]].append(entry[1:3])
 
     return OrderedDict(sorted(cat_dict.items(), key=lambda t: t[0]))
+
+def search_wiki_tag(tag):
+    if current_user.has_admin_role():
+        entries = WikiEntry.query.filter(WikiEntry.tags.contains(tag))
+    elif current_user.has_wiki_role():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        entries = WikiEntry.query.filter(not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))))
+    else:
+        entries = WikiEntry.query.filter(or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id))
+
+    entries = entries.with_entities(WikiEntry.id, WikiEntry.title).order_by(WikiEntry.edited.desc()).all()
+
+    return entries
 
 class XYZ_Validator(object):
     def __call__(self, form, field):

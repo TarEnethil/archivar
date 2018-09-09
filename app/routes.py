@@ -139,7 +139,7 @@ def install():
 
             db.session.commit()
 
-            wiki_home = WikiEntry(title="Wiki index page", content="Feel free to edit this...", is_visible=True, created_by_id=1, edited_by_id=1)
+            wiki_home = WikiEntry(title="Wiki index page", content="Feel free to edit this...", dm_content="wiki entries have dm-only notes as well!", is_visible=True, created_by_id=1, edited_by_id=1)
             db.session.add(wiki_home)
             db.session.commit()
 
