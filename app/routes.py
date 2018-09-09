@@ -155,3 +155,11 @@ def install():
 @app.route("/static_files/<path:filename>")
 def static_files(filename):
     return send_from_directory(app.config["STATIC_DIR"], filename)
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template("404.html", info=request.path, title="404"), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template("500.html", info=request.path, title="500"), 500

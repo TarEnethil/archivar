@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>Error 500: Internal Server Error</h1>
+
+    <p>
+        An internal error occured.
+        If this problem persists, tell your admin when and what you were doing.
+        <br />
+        Page url: {{ info }}
+    </p>
+{% endblock %}
