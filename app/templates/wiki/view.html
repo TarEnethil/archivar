@@ -57,5 +57,13 @@
 
 {% if entry.tags %}
 <p>{{ entry.tags }}</p>
+
 {% endif %}
+<hr>
+<ul>
+    <li>Created by <a href="{{ url_for('user.profile', username=entry.created_by.username) }}">{{ entry.created_by.username }}</a> ({{ entry.created }})</li>
+    {% if entry.edited_by %}
+    <li>Edited by <a href="{{ url_for('user.profile', username=entry.edited_by.username) }}">{{ entry.edited_by.username }}</a> ({{ entry.edited }})</li>
+    {% endif %}
+</ul>
 {% endblock %}
