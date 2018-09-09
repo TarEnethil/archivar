@@ -35,6 +35,16 @@
     Edit
 </a>
 
+{% if not entry.is_visible %}
+<p class="alert alert-warning invis-warn">
+    {% if not current_user.is_wiki_admin() %}
+    This page is currently only visible to (wiki) admins and you.
+    {% else %}
+    This page is currently only visible to (wiki) admins.
+    {% endif %}
+</p>
+{% endif %}
+
 <h1>{{ entry.title }} </h1>
 
 {% if entry.content %}
