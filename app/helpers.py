@@ -174,7 +174,6 @@ def prepare_search_result(term, entries):
 
     return results
 
-
 def search_wiki_tag(tag):
     if current_user.has_admin_role():
         entries = WikiEntry.query.filter(WikiEntry.tags.contains(tag))
@@ -186,6 +185,34 @@ def search_wiki_tag(tag):
         entries = WikiEntry.query.filter(or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id), WikiEntry.tags.contains(tag))
 
     entries = entries.with_entities(WikiEntry.id, WikiEntry.title).order_by(WikiEntry.edited.desc()).all()
+
+    return entries
+
+def get_recently_created():
+    if current_user.has_admin_role():
+        entries = WikiEntry.query
+    elif current_user.has_wiki_role():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        entries = WikiEntry.query.filter(not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))))
+    else:
+        entries = WikiEntry.query.filter(or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id))
+
+    entries = entries.join(User, WikiEntry.created_by_id == User.id).with_entities(WikiEntry.id, WikiEntry.title, WikiEntry.created, User.username).order_by(WikiEntry.created.desc()).limit(5).all()
+
+    return entries
+
+def get_recently_edited():
+    if current_user.has_admin_role():
+        entries = WikiEntry.query
+    elif current_user.has_wiki_role():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        entries = WikiEntry.query.filter(not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))))
+    else:
+        entries = WikiEntry.query.filter(or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id))
+
+    entries = entries.join(User, WikiEntry.edited_by_id == User.id).with_entities(WikiEntry.id, WikiEntry.title, WikiEntry.edited, User.username).order_by(WikiEntry.edited.desc()).limit(5).all()
 
     return entries
 

@@ -1,0 +1,30 @@
+{% extends "wiki/base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    {{ super() }}
+
+    <h1>Recent changes</h1>
+
+    <h2>Recently created pages</h2>
+    {% if created %}
+    <ul>
+        {% for entry in created %}
+        <li><a href="{{ url_for('wiki.view', id=entry[0]) }}">{{ entry[1] }}</a> ({{ entry[2] }} by <a href="{{ url_for('user.profile', username=entry[3]) }}">{{ entry[3] }}</a>)</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No recently created pages.</p>
+    {% endif %}
+
+    <h2>Recently edited pages</h2>
+    {% if edited %}
+    <ul>
+        {% for entry in edited %}
+        <li><a href="{{ url_for('wiki.view', id=entry[0]) }}">{{ entry[1] }}</a> ({{ entry[2] }} by <a href="{{ url_for('user.profile', username=entry[3]) }}">{{ entry[3] }}</a>)</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No recently edited pages.</p>
+    {% endif %}
+{% endblock %}

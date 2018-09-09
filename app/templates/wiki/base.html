@@ -41,6 +41,11 @@ $(document).ready(function() {
                 {{ wtf.quick_form(nav[1]) }}
             {% endif %}
 
+            <h2>Static links</h2>
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="{{ url_for('wiki.recent') }}">Recent changes</a></li>
+            </ul>
+
             <h2>Articles</h1>
             <ul class="nav nav-pills nav-stacked" id="stacked-menu">
                 {% if entry and entry.id == 1 %}

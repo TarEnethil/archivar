@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.wiki import bp
-from app.helpers import page_title, redirect_non_admins, redirect_non_wiki_admins, flash_no_permission, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result
+from app.helpers import page_title, redirect_non_admins, redirect_non_wiki_admins, flash_no_permission, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm
 from app.models import User, Role, GeneralSetting, Character, Party, WikiEntry, WikiSetting
 from flask_login import current_user, login_required
@@ -134,6 +134,15 @@ def search_tag(tag):
     results = search_wiki_tag(tag)
 
     return render_template("wiki/search_tag.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results, tag=tag, title=page_title("Search for tag"))
+
+@bp.route("/recent", methods=["GET"])
+@login_required
+def recent():
+    created = get_recently_created()
+    print created
+    edited = get_recently_edited()
+
+    return render_template("wiki/recent.html", nav=(prepare_wiki_nav(), WikiSearchForm()), created=created, edited=edited, title=page_title("Recent changes"))
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
