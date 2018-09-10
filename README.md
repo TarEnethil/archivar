@@ -32,7 +32,7 @@ flask run -h localhost
 ```
 
 ## Creating admin account
-* Visit http://localhost:5000/\_\_install\_\_ to be guided through installation
+* Visit http://localhost:5000/__install__ to be guided through installation
 * Installation also includes some default settings if wanted
 * After installation, log in with the admin account and head to the (module) settings
 
