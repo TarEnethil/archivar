@@ -103,6 +103,7 @@ _Up and coming._
 Admin is the highest role available and has all privileges.
 Use with caution, as anyone with this role has insight into every hidden map nodes, hidden wiki articles and all DM notes.
 Admins can also create users and manage their roles.
+The admin account created by the install process can't have the admin role taken from him, even from other admins.
 The terms admin and Dungeon Master (DM) may be used interchangeably.
 
 ## Map admin

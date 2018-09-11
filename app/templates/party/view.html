@@ -12,6 +12,9 @@
 
     var descr = document.getElementById('description')
     descr.innerHTML = marked(descr.innerHTML, options);
+
+    var dm_notes = document.getElementById('dm_notes')
+    dm_notes.innerHTML = marked(dm_notes.innerHTML, options);
 </script>
 
 {% endif %}
@@ -46,5 +49,12 @@
 </ul>
 {% else %}
 <p>No members.</p>
+{% endif %}
+
+{% if current_user.has_admin_role() and party.dm_notes %}
+<h2>DM Notes</h2>
+<div id="dm_notes" class="custom-markdown">
+{{ party.dm_notes }}
+</div>
 {% endif %}
 {% endblock %}

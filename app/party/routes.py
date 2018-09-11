@@ -22,7 +22,7 @@ def create():
     if form.validate_on_submit():
         members = Character.query.filter(Character.id.in_(form.members.data)).all()
 
-        new_party = Party(name=form.name.data, description=form.description.data, members=members)
+        new_party = Party(name=form.name.data, description=form.description.data, dm_notes=form.dm_notes.data, members=members)
 
         db.session.add(new_party)
         db.session.commit()
@@ -47,6 +47,7 @@ def edit(id):
     if form.validate_on_submit():
         party.name = form.name.data
         party.description = form.description.data
+        party.dm_notes = form.dm_notes.data
 
         members = Character.query.filter(Character.id.in_(form.members.data)).all()
         party.members = members
@@ -58,6 +59,7 @@ def edit(id):
     elif request.method == "GET":
         form.name.data = party.name
         form.description.data = party.description
+        form.dm_notes.dat = party.dm_notes
 
         members = []
 
