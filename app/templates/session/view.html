@@ -27,26 +27,34 @@
 {% block app_content %}
 <h1>{{ session.title }} ({{ session.date }})</h1>
 
-{% if current_user.has_admin_role() %}
-<a href="{{ url_for('session.edit', id=session.id) }}" class="btn btn-default">
-    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-    Edit
-</a>
+<ul class="nav nav-tabs">
+{% if prev %}
+    <li>
+        <a href="{{ url_for('session.view', id=prev) }}">
+            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+            Previous session
+        </a>
+    </li>
 {% endif %}
 
-{% if prev %}
-<a href="{{ url_for('session.view', id=prev) }}" class="btn btn-default">
-    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
-    Previous session
-</a>
+{% if current_user.has_admin_role() %}
+    <li>
+        <a href="{{ url_for('session.edit', id=session.id) }}">
+            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            Edit
+        </a>
+    </li>
 {% endif %}
 
 {% if next %}
-<a href="{{ url_for('session.view', id=next) }}" class="btn btn-default">
-    <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
-    Previous session
-</a>
+    <li>
+        <a href="{{ url_for('session.view', id=next) }}">
+            <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+            Next session
+        </a>
+    </li>
 {% endif %}
+</ul>
 
 <h2>Summary</h2>
 {% if session.summary %}

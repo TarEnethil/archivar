@@ -42,3 +42,11 @@
     color:#58180d;
     text-decoration:underline;
 }
+
+.container ul.nav-tabs {
+    margin-bottom:10px;
+}
+
+ul.nav-tabs li span.glyphicon {
+    color: #000 !important;
+}

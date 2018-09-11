@@ -43,10 +43,17 @@
 <hr>
 
 <h2>Parties</h2>
-    <a href="{{ url_for('party.create') }}" class="btn btn-default">
-    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-    Add party
-</a>
+{% if current_user.has_admin_role() %}
+<ul class="nav nav-tabs">
+    <li>
+        <a href="{{ url_for('party.create') }}"<ul class="nav nav-tabs">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            Add party
+        </a>
+    </li>
+</ul>
+{% endif %}
+
 {% if parties %}
 <table class="table">
     <thead>

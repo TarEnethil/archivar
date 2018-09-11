@@ -4,10 +4,14 @@
     <h1>Sessions</h1>
 
     {% if current_user.has_admin_role() %}
-    <a href="{{ url_for('session.create') }}" class="btn btn-default">
-        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-        New session
-    </a>
+    <ul class="nav nav-tabs">
+        <li>
+            <a href="{{ url_for('session.create') }}">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                New session
+            </a>
+        </li>
+    </ul>
     {% endif %}
 
     <h2>Upcoming sessions</h2>

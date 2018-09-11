@@ -3,10 +3,14 @@
 {% block app_content %}
     <h1>List of users </h1>
 
-    <a href="{{ url_for('user.create') }}" class="btn btn-default">
-        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-        Create new user
-    </a>
+    <ul class="nav nav-tabs">
+        <li>
+            <a href="{{ url_for('user.create') }}">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Create new user
+            </a>
+        </li>
+    </ul>
 
     <table class="table">
         <thead>
