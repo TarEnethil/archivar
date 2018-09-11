@@ -56,6 +56,10 @@ def edit(username):
                     new_user_roles.append(admin_role)
                     flash("You can't revoke your own admin role.", "danger")
 
+                if user.id == 1 and admin_role not in new_user_roles:
+                    new_user_roles.append(admin_role)
+                    flash("The original admin can't be removed.", "danger")
+
                 user.roles = new_user_roles
 
             db.session.commit()
