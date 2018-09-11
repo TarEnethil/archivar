@@ -42,6 +42,9 @@
             <li>Race: {{ char.race }}</li>
             <li>Class: {{ char.class_ }}</li>
             <li>Player: <a href="{{ url_for('user.profile', username=char.player.username) }}">{{ char.player.username }}</a></li>
+            {% if char.sessions %}
+                <li>Sessions participated: {{ char.sessions|length }}</li>
+            {% endif %}
         </ul>
 
         {% if char.parties %}
