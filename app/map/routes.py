@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify, s
 from app import app, db
 from app.map import bp
 from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, map_node_filename, gen_node_type_choices, flash_no_permission
-from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeCreateForm, MapNodeCreateFormAdmin, MapNodeEditForm, MapNodeEditFormAdmin
+from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm
 from app.models import User, Role, GeneralSetting, MapNodeType, MapSetting, MapNode
 from flask_login import current_user, login_required
 from werkzeug import secure_filename
@@ -65,10 +65,10 @@ def settings():
 @bp.route("/node/create/<x>/<y>", methods=["GET", "POST"])
 @login_required
 def node_create(x, y):
-    if current_user.is_map_admin():
-        form = MapNodeCreateFormAdmin()
-    else:
-        form = MapNodeCreateForm()
+    form = MapNodeForm()
+
+    if not current_user.is_map_admin():
+        del form.is_visible
 
     form.coord_x.data = x
     form.coord_y.data = y
@@ -90,7 +90,7 @@ def node_create(x, y):
             new_node.is_visible = msetting.default_visible
 
             if new_node.is_visible:
-                message = "Node was createtd."
+                message = "Node was created."
             else:
                 message = "Node was created. Until approved, it is only visible to map admins and you."
 
@@ -110,10 +110,10 @@ def node_create(x, y):
 @bp.route("/node/edit/<id>", methods=["GET", "POST"])
 @login_required
 def node_edit(id):
-    if current_user.is_map_admin():
-        form = MapNodeEditFormAdmin()
-    else:
-        form = MapNodeEditForm()
+    form = MapNodeForm()
+
+    if not current_user.is_map_admin():
+        del form.is_visible
 
     form.node_type.choices = gen_node_type_choices()
 

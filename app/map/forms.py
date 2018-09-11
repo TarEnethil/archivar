@@ -26,17 +26,7 @@ class MapSettingsForm(FlaskForm):
 
     submit = SubmitField("submit")
 
-class MapNodeCreateForm(FlaskForm):
-    name = StringField("node name", validators=[Length(max=64),InputRequired()])
-    description = TextAreaField("description", validators=[Length(min=0, max=10000)], render_kw={"rows": 10})
-    node_type = SelectField("node type", validators=[InputRequired(),NumberRange(min=1,message="Choose a valid node type")],coerce=int)
-
-    coord_x = HiddenField(validators=[InputRequired()])
-    coord_y = HiddenField(validators=[InputRequired()])
-
-    submit = SubmitField("submit")
-
-class MapNodeCreateFormAdmin(FlaskForm):
+class MapNodeForm(FlaskForm):
     name = StringField("node name", validators=[Length(max=64),InputRequired()])
     description = TextAreaField("description", validators=[Length(min=0, max=10000)], render_kw={"rows": 10})
     node_type = SelectField("node type", validators=[InputRequired(),NumberRange(min=1,message="Choose a valid node type")],coerce=int)
@@ -47,28 +37,6 @@ class MapNodeCreateFormAdmin(FlaskForm):
     coord_y = HiddenField(validators=[InputRequired()])
 
     submit = SubmitField("submit")
-
-class MapNodeEditForm(FlaskForm):
-    name = StringField("node name", validators=[Length(max=64),InputRequired()])
-    description = TextAreaField("description", validators=[Length(min=0, max=10000)], render_kw={"rows": 10})
-    node_type = SelectField("node type", validators=[InputRequired(),NumberRange(min=1,message="Choose a valid node type")],coerce=int)
-
-    coord_x = HiddenField(validators=[InputRequired()])
-    coord_y = HiddenField(validators=[InputRequired()])
-
-    submit = SubmitField("submit")
-
-class MapNodeEditFormAdmin(FlaskForm):
-    name = StringField("node name", validators=[Length(max=64),InputRequired()])
-    description = TextAreaField("description", validators=[Length(min=0, max=10000)], render_kw={"rows": 10})
-    node_type = SelectField("node type", validators=[InputRequired(),NumberRange(min=1,message="Choose a valid node type")],coerce=int)
-
-    is_visible = BooleanField("Is approved / visible (to anyone)")
-
-    coord_x = HiddenField(validators=[InputRequired()])
-    coord_y = HiddenField(validators=[InputRequired()])
-
-    submit = SubmitField("submit") 
 
 class MapNodeTypeCreateForm(FlaskForm):
     name = StringField("node type name", validators=[DataRequired(), Length(max=64)])

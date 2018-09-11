@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.user import bp
 from app.helpers import page_title, redirect_non_admins
-from app.user.forms import CreateUserForm, EditProfileForm, EditProfileFormAdmin
+from app.user.forms import CreateUserForm, EditProfileForm
 from app.models import User, Role, GeneralSetting
 from flask_login import current_user, login_required
 from datetime import datetime
@@ -20,9 +20,9 @@ def profile(username):
 @login_required
 def edit(username):
     if current_user.has_admin_role() or current_user.username == username:
-        if current_user.has_admin_role():
-            form = EditProfileFormAdmin()
+        form = EditProfileForm()
 
+        if current_user.has_admin_role():
             role_choices = []
 
             all_roles = Role.query.all()
@@ -31,7 +31,7 @@ def edit(username):
 
             form.roles.choices = role_choices
         else:
-            form = EditProfileForm()
+            del form.roles
 
         user = User.query.filter_by(username=username).first_or_404()
 

@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.character import bp
 from app.helpers import page_title, redirect_non_admins, gen_party_members_choices, flash_no_permission
-from app.character.forms import CreateCharacterForm, EditCharacterForm, EditCharacterFormAdmin, PartyForm
+from app.character.forms import CreateCharacterForm, EditCharacterForm, PartyForm
 from app.models import User, Role, GeneralSetting, Character, Party
 from flask_login import current_user, login_required
 from datetime import datetime
@@ -41,10 +41,10 @@ def edit(id):
         flash_no_permission()
         return redirect(url_for(no_perm))
 
-    if current_user.has_admin_role():
-        form = EditCharacterFormAdmin()
-    else:
-        form = EditCharacterForm()
+    form = EditCharacterForm()
+
+    if not current_user.has_admin_role():
+        del form.dm_notes
 
     if form.validate_on_submit():
         char.name = form.name.data

@@ -24,13 +24,6 @@ class EditProfileForm(FlaskForm):
     password = PasswordField("Password")
     password2 = PasswordField("Password again", validators=[EqualTo("password")])
 
-    submit = SubmitField("Submit")
-
-class EditProfileFormAdmin(FlaskForm):
-    about = TextAreaField("About", validators=[Length(min=0, max=1000)], render_kw={"rows": 15})
-    password = PasswordField("Password")
-    password2 = PasswordField("Password again", validators=[EqualTo("password")])
-
     # choices are populated later
     roles = SelectMultipleField("Roles")
 
