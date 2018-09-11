@@ -10,7 +10,6 @@
 {{ super () }}
 <script type="text/javascript">
 $(document).ready(function() {
-    $("label[for=searchterm]").remove();
     $("#searchterm").attr("placeholder", "search for ...");
 
     $("#sidebar-wrapper form").submit(function(e) {

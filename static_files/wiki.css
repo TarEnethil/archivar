@@ -50,3 +50,7 @@
 .invis-warn {
     margin-top:15px;
 }
+
+label[for=searchterm] {
+    display:none;
+}
