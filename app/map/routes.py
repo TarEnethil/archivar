@@ -55,7 +55,7 @@ def settings():
         form.icon_anchor.data = settings.icon_anchor
         form.external_provider.data = settings.external_provider
         form.tiles_path.data = settings.tiles_path
-        form.default_visible = settings.default_visible
+        form.default_visible.data = settings.default_visible
 
     node_types = MapNodeType.query.all()
 
@@ -87,6 +87,8 @@ def node_create(x, y):
         else:
             msetting = MapSetting.query.get(1)
             new_node.is_visible = msetting.default_visible
+
+            print("default visible: " + str(msetting.default_visible) + ", new_node: " + str(new_node.is_visible))
 
             if new_node.is_visible:
                 message = "Node was created."
