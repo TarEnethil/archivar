@@ -1,11 +1,11 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import db
-from app.user import bp
 from app.helpers import page_title, redirect_non_admins
+from app.models import User, Role
+from app.user import bp
 from app.user.forms import CreateUserForm, EditProfileForm
-from app.models import User, Role, GeneralSetting
-from flask_login import current_user, login_required
 from datetime import datetime
+from flask import render_template, flash, redirect, url_for, request
+from flask_login import current_user, login_required
 
 no_perm = "index"
 

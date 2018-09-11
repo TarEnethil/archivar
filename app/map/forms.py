@@ -1,9 +1,9 @@
-from app import app, db
+from app import app
+from app.helpers import LessThanOrEqual, GreaterThanOrEqual, XYZ_Validator
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
-from app.helpers import LessThanOrEqual, GreaterThanOrEqual, XYZ_Validator
 from wtforms import StringField, TextAreaField, SubmitField, SelectField, IntegerField, HiddenField, BooleanField
-from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, InputRequired, NumberRange
+from wtforms.validators import DataRequired, Length, ValidationError, InputRequired, NumberRange
 
 def icon_is_valid(filename):
     if not "." in filename:

@@ -1,7 +1,6 @@
-from app import db
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField, SubmitField, SelectMultipleField
-from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, InputRequired
+from wtforms import StringField, TextAreaField, SubmitField, SelectMultipleField
+from wtforms.validators import Length, InputRequired
 
 class PartyForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])

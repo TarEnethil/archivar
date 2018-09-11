@@ -1,12 +1,11 @@
-from app import db
-from flask_wtf import FlaskForm
 from app.models import User
+from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, PasswordField, SubmitField, SelectMultipleField
-from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
+from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 
 class CreateUserForm(FlaskForm):
-    username = StringField("Username", validators=[DataRequired()])
-    password = PasswordField("Password", validators=[DataRequired()])
+    username = StringField("Username", validators=[InputRequired()])
+    password = PasswordField("Password", validators=[InputRequired()])
     password2 = PasswordField("Password again", validators=[EqualTo("password")])
 
     # choices are populated later

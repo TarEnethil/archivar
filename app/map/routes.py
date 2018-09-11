@@ -1,15 +1,14 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
 from app import app, db
+from app.helpers import page_title, redirect_non_map_admins, map_node_filename, gen_node_type_choices, flash_no_permission
 from app.map import bp
-from app.helpers import page_title, redirect_non_admins, redirect_non_map_admins, map_node_filename, gen_node_type_choices, flash_no_permission
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm
 from app.models import User, Role, GeneralSetting, MapNodeType, MapSetting, MapNode
-from flask_login import current_user, login_required
-from werkzeug import secure_filename
 from datetime import datetime
+from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
+from flask_login import current_user, login_required
+from os import path, remove
 from PIL import Image
 from sqlalchemy import or_, not_, and_
-import os
 
 no_perm = "index"
 
@@ -186,7 +185,7 @@ def node_type_create():
 
     if form.validate_on_submit():
         filename = map_node_filename(form.icon.data.filename)
-        filepath = os.path.join(app.config["MAPNODES_DIR"], filename)
+        filepath = path.join(app.config["MAPNODES_DIR"], filename)
         form.icon.data.save(filepath)
 
         icon = Image.open(filepath)
@@ -218,13 +217,13 @@ def node_type_edit(id):
 
         if form.icon.data:
             new_filename = map_node_filename(form.icon.data.filename)
-            filepath = os.path.join(app.config["MAPNODES_DIR"], filename)
+            filepath = path.join(app.config["MAPNODES_DIR"], new_filename)
             form.icon.data.save(filepath)
 
             icon = Image.open(filepath)
             width, height = icon.size
 
-            os.remove(os.path.join(app.config["MAPNODES_DIR"], node.icon_file))
+            remove(path.join(app.config["MAPNODES_DIR"], node.icon_file))
 
             node.icon_file = new_filename
             node.icon_width = width

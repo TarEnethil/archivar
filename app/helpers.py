@@ -1,5 +1,5 @@
 from app import app
-from flask import flash, redirect, url_for
+from flask import flash
 from app.models import GeneralSetting, MapNodeType, Character, Party, Session, WikiEntry, User, Role
 from flask_login import current_user
 from werkzeug import secure_filename

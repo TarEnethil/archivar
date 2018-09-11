@@ -1,9 +1,8 @@
-from app import db
+from app import db, login
 from flask import url_for
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from app import login
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 user_role_assoc = db.Table("user_role_assoc",
                     db.Column("user_id", db.Integer, db.ForeignKey("users.id")),

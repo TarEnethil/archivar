@@ -1,8 +1,6 @@
-from app import db
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField, SubmitField, BooleanField, DateTimeField, RadioField
-from wtforms_components import SelectMultipleField
-from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, InputRequired
+from wtforms import StringField, TextAreaField, SubmitField, BooleanField, RadioField
+from wtforms.validators import Length, InputRequired
 
 class WikiEntryForm(FlaskForm):
     title = StringField("Title", validators=[InputRequired(),Length(min=0, max=255)])
