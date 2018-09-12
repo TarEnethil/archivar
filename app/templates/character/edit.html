@@ -11,22 +11,12 @@
 <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 
 <script>
-var tb = ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "quote", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide"]
+{% include "simplemde.js" %}
+var simplemde = new SimpleMDE(generateSMDEConfig("description"));
 
-var simplemde = new SimpleMDE({
-    element: document.getElementById("description"),
-    toolbar: tb,
-    spellChecker: false,
-    status: false
-});
 
 {% if current_user.has_admin_role() %}
-var simplemde2 = new SimpleMDE({
-    element: document.getElementById("dm_notes"),
-    toolbar: tb,
-    spellChecker: false,
-    status: false
-});
+var simplemde2 = new SimpleMDE(generateSMDEConfig("dm_notes"));
 {% endif %}
 </script>
 {% endblock %}

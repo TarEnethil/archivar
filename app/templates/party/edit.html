@@ -13,21 +13,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js"></script>
 
 <script>
-var tb = ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "quote", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide"]
+{% include "simplemde.js" %}
+var simplemde = new SimpleMDE(generateSMDEConfig("description"));
 
-var simplemde = new SimpleMDE({
-    element: document.getElementById("description"),
-    toolbar: tb,
-    spellChecker: false,
-    status: false
-});
-
-var simplemde2 = new SimpleMDE({
-    element: document.getElementById("dm_notes"),
-    toolbar: tb,
-    spellChecker: false,
-    status: false
-});
+var simplemde = new SimpleMDE(generateSMDEConfig("dm_notes"));
 
 $("#members").multiSelect( { keepOrder: true, selectableHeader: "Non-party characters", selectionHeader: "Party members", cssClass: "partymember-select" });
 </script>

@@ -16,21 +16,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
 <script>
-var tb = ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "quote", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide"]
+{% include "simplemde.js" %}
+var simplemde = new SimpleMDE(generateSMDEConfig("summary"));
 
-var simplemde = new SimpleMDE({
-    element: document.getElementById("summary"),
-    toolbar: tb,
-    spellChecker: false,
-    status: false
-});
-
-var simplemde2 = new SimpleMDE({
-    element: document.getElementById("dm_notes"),
-    toolbar: tb,
-    spellChecker: false,
-    status: false
-});
+var simplemde = new SimpleMDE(generateSMDEConfig("dm_notes"));
 
 $("#participants").multiSelect( { keepOrder: true, selectableHeader: "Available", selectionHeader: "Participants", cssClass: "partymember-select", selectableOptgroup: true });
 
