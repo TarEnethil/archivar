@@ -123,14 +123,85 @@
 
 #bottom-menu {
     position:fixed;
-    bottom:10px;
-    right:10px;
+    display:block;
+    width:100%;
+    padding:10px;
+    bottom:0;
 }
 
 #btn-cancel-add-node {
     display:none;
 }
 
-#bottom-menu .btn {
+#bottom-menu .btn-left {
+    float:left;
+}
+
+#bottom-menu .btn-right {
     float:right;
+}
+
+#location-list {
+    position:fixed;
+    width:250px;
+    max-width:250px;
+    height:100%;
+    padding:10px 0 10px 10px;
+    border-right:10px solid #ccc;
+    background:#fff;
+    overflow-y:auto;
+    display:none;
+    z-index:50;
+}
+
+#location-list #locations {
+    list-style: none;
+    margin:0;
+    padding:0;
+}
+
+#location-list input {
+    display:block;
+    width:90%;
+    font-size:.8em;
+}
+
+#location-list #locations li.category {
+    font-weight:bold;
+    line-height:20px;
+    margin-top:10px;
+    border-bottom:1px solid #ccc;
+}
+
+#location-list #locations li.category img {
+    max-height:20px;
+    max-width:20px;
+}
+
+#location-list #locations li.location {
+    padding-left:10px;
+}
+
+#location-list #locations li.location.invis {
+    /*background:rgba(255, 150, 150, 0.3);*/
+    color:#ab5555;
+    font-style:italic;
+}
+
+#location-list #locations li.location:hover {
+    cursor: pointer;
+    background:#ccc;
+}
+
+#location-list .close-link-sidebar {
+    color:#000;
+    position:absolute;
+    top:5px;
+    right:5px;
+}
+
+#location-list .close-link-sidebar:hover,
+#location-list .close-link-sidebar:focus {
+    color:#ab0000;
+    cursor:pointer;
 }

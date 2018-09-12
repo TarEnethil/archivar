@@ -26,18 +26,30 @@
     <div id="nodeform_content"></div>
   </div>
 
+  <div id="location-list">
+    <a class="close-link-sidebar">
+      <span class="glyphicon glyphicon-remove"></span>
+    </a>
+    <input type="text" id="filter_locations" placeholder="filter" />
+    <ul id="locations"></ul>
+  </div>
+
   <div id="bottom-menu">
-    <a id="btn-add-node" class="btn btn-default">
+    <a id="btn-loc-sidebar" class="btn btn-default btn-left">
+      <span class="glyphicon glyphicon-list"></span>
+      location list
+    </a>
+
+    <a id="btn-add-node" class="btn btn-default btn-right">
       <span class="glyphicon glyphicon-plus"></span>
       new node
     </a>
 
-    <a id="btn-cancel-add-node" class="btn btn-warning">
+    <a id="btn-cancel-add-node" class="btn btn-warning btn-right">
       <span class="glyphicon glyphicon-remove"></span>
       cancel
     </a>
   </div>
- 
 {% endblock %}
 
 {% block scripts %}
@@ -55,6 +67,7 @@
     var _marker_layer;
     var _map_node_types;
     var _nextAction;
+    var _filterbase = {};
 
     $.fn.selectpicker.Constructor.BootstrapVersion = '3';
 
@@ -297,6 +310,7 @@
         for (var nt in _map_node_types) {
           _map_node_types[nt].iconstyle = gen_icon_style(_map_node_types[nt].icon_file, _map_node_types[nt].icon_width, _map_node_types[nt].icon_height);
           _map_node_types[nt].iconstyle_private = gen_icon_style(_map_node_types[nt].icon_file, _map_node_types[nt].icon_width, _map_node_types[nt].icon_height, true);
+          _filterbase[nt] = []
         }
 
         console.log("finished loading node types");
@@ -320,13 +334,23 @@
       _marker_layer.clearLayers()
     }
 
+    function clear_location_list() {
+      $("#locations li").remove();
+      _filterbase = {};
+    }
+
     function reload_markers() {
       loading();
       delete_markers();
+      clear_location_list();
 
-      load_map_nodes(function() {
-        hide_loading();
-      })
+      load_map_node_types(function() {
+        load_map_nodes(function() {
+          fill_location_list(function() {
+            hide_loading();
+          });
+        });
+      });
     }
 
     function load_edit_form(id) {
@@ -400,11 +424,46 @@
           _nodes[nid].marker = gen_marker(_nodes[nid].x, _nodes[nid].y, _nodes[nid].node_type, _nodes[nid].visible);
           _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, _nodes[nid].edited, _nodes[nid].edited_by), { minWidth: 200 });
           _marker_layer.addLayer(_nodes[nid].marker);
+          _filterbase[_nodes[nid].node_type].push({ name: _nodes[nid].name, id: _nodes[nid].id, visible: _nodes[nid].visible });
         }
 
         console.log("finished loading nodes");
         cb();
       });
+    }
+
+    function nodeCompare(a, b) {
+      if (a.name.toLowerCase() < b.name.toLowerCase())
+        return -1;
+      if (a.name.toLowerCase() > b.name.toLowerCase())
+        return 1;
+      return 0;
+    }
+
+    function fill_location_list(cb) {
+      var list = $("ul#locations");
+      for (var cat in _filterbase) {
+        if (_filterbase[cat].length > 0) {
+          $("<li/>").addClass("category").html('<img src="' + _map_node_types[cat].icon_file + '" > ' + _map_node_types[cat].name).appendTo(list);
+          _filterbase[cat].sort(nodeCompare);
+          for (var node in _filterbase[cat]) {
+            var element = $("<li/>").addClass("location").attr("data-node-id", _filterbase[cat][node].id).html(_filterbase[cat][node].name);
+            if (_filterbase[cat][node].visible == false) {
+              element.addClass("invis");
+            }
+            element.appendTo(list);
+          }
+        }
+      }
+
+      $(".location").click(function() {
+        var marker = _nodes[$(this).attr("data-node-id")].marker
+        _map.panTo(marker.getLatLng());
+        marker.openPopup();
+      });
+
+      console.log("finished populating location list");
+      cb();
     }
 
     function setNextAction(act) {
@@ -498,31 +557,49 @@
 
       load_map_node_types(function() {
         load_map_nodes(function() {
-          _marker_layer.addTo(_map);
+          fill_location_list(function() {
+            _marker_layer.addTo(_map);
 
-          $("#btn-add-node").click(function() {
-            setNextAction("newNode");
+            $("#btn-add-node").click(function() {
+              setNextAction("newNode");
+            });
+
+            $("#btn-cancel-add-node").click(function() {
+              setNextAction("none");
+            });
+
+            $("#btn-loc-sidebar").click(function() {
+              $("#location-list").show();
+            });
+
+            $(".close-link-sidebar").click(function() {
+              $("#location-list").hide();
+            });
+
+            $("div").one("click", '.node-edit-btn', function(event) {
+              console.log(event);
+              setNextAction("none");
+              load_edit_form($(this).attr("data"));
+              L.DomEvent.stop(event);
+            });
+
+            $("div").one("click", '.node-delete-btn', function(event) {
+              setNextAction("none");
+              delete_node($(this).attr("data"));
+              L.DomEvent.stop(event);
+            });
+
+            $("#filter_locations").on("keyup", function() {
+              var value = $(this).val().toLowerCase();
+
+              $("#locations li.location").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+              });
+            });
+
+            hide_loading();
+            console.log("init done.");
           });
-
-          $("#btn-cancel-add-node").click(function() {
-            setNextAction("none");
-          });
-
-          $("div").one("click", '.node-edit-btn', function(event) {
-            console.log(event);
-            setNextAction("none");
-            load_edit_form($(this).attr("data"));
-            L.DomEvent.stop(event);
-          });
-
-          $("div").one("click", '.node-delete-btn', function(event) {
-            setNextAction("none");
-            delete_node($(this).attr("data"));
-            L.DomEvent.stop(event);
-          });
-
-          hide_loading();
-          console.log("init done.");
         });
       });
     }
