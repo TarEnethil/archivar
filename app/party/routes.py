@@ -3,7 +3,7 @@ from app.helpers import page_title, redirect_non_admins, gen_party_members_choic
 from app.models import Character, Party
 from app.party import bp
 from app.party.forms import PartyForm
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required
 
 no_perm = "character.list"
@@ -75,3 +75,10 @@ def view(id):
     party = Party.query.filter_by(id=id).first_or_404()
 
     return render_template("party/view.html", party=party, title=page_title("View party"))
+
+@bp.route("/sidebar", methods=["GET"])
+@login_required
+def sidebar():
+    party = Party.query.with_entities(Party.id, Party.name).order_by(Party.name.desc()).all();
+
+    return jsonify(party);

@@ -1,11 +1,12 @@
 from app import db
 from app.helpers import page_title, redirect_non_wiki_admins, flash_no_permission, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited
-from app.models import WikiEntry, WikiSetting
+from app.models import WikiEntry, WikiSetting, User, Role
 from app.wiki import bp
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import current_user, login_required
+from sqlalchemy import and_, or_, not_
 
 no_perm = "wiki.index"
 
@@ -163,3 +164,19 @@ def settings():
         form.default_visible.data = settings.default_visible
 
     return render_template("wiki/settings.html", form=form, title=page_title("Wiki settings"))
+
+@bp.route("/sidebar", methods=["GET"])
+@login_required
+def sidebar():
+    if current_user.has_admin_role():
+        entries = WikiEntry.query
+    elif current_user.has_wiki_role():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        entries = WikiEntry.query.filter(not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))))
+    else:
+        entries = WikiEntry.query.filter(or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id))
+
+    entries = entries.with_entities(WikiEntry.id, WikiEntry.title, WikiEntry.is_visible).order_by(WikiEntry.title.asc()).all()
+
+    return jsonify(entries)

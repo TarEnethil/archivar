@@ -4,7 +4,7 @@ from app.models import Character, Session
 from app.session import bp
 from app.session.forms import SessionForm
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required
 
 no_perm = "session.index"
@@ -97,3 +97,10 @@ def view(id):
     next_session_id = get_next_session_id(session.date, session.code)
 
     return render_template("session/view.html", session=session, prev=prev_session_id, next=next_session_id, title=page_title("View session"))
+
+@bp.route("/sidebar", methods=["GET"])
+@login_required
+def sidebar():
+    sessions = Session.query.with_entities(Session.id, Session.title).order_by(Session.date.asc()).all()
+
+    return jsonify(sessions)

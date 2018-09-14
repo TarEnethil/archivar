@@ -4,7 +4,7 @@ from app.character.forms import CreateCharacterForm, EditCharacterForm, PartyFor
 from app.helpers import page_title, redirect_non_admins, gen_party_members_choices, flash_no_permission
 from app.models import Character, Party
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import current_user, login_required
 
 no_perm = "index"
@@ -148,3 +148,12 @@ def party_view(id):
     party = Party.query.filter_by(id=id).first_or_404()
 
     return render_template("character/party_view.html", party=party, title=page_title("View party"))
+
+@bp.route("/sidebar", methods=["GET"])
+@login_required
+def sidebar():
+    chars = Character.query.with_entities(Character.id, Character.name).order_by(Character.name.desc()).all()
+
+    print(chars)
+
+    return jsonify(chars)

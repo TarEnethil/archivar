@@ -87,6 +87,15 @@
 {% endblock %}
 
 {% block content %}
+<div class="big-wrapper">
+    <div id="editor-sidebar">
+        <a class="close-link-sidebar">
+            <span class="glyphicon glyphicon-remove"></span>
+        </a>
+        <input type="text" id="filter_things" placeholder="filter" />
+        <ul id="thinglist"></ul>
+    </div>
+
     <div class="container">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -104,4 +113,5 @@
 
     {% block app_content %}{% endblock %}
     </div>
+</div>
 {% endblock %}

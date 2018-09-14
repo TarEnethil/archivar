@@ -34,6 +34,14 @@ $(document).ready(function() {
 
 {% block content %}
     <div id="wrapper">
+        <div id="editor-sidebar">
+            <a class="close-link-sidebar">
+                <span class="glyphicon glyphicon-remove"></span>
+            </a>
+            <input type="text" id="filter_things" placeholder="filter" />
+            <ul id="thinglist"></ul>
+        </div>
+
         <div id="sidebar-wrapper">
             <h2>Search</h2>
             {% if nav[1] %}

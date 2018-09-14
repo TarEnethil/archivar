@@ -50,3 +50,74 @@
 ul.nav-tabs li span.glyphicon {
     color: #000 !important;
 }
+
+.editor-toolbar a.fa-red {
+    color:#ab0000 !important;
+}
+
+#editor-sidebar {
+    position:fixed;
+    width:250px;
+    max-width:250px;
+    height:100%;
+    padding:10px 0 10px 10px;
+    border-right:10px solid #ccc;
+    background:#fff;
+    overflow-y:auto;
+    display:none;
+    z-index:50;
+    background:#eeeeee;
+    left:0;
+    margin-top:-20px;
+}
+
+#editor-sidebar #thinglist {
+    list-style: none;
+    margin:0;
+    padding:0;
+}
+
+#editor-sidebar input {
+    display:block;
+    width:90%;
+    font-size:.8em;
+}
+
+#editor-sidebar #thinglist li.category {
+    font-weight:bold;
+    line-height:20px;
+    margin-top:10px;
+    border-bottom:1px solid #ccc;
+}
+
+#editor-sidebar #thinglist li.category img {
+    max-height:20px;
+    max-width:20px;
+}
+
+#editor-sidebar #thinglist li.thing {
+    padding-left:10px;
+}
+
+#editor-sidebar #thinglist li.thing.invis {
+    color:#ab5555;
+    font-style:italic;
+}
+
+#editor-sidebar #thinglist li.thing:hover {
+    cursor: pointer;
+    background:#ccc;
+}
+
+#editor-sidebar .close-link-sidebar {
+    color:#000;
+    position:absolute;
+    top:5px;
+    right:5px;
+}
+
+#editor-sidebar .close-link-sidebar:hover,
+#editor-sidebar .close-link-sidebar:focus {
+    color:#ab0000;
+    cursor:pointer;
+}
