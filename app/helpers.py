@@ -128,7 +128,7 @@ def prepare_wiki_nav():
     else:
         entries = WikiEntry.query.filter(WikiEntry.id != 1, or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id))
 
-    entries = entries.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).order_by(WikiEntry.title.asc()).all()
+    entries = entries.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title, WikiEntry.is_visible).order_by(WikiEntry.title.asc()).all()
 
     cat_dict = {}
 
@@ -136,7 +136,7 @@ def prepare_wiki_nav():
         if entry[0] not in cat_dict:
             cat_dict[entry[0]] = []
 
-        cat_dict[entry[0]].append(entry[1:3])
+        cat_dict[entry[0]].append(entry[1:4])
 
     return OrderedDict(sorted(cat_dict.items(), key=lambda t: t[0]))
 

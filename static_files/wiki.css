@@ -47,6 +47,11 @@
     padding-left:15px;
 }
 
+#sidebar-wrapper li.invis a {
+    color:#ab0000;
+    font-style:italic;
+}
+
 .invis-warn {
     margin-top:15px;
 }
