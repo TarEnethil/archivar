@@ -39,6 +39,20 @@
             Edit
         </a>
     </li>
+
+    {% if current_user.is_wiki_admin() %}
+    <li>
+        <a href="{{ url_for('wiki.toggle_vis', id=entry.id) }}">
+            {% if entry.is_visible %}
+            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+            Hide
+            {% else %}
+            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+            Make public
+            {% endif %}
+        </a>
+    </li>
+    {% endif %}
 </ul>
 
 {% if not entry.is_visible %}

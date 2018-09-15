@@ -121,6 +121,29 @@ def view(id):
 
     return render_template("wiki/view.html", entry=wikientry, nav=(prepare_wiki_nav(), WikiSearchForm()), title=page_title("View wiki entry"))
 
+@bp.route("/vis/<int:id>", methods=["GET"])
+@login_required
+def toggle_vis(id):
+    deny_access = redirect_non_wiki_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    wikientry = WikiEntry.query.filter_by(id=id).first_or_404()
+
+    if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
+    if wikientry.is_visible == True:
+        wikientry.is_visible = False
+        flash("Article was hidden.", "success")
+    else:
+        wikientry.is_visible = True
+        flash("Article is now visible to anyone.", "success")
+
+    db.session.commit()
+    return redirect(url_for('wiki.view', id=id))
+
 @bp.route("/search/<string:text>", methods=["GET"])
 @login_required
 def search_text(text):
@@ -149,7 +172,7 @@ def recent():
 def settings():
     deny_access = redirect_non_wiki_admins()
     if deny_access:
-        return redirect(url_for('index'))
+        return redirect(url_for(no_perm))
 
     form = WikiSettingsForm()
     settings = WikiSetting.query.get(1)

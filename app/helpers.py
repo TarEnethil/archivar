@@ -8,8 +8,11 @@ from sqlalchemy import and_, or_, not_
 from collections import OrderedDict
 import os
 
-def flash_no_permission():
-    flash("No permission for this action.", "danger")
+def flash_no_permission(msg=None):
+    if (msg != None):
+        flash(msg)
+    else:
+        flash("No permission for this action.", "danger")
 
 def redirect_non_admins():
     if not current_user.has_admin_role():
