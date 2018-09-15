@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField, SelectMultipleField
+from wtforms import StringField, TextAreaField, SubmitField
 from wtforms.validators import Length, InputRequired
 
 class CreateCharacterForm(FlaskForm):
@@ -16,12 +16,5 @@ class EditCharacterForm(FlaskForm):
     class_ = StringField("Class", validators=[InputRequired()])
     description = TextAreaField("Description", render_kw={"rows": 15})
     dm_notes = TextAreaField("DM Notes (hidden)", render_kw={"rows": 15})
-
-    submit = SubmitField("Submit")
-
-class PartyForm(FlaskForm):
-    name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])
-    description = TextAreaField("Description", render_kw={"rows": 15})
-    members = SelectMultipleField("Members",coerce=int)
 
     submit = SubmitField("Submit")
