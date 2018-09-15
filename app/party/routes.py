@@ -79,6 +79,6 @@ def view(id):
 @bp.route("/sidebar", methods=["GET"])
 @login_required
 def sidebar():
-    party = Party.query.with_entities(Party.id, Party.name).order_by(Party.name.desc()).all();
+    party = Party.query.with_entities(Party.id, Party.name).order_by(Party.name.asc()).all();
 
     return jsonify(party);

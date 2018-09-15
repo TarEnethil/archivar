@@ -85,7 +85,7 @@ def list():
 @bp.route("/sidebar", methods=["GET"])
 @login_required
 def sidebar():
-    chars = Character.query.with_entities(Character.id, Character.name).order_by(Character.name.desc()).all()
+    chars = Character.query.with_entities(Character.id, Character.name).order_by(Character.name.asc()).all()
 
     print(chars)
 

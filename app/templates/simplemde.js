@@ -3,15 +3,16 @@ var visible = false;
 
 function loadResource(editor, category, url, fake_url) {
     var list = $("#thinglist");
-
-    console.log("called with " + category + ":::" + url + ":::"+ fake_url);
+    var listitem = undefined;
 
     $.getJSON(url, function(data) {
-        $("<li/>").addClass("category").text(category).appendTo(thinglist).appendTo();
-        console.log(data);
+        $("<li/>").addClass("category").text(category).appendTo(thinglist);
 
         for (var i in data) {
-            var listitem = $("<li/>").addClass("thing").text(data[i][1]).attr("data-url", fake_url.replace("0", data[i][0])).appendTo(list);
+            if (listitem == undefined)
+                listitem = $("<li/>").addClass("thing").text(data[i][1]).attr("data-url", fake_url.replace("0", data[i][0])).appendTo(list);
+            else
+                listitem = $("<li/>").addClass("thing").text(data[i][1]).attr("data-url", fake_url.replace("0", data[i][0])).insertAfter(listitem);
 
             if (data[i][2] == false) {
                 listitem.addClass("invis");
@@ -42,8 +43,6 @@ function toggleSidebar(editor) {
                         { cat: "Parties", json_url: "{{ url_for('party.sidebar') }}", fake_url: "{{ url_for('party.view', id=0) }}"},
                         { cat: "Sessions", json_url: "{{ url_for('session.sidebar') }}", fake_url: "{{ url_for('session.view', id=0) }}"},
                         { cat: "Wiki", json_url: "{{ url_for('wiki.sidebar') }}", fake_url: "{{ url_for('wiki.view', id=0) }}"} ];
-
-        console.log(toLoad);
 
         for (var i in toLoad) {
             loadResource(editor, toLoad[i].cat, toLoad[i].json_url, toLoad[i].fake_url);
