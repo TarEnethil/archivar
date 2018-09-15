@@ -101,6 +101,43 @@ def gen_participant_choices():
 
     return choices
 
+def gen_wiki_entry_choices():
+    if current_user.has_admin_role():
+        entries = WikiEntry.query
+    elif current_user.has_wiki_role():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        entries = WikiEntry.query.filter(not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))))
+    else:
+        entries = WikiEntry.query.filter(or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id))
+
+    entries = entries.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).order_by(WikiEntry.title.asc()).all()
+
+    cat_dict = {}
+
+    for entry in entries:
+        if entry[0] not in cat_dict:
+            cat_dict[entry[0]] = []
+
+        cat_dict[entry[0]].append(entry[1:3])
+
+    ordered = OrderedDict(sorted(cat_dict.items(), key=lambda t: t[0]))
+
+    choices = [(0, "*no linked article*")]
+
+    for k in ordered.keys():
+        if k != "":
+            p = (k, [])
+        else:
+            p = ("Main category", [])
+
+        for choice in ordered[k]:
+            p[1].append((choice[0], choice[1]))
+
+        choices.append(p)
+
+    return choices
+
 def get_session_number(code):
     q = Session.query.filter(Session.code == code)
     return q.count()

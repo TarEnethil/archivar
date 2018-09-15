@@ -1,8 +1,8 @@
 from app import app, db
-from app.helpers import page_title, redirect_non_map_admins, map_node_filename, gen_node_type_choices, flash_no_permission
+from app.helpers import page_title, redirect_non_map_admins, map_node_filename, gen_node_type_choices, gen_wiki_entry_choices, flash_no_permission
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm
-from app.models import User, Role, GeneralSetting, MapNodeType, MapSetting, MapNode
+from app.models import User, Role, GeneralSetting, MapNodeType, MapSetting, MapNode, WikiEntry
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
 from flask_login import current_user, login_required
@@ -73,9 +73,10 @@ def node_create(x, y):
     form.coord_y.data = y
 
     form.node_type.choices = gen_node_type_choices()
+    form.wiki_entry.choices = gen_wiki_entry_choices()
 
     if form.validate_on_submit():
-        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, created_by=current_user)
+        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, created_by=current_user, wiki_entry_id=form.wiki_entry.data)
 
         if current_user.is_map_admin():
             new_node.is_visible = form.is_visible.data
@@ -87,8 +88,6 @@ def node_create(x, y):
         else:
             msetting = MapSetting.query.get(1)
             new_node.is_visible = msetting.default_visible
-
-            print("default visible: " + str(msetting.default_visible) + ", new_node: " + str(new_node.is_visible))
 
             if new_node.is_visible:
                 message = "Node was created."
@@ -128,6 +127,27 @@ def node_edit(id):
         flash_no_permission()
         redirect(url_for(no_perm))
 
+    wiki_entry_ok = True
+
+    if node.wiki_entry_id != 0 and node.wiki_entry_id != None:
+        wentry = WikiEntry.query.filter_by(id=node.wiki_entry_id).first()
+
+        if not wentry:
+            wiki_entry_ok = False
+        else:
+            if not current_user.has_admin_role() and current_user.is_wiki_admin() and wentry.is_visible == False and wentry.created_by.has_admin_role():
+                wiki_entry_ok = False
+
+            if not current_user.is_wiki_admin() and wentry.is_visible == False and not wentry.created_by == current_user:
+                wiki_entry_ok = False
+
+    if wiki_entry_ok == True:
+        form.wiki_entry.choices = gen_wiki_entry_choices()
+    else:
+        form.wiki_entry.label.text = "(wiki entry is invisible to you and can not be changed.)"
+        form.wiki_entry.render_kw = {"disabled": "disabled"};
+        form.wiki_entry.choices = [(0, "disabled")]
+
     if form.validate_on_submit():
         node.name = form.name.data
         node.description = form.description.data
@@ -138,6 +158,9 @@ def node_edit(id):
 
         node.edited = datetime.utcnow()
         node.edited_by = current_user
+
+        if wiki_entry_ok == True:
+            node.wiki_entry_id = form.wiki_entry.data
 
         if current_user.is_map_admin():
             node.is_visible = form.is_visible.data
@@ -154,6 +177,9 @@ def node_edit(id):
 
     form.coord_x.data = node.coord_x
     form.coord_y.data = node.coord_y
+
+    if wiki_entry_ok == True:
+        form.wiki_entry.data = node.wiki_entry_id
 
     if current_user.is_map_admin():
         form.is_visible.data = node.is_visible

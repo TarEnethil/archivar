@@ -130,6 +130,7 @@ class MapNode(db.Model):
     edited = db.Column(db.DateTime, default=datetime.utcnow)
     edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     edited_by = db.relationship("User", foreign_keys=[edited_by_id])
+    wiki_entry_id = db.Column(db.Integer, db.ForeignKey("wiki_entries.id"), default=0)
 
     def to_dict(self):
         dic = {
@@ -141,7 +142,8 @@ class MapNode(db.Model):
             "node_type" : self.node_type,
             "visible" : self.is_visible,
             "created" : self.created,
-            "created_by" : self.created_by.username
+            "created_by" : self.created_by.username,
+            "wiki_id" : self.wiki_entry_id
         }
 
         if (self.edited_by):
