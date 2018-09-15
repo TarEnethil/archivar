@@ -78,10 +78,10 @@ $(document).ready(function() {
                             {% endif %}
 
                             {% for link in nav[0][cat] %}
-                                {% if entry and entry.id == link[0] %}
-                                <li class="active"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
-                                {% elif entry and entry.id == link[0] and link[2] == False %}
+                                {% if entry and entry.id == link[0] and link[2] == False %}
                                 <li class="active invis"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                                {% elif entry and entry.id == link[0] %}
+                                <li class="active"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
                                 {% elif link[2] == False %}
                                 <li class="invis"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
                                 {% else %}
@@ -94,10 +94,10 @@ $(document).ready(function() {
                     {% endfor %}
 
                     {% for link in nav[0][""] %}
-                        {% if entry and entry.id == link[0] %}
-                        <li class="active"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
-                        {% elif entry and entry.id == link[0] and link[2] == False %}
+                        {% if entry and entry.id == link[0] and link[2] == False %}
                         <li class="active invis"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                        {% elif entry and entry.id == link[0] %}
+                        <li class="active"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
                         {% elif link[2] == False %}
                         <li class="invis"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
                         {% else %}
