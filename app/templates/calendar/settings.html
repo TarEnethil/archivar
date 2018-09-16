@@ -133,7 +133,7 @@
 <h2>Days of the week</h2>
 <ul class="nav nav-tabs">
     <li>
-        <a href="{{ url_for('calendar.dummy') }}">
+        <a href="{{ url_for('calendar.day_create') }}">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             New
         </a>
@@ -141,10 +141,43 @@
 </ul>
 <p>DAY DESCRIPTION</p>
 {% if days %}
---- table ---
+<table class="table">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Actions</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for day in days %}
+        <tr>
+            <td>{{ day.name }} ({{ day.abbreviation }})</td>
+            <td>
+                <a href="{{ url_for('calendar.day_edit', id=day.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    Edit
+                </a>
+
+                <a href="{{ url_for('calendar.day_up', id=day.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    Up
+                </a>
+
+                <a href="{{ url_for('calendar.day_down', id=day.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                    Down
+                </a>
+
+                <a href="{{ url_for('calendar.day_delete', id=day.id) }}" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                    Delete
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% else %}
 <p>No days yet.</p>
 {% endif %}
-
-
 {% endblock %}

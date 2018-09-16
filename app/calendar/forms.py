@@ -18,3 +18,10 @@ class MonthForm(FlaskForm):
     days = IntegerField("Duration in days", validators=[InputRequired(),NumberRange(min=1)])
 
     submit = SubmitField("Submit")
+
+class DayForm(FlaskForm):
+    name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])
+    abbreviation = StringField("Abbreviation", validators=[Length(min=0, max=5)])
+    description = TextAreaField("Description", render_kw={"rows": 15})
+
+    submit = SubmitField("Submit")

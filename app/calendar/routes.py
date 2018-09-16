@@ -2,7 +2,7 @@ from app import db
 from app.helpers import page_title, redirect_non_admins, get_next_epoch_order, get_next_month_order, get_next_day_order
 from app.models import CalendarSetting, Epoch, Month, Day
 from app.calendar import bp
-from app.calendar.forms import EpochForm, MonthForm
+from app.calendar.forms import EpochForm, MonthForm, DayForm
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required
 
@@ -266,4 +266,121 @@ def month_down(id):
     db.session.commit()
 
     flash("Order of '" + month_to_down.name + "' and '" + month_to_up.name + "' has been swapped.", "success")
+    return redirect(url_for("calendar.settings"))
+
+@bp.route("/day/create", methods=["GET", "POST"])
+@login_required
+def day_create():
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    heading = "Create new day"
+    form = DayForm()
+
+    if form.validate_on_submit():
+        order_num = get_next_day_order()
+
+        new_day = Day(name=form.name.data, abbreviation=form.abbreviation.data, description=form.description.data, order=order_num)
+
+        db.session.add(new_day)
+        db.session.commit()
+
+        flash("Day added.", "success")
+        return redirect(url_for("calendar.settings"))
+
+    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Create new day"))
+
+@bp.route("/day/edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def day_edit(id):
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    heading = "Edit day"
+    form = DayForm()
+
+    day = Day.query.filter_by(id=id).first_or_404()
+
+    if form.validate_on_submit():
+        day.name = form.name.data
+        day.abbreviation = form.abbreviation.data
+        day.description = form.description.data
+
+        db.session.commit()
+
+        flash("day edited.", "success")
+        return redirect(url_for("calendar.settings"))
+    elif request.method == "GET":
+        form.name.data = day.name
+        form.abbreviation.data = day.abbreviation
+        form.description.data = day.description
+
+    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Edit day"))
+
+@bp.route("/day/delete/<int:id>", methods=["GET"])
+@login_required
+def day_delete(id):
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    day = Day.query.filter_by(id=id).first_or_404()
+
+    db.session.delete(day)
+    db.session.commit()
+
+    flash("Day was deleted.", "success")
+    return redirect(url_for("calendar.settings"))
+
+
+@bp.route("/day/up/<int:id>", methods=["GET"])
+@login_required
+def day_up(id):
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    day_to_up = Day.query.filter_by(id=id).first_or_404()
+    day_to_down = Day.query.filter(Day.order < day_to_up.order).order_by(Day.order.desc()).limit(1).first()
+
+    if not day_to_down:
+        flash("No day with lower order found.", "danger")
+        return redirect(url_for("calendar.settings"))
+
+    up_order = day_to_up.order
+    down_order = day_to_down.order
+
+    day_to_up.order = down_order
+    day_to_down.order = up_order
+
+    db.session.commit()
+
+    flash("Order of '" + day_to_up.name + "' and '" + day_to_down.name + "' has been swapped.", "success")
+    return redirect(url_for("calendar.settings"))
+
+@bp.route("/day/down/<int:id>", methods=["GET"])
+@login_required
+def day_down(id):
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    day_to_down = Day.query.filter_by(id=id).first_or_404()
+    day_to_up = Day.query.filter(Day.order > day_to_down.order).order_by(Day.order.asc()).limit(1).first()
+
+    if not day_to_up:
+        flash("No day with higher order found.", "danger")
+        return redirect(url_for("calendar.settings"))
+
+    down_order = day_to_down.order
+    up_order = day_to_up.order
+
+    day_to_down.order = up_order
+    day_to_up.order = down_order
+
+    db.session.commit()
+
+    flash("Order of '" + day_to_down.name + "' and '" + day_to_up.name + "' has been swapped.", "success")
     return redirect(url_for("calendar.settings"))
