@@ -1,6 +1,6 @@
 from app import app
 from flask import flash
-from app.models import GeneralSetting, MapNodeType, Character, Party, Session, WikiEntry, User, Role
+from app.models import GeneralSetting, MapNodeType, Character, Party, Session, WikiEntry, User, Role, Epoch, Month, Day
 from flask_login import current_user
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError
@@ -157,6 +157,18 @@ def get_next_session_id(date, code):
         return q.id
     else:
         return
+
+def get_next_epoch_order():
+    q = Epoch.query.count()
+    return q + 1
+
+def get_next_month_order():
+    q = Month.query.all()
+    return q.count() + 1
+
+def get_next_day_order():
+    q = Day.query.all()
+    return q.count() + 1
 
 def prepare_wiki_nav():
     if current_user.has_admin_role():

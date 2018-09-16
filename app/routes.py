@@ -1,7 +1,7 @@
 from app import app, db
 from app.forms import LoginForm, SettingsForm, InstallForm
 from app.helpers import page_title, redirect_non_admins
-from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry
+from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, send_from_directory
 from flask_login import current_user, login_user, login_required, logout_user
@@ -100,9 +100,11 @@ def install():
             db.session.add(event_role)
             db.session.add(special_role)
 
+            calendar_setting = CalendarSetting(finalized=False)
             map_setting = MapSetting(min_zoom=0, max_zoom=0, default_zoom=0, icon_anchor=0)
             wiki_setting = WikiSetting(default_visible=False)
 
+            db.session.add(calendar_setting)
             db.session.add(map_setting)
             db.session.add(wiki_setting)
 

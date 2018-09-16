@@ -1,0 +1,12 @@
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, SubmitField, IntegerField, BooleanField
+from wtforms.validators import Length, InputRequired
+
+class EpochForm(FlaskForm):
+    name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])
+    abbreviation = StringField("Abbreviation", validators=[Length(min=0, max=5)])
+    description = TextAreaField("Description", render_kw={"rows": 15})
+    years = IntegerField("Duration in years (empty/0 if current epoch)")
+    circa = BooleanField("Duration is approximate (display only)")
+
+    submit = SubmitField("Submit")

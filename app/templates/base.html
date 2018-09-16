@@ -52,6 +52,7 @@
                         {% if current_user.has_admin_role() %}
                         <li>
                             <a href="{{ url_for('settings') }}">General</a>
+                            <a href="{{ url_for('calendar.settings') }}">Calendar</a>
                         </li>
                         {% endif %}
                         {% if current_user.is_map_admin() %}

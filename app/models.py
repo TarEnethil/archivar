@@ -211,6 +211,38 @@ class WikiEntry(db.Model):
     def split_tags(self):
         return self.tags.split(" ")
 
+class CalendarSetting(db.Model):
+    __tablename__ = "calendar_settings"
+    id = db.Column(db.Integer, primary_key=True)
+    finalized = db.Column(db.Boolean, default=False)
+
+class Epoch(db.Model):
+    __tablename__ = "epochs"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    abbreviation = db.Column(db.String(5))
+    description = db.Column(db.Text)
+    circa = db.Column(db.Boolean, default=False)
+    years = db.Column(db.Integer)
+    order = db.Column(db.Integer)
+
+class Month(db.Model):
+    __tablename__ = "months"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    abbreviation = db.Column(db.String(5))
+    description = db.Column(db.Text)
+    days = db.Column(db.Integer)
+    order = db.Column(db.Integer)
+
+class Day(db.Model):
+    __tablename__ = "days"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    abbreviation = db.Column(db.String(5))
+    description = db.Column(db.Text)
+    order = db.Column(db.Integer)
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

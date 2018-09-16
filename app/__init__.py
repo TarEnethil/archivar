@@ -31,4 +31,7 @@ app.register_blueprint(session_bp, url_prefix="/session")
 from app.wiki import bp as wiki_bp
 app.register_blueprint(wiki_bp, url_prefix="/wiki")
 
+from app.calendar import bp as calendar_bp
+app.register_blueprint(calendar_bp, url_prefix="/calendar")
+
 from app import routes, models
