@@ -13,7 +13,9 @@
     </li>
 </ul>
 
-<p>info box finalized</p>
+<p class="alert alert-warning">
+The calendar was finalized, which means no alterations can be made, except for the name, description and abbreviation fields.
+</p>
 {% else %}
 <ul class="nav nav-tabs">
     <li>
@@ -30,7 +32,17 @@
     </li>
 </ul>
 
-<p>CALENDAR DESCRIPTION NON_FINALIZED</p>
+<p>
+The calendar configuration consists of epochs, months and days of the week.
+Each of these has at least a name, optional abbreviation and a description to add lore.
+They are displayed in relative order, from first-occuring to last-occuring top-to-bottom.
+</p>
+
+<p>
+After adding everything, you can check for additional constraints and preview the calendar.
+Once the calendar is finalized (within the preview), the numbers and orders can't be changed anymore.
+Events can only be created after the calendar is finalized.
+</p>
 {% endif %}
 
 <h2>Epochs</h2>
@@ -46,7 +58,16 @@
 </ul>
 {% endif %}
 
-<p>EPOCH DESCRIPTION</p>
+<p>
+An epoch is an era or an age that defined a long period of time in the world.
+It can be hundreds of years of even millenia long.
+New epochs are likely created by large positive or negative changes that affect large parts of the world.
+</p>
+
+<p>
+Past epochs have a duration given in years, whereas the current epoch has a duration of 0.
+For a valid calendar, only the bottom-most epoch can have a duration of 0.
+</p>
 
 {% if epochs %}
 <table class="table table-hover table-striped">
@@ -117,7 +138,14 @@
 </ul>
 {% endif %}
 
-<p>MONTHS DESCRIPTION</p>
+<p>
+Months divide the year in roughly equal parts (most of the time, anyway).
+In most worlds, seasons are strongly coincided with some months.
+</p>
+
+<p>
+For a valid calendar, at least one month must be defined and each month must have a positive length in days.
+</p>
 
 {% if months %}
 <table class="table table-hover table-striped">
@@ -180,7 +208,13 @@
 </ul>
 {% endif %}
 
-<p>DAY DESCRIPTION</p>
+<p>
+Here you can define the name and number of the days of the week.
+</p>
+
+<p>
+For a valid calendar, at least one day must be defined.
+</p>
 
 {% if days %}
 <table class="table table-hover table-striped">
