@@ -6,7 +6,7 @@ class EpochForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])
     abbreviation = StringField("Abbreviation", validators=[Length(min=0, max=5)])
     description = TextAreaField("Description", render_kw={"rows": 15})
-    years = IntegerField("Duration in years (empty/0 if current epoch)")
+    years = IntegerField("Duration in years (0 if current epoch)", default=0)
     circa = BooleanField("Duration is approximate (display only)")
 
     submit = SubmitField("Submit")

@@ -37,10 +37,14 @@
         <tr>
             <td>{{ epoch.name }} ({{ epoch.abbreviation }})</td>
             <td>
-                {% if epoch.circa %}
-                approx.
+                {% if epoch.years > 0 %}
+                    {% if epoch.circa %}
+                    approx.
+                    {% endif %}
+                    {{ epoch.years }} years
+                {% else %}
+                current epoch
                 {% endif %}
-                {{ epoch.years }} years
             </td>
             <td>
                 <a href="{{ url_for('calendar.epoch_edit', id=epoch.id) }}" class="btn btn-default">
@@ -56,6 +60,11 @@
                 <a href="{{ url_for('calendar.epoch_down', id=epoch.id) }}" class="btn btn-default">
                     <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                     Down
+                </a>
+
+                <a href="{{ url_for('calendar.epoch_delete', id=epoch.id) }}" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                    Delete
                 </a>
             </td>
         </tr>

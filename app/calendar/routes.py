@@ -81,6 +81,21 @@ def epoch_edit(id):
 
     return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Edit epoch"))
 
+@bp.route("/epoch/delete/<int:id>", methods=["GET"])
+@login_required
+def epoch_delete(id):
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    epoch = Epoch.query.filter_by(id=id).first_or_404()
+
+    db.session.delete(epoch)
+    db.session.commit()
+
+    flash("Epoch was deleted.", "success")
+    return redirect(url_for("calendar.settings"))
+
 
 @bp.route("/epoch/up/<int:id>", methods=["GET"])
 @login_required
