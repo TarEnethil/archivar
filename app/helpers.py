@@ -327,7 +327,6 @@ def gen_calendar_preview_data(commit=False):
     months = Month.query.order_by(Month.order.asc()).all()
     days = Day.query.order_by(Day.order.asc()).all()
 
-
     for i, epoch in enumerate(epochs):
         if i > 0:
             epoch.years_before = epochs[i - 1].years_before + epochs[i - 1].years
@@ -349,6 +348,22 @@ def gen_calendar_preview_data(commit=False):
         preview_info["months_per_year"] = len(months)
 
         return preview_info
+
+def gen_calendar_stats():
+    epochs = Epoch.query.order_by(Epoch.order.asc()).all()
+    months = Month.query.order_by(Month.order.asc()).all()
+    days = Day.query.order_by(Day.order.asc()).all()
+
+    stats = {}
+    stats["epochs"] = epochs
+    stats["months"] = months
+    stats["days"] = days
+
+    stats["days_per_week"] = len(days)
+    stats["days_per_year"] = months[-1].days_before + months[-1].days
+    stats["months_per_year"] = len(months)
+
+    return stats
 
 class XYZ_Validator(object):
     def __call__(self, form, field):

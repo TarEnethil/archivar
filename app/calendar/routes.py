@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, get_next_epoch_order, get_next_month_order, get_next_day_order, calendar_sanity_check, gen_calendar_preview_data
+from app.helpers import page_title, redirect_non_admins, get_next_epoch_order, get_next_month_order, get_next_day_order, calendar_sanity_check, gen_calendar_preview_data, gen_calendar_stats
 from app.models import CalendarSetting, Epoch, Month, Day
 from app.calendar import bp
 from app.calendar.forms import EpochForm, MonthForm, DayForm
@@ -32,16 +32,12 @@ def dummy():
 @login_required
 def view():
     cset = CalendarSetting.query.get(1)
-    epochs = None
-    months = None
-    days = None
+    stats = None
 
     if cset.finalized == True:
-        epochs = Epoch.query.order_by(Epoch.order.asc()).all()
-        months = Month.query.order_by(Month.order.asc()).all()
-        days = Day.query.order_by(Day.order.asc()).all()
+        stats = gen_calendar_stats()
 
-    return render_template("calendar/view.html", settings=cset, epochs=epochs, months=months, days=days, title=page_title("View calendar"))
+    return render_template("calendar/view.html", settings=cset, stats=stats, title=page_title("View calendar"))
 
 @bp.route("/check", methods=["GET"])
 @login_required
@@ -53,9 +49,9 @@ def check():
     status = calendar_sanity_check()
 
     if status == True:
-        flash("All checks have passed. The calendar works with this configuration.", "success", "danger")
+        flash("All checks have passed. The calendar works with this configuration.", "success")
     else:
-        flash("There were errors checking the calendar. See the other messages for more details.", "danger", "danger")
+        flash("There were errors checking the calendar. See the other messages for more details.", "danger")
 
     return redirect(url_for("calendar.settings"))
 
@@ -69,7 +65,7 @@ def preview():
     status = calendar_sanity_check()
 
     if status == False:
-        flash("There were errors previewing the calendar. See the other messages for more details.", "danger", "danger")
+        flash("There were errors previewing the calendar. See the other messages for more details.", "danger")
         return redirect(url_for("calendar.settings"))
 
     stats = gen_calendar_preview_data()
@@ -86,7 +82,7 @@ def finalize():
     status = calendar_sanity_check()
 
     if status == False:
-        flash("There were errors finalizing the calendar. See the other messages for more details.", "danger", "danger")
+        flash("There were errors finalizing the calendar. See the other messages for more details.", "danger")
         return redirect(url_for("calendar.settings"))
 
     gen_calendar_preview_data(commit=True)
@@ -94,7 +90,7 @@ def finalize():
     cset.finalized = True
     db.session.commit()
 
-    flash("The calendar was finalized.", "success", "danger")
+    flash("The calendar was finalized.", "success")
     return redirect(url_for('calendar.settings'))
 
 @bp.route("/epoch/create", methods=["GET", "POST"])
