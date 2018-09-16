@@ -121,3 +121,17 @@ ul.nav-tabs li span.glyphicon {
     color:#ab0000;
     cursor:pointer;
 }
+
+#finalize-btn {
+
+}
+
+#finalize-btn a {
+    font-weight:bold;
+    background:rgba(150, 20, 20, 0.2);
+    color:#ab0000;
+}
+
+#finalize-btn a span.glyphicon {
+    color:#ab0000 !important;
+}

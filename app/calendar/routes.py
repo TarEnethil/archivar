@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, get_next_epoch_order, get_next_month_order, get_next_day_order
+from app.helpers import page_title, redirect_non_admins, get_next_epoch_order, get_next_month_order, get_next_day_order, calendar_sanity_check, gen_calendar_preview_data
 from app.models import CalendarSetting, Epoch, Month, Day
 from app.calendar import bp
 from app.calendar.forms import EpochForm, MonthForm, DayForm
@@ -28,6 +28,75 @@ def settings():
 def dummy():
     return redirect(url_for("index"))
 
+@bp.route("/view", methods=["GET"])
+@login_required
+def view():
+    cset = CalendarSetting.query.get(1)
+    epochs = None
+    months = None
+    days = None
+
+    if cset.finalized == True:
+        epochs = Epoch.query.order_by(Epoch.order.asc()).all()
+        months = Month.query.order_by(Month.order.asc()).all()
+        days = Day.query.order_by(Day.order.asc()).all()
+
+    return render_template("calendar/view.html", settings=cset, epochs=epochs, months=months, days=days, title=page_title("View calendar"))
+
+@bp.route("/check", methods=["GET"])
+@login_required
+def check():
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    status = calendar_sanity_check()
+
+    if status == True:
+        flash("All checks have passed. The calendar works with this configuration.", "success", "danger")
+    else:
+        flash("There were errors checking the calendar. See the other messages for more details.", "danger", "danger")
+
+    return redirect(url_for("calendar.settings"))
+
+@bp.route("/preview", methods=["GET"])
+@login_required
+def preview():
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    status = calendar_sanity_check()
+
+    if status == False:
+        flash("There were errors previewing the calendar. See the other messages for more details.", "danger", "danger")
+        return redirect(url_for("calendar.settings"))
+
+    stats = gen_calendar_preview_data()
+
+    return render_template("calendar/preview.html", stats=stats, title=page_title("Preview calendar"))
+
+@bp.route("/finalize", methods=["GET"])
+@login_required
+def finalize():
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    status = calendar_sanity_check()
+
+    if status == False:
+        flash("There were errors finalizing the calendar. See the other messages for more details.", "danger", "danger")
+        return redirect(url_for("calendar.settings"))
+
+    gen_calendar_preview_data(commit=True)
+    cset = CalendarSetting.query.get(1)
+    cset.finalized = True
+    db.session.commit()
+
+    flash("The calendar was finalized.", "success", "danger")
+    return redirect(url_for('calendar.settings'))
+
 @bp.route("/epoch/create", methods=["GET", "POST"])
 @login_required
 def epoch_create():
@@ -35,8 +104,14 @@ def epoch_create():
     if deny_access:
         return redirect(url_for(no_perm))
 
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't add new epochs.", "danger")
+        return redirect(url_for('calendar.settings'))
+
     heading = "Create new epoch"
     form = EpochForm()
+
 
     if form.validate_on_submit():
         order_num = get_next_epoch_order()
@@ -61,14 +136,21 @@ def epoch_edit(id):
     heading = "Edit epoch"
     form = EpochForm()
 
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        del form.years
+        del form.circa
+
     epoch = Epoch.query.filter_by(id=id).first_or_404()
 
     if form.validate_on_submit():
         epoch.name = form.name.data
         epoch.abbreviation = form.abbreviation.data
         epoch.description = form.description.data
-        epoch.years = form.years.data
-        epoch.circa = form.circa.data
+
+        if cset.finalized == False:
+            epoch.years = form.years.data
+            epoch.circa = form.circa.data
 
         db.session.commit()
 
@@ -78,8 +160,10 @@ def epoch_edit(id):
         form.name.data = epoch.name
         form.abbreviation.data = epoch.abbreviation
         form.description.data = epoch.description
-        form.years.data = epoch.years
-        form.circa.data = epoch.circa
+
+        if cset.finalized == False:
+            form.years.data = epoch.years
+            form.circa.data = epoch.circa
 
     return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Edit epoch"))
 
@@ -89,6 +173,11 @@ def epoch_delete(id):
     deny_access = redirect_non_admins()
     if deny_access:
         return redirect(url_for(no_perm))
+
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't delete epochs.", "danger")
+        return redirect(url_for('calendar.settings'))
 
     epoch = Epoch.query.filter_by(id=id).first_or_404()
 
@@ -105,6 +194,11 @@ def epoch_up(id):
     deny_access = redirect_non_admins()
     if deny_access:
         return redirect(url_for(no_perm))
+
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't change the order of epochs.", "danger")
+        return redirect(url_for('calendar.settings'))
 
     epoch_to_up = Epoch.query.filter_by(id=id).first_or_404()
     epoch_to_down = Epoch.query.filter(Epoch.order < epoch_to_up.order).order_by(Epoch.order.desc()).limit(1).first()
@@ -131,6 +225,11 @@ def epoch_down(id):
     if deny_access:
         return redirect(url_for(no_perm))
 
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't change the order of epochs.", "danger")
+        return redirect(url_for('calendar.settings'))
+
     epoch_to_down = Epoch.query.filter_by(id=id).first_or_404()
     epoch_to_up = Epoch.query.filter(Epoch.order > epoch_to_down.order).order_by(Epoch.order.asc()).limit(1).first()
 
@@ -155,6 +254,11 @@ def month_create():
     deny_access = redirect_non_admins()
     if deny_access:
         return redirect(url_for(no_perm))
+
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't add new months.", "danger")
+        return redirect(url_for('calendar.settings'))
 
     heading = "Create new month"
     form = MonthForm()
@@ -182,13 +286,19 @@ def month_edit(id):
     heading = "Edit month"
     form = MonthForm()
 
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        del form.days
+
     month = Month.query.filter_by(id=id).first_or_404()
 
     if form.validate_on_submit():
         month.name = form.name.data
         month.abbreviation = form.abbreviation.data
         month.description = form.description.data
-        month.days = form.days.data
+
+        if cset.finalized == False:
+            month.days = form.days.data
 
         db.session.commit()
 
@@ -198,7 +308,9 @@ def month_edit(id):
         form.name.data = month.name
         form.abbreviation.data = month.abbreviation
         form.description.data = month.description
-        form.days.data = month.days
+
+        if cset.finalized == False:
+            form.days.data = month.days
 
     return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Edit month"))
 
@@ -208,6 +320,11 @@ def month_delete(id):
     deny_access = redirect_non_admins()
     if deny_access:
         return redirect(url_for(no_perm))
+
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't deletet months.", "danger")
+        return redirect(url_for('calendar.settings'))
 
     month = Month.query.filter_by(id=id).first_or_404()
 
@@ -224,6 +341,11 @@ def month_up(id):
     deny_access = redirect_non_admins()
     if deny_access:
         return redirect(url_for(no_perm))
+
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't change the order of months.", "danger")
+        return redirect(url_for('calendar.settings'))
 
     month_to_up = Month.query.filter_by(id=id).first_or_404()
     month_to_down = Month.query.filter(Month.order < month_to_up.order).order_by(Month.order.desc()).limit(1).first()
@@ -250,6 +372,11 @@ def month_down(id):
     if deny_access:
         return redirect(url_for(no_perm))
 
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't change the order of months.", "danger")
+        return redirect(url_for('calendar.settings'))
+
     month_to_down = Month.query.filter_by(id=id).first_or_404()
     month_to_up = Month.query.filter(Month.order > month_to_down.order).order_by(Month.order.asc()).limit(1).first()
 
@@ -274,6 +401,11 @@ def day_create():
     deny_access = redirect_non_admins()
     if deny_access:
         return redirect(url_for(no_perm))
+
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't add new days.", "danger")
+        return redirect(url_for('calendar.settings'))
 
     heading = "Create new day"
     form = DayForm()
@@ -326,6 +458,11 @@ def day_delete(id):
     if deny_access:
         return redirect(url_for(no_perm))
 
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't delete days.", "danger")
+        return redirect(url_for('calendar.settings'))
+
     day = Day.query.filter_by(id=id).first_or_404()
 
     db.session.delete(day)
@@ -341,6 +478,11 @@ def day_up(id):
     deny_access = redirect_non_admins()
     if deny_access:
         return redirect(url_for(no_perm))
+
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't change the order of days.", "danger")
+        return redirect(url_for('calendar.settings'))
 
     day_to_up = Day.query.filter_by(id=id).first_or_404()
     day_to_down = Day.query.filter(Day.order < day_to_up.order).order_by(Day.order.desc()).limit(1).first()
@@ -366,6 +508,11 @@ def day_down(id):
     deny_access = redirect_non_admins()
     if deny_access:
         return redirect(url_for(no_perm))
+
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't change the order of days.", "danger")
+        return redirect(url_for('calendar.settings'))
 
     day_to_down = Day.query.filter_by(id=id).first_or_404()
     day_to_up = Day.query.filter(Day.order > day_to_down.order).order_by(Day.order.asc()).limit(1).first()

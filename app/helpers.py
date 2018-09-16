@@ -1,6 +1,6 @@
-from app import app
+from app import app, db
 from flask import flash
-from app.models import GeneralSetting, MapNodeType, Character, Party, Session, WikiEntry, User, Role, Epoch, Month, Day
+from app.models import GeneralSetting, MapNodeType, Character, Party, Session, WikiEntry, User, Role, Epoch, Month, Day, CalendarSetting
 from flask_login import current_user
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError
@@ -279,6 +279,76 @@ def get_recently_edited():
     entries = entries.join(User, WikiEntry.edited_by_id == User.id).with_entities(WikiEntry.id, WikiEntry.title, WikiEntry.edited, User.username).order_by(WikiEntry.edited.desc()).limit(5).all()
 
     return entries
+
+def calendar_sanity_check():
+    tests_passed = True
+
+    cset = CalendarSetting.query.get(1)
+
+    if cset.finalized == True:
+        tests_passed = False
+        flash("The calendar is already finalized.", "danger")
+
+    epochs = Epoch.query.all()
+
+    if not epochs:
+        tests_passed = False
+        flash("Calendar needs at least one epoch.", "danger")
+
+    current_epoch = Epoch.query.order_by(Epoch.order.desc()).limit(1).first()
+
+    if current_epoch.years != 0:
+        tests_passed = False
+        flash("The current epoch (" + current_epoch.name + ") needs a duration of 0.", "danger")
+
+    all_other_epochs = Epoch.query.filter(Epoch.id != current_epoch.id).all()
+
+    for epoch in all_other_epochs:
+        if epoch.years == 0:
+            tests_passed = False
+            flash("All epochs except the current one need a duration > 0. '" + epoch.name + "' violates that constraint." , "danger")
+
+    months = Month.query.all()
+
+    if not months:
+        tests_passed = False
+        flash("Calendar needs at least one month.", "danger")
+
+    days = Day.query.all()
+
+    if not days:
+        tests_passed = False
+        flash("Calendar needs at least one day.", "danger")
+
+    return tests_passed
+
+def gen_calendar_preview_data(commit=False):
+    epochs = Epoch.query.order_by(Epoch.order.asc()).all()
+    months = Month.query.order_by(Month.order.asc()).all()
+    days = Day.query.order_by(Day.order.asc()).all()
+
+
+    for i, epoch in enumerate(epochs):
+        if i > 0:
+            epoch.years_before = epochs[i - 1].years_before + epochs[i - 1].years
+
+    for i, month in enumerate(months):
+        if i > 0:
+            month.days_before = months[i - 1].days_before + months[i - 1].days
+
+    if commit == True:
+        db.session.commit()
+    else:
+        preview_info = {}
+        preview_info["epochs"] = epochs
+        preview_info["months"] = months
+        preview_info["days"] = days
+
+        preview_info["days_per_week"] = len(days)
+        preview_info["days_per_year"] = months[-1].days_before + months[-1].days
+        preview_info["months_per_year"] = len(months)
+
+        return preview_info
 
 class XYZ_Validator(object):
     def __call__(self, form, field):

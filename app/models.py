@@ -225,6 +225,24 @@ class Epoch(db.Model):
     circa = db.Column(db.Boolean, default=False)
     years = db.Column(db.Integer)
     order = db.Column(db.Integer)
+    years_before = db.Column(db.Integer, default=0)
+
+    def to_dict(self):
+        dic = {
+            "name" : self.name,
+            "abbr" : self.abbreviation,
+            "description" : self.description,
+            "years" : self.years,
+            "circa" : self.circa
+        }
+
+        if self.years_before != 0 and self.years_before != None:
+            dic["years_before"] = self.years_before
+
+        return dic
+
+    def __repr__(self):
+        return str(self.to_dict())
 
 class Month(db.Model):
     __tablename__ = "months"
@@ -234,6 +252,23 @@ class Month(db.Model):
     description = db.Column(db.Text)
     days = db.Column(db.Integer)
     order = db.Column(db.Integer)
+    days_before = db.Column(db.Integer, default=0)
+
+    def to_dict(self):
+        dic = {
+            "name" : self.name,
+            "abbr" : self.abbreviation,
+            "description" : self.description,
+            "days" : self.days
+        }
+
+        if self.days_before != 0 and self.days_before != None:
+            dic["days_before"] = self.days_before
+
+        return dic
+
+    def __repr__(self):
+        return str(self.to_dict())
 
 class Day(db.Model):
     __tablename__ = "days"
@@ -242,6 +277,18 @@ class Day(db.Model):
     abbreviation = db.Column(db.String(5))
     description = db.Column(db.Text)
     order = db.Column(db.Integer)
+
+    def to_dict(self):
+        dic = {
+            "name" : self.name,
+            "abbr" : self.abbreviation,
+            "description" : self.description
+        }
+
+        return dic
+
+    def __repr__(self):
+        return str(self.to_dict())
 
 @login.user_loader
 def load_user(id):

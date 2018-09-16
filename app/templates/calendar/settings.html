@@ -2,18 +2,40 @@
 
 {% block app_content %}
 <h1>Calendar settings</h1>
+
+{% if settings.finalized == True %}
 <ul class="nav nav-tabs">
     <li>
-        <a href="{{ url_for('calendar.dummy') }}">
+        <a href="{{ url_for('calendar.view') }}">
+            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+            Public calendar info
+        </a>
+    </li>
+</ul>
+
+<p>info box finalized</p>
+{% else %}
+<ul class="nav nav-tabs">
+    <li>
+        <a href="{{ url_for('calendar.check') }}">
+            <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+            Check constraints
+        </a>
+    </li>
+    <li>
+        <a href="{{ url_for('calendar.preview') }}">
             <span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span>
             Preview
         </a>
     </li>
 </ul>
 
-<p>CALENDAR DESCRIPTION</p>
+<p>CALENDAR DESCRIPTION NON_FINALIZED</p>
+{% endif %}
 
 <h2>Epochs</h2>
+
+{% if settings.finalized == False %}
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('calendar.epoch_create') }}">
@@ -22,7 +44,10 @@
         </a>
     </li>
 </ul>
+{% endif %}
+
 <p>EPOCH DESCRIPTION</p>
+
 {% if epochs %}
 <table class="table table-hover table-striped">
     <thead>
@@ -57,6 +82,7 @@
                     Edit
                 </a>
 
+                {% if settings.finalized == False %}
                 <a href="{{ url_for('calendar.epoch_up', id=epoch.id) }}" class="btn btn-default">
                     <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
                 </a>
@@ -69,6 +95,7 @@
                     <span class="glyphicon glyphicon-remove-circle"></span>
                     Delete
                 </a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -79,6 +106,7 @@
 {% endif %}
 
 <h2>Months</h2>
+{% if settings.finalized == False %}
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('calendar.month_create') }}">
@@ -87,7 +115,10 @@
         </a>
     </li>
 </ul>
+{% endif %}
+
 <p>MONTHS DESCRIPTION</p>
+
 {% if months %}
 <table class="table table-hover table-striped">
     <thead>
@@ -114,6 +145,7 @@
                     Edit
                 </a>
 
+                {% if settings.finalized == False %}
                 <a href="{{ url_for('calendar.month_up', id=month.id) }}" class="btn btn-default">
                     <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
                 </a>
@@ -126,6 +158,7 @@
                     <span class="glyphicon glyphicon-remove-circle"></span>
                     Delete
                 </a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -136,6 +169,7 @@
 {% endif %}
 
 <h2>Days of the week</h2>
+{% if settings.finalized == False %}
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('calendar.day_create') }}">
@@ -144,7 +178,10 @@
         </a>
     </li>
 </ul>
+{% endif %}
+
 <p>DAY DESCRIPTION</p>
+
 {% if days %}
 <table class="table table-hover table-striped">
     <thead>
@@ -167,6 +204,7 @@
                     Edit
                 </a>
 
+                {% if settings.finalized == False %}
                 <a href="{{ url_for('calendar.day_up', id=day.id) }}" class="btn btn-default">
                     <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
                 </a>
@@ -179,6 +217,7 @@
                     <span class="glyphicon glyphicon-remove-circle"></span>
                     Delete
                 </a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+<script>
+{% include "simplemde.js" %}
+//var simplemde = new SimpleMDE(generateSMDEConfig("description"));
+
+</script>
+{% endblock %}
+
+{% block app_content %}
+    <h1>Calendar overview</h1>
+
+    {% if settings.finalized == True %}
+    <h2>Epochs</h2>
+    <h2>Months</h2>
+    <h2>Days</h2>
+    {% else %}
+    <p>The calendar has not yet been finalized by the DM.</p>
+    {% endif %}
+{% endblock %}
