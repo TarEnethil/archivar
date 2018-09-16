@@ -159,16 +159,28 @@ def get_next_session_id(date, code):
         return
 
 def get_next_epoch_order():
-    q = Epoch.query.count()
-    return q + 1
+    q = Epoch.query.order_by(Epoch.order.desc()).limit(1).first()
+
+    if q:
+        return q.order + 1
+    else:
+        return 1
 
 def get_next_month_order():
-    q = Month.query.count()
-    return q + 1
+    q = Month.query.order_by(Month.order.desc()).limit(1).first()
+
+    if q:
+        return q.order + 1
+    else:
+        return 1
 
 def get_next_day_order():
-    q = Day.query.count()
-    return q + 1
+    q = Day.query.order_by(Day.order.desc()).limit(1).first()
+
+    if q:
+        return q.order + 1
+    else:
+        return 1
 
 def prepare_wiki_nav():
     if current_user.has_admin_role():
