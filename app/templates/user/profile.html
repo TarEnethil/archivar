@@ -53,16 +53,16 @@
     {% endif %}
 
     {% if user.characters %}
-    <table class="table">
+    <table class="table table-hover table-striped">
         <thead>
             <tr>
-                <td>Character</td>
-                <td>Actions</td>
+                <th>Character</th>
+                <th>Actions</th>
             </tr>
         </thead>
 
-        {% for char in user.characters %}
         <tbody>
+        {% for char in user.characters %}
             <tr>
                 <td> {{ char.name }} ({{ char.race}} {{ char.class_ }})</td>
                 <td>
@@ -79,8 +79,8 @@
                     {% endif %}
                 </td>
             </tr>
-        </tbody>
         {% endfor %}
+        </tbody>
     </table>
     {% endif %}
 

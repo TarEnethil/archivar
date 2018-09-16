@@ -4,19 +4,19 @@
 <h1>Characters and Parties</h1>
 <h2>Character</h2>
 {% if chars %}
-<table class="table">
+<table class="table table-hover table-striped">
     <thead>
         <tr>
-            <td>Name</td>
-            <td>Race</td>
-            <td>Class</td>
-            <td>Player</td>
-            <td>Actions</td>
+            <th>Name</th>
+            <th>Race</th>
+            <th>Class</th>
+            <th>Player</th>
+            <th>Actions</th>
         </tr>
     </thead>
 
-    {% for char in chars %}
     <tbody>
+    {% for char in chars %}
         <tr>
             <td> {{ char.name }}</td>
             <td> {{ char.race }}</td>
@@ -33,8 +33,8 @@
                 </a>
             </td>
         </tr>
-    </tbody>
     {% endfor %}
+    </tbody>
 </table>
 {% else %}
 <p>No character yet.</p>
@@ -55,17 +55,17 @@
 {% endif %}
 
 {% if parties %}
-<table class="table">
+<table class="table table-hover table-striped">
     <thead>
         <tr>
-            <td>Name</td>
-            <td>#Members</td>
-            <td>Actions</td>
+            <th>Name</th>
+            <th>#Members</th>
+            <th>Actions</th>
         </tr>
     </thead>
 
-    {% for party in parties %}
     <tbody>
+    {% for party in parties %}
         <tr>
             <td> {{ party.name }}</td>
             <td> {{ party.members|length }}</td>
@@ -80,8 +80,8 @@
                 </a>
             </td>
         </tr>
-    </tbody>
     {% endfor %}
+    </tbody>
 {% else %}
 <p>No parties yet.</p>
 {% endif %}

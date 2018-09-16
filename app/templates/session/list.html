@@ -16,18 +16,18 @@
 
     <h2>Upcoming sessions</h2>
     {% if sessions_future %}
-    <table class="table">
+    <table class="table table-hover table-striped">
         <thead>
             <tr>
-                <td>Title</td>
-                <td>Date</td>
-                <td>Participants</td>
-                <td>Actions</td>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Participants</th>
+                <th>Actions</th>
             </tr>
         </thead>
 
-        {% for session in sessions_future %}
         <tbody>
+        {% for session in sessions_future %}
             <tr>
                 <td>{{ session.title }}</td>
                 <td>{{ session.date }}</td>
@@ -55,8 +55,8 @@
                     {% endif %}
                 </td>
             </tr>
-        </tbody>
         {% endfor %}
+        </tbody>
     </table>
     {% else %}
     <p>No upcoming sessions.</p>
@@ -64,18 +64,18 @@
 
     <h2>Past sessions</h2>
     {% if sessions_past %}
-    <table class="table">
+    <table class="table table-hover table-striped">
         <thead>
             <tr>
-                <td>Title</td>
-                <td>Date</td>
-                <td>Participants</td>
-                <td>Actions</td>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Participants</th>
+                <th>Actions</th>
             </tr>
         </thead>
 
-        {% for session in sessions_past %}
         <tbody>
+        {% for session in sessions_past %}
             <tr>
                 <td>{{ session.title }}</td>
                 <td>{{ session.date }}</td>
@@ -103,8 +103,8 @@
                     {% endif %}
                 </td>
             </tr>
-        </tbody>
         {% endfor %}
+        </tbody>
     </table>
     {% else %}
     <p>No past sessions.</p>
