@@ -163,12 +163,12 @@ def get_next_epoch_order():
     return q + 1
 
 def get_next_month_order():
-    q = Month.query.all()
-    return q.count() + 1
+    q = Month.query.count()
+    return q + 1
 
 def get_next_day_order():
-    q = Day.query.all()
-    return q.count() + 1
+    q = Day.query.count()
+    return q + 1
 
 def prepare_wiki_nav():
     if current_user.has_admin_role():

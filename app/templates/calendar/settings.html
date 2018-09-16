@@ -78,7 +78,7 @@
 <h2>Months</h2>
 <ul class="nav nav-tabs">
     <li>
-        <a href="{{ url_for('calendar.dummy') }}">
+        <a href="{{ url_for('calendar.month_create') }}">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             New
         </a>
@@ -86,7 +86,46 @@
 </ul>
 <p>MONTHS DESCRIPTION</p>
 {% if months %}
---- table ---
+<table class="table">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Length</td>
+            <td>Actions</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for month in months %}
+        <tr>
+            <td>{{ month.name }} ({{ month.abbreviation }})</td>
+            <td>
+                {{ month.days }} days
+            </td>
+            <td>
+                <a href="{{ url_for('calendar.month_edit', id=month.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    Edit
+                </a>
+
+                <a href="{{ url_for('calendar.month_up', id=month.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    Up
+                </a>
+
+                <a href="{{ url_for('calendar.month_down', id=month.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                    Down
+                </a>
+
+                <a href="{{ url_for('calendar.month_delete', id=month.id) }}" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                    Delete
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% else %}
 <p>No months yet.</p>
 {% endif %}
