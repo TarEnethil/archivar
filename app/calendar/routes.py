@@ -23,10 +23,16 @@ def settings():
 
     return render_template("calendar/settings.html", settings=cset, epochs=epochs, months=months, days=days, title=page_title("Calendar settings"))
 
-@bp.route("/dummy", methods=["GET"])
+@bp.route("/index", methods=["GET"])
 @login_required
-def dummy():
-    return redirect(url_for("index"))
+def index():
+    cset = CalendarSetting.query.get(1)
+    calendar = None
+
+    if cset.finalized == True:
+        calendar = gen_calendar_stats()
+
+    return render_template("calendar/index.html", settings=cset, calendar=calendar, title=page_title("Calendar"))
 
 @bp.route("/view", methods=["GET"])
 @login_required

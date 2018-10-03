@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<h1>Calendar and events</h1>
+
+{% if settings.finalized == False %}
+<p class="alert alert-warning">
+The calendar has not been finalized by the admin yet.
+</p>
+{% else %}
+<ul class="nav nav-tabs">
+    <li>
+        <a href="{{ url_for('calendar.view') }}">
+            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+            View info
+        </a>
+    </li>
+    <li>
+        <a href="{{ url_for('event.dummy') }}">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            New event
+        </a>
+    </li>
+</ul>
+{% endif %}
+{% endblock %}

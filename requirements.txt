@@ -1,5 +1,6 @@
 alembic==1.0.0
 click==6.7
+colour-0.1.5
 dominate==2.3.1
 Flask==1.0.2
 Flask-Bootstrap==3.3.7.1

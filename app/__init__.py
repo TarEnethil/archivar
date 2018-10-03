@@ -34,4 +34,7 @@ app.register_blueprint(wiki_bp, url_prefix="/wiki")
 from app.calendar import bp as calendar_bp
 app.register_blueprint(calendar_bp, url_prefix="/calendar")
 
+from app.event import bp as event_bp
+app.register_blueprint(event_bp, url_prefix="/event")
+
 from app import routes, models

@@ -59,7 +59,7 @@ class User(UserMixin, db.Model):
         return self.has_admin_role() or self.has_event_role()
 
     def has_access_to_some_settings(self):
-        return self.has_admin_role() or self.has_map_role() or self.has_wiki_role()
+        return self.has_admin_role() or self.has_map_role() or self.has_wiki_role() or self.has_event_role()
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -289,6 +289,12 @@ class Day(db.Model):
 
     def __repr__(self):
         return str(self.to_dict())
+
+class EventCategory(db.Model):
+    __tablename__ = "event_category"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    color = db.Column(db.String(10))
 
 @login.user_loader
 def load_user(id):
