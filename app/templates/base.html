@@ -22,10 +22,10 @@
                 </a></li>
 
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('session.index') }}">Sessions</a></li>
-                <li><a href="{{ url_for('map.index') }}">Map</a></li>
-                <li><a href="{{ url_for('wiki.index') }}">Wiki</a></li>
-                <li><a href="{{ url_for('calendar.index') }}">Calendar</a></li>
+                <li><a href="{{ url_for('session.index') }}"><span class="glyphicon glyphicon-pencil"></span> Sessions</a></li>
+                <li><a href="{{ url_for('map.index') }}"><span class="glyphicon glyphicon-map-marker"></span> Map</a></li>
+                <li><a href="{{ url_for('wiki.index') }}"><span class="glyphicon glyphicon-education"></span> Wiki</a></li>
+                <li><a href="{{ url_for('calendar.index') }}"><span class="glyphicon glyphicon-calendar"></span> Calendar</a></li>
                 {% endif %}
 
             </ul>
@@ -34,7 +34,7 @@
                 {% if current_user.is_authenticated and current_user.has_admin_role() %}
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                      Users <span class="caret"></span>
+                    <span class="glyphicon glyphicon-user"></span> Users <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('user.create') }}">New user</a></li>
@@ -47,7 +47,7 @@
                 {% if current_user.is_authenticated and current_user.has_access_to_some_settings() %}
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                      Settings <span class="caret"></span>
+                    <span class="glyphicon glyphicon-cog"></span> Settings <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         {% if current_user.has_admin_role() %}
@@ -80,7 +80,7 @@
                 {% else %}
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                      {{ current_user.username }} <span class="caret"></span>
+                    <span class="glyphicon glyphicon-user"></span> {{ current_user.username }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('user.profile', username=current_user.username) }}">Profile</a></li>
