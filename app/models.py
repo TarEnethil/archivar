@@ -313,6 +313,11 @@ class Event(db.Model):
     timestamp = db.Column(db.Integer)
     duration = db.Column(db.Integer)
 
+    created_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_by = db.relationship("User", foreign_keys=[created_by_id])
+    edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    edited_by = db.relationship("User", foreign_keys=[edited_by_id])
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
