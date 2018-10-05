@@ -291,10 +291,27 @@ class Day(db.Model):
         return str(self.to_dict())
 
 class EventCategory(db.Model):
-    __tablename__ = "event_category"
+    __tablename__ = "event_categories"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     color = db.Column(db.String(10))
+
+class Event(db.Model):
+    __tablename__ = "events"
+    id = db.Column(db.Integer, primary_key=True)
+    is_visible = db.Column(db.Boolean)
+    name = db.Column(db.String(100))
+    category_id = db.Column(db.Integer, db.ForeignKey("event_categories.id"))
+    category = db.relationship("EventCategory", backref="events")
+    description = db.Column(db.Text)
+    epoch_id = db.Column(db.Integer, db.ForeignKey("epochs.id"))
+    epoch = db.relationship("Epoch", backref="events")
+    year = db.Column(db.Integer)
+    month_id = db.Column(db.Integer, db.ForeignKey("months.id"))
+    month = db.relationship("Month")
+    day = db.Column(db.Integer)
+    timestamp = db.Column(db.Integer)
+    duration = db.Column(db.Integer)
 
 @login.user_loader
 def load_user(id):

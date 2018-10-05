@@ -1,10 +1,10 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, gen_calendar_stats, redirect_non_event_admins
-from app.models import EventCategory
+from app.helpers import page_title, redirect_non_admins, gen_calendar_stats, redirect_non_event_admins, gen_event_category_choices, gen_epoch_choices, gen_month_choices, gen_day_choices, update_timestamp
+from app.models import Event, EventCategory
 from app.event import bp
-from app.event.forms import CategoryForm
+from app.event.forms import EventForm, CategoryForm
 from flask import render_template, flash, redirect, url_for, request
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 no_perm = "calendar.index"
 
@@ -12,6 +12,39 @@ no_perm = "calendar.index"
 @login_required
 def dummy():
     return redirect(url_for("index"))
+
+@bp.route("/create", methods=["GET", "POST"])
+@login_required
+def create():
+    form = EventForm()
+    form.category.choices = gen_event_category_choices()
+    form.epoch.choices = gen_epoch_choices()
+    form.month.choices = gen_month_choices()
+
+    if request.method == "POST":
+        form.day.choices = gen_day_choices(form.month.data)
+    else:
+        form.day.choices = gen_day_choices(1)
+
+    if not current_user.is_event_admin():
+        del form.is_visible
+
+    if form.validate_on_submit():
+        new_event = Event(name=form.name.data, category_id=form.category.data, description=form.description.data, epoch_id=form.epoch.data, year=form.year.data, month_id=form.month.data, day=form.day.data, duration=form.duration.data)
+
+        if current_user.is_event_admin():
+            new_event.is_visible = form.is_visible.data
+
+        db.session.add(new_event)
+        db.session.commit()
+
+        update_timestamp(new_event.id)
+
+        flash("Event was created.", "success")
+        return redirect(url_for("calendar.index"))
+
+    calendar_helper = gen_calendar_stats()
+    return render_template("event/create.html", form=form, calendar=calendar_helper, title=page_title("Create new event"))
 
 @bp.route("/category/create", methods=["GET", "POST"])
 @login_required

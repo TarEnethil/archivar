@@ -1,6 +1,6 @@
 from app import app, db
 from flask import flash
-from app.models import GeneralSetting, MapNodeType, Character, Party, Session, WikiEntry, User, Role, Epoch, Month, Day, CalendarSetting
+from app.models import GeneralSetting, MapNodeType, Character, Party, Session, WikiEntry, User, Role, Epoch, Month, Day, CalendarSetting, EventCategory, Event
 from flask_login import current_user
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError
@@ -143,6 +143,30 @@ def gen_wiki_entry_choices():
         choices.append(p)
 
     return choices
+
+def gen_event_category_choices():
+    choices = []
+
+    categories = EventCategory.query.all()
+
+    for cat in categories:
+        choices.append((cat.id, cat.name))
+
+    return choices
+
+def gen_epoch_choices():
+    return [(e.id, e.name) for e in Epoch.query.order_by(Epoch.order.asc()).all()]
+
+def gen_month_choices():
+    return [(m.id, m.name) for m in Month.query.order_by(Month.order.asc()).all()]
+
+def gen_day_choices(month_id):
+    m = Month.query.filter_by(id=month_id).first()
+
+    if m == None:
+        return ([0, "ERROR month not found"])
+
+    return [(n, n) for n in xrange(1, m.days + 1)]
 
 def get_session_number(code):
     q = Session.query.filter(Session.code == code)
@@ -359,17 +383,36 @@ def gen_calendar_stats():
     epochs = Epoch.query.order_by(Epoch.order.asc()).all()
     months = Month.query.order_by(Month.order.asc()).all()
     days = Day.query.order_by(Day.order.asc()).all()
+    categories = EventCategory.query.all()
 
     stats = {}
     stats["epochs"] = epochs
     stats["months"] = months
     stats["days"] = days
+    stats["categories"] = categories
 
     stats["days_per_week"] = len(days)
     stats["days_per_year"] = months[-1].days_before + months[-1].days
     stats["months_per_year"] = len(months)
 
     return stats
+
+def update_timestamp(event_id):
+    timestamp = 0
+    ev = Event.query.filter_by(id=event_id).first()
+    stats = gen_calendar_stats()
+
+    if ev == None:
+        return
+
+    years = ev.epoch.years_before + (ev.year - 1)
+
+    days_into_year = ev.month.days_before + ev.day
+
+    timestamp = years * stats["days_per_year"] + days_into_year
+
+    ev.timestamp = timestamp
+    db.session.commit()
 
 class XYZ_Validator(object):
     def __call__(self, form, field):
@@ -403,3 +446,33 @@ class GreaterThanOrEqual(object):
         if other_field.data and field.data:
             if field.data < other_field.data:
                 raise ValidationError("Value must be greater than or equal to %s" % self.comp_value_field_name)
+
+class YearPerEpochValidator(object):
+    def __init__(self, epoch_id_field_name):
+        self.epoch_field = epoch_id_field_name
+
+    def __call__(self, form, field):
+        epoch_id = form._fields.get(self.epoch_field).data
+
+        ep = Epoch.query.filter_by(id=epoch_id).first()
+
+        if ep == None:
+            raise ValidationError("Unknown epoch.")
+
+        if ep.years != 0 and (field.data < 1 or field.data > ep.years):
+            raise ValidationError("Year " + field.data + " is invalid for this epoch.")
+
+class DayPerMonthValidator(object):
+    def __init__(self, month_id_field_name):
+        self.month_field = month_id_field_name
+
+    def __call__(self, form, field):
+        month_id = form._fields.get(self.month_field).data
+
+        mo = Month.query.filter_by(id=month_id).first()
+
+        if mo == None:
+            raise ValidationError("Unknown month.")
+
+        if field.data < 1 or field.data > mo.days:
+            raise ValidationError("Day " + field.data + " is invalid for this month.")
