@@ -1,8 +1,9 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, get_next_epoch_order, get_next_month_order, get_next_day_order, calendar_sanity_check, gen_calendar_preview_data, gen_calendar_stats, get_years_in_epoch, get_epochs
+from app.helpers import page_title, redirect_non_admins, get_next_epoch_order, get_next_month_order, get_next_day_order, calendar_sanity_check, gen_calendar_preview_data, gen_calendar_stats, get_years_in_epoch, get_epochs, gen_event_category_choices, gen_epoch_choices, gen_month_choices, gen_day_choices
 from app.models import CalendarSetting, Epoch, Month, Day
 from app.calendar import bp
 from app.calendar.forms import EpochForm, MonthForm, DayForm
+from app.event.forms import EventForm
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required
 
@@ -82,7 +83,19 @@ def preview():
 
     stats = gen_calendar_preview_data()
 
-    return render_template("calendar/preview.html", stats=stats, title=page_title("Preview calendar"))
+    preview_form = EventForm()
+
+    del preview_form.submit
+    del preview_form.name
+    del preview_form.category
+    del preview_form.is_visible
+    del preview_form.description
+
+    preview_form.epoch.choices = gen_epoch_choices()
+    preview_form.month.choices = gen_month_choices()
+    preview_form.day.choices = gen_day_choices(1)
+
+    return render_template("calendar/preview.html", calendar=stats, form=preview_form, title=page_title("Preview calendar"))
 
 @bp.route("/finalize", methods=["GET"])
 @login_required

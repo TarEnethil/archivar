@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+{% endblock %}
+
 {% block scripts %}
 {{ super() }}
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 <script>
 $("#finalize-btn a").click(function(e) {
     var sure = confirm("Are you sure you want to finalize the calendar? After doing so, you can only change the names, abbreviations and descriptions of epochs, months and days.");
@@ -12,6 +18,7 @@ $("#finalize-btn a").click(function(e) {
         e.preventDefault();
     }
 });
+{% include "datepicker.js" %}
 </script>
 {% endblock %}
 
@@ -36,9 +43,9 @@ $("#finalize-btn a").click(function(e) {
 
     <h2>General info</h2>
     <ul>
-        <li>Days per week: {{ stats["days_per_week"] }}</li>
-        <li>Days per year: {{ stats["days_per_year"] }}</li>
-        <li>Months per year: {{ stats["months_per_year"] }}</li>
+        <li>Days per week: {{ calendar["days_per_week"] }}</li>
+        <li>Days per year: {{ calendar["days_per_year"] }}</li>
+        <li>Months per year: {{ calendar["months_per_year"] }}</li>
     </ul>
 
     <h2>Epochs</h2>
@@ -51,7 +58,7 @@ $("#finalize-btn a").click(function(e) {
             </tr>
         </thead>
         <tbody>
-            {% for epoch in stats["epochs"] %}
+            {% for epoch in calendar["epochs"] %}
             <tr>
                 <td>
                     {{ epoch.name }}
@@ -89,7 +96,7 @@ $("#finalize-btn a").click(function(e) {
             </tr>
         </thead>
         <tbody>
-            {% for month in stats["months"] %}
+            {% for month in calendar["months"] %}
             <tr>
                 <td>
                     {{ month.name }}
@@ -115,7 +122,7 @@ $("#finalize-btn a").click(function(e) {
             </tr>
         </thead>
         <tbody>
-            {% for day in stats["days"] %}
+            {% for day in calendar["days"] %}
             <tr>
                 <td>
                     {{ day.name }}
@@ -130,4 +137,9 @@ $("#finalize-btn a").click(function(e) {
             {% endfor %}
         </tbody>
     </table>
+
+    <h2>Form Preview</h2>
+    <p>Below is an example of how the datepicker for this calendar will integrate into the Event-form.</p>
+
+    {{ wtf.quick_form(form) }}
 {% endblock %}
