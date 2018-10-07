@@ -1,183 +1,40 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
-{% block styles %}
-{{ super() }}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-
-{% endblock %}
-
 {% block scripts %}
 {{ super() }}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <script>
-{% include "datepicker.js" %}
+    options = {
+        sanitize: true
+    }
 
-{% if settings.finalized == true %}
-options = {
-    sanitize: true
-}
-
-{% for epoch in stats["epochs"] %}
-{% if epoch.description %}
-var descr_ep_{{ epoch.id }} = document.getElementById("epoch-{{ epoch.id }}-desc")
-descr_ep_{{ epoch.id }}.innerHTML = marked(descr_ep_{{ epoch.id }}.innerHTML, options);
-{% endif %}
-{% endfor %}
-
-{% for month in stats["months"] %}
-{% if month.description %}
-var descr_ep_{{ month.id }} = document.getElementById("month-{{ month.id }}-desc")
-descr_ep_{{ month.id }}.innerHTML = marked(descr_ep_{{ month.id }}.innerHTML, options);
-{% endif %}
-{% endfor %}
-
-{% for day in stats["days"] %}
-{% if day.description %}
-var descr_ep_{{ day.id }} = document.getElementById("day-{{ day.id }}-desc")
-descr_ep_{{ day.id }}.innerHTML = marked(descr_ep_{{ day.id }}.innerHTML, options);
-{% endif %}
-{% endfor %}
-{% endif %}
+    var desc = document.getElementById('description')
+    desc.innerHTML = marked(desc.innerHTML, options);
 </script>
 {% endblock %}
 
 {% block app_content %}
-    <h1>Calendar overview</h1>
-    <p>
-    The following page is a summary of the calendar that was created by the DM.
-    Quick info:
+    <h1>{{ event.name }}</h1>
+    <ul>
+        <li style="padding-left:10px;border-left:7px solid {{ event.category.color }}">{{ event.category.name }}</li>
+        <li>Date: {{ event.start_date(False, with_link=True)|safe }}</li>
+
+        {% if event.duration > 1 %}
+        <li>Lasted {{ event.duration }} days</li>
+        {% endif %}
+    </ul>
+    <p id="description" class="custom-markdown">
+{{ event.description }}
     </p>
+
+    <hr>
 
     <ul>
-        <li>Days per week: {{ stats["days_per_week"] }}</li>
-        <li>Days per year: {{ stats["days_per_year"] }}</li>
-        <li>Months per year: {{ stats["months_per_year"] }}</li>
+        <li>Created by: <a href="{{ url_for('user.profile', username='event.created_by.username') }}">{{ event.created_by.username }}</a></li>
+        {% if event.edited_by %}
+        <li>Edited by: <a href="{{ url_for('user.profile', username='event.edited_by.username') }}">{{ event.edited_by.username }}</a></li>
+        {% endif %}
     </ul>
-
-    {% if settings.finalized == True %}
-    <h2>Epochs</h2>
-    <p>
-    An epoch is an era or an age that defined a long period of time in the world.
-    It can be hundreds of years of even millenia long.
-    New epochs are likely created by large positive or negative changes that affect large parts of the world.
-    </p>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Length</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for epoch in stats["epochs"] %}
-            <tr>
-                <td>
-                    {{ epoch.name }}
-
-                    {% if epoch.abbreviation and epoch.abbreviation != "" %}
-                    ({{ epoch.abbreviation }})
-                    {% endif %}
-                </td>
-                {% if epoch.years > 0 %}
-                <td>
-                {% if epoch.circa %}
-                approx.
-                {% endif %}
-                {{ epoch.years }} years
-                </td>
-                {% else %}
-                <td>current epoch</td>
-                {% endif %}
-            </tr>
-
-            {% if epoch.description %}
-            <tr>
-                <td colspan="2">
-                    <div id="epoch-{{ epoch.id }}-desc" class="custom-markdown">
-{{ epoch.description }}
-                    </div>
-                </td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <h2>Months</h2>
-    <p>
-    Months divide the year in roughly equal parts (most of the time).
-    In most worlds, seasons are strongly coincided with some months.
-    </p>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Length</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for month in stats["months"] %}
-            <tr>
-                <td>
-                    {{ month.name }}
-
-                    {% if month.abbreviation and month.abbreviation != "" %}
-                    ({{ month.abbreviation }})
-                    {% endif %}
-                </td>
-                <td>{{ month.days }} days</td>
-            </tr>
-
-            {% if month.description %}
-            <tr>
-                <td colspan="2">
-                    <div id="month-{{ month.id }}-desc" class="custom-markdown">
-{{ month.description }}
-                    </div>
-                </td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <h2>Days</h2>
-    <p>The days of the week may have their names based on deities, events or they may have their very own origin story.</p>
-
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for day in stats["days"] %}
-            <tr>
-                <td>
-                    {{ day.name }}
-
-                    {% if day.abbreviation and day.abbreviation != "" %}
-                    ({{ day.abbreviation }})
-                    {% endif %}
-                </td>
-            </tr>
-
-            {% if day.description %}
-            <tr>
-                <td colspan="2">
-                    <div id="day-{{ day.id }}-desc" class="custom-markdown">
-{{ day.description }}
-                    </div>
-                </td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-
-    {% else %}
-    <p>The calendar has not yet been finalized by the DM.</p>
-    {% endif %}
 {% endblock %}

@@ -414,6 +414,35 @@ def update_timestamp(event_id):
     ev.timestamp = timestamp
     db.session.commit()
 
+def get_epochs():
+    e = Epoch.query.order_by(Epoch.order.asc()).all()
+
+    return e
+
+def get_years_in_epoch(e_id):
+    q = Event.query.with_entities(Event.year).filter_by(epoch_id=e_id).group_by(Event.year).order_by(Event.year.asc()).all()
+
+    return q
+
+def get_events(filter_epoch=None, filter_year=None):
+    if current_user.has_admin_role():
+        events = Event.query
+    elif current_user.has_event_role():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        events = Event.query.filter(not_(and_(Event.is_visible == False, Event.created_by_id.in_(admin_ids))))
+    else:
+        events = Event.query.filter(or_(Event.is_visible == True, Event.created_by_id == current_user.id))
+
+    if filter_epoch and filter_year:
+        events = events.filter_by(epoch_id = filter_epoch, year = filter_year)
+    elif filter_epoch:
+        events = events.filter_by(epoch_id = filter_epoch)
+
+    events = events.order_by(Event.timestamp.asc()).all()
+
+    return events
+
 class XYZ_Validator(object):
     def __call__(self, form, field):
         if not "{x}" in field.data or not "{y}" in field.data or not "{z}" in field.data:

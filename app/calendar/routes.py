@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, get_next_epoch_order, get_next_month_order, get_next_day_order, calendar_sanity_check, gen_calendar_preview_data, gen_calendar_stats
+from app.helpers import page_title, redirect_non_admins, get_next_epoch_order, get_next_month_order, get_next_day_order, calendar_sanity_check, gen_calendar_preview_data, gen_calendar_stats, get_years_in_epoch, get_epochs
 from app.models import CalendarSetting, Epoch, Month, Day
 from app.calendar import bp
 from app.calendar.forms import EpochForm, MonthForm, DayForm
@@ -32,7 +32,13 @@ def index():
     if cset.finalized == True:
         calendar = gen_calendar_stats()
 
-    return render_template("calendar/index.html", settings=cset, calendar=calendar, title=page_title("Calendar"))
+    epochs = get_epochs()
+    years = {}
+
+    for e in epochs:
+        years[e.id] = get_years_in_epoch(e.id)
+
+    return render_template("calendar/index.html", settings=cset, calendar=calendar, epochs=epochs, years=years, title=page_title("Calendar"))
 
 @bp.route("/view", methods=["GET"])
 @login_required

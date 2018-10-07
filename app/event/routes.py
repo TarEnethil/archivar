@@ -1,6 +1,6 @@
 from app import db
-from app.helpers import page_title, flash_no_permission, redirect_non_admins, gen_calendar_stats, redirect_non_event_admins, gen_event_category_choices, gen_epoch_choices, gen_month_choices, gen_day_choices, update_timestamp
-from app.models import EventSetting, Event, EventCategory
+from app.helpers import page_title, flash_no_permission, redirect_non_admins, gen_calendar_stats, redirect_non_event_admins, gen_event_category_choices, gen_epoch_choices, gen_month_choices, gen_day_choices, update_timestamp, get_events
+from app.models import EventSetting, Event, EventCategory, Epoch
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
 from flask import render_template, flash, redirect, url_for, request
@@ -12,6 +12,31 @@ no_perm = "calendar.index"
 @login_required
 def dummy():
     return redirect(url_for("index"))
+
+@bp.route("/view/<int:id>", methods=["GET"])
+@login_required
+def view(id):
+    event = Event.query.filter_by(id=id).first_or_404()
+
+    return render_template("event/view.html", event=event, title=page_title("View event"))
+
+@bp.route("/list/epoch-<int:e_id>", methods=["GET"])
+@login_required
+def list_epoch(e_id):
+    e = Epoch.query.filter_by(id=e_id).first_or_404()
+    events = get_events(e_id)
+    title = "All events for " + e.name
+
+    return render_template("event/list.html", events=events, epoch_flag=True, heading=title, title=page_title("View events in epoch"))
+
+@bp.route("/list/epoch-<int:e_id>/year-<int:year>", methods=["GET"])
+@login_required
+def list_epoch_year(e_id, year):
+    e = Epoch.query.filter_by(id=e_id).first_or_404()
+    events = get_events(e_id, year)
+    title = "All events for year " + str(year) + ", " + e.name
+
+    return render_template("event/list.html", events=events, epoch_year_flag=True, heading=title, title=page_title("View events in epoch"))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required

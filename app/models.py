@@ -324,6 +324,24 @@ class Event(db.Model):
     edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     edited_by = db.relationship("User", foreign_keys=[edited_by_id])
 
+    def start_date(self, use_abbr, with_link=False, use_epoch=True, use_year=True):
+        day = str(self.day)
+        month = self.month.abbreviation if use_abbr and self.month.abbreviation else self.month.name
+        year = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch_year', e_id=self.epoch.id, year=self.year), self.year) if with_link else str(self.year)
+        epoch = self.epoch.abbreviation if use_abbr and self.epoch.abbreviation else self.epoch.name
+        epoch = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch', e_id=self.epoch.id), epoch) if with_link else str(self.epoch.name)
+
+        if use_epoch and use_year:
+            return '{0}. {1} {2}, {3}'.format(day, month, year, epoch)
+        elif use_year and not use_epoch:
+            return '{0}. {1} {2}'.format(day, month, year)
+
+        return '{0}. {1}'.format(day, month)
+
+    def end_date(self, use_abbr, with_link=False):
+        return "TODO"
+
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
