@@ -326,8 +326,12 @@ class Event(db.Model):
     edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     edited_by = db.relationship("User", foreign_keys=[edited_by_id])
 
-    def start_date(self, use_abbr, with_link=False, use_epoch=True, use_year=True):
+    def start_date(self, use_abbr, with_link=False, use_epoch=True, use_year=True, with_weekday=False):
         day = str(self.day)
+
+        if with_weekday:
+            day = self.day_of_the_week() + ", " + day
+
         month = self.month.abbreviation if use_abbr and self.month.abbreviation else self.month.name
         year = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch_year', e_id=self.epoch.id, year=self.year), self.year) if with_link else str(self.year)
         epoch = self.epoch.abbreviation if use_abbr and self.epoch.abbreviation else self.epoch.name
@@ -342,6 +346,11 @@ class Event(db.Model):
 
     def end_date(self, use_abbr, with_link=False):
         return "TODO"
+
+    def day_of_the_week(self):
+        wd = Day.query.order_by(Day.order.asc()).all()
+
+        return wd[(self.timestamp % len(wd)) - 1].name
 
 
 @login.user_loader

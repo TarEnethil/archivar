@@ -19,7 +19,7 @@
     <h1>{{ event.name }}</h1>
     <ul>
         <li style="padding-left:10px;border-left:7px solid {{ event.category.color }}">{{ event.category.name }}</li>
-        <li>Date: {{ event.start_date(False, with_link=True)|safe }}</li>
+        <li>Date: {{ event.start_date(False, with_link=True, with_weekday=True)|safe }}</li>
 
         {% if event.duration > 1 %}
         <li>Lasted {{ event.duration }} days</li>
