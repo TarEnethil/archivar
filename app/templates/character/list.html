@@ -24,7 +24,7 @@
             <td> {{ char.player.username }}</td>
             <td>
                 <a href="{{ url_for('character.view', id=char.id) }}" class="btn btn-default">
-                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                     View
                 </a>
                 <a href="{{ url_for('character.edit', id=char.id) }}" class="btn btn-default">
@@ -71,7 +71,7 @@
             <td> {{ party.members|length }}</td>
             <td>
                 <a href="{{ url_for('party.view', id=party.id) }}" class="btn btn-default">
-                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                     View
                 </a>
                 <a href="{{ url_for('party.edit', id=party.id) }}" class="btn btn-default">
