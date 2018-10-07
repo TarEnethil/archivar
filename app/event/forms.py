@@ -7,6 +7,8 @@ from wtforms.validators import Length, InputRequired
 class SettingsForm(FlaskForm):
     default_visible = BooleanField("Events are visible by default")
     default_category = SelectField("Default category", coerce=int)
+    default_epoch = SelectField("Default epoch", coerce=int)
+    default_year = IntegerField("Default year")
 
     submit = SubmitField("Submit")
 

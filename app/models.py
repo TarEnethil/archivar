@@ -295,6 +295,8 @@ class EventSetting(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     default_visible = db.Column(db.Boolean)
     default_category = db.Column(db.Integer, db.ForeignKey("event_categories.id"))
+    default_epoch = db.Column(db.Integer, db.ForeignKey("epochs.id"))
+    default_year = db.Column(db.Integer)
 
 class EventCategory(db.Model):
     __tablename__ = "event_categories"
@@ -329,7 +331,7 @@ class Event(db.Model):
         month = self.month.abbreviation if use_abbr and self.month.abbreviation else self.month.name
         year = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch_year', e_id=self.epoch.id, year=self.year), self.year) if with_link else str(self.year)
         epoch = self.epoch.abbreviation if use_abbr and self.epoch.abbreviation else self.epoch.name
-        epoch = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch', e_id=self.epoch.id), epoch) if with_link else str(self.epoch.name)
+        epoch = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch', e_id=self.epoch.id), epoch) if with_link else epoch
 
         if use_epoch and use_year:
             return '{0}. {1} {2}, {3}'.format(day, month, year, epoch)

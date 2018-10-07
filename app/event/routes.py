@@ -54,6 +54,12 @@ def create():
         form.category.data = settings.default_category
         form.is_visible.data = settings.default_visible
 
+        if settings.default_epoch:
+            form.epoch.data = settings.default_epoch
+
+        if settings.default_year:
+            form.year.data = settings.default_year
+
     if not current_user.is_event_admin():
         del form.is_visible
 
@@ -196,10 +202,13 @@ def settings():
     settings = EventSetting.query.get(1)
     form = SettingsForm()
     form.default_category.choices = gen_event_category_choices()
+    form.default_epoch.choices = gen_epoch_choices()
 
     if form.validate_on_submit():
         settings.default_visible = form.default_visible.data
         settings.default_category = form.default_category.data
+        settings.default_epoch = form.default_epoch.data
+        settings.default_year = form.default_year.data
 
         db.session.commit()
 
@@ -207,6 +216,8 @@ def settings():
     elif request.method == "GET":
         form.default_visible.data = settings.default_visible
         form.default_category.data = settings.default_category
+        form.default_epoch.data = settings.default_epoch
+        form.default_year.data = settings.default_year
 
     categories = EventCategory.query.all()
 
