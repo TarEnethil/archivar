@@ -3,6 +3,7 @@
 
 {% block scripts %}
 {{ super() }}
+{% if event.description %}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <script>
@@ -13,21 +14,24 @@
     var desc = document.getElementById('description')
     desc.innerHTML = marked(desc.innerHTML, options);
 </script>
+{% endif %}
 {% endblock %}
 
 {% block app_content %}
     <h1>{{ event.name }}</h1>
     <ul>
         <li style="padding-left:10px;border-left:7px solid {{ event.category.color }}">{{ event.category.name }}</li>
-        <li>Date: {{ event.start_date(False, with_link=True, with_weekday=True)|safe }}</li>
+        <li>{{ event.start_date(False, with_link=True, with_weekday=True)|safe }}</li>
 
         {% if event.duration > 1 %}
         <li>Lasted {{ event.duration }} days</li>
         {% endif %}
     </ul>
+{% if event.description %}
     <p id="description" class="custom-markdown">
 {{ event.description }}
     </p>
+{% endif %}
 
     <hr>
 
