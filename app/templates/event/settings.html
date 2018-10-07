@@ -1,10 +1,11 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-<h1>Calendar settings</h1>
+<h1>Event settings</h1>
 
 <h2>Settings</h2>
-<p>Reserved for settings</p>
+{{ wtf.quick_form(form) }}
 
 <h2>Categories</h2>
 <ul class="nav nav-tabs">

@@ -4,6 +4,12 @@ from wtforms import StringField, TextAreaField, SubmitField, IntegerField, Boole
 from wtforms_components import ColorField
 from wtforms.validators import Length, InputRequired
 
+class SettingsForm(FlaskForm):
+    default_visible = BooleanField("Events are visible by default")
+    default_category = SelectField("Default category", coerce=int)
+
+    submit = SubmitField("Submit")
+
 class EventForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])
     category = SelectField("Category", coerce=int)

@@ -290,6 +290,12 @@ class Day(db.Model):
     def __repr__(self):
         return str(self.to_dict())
 
+class EventSetting(db.Model):
+    __tablename__ = "event_settings"
+    id = db.Column(db.Integer, primary_key=True)
+    default_visible = db.Column(db.Boolean)
+    default_category = db.Column(db.Integer, db.ForeignKey("event_categories.id"))
+
 class EventCategory(db.Model):
     __tablename__ = "event_categories"
     id = db.Column(db.Integer, primary_key=True)

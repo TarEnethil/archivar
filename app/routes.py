@@ -1,7 +1,7 @@
 from app import app, db
 from app.forms import LoginForm, SettingsForm, InstallForm
 from app.helpers import page_title, redirect_non_admins
-from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting
+from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting, EventSetting, EventCategory
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, send_from_directory
 from flask_login import current_user, login_user, login_required, logout_user
@@ -103,10 +103,15 @@ def install():
             calendar_setting = CalendarSetting(finalized=False)
             map_setting = MapSetting(min_zoom=0, max_zoom=0, default_zoom=0, icon_anchor=0)
             wiki_setting = WikiSetting(default_visible=False)
+            event_setting = EventSetting(default_visible=False)
+
+            event_cat = EventCategory(name="Default", color="#000000")
+            db.session.add(event_cat)
 
             db.session.add(calendar_setting)
             db.session.add(map_setting)
             db.session.add(wiki_setting)
+            db.session.add(event_setting)
 
             # TODO: maybe remove the default icons as well
             if form.default_mapnodes.data:
@@ -131,6 +136,8 @@ def install():
                 flash("8 default map nodes were added.", "info")
 
             db.session.commit()
+
+            event_setting.default_category = 1
 
             admin = User(username=form.admin_name.data)
             admin.set_password(form.admin_password.data)

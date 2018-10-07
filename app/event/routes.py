@@ -1,8 +1,8 @@
 from app import db
 from app.helpers import page_title, redirect_non_admins, gen_calendar_stats, redirect_non_event_admins, gen_event_category_choices, gen_epoch_choices, gen_month_choices, gen_day_choices, update_timestamp
-from app.models import Event, EventCategory
+from app.models import EventSetting, Event, EventCategory
 from app.event import bp
-from app.event.forms import EventForm, CategoryForm
+from app.event.forms import SettingsForm, EventForm, CategoryForm
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 
@@ -16,6 +16,7 @@ def dummy():
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
+    settings = EventSetting.query.get(1)
     form = EventForm()
     form.category.choices = gen_event_category_choices()
     form.epoch.choices = gen_epoch_choices()
@@ -25,6 +26,9 @@ def create():
         form.day.choices = gen_day_choices(form.month.data)
     else:
         form.day.choices = gen_day_choices(1)
+        form.category.data = settings.default_category
+        form.is_visible.data = settings.default_visible
+
 
     if not current_user.is_event_admin():
         del form.is_visible
@@ -34,6 +38,8 @@ def create():
 
         if current_user.is_event_admin():
             new_event.is_visible = form.is_visible.data
+        else:
+            new_event.is_visible = settings.default_visible
 
         db.session.add(new_event)
         db.session.commit()
@@ -93,13 +99,28 @@ def category_edit(id):
 
     return render_template("event/category.html", form=form, heading=heading, title=page_title(heading))
 
-@bp.route("/settings", methods=["GET"])
+@bp.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
     deny_access = redirect_non_event_admins()
     if deny_access:
         return redirect(url_for(no_perm))
 
+    settings = EventSetting.query.get(1)
+    form = SettingsForm()
+    form.default_category.choices = gen_event_category_choices()
+
+    if form.validate_on_submit():
+        settings.default_visible = form.default_visible.data
+        settings.default_category = form.default_category.data
+
+        db.session.commit()
+
+        flash("Event settings have been changed.", "success")
+    elif request.method == "GET":
+        form.default_visible.data = settings.default_visible
+        form.default_category.data = settings.default_category
+
     categories = EventCategory.query.all()
 
-    return render_template("event/settings.html", categories=categories, title=page_title("Event settings"))
+    return render_template("event/settings.html", categories=categories, form=form, title=page_title("Event settings"))
