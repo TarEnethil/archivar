@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, gen_calendar_stats, redirect_non_event_admins, gen_event_category_choices, gen_epoch_choices, gen_month_choices, gen_day_choices, update_timestamp
+from app.helpers import page_title, flash_no_permission, redirect_non_admins, gen_calendar_stats, redirect_non_event_admins, gen_event_category_choices, gen_epoch_choices, gen_month_choices, gen_day_choices, update_timestamp
 from app.models import EventSetting, Event, EventCategory
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
@@ -29,7 +29,6 @@ def create():
         form.category.data = settings.default_category
         form.is_visible.data = settings.default_visible
 
-
     if not current_user.is_event_admin():
         del form.is_visible
 
@@ -51,6 +50,69 @@ def create():
 
     calendar_helper = gen_calendar_stats()
     return render_template("event/create.html", form=form, calendar=calendar_helper, title=page_title("Create new event"))
+
+@bp.route("/edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def edit(id):
+    event = Event.query.filter_by(id=id).first_or_404()
+
+    form = EventForm()
+    form.category.choices = gen_event_category_choices()
+    form.epoch.choices = gen_epoch_choices()
+    form.month.choices = gen_month_choices()
+
+    if request.method == "POST":
+        form.day.choices = gen_day_choices(form.month.data)
+    else:
+        form.day.choices = gen_day_choices(event.month_id)
+
+    if not current_user.has_admin_role() and current_user.has_event_role() and event.is_visible == False and event.created_by.has_admin_role():
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
+    if not current_user.is_event_admin() and event.is_visible == False and not event.created_by == current_user:
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
+    if not current_user.is_event_admin():
+        del form.is_visible
+
+    if form.validate_on_submit():
+        event.name = form.name.data
+        event.category_id = form.category.data
+        event.description = form.description.data
+        event.epoch_id = form.epoch.data
+        event.year = form.year.data
+        event.month_id = form.month.data
+        event.day = form.day.data
+        event.duration = form.duration.data
+        event.edited_by_id = current_user.id
+
+        if current_user.is_event_admin():
+            event.is_visible = form.is_visible.data
+
+        db.session.commit()
+
+        update_timestamp(event.id)
+
+        flash("Wiki entry was edited.", "success")
+
+        return redirect(url_for("calendar.index"))
+    elif request.method == "GET":
+        form.name.data = event.name
+        form.category.data = event.category
+        form.description.data = event.description
+        form.epoch.data = event.epoch_id
+        form.year.data = event.year
+        form.month.data = event.month_id
+        form.day.data = event.day
+        form.duration.data = event.duration
+
+        if current_user.is_event_admin():
+            form.is_visible.data = event.is_visible
+
+    calendar_helper = gen_calendar_stats()
+    return render_template("event/edit.html", form=form, calendar=calendar_helper, title=page_title("Edit event"))
 
 @bp.route("/category/create", methods=["GET", "POST"])
 @login_required
