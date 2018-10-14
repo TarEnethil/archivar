@@ -1,12 +1,11 @@
-from app import app, db
+from app import db
 from flask import flash
-from app.models import GeneralSetting, MapNodeType, Character, Party, Session, WikiEntry, User, Role, Epoch, Month, Day, CalendarSetting, EventCategory, Event
+from app.models import GeneralSetting, Character, Party, Session, WikiEntry, User, Role, Epoch, Month, Day, CalendarSetting, EventCategory, Event
 from flask_login import current_user
-from werkzeug import secure_filename
 from wtforms.validators import ValidationError
 from sqlalchemy import and_, or_, not_
 from collections import OrderedDict
-import os
+
 
 def flash_no_permission(msg=None):
     if (msg != None):
@@ -16,12 +15,6 @@ def flash_no_permission(msg=None):
 
 def redirect_non_admins():
     if not current_user.has_admin_role():
-        flash_no_permission()
-        return True
-    return False
-
-def redirect_non_map_admins():
-    if not current_user.is_map_admin():
         flash_no_permission()
         return True
     return False
@@ -45,29 +38,6 @@ def page_title(dynamic_part=None):
         return static_part + " - " + dynamic_part
     else:
         return static_part
-
-def map_node_filename(filename_from_form):
-    filename = secure_filename(filename_from_form)
-
-    counter = 1
-    while os.path.isfile(os.path.join(app.config["MAPNODES_DIR"], filename)):
-        split = filename.rsplit(".", 1)
-
-        # fancy duplication avoidance (tm)
-        filename = split[0] + "-" + str(counter) + "." + split[1]
-        counter += 1
-
-    return filename
-
-def gen_node_type_choices():
-    choices = [(0, "choose...")]
-
-    node_types = MapNodeType.query.all()
-
-    for node_type in node_types:
-        choices.append((node_type.id, node_type.name))
-
-    return choices
 
 def gen_party_members_choices():
     choices = []

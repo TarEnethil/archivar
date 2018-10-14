@@ -1,7 +1,8 @@
 from app import app, db
-from app.helpers import page_title, redirect_non_map_admins, map_node_filename, gen_node_type_choices, gen_wiki_entry_choices, flash_no_permission
+from app.helpers import page_title, flash_no_permission, gen_wiki_entry_choices
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm
+from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices
 from app.models import User, Role, GeneralSetting, MapNodeType, MapSetting, MapNode, WikiEntry
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
