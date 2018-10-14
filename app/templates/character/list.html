@@ -21,7 +21,7 @@
             <td> {{ char.name }}</td>
             <td> {{ char.race }}</td>
             <td> {{ char.class_ }}</td>
-            <td> {{ char.player.username }}</td>
+            <td> <a href="{{ url_for('user.profile', username=char.player.username) }}">{{ char.player.username }}</a></td>
             <td>
                 <a href="{{ url_for('character.view', id=char.id) }}" class="btn btn-default">
                     <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
