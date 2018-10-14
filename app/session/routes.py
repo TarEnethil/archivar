@@ -1,8 +1,9 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, gen_participant_choices, get_session_number, get_previous_session_id, get_next_session_id
+from app.helpers import page_title, redirect_non_admins
 from app.models import Character, Session
 from app.session import bp
 from app.session.forms import SessionForm
+from app.session.helpers import gen_participant_choices, get_session_number, get_previous_session_id, get_next_session_id
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required
