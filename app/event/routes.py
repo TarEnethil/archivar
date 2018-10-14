@@ -1,8 +1,10 @@
 from app import db
-from app.helpers import page_title, flash_no_permission, redirect_non_admins, gen_calendar_stats, redirect_non_event_admins, gen_event_category_choices, gen_epoch_choices, gen_month_choices, gen_day_choices, update_timestamp, get_events
+from app.helpers import page_title, flash_no_permission
 from app.models import EventSetting, Event, EventCategory, Epoch
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
+from app.event.helpers import redirect_non_event_admins, update_timestamp, get_events, gen_event_category_choices
+from app.calendar.helpers import gen_calendar_stats, gen_epoch_choices, gen_month_choices, gen_day_choices
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 
