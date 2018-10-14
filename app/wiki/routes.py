@@ -1,8 +1,9 @@
 from app import db
-from app.helpers import page_title, redirect_non_wiki_admins, flash_no_permission, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited
+from app.helpers import page_title, flash_no_permission
 from app.models import WikiEntry, WikiSetting, User, Role
 from app.wiki import bp
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm
+from app.wiki.helpers import redirect_non_wiki_admins, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import current_user, login_required
