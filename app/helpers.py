@@ -31,16 +31,6 @@ def page_title(dynamic_part=None):
     else:
         return static_part
 
-def gen_party_members_choices():
-    choices = []
-
-    characters = Character.query.all()
-
-    for char in characters:
-        choices.append((char.id, char.name + " ("+ char.player.username +")"))
-
-    return choices
-
 def gen_participant_choices():
     choices = []
 

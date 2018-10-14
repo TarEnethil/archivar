@@ -1,8 +1,9 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, gen_party_members_choices
+from app.helpers import page_title, redirect_non_admins
 from app.models import Character, Party
 from app.party import bp
 from app.party.forms import PartyForm
+from app.party.helpers import gen_party_members_choices
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required
 
