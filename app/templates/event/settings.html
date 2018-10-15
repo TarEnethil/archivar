@@ -9,9 +9,15 @@
 </p>
 
 <h2>Settings</h2>
+<p>
+    Adjust the default values when creating a new event (globally for all users).
+</p>
 {{ wtf.quick_form(form) }}
 
 <h2>Categories</h2>
+<p>
+    Create or edit event categories, used to sort events by type of occurence.
+</p>
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('event.category_create') }}">

@@ -3,16 +3,37 @@
 
 {% block app_content %}
     <h1>Map settings</h1>
-    <h2>Leaflet.js settings</h2>
+    <p>
+        The map settings are split into two parts: the configuration for the leaflet.js map and the different node types (icons) that can be used on the map.
+    </p>
+
+    <h2>leaflet.js settings</h2>
+    <p>
+        Some of these settings directly translate to leaflet.js parameters.
+        You can use an interal (directory data/map/) or external XYZ-Tileprovider.
+        To get the correct zoom levels is a bit of trial-and-error and might depend on the TileMaker used to tile the map.
+        The icon anchor depends on the type of image you want to use as icons - the anchor is the part of the image that "points" to the actual location.
+        "Bottom" means that the bottom center of the image will point to the location, center means that the center of the image is used instead.
+    </p>
+
     {{ wtf.quick_form(form) }}
 
     <hr>
 
-    <h2>Node Types</h2>
-    <a href="{{ url_for('map.node_type_create')}}" class="btn btn-default">
-        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-        New node type
-    </a>
+    <h2>Node types</h2>
+    <ul class="nav nav-tabs">
+        <li>
+            <a href="{{ url_for('map.node_type_create')}}">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                New node type
+            </a>
+        </li>
+    </ul>
+
+    <p>
+        Node types consist of an image, a name and a short description if needed.
+        It is recommended that you use the same "type" of image concerning the image anchor of the options above, as mixing them might lead to some confusion for the user ("The node is not where I clicked!").
+    </p>
 
     <table class="table table-hover table-striped">
         <thead>
