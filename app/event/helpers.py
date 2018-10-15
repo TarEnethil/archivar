@@ -21,6 +21,11 @@ def gen_event_category_choices():
 
     return choices
 
+def get_event_categories():
+    q = EventCategory.query.order_by(EventCategory.id.asc()).all()
+
+    return q
+
 def update_timestamp(event_id):
     timestamp = 0
     ev = Event.query.filter_by(id=event_id).first()
@@ -52,6 +57,22 @@ def get_events(filter_epoch=None, filter_year=None):
         events = events.filter_by(epoch_id = filter_epoch, year = filter_year)
     elif filter_epoch:
         events = events.filter_by(epoch_id = filter_epoch)
+
+    events = events.order_by(Event.timestamp.asc()).all()
+
+    return events
+
+def get_events_by_category(category_id):
+    if current_user.has_admin_role():
+        events = Event.query
+    elif current_user.has_event_role():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        events = Event.query.filter(not_(and_(Event.is_visible == False, Event.created_by_id.in_(admin_ids))))
+    else:
+        events = Event.query.filter(or_(Event.is_visible == True, Event.created_by_id == current_user.id))
+
+    events = events.filter_by(category_id = category_id)
 
     events = events.order_by(Event.timestamp.asc()).all()
 

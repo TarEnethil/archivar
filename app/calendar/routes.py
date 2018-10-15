@@ -5,6 +5,7 @@ from app.calendar import bp
 from app.calendar.forms import EpochForm, MonthForm, DayForm
 from app.calendar.helpers import get_next_epoch_order, get_next_month_order, get_next_day_order, calendar_sanity_check, gen_calendar_preview_data, gen_calendar_stats, get_years_in_epoch, get_epochs, gen_epoch_choices, gen_month_choices, gen_day_choices
 from app.event.forms import EventForm
+from app.event.helpers import get_event_categories
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required
 
@@ -40,7 +41,9 @@ def index():
     for e in epochs:
         years[e.id] = get_years_in_epoch(e.id)
 
-    return render_template("calendar/index.html", settings=cset, calendar=calendar, epochs=epochs, years=years, title=page_title("Calendar"))
+    categories = get_event_categories()
+
+    return render_template("calendar/index.html", settings=cset, calendar=calendar, epochs=epochs, years=years, categories=categories, title=page_title("Calendar"))
 
 @bp.route("/view", methods=["GET"])
 @login_required

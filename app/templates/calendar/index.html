@@ -43,5 +43,17 @@ The calendar has not been finalized by the admin yet.
     <p>No events in this epoch.</p>
     {% endif %}
 {% endfor %}
+
+<h2>Events by category</h2>
+<p>
+    Filter events by category.
+</p>
+
+<ul>
+{% for cat in categories %}
+<li style="border-left:7px solid {{ cat.color }};padding-left:10px;"><a href="{{ url_for('event.list_category', c_id=cat.id) }}">{{ cat.name }}</a></li>
+{% endfor %}
+</ul>
+
 {% endif %}
 {% endblock %}

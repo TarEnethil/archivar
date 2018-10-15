@@ -20,7 +20,7 @@
 {% block app_content %}
     <h1>{{ event.name }}</h1>
     <ul>
-        <li style="padding-left:10px;border-left:7px solid {{ event.category.color }}">{{ event.category.name }}</li>
+        <li style="padding-left:10px;border-left:7px solid {{ event.category.color }}"><a href="{{ url_for('event.list_category', c_id=event.category.id) }}">{{ event.category.name }}</a></li>
         <li>{{ event.start_date(False, with_link=True, with_weekday=True)|safe }}</li>
 
         {% if event.duration > 1 %}

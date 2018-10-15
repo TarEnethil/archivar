@@ -3,7 +3,7 @@ from app.helpers import page_title, flash_no_permission
 from app.models import EventSetting, Event, EventCategory, Epoch
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
-from app.event.helpers import redirect_non_event_admins, update_timestamp, get_events, gen_event_category_choices
+from app.event.helpers import redirect_non_event_admins, update_timestamp, get_events, gen_event_category_choices, get_events_by_category
 from app.calendar.helpers import gen_calendar_stats, gen_epoch_choices, gen_month_choices, gen_day_choices
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
@@ -39,6 +39,15 @@ def list_epoch_year(e_id, year):
     title = "All events for year " + str(year) + ", " + e.name
 
     return render_template("event/list.html", events=events, epoch_year_flag=True, heading=title, title=page_title("View events in epoch"))
+
+@bp.route("/list/category-<int:c_id>", methods=["GET"])
+@login_required
+def list_category(c_id):
+    c = EventCategory.query.filter_by(id=c_id).first_or_404()
+    events = get_events_by_category(c_id)
+    title = "All events in category " + c.name
+
+    return render_template("event/list.html", events=events, category_flag=True, heading=title, title=page_title("View events in category"))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
