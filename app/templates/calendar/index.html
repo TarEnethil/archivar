@@ -23,9 +23,13 @@ The calendar has not been finalized by the admin yet.
     </li>
 </ul>
 
-<h1>Events by year and epoch</h1>
+<h2>Events by year and epoch</h2>
+<p>
+    The following is a list of all eventful years in the calendar, sorted by epoch.
+</p>
+
 {% for epoch in epochs %}
-<h2><a href="{{ url_for('event.list_epoch', e_id=epoch.id) }}">{{ epoch.name }}</a></h2>
+<h3><a href="{{ url_for('event.list_epoch', e_id=epoch.id) }}">{{ epoch.name }}</a></h3>
 
     {% for year in years[epoch.id] %}
         {% if loop.index == 1 %}
