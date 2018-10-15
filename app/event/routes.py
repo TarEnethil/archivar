@@ -1,12 +1,13 @@
 from app import db
 from app.helpers import page_title, flash_no_permission
-from app.models import EventSetting, Event, EventCategory, Epoch
+from app.models import EventSetting, Event, EventCategory, Epoch, User, Role
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
 from app.event.helpers import redirect_non_event_admins, update_timestamp, get_events, gen_event_category_choices, get_events_by_category
 from app.calendar.helpers import gen_calendar_stats, gen_epoch_choices, gen_month_choices, gen_day_choices
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
+from sqlalchemy import not_, and_, or_
 
 no_perm = "calendar.index"
 
@@ -233,3 +234,19 @@ def settings():
     categories = EventCategory.query.all()
 
     return render_template("event/settings.html", categories=categories, form=form, title=page_title("Event settings"))
+
+@bp.route("/sidebar", methods=["GET"])
+@login_required
+def sidebar():
+    if current_user.has_admin_role():
+        entries = Event.query
+    elif current_user.has_event_role():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        entries = Event.query.filter(not_(and_(Event.is_visible == False, Event.created_by_id.in_(admin_ids))))
+    else:
+        entries = Event.query.filter(or_(Event.is_visible == True, Event.created_by_id == current_user.id))
+
+    entries = entries.with_entities(Event.id, Event.name, Event.is_visible).order_by(Event.name.asc()).all()
+
+    return jsonify(entries)
