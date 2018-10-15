@@ -13,6 +13,16 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static_files', filename='style.css') }}">
 {% endblock %}
 
+{% block scripts %}
+{{ super() }}
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $("input[type=submit][value!=Search]").removeClass("btn-default").addClass("btn-success");
+});
+</script>
+{% endblock %}
+
 {% block navbar %}
     <nav class="navbar navbar-expand-md navbar-default bg-dark">
         <div class="navbar-collapse">
