@@ -9,3 +9,4 @@ class Config(object):
     MAPNODES_DIR = os.path.join(basedir, 'data/mapnodes/')
     MAPNODES_FILE_EXT = ["jpg", "png", "gif"]
     MAPTILES_DIR = os.path.join(basedir, 'data/map/')
+    WELCOME_MD = os.path.join(basedir, "Welcome.md")

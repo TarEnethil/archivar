@@ -85,7 +85,13 @@ def install():
         form = InstallForm()
 
         if form.validate_on_submit():
-            setting = GeneralSetting(title="My Page", welcome_page="# Hello there!")
+            welcome_msg = ""
+
+            with open(app.config["WELCOME_MD"], "r") as markdown_file:
+                for line in markdown_file:
+                    welcome_msg += line
+
+            setting = GeneralSetting(title="My Page", welcome_page=welcome_msg)
 
             admin_role = Role(name="Admin")
             map_role = Role(name="Map")
