@@ -42,11 +42,14 @@ descr_ep_{{ day.id }}.innerHTML = marked(descr_ep_{{ day.id }}.innerHTML, option
     Quick info:
     </p>
 
-    <ul>
-        <li>Days per week: {{ stats["days_per_week"] }}</li>
-        <li>Days per year: {{ stats["days_per_year"] }}</li>
-        <li>Months per year: {{ stats["months_per_year"] }}</li>
-    </ul>
+    <dl class="dl-horizontal">
+        <dt>Days per week</dt>
+        <dd>{{ stats["days_per_week"] }}</dd>
+        <dt>Days per year</dt>
+        <dd>{{ stats["days_per_year"] }}</dd>
+        <dt>Months per year</dt>
+        <dd>{{ stats["months_per_year"] }}</dd>
+    </dl>
 
     {% if settings.finalized == True %}
     <h2>Epochs</h2>

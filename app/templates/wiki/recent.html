@@ -8,7 +8,7 @@
 
     <h2>Recently created pages</h2>
     {% if created %}
-    <ul>
+    <ul class="list-unstyled">
         {% for entry in created %}
         <li><a href="{{ url_for('wiki.view', id=entry[0]) }}">{{ entry[1] }}</a> ({{ entry[2] }} by <a href="{{ url_for('user.profile', username=entry[3]) }}">{{ entry[3] }}</a>)</li>
         {% endfor %}
@@ -19,7 +19,7 @@
 
     <h2>Recently edited pages</h2>
     {% if edited %}
-    <ul>
+    <ul class="list-unstyled">
         {% for entry in edited %}
         <li><a href="{{ url_for('wiki.view', id=entry[0]) }}">{{ entry[1] }}</a> ({{ entry[2] }} by <a href="{{ url_for('user.profile', username=entry[3]) }}">{{ entry[3] }}</a>)</li>
         {% endfor %}

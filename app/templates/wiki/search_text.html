@@ -15,7 +15,7 @@
 
     <h1>Search for '{{ term }}'</h1>
     {% if results %}
-    <ul>
+    <ul class="list-unstyled">
         {% for result in results %}
         <li><a href="{{ url_for('wiki.view', id=result[0]) }}">{{ result[1] }}</a> <span class="matching_phrase">(... {{ result[2] }} ...)</span></li>
         {% endfor %}

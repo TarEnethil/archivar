@@ -35,34 +35,38 @@
     </ul>
     {% endif %}
 
-    <hr>
-        <h2>Info</h2>
-        <ul>
-            <li>Name: {{ char.name }}</li>
-            <li>Race: {{ char.race }}</li>
-            <li>Class: {{ char.class_ }}</li>
-            <li>Player: <a href="{{ url_for('user.profile', username=char.player.username) }}">{{ char.player.username }}</a></li>
-            {% if char.sessions %}
-                <li>Sessions participated: {{ char.sessions|length }}</li>
-            {% endif %}
-        </ul>
+    <h2>Info</h2>
 
-        {% if char.parties %}
-        <h3>Parties</h3>
-
-        <ul>
-            {% for party in char.parties %}
-            <li>
-                <a href="{{ url_for('party.view', id=party.id) }}">{{ party.name }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>Character is in no parties.</p>
+     <dl class="dl-horizontal">
+        <dt>Name</dt>
+        <dd>{{ char.name }}</dd>
+        <dt>Race</dt>
+        <dd>{{ char.race }}</dd>
+        <dt>Class</dt>
+        <dd>{{ char.class_ }}</dd>
+        <dt>Player</dt>
+        <dd><a href="{{ url_for('user.profile', username=char.player.username) }}">{{ char.player.username }}</a></dd>
+        {% if char.sessions %}
+            <dt>Sessions</dt>
+            <dd>{{ char.sessions|length }}</dd>
         {% endif %}
+    </dl>
+
+    {% if char.parties %}
+    <h3>Parties</h3>
+
+    <ul>
+        {% for party in char.parties %}
+        <li>
+            <a href="{{ url_for('party.view', id=party.id) }}">{{ party.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Character is in no parties.</p>
+    {% endif %}
 
     {% if char.description %}
-    <hr>
     <p id="char_description" class="custom-markdown phb-style">
 {{ char.description }}
     </p>
@@ -77,7 +81,6 @@
         </p>
         {% endif %}
 
-    <hr>
     <p>
         <h2>Misc</h2>
         Created: {{ char.created }} <br />

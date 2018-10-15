@@ -44,7 +44,7 @@
 
 <h2>Members</h2>
 {% if party.members %}
-<ul>
+<ul class="list-unstyled">
     {% for member in party.members %}
     <li>
         <a href="{{ url_for('character.view', id=member.id) }}">{{ member.name }}</a>

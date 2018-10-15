@@ -91,7 +91,7 @@
     {% endfor %}
 {% endif %}
 <hr>
-<ul>
+<ul class="list-unstyled">
     <li>Created by <a href="{{ url_for('user.profile', username=entry.created_by.username) }}">{{ entry.created_by.username }}</a> ({{ entry.created }})</li>
     {% if entry.edited_by %}
     <li>Edited by <a href="{{ url_for('user.profile', username=entry.edited_by.username) }}">{{ entry.edited_by.username }}</a> ({{ entry.edited }})</li>

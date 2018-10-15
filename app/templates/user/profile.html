@@ -89,7 +89,7 @@
     <h2>Roles</h2>
 
     {% if user.roles %}
-    <ul>
+    <ul class="list-unstyled">
 
     {% for role in user.roles %}
         <li>{{ role.name }} ({{ role.description }})</li>
@@ -100,7 +100,7 @@
     <p>User has no special rolls.</p>
     {% endif %}
 
-    <h2>Misc</h2>   
+    <h2>Misc</h2>
     <p>
         Created: {{ user.created }} <br />
         Last seen: {{ user.last_seen }}

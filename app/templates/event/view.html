@@ -19,14 +19,17 @@
 
 {% block app_content %}
     <h1>{{ event.name }}</h1>
-    <ul>
-        <li style="padding-left:10px;border-left:7px solid {{ event.category.color }}"><a href="{{ url_for('event.list_category', c_id=event.category.id) }}">{{ event.category.name }}</a></li>
-        <li>{{ event.start_date(False, with_link=True, with_weekday=True)|safe }}</li>
-
+        <dl class="dl-horizontal">
+        <dt>Category</dt>
+        <dd><a href="{{ url_for('event.list_category', c_id=event.category.id) }}" style="padding-left:10px;border-left:7px solid {{ event.category.color }}">{{ event.category.name }}</a></dd>
+        <dt>Date</dt>
+        <dd>{{ event.start_date(False, with_link=True, with_weekday=True)|safe }}</dd>
         {% if event.duration > 1 %}
-        <li>Lasted {{ event.duration }} days</li>
+        <dt>Duration</dt>
+        <dd>{{ event.duration }} days</dd>
         {% endif %}
-    </ul>
+    </dl>
+
 {% if event.description %}
     <p id="description" class="custom-markdown">
 {{ event.description }}
@@ -35,7 +38,7 @@
 
     <hr>
 
-    <ul>
+    <ul class="list-unstyled">
         <li>Created by: <a href="{{ url_for('user.profile', username='event.created_by.username') }}">{{ event.created_by.username }}</a></li>
         {% if event.edited_by %}
         <li>Edited by: <a href="{{ url_for('user.profile', username='event.edited_by.username') }}">{{ event.edited_by.username }}</a></li>

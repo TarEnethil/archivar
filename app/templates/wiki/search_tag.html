@@ -6,7 +6,7 @@
 
     <h1>Entries matching '{{ tag }}'</h1>
     {% if results %}
-    <ul>
+    <ul class="list-unstyled">
         {% for result in results %}
         <li><a href="{{ url_for('wiki.view', id=result[0]) }}">{{ result[1] }}</a></li>
         {% endfor %}
