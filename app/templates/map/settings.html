@@ -3,7 +3,7 @@
 
 {% block app_content %}
     <h1>Map settings</h1>
-    <h2>GoogleMaps settings</h2>
+    <h2>Leaflet.js settings</h2>
     {{ wtf.quick_form(form) }}
 
     <hr>
@@ -11,7 +11,7 @@
     <h2>Node Types</h2>
     <a href="{{ url_for('map.node_type_create')}}" class="btn btn-default">
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-        New Node Type
+        New node type
     </a>
 
     <table class="table table-hover table-striped">
