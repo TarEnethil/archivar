@@ -38,11 +38,19 @@
                 <td>
                     {% if session.participants %}
                         {% for p in session.participants %}
+                            {% if loop.index != 1 %}
+                                &bullet;
+                            {% endif %}
+
                             {% if p.player.id == current_user.id %}
                     <a href="{{ url_for('character.view', id=p.id) }}"><b>{{ p.name }}</b></a>
                             {% else %}
                     <a href="{{ url_for('character.view', id=p.id) }}">{{ p.name }}</a>
                             {% endif %}
+
+                     {% if loop.index != 1 %}
+                     &bullet;
+                     {% endif %}
                         {% endfor %}
                     {% endif %}
                 </td>
@@ -86,6 +94,10 @@
                 <td>
                     {% if session.participants %}
                         {% for p in session.participants %}
+                            {% if loop.index != 1 %}
+                                &bullet;
+                            {% endif %}
+
                             {% if p.player.id == current_user.id %}
                     <a href="{{ url_for('character.view', id=p.id) }}"><b>{{ p.name }}</b></a>
                             {% else %}
