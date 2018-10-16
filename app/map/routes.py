@@ -2,16 +2,14 @@ from app import app, db
 from app.helpers import page_title, flash_no_permission
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm
-from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices
-from app.models import User, Role, GeneralSetting, MapNodeType, MapSetting, MapNode, WikiEntry
+from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices, get_visible_nodes
+from app.models import GeneralSetting, MapNodeType, MapSetting, MapNode, WikiEntry
 from app.wiki.helpers import gen_wiki_entry_choices
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
 from flask_login import current_user, login_required
 from os import path, remove
 from PIL import Image
-from sqlalchemy import or_, not_, and_
-
 no_perm = "index"
 
 @bp.route("/")
@@ -297,16 +295,7 @@ def node_type_json():
 @bp.route("/node/json")
 @login_required
 def node_json():
-    admins = User.query.filter(User.roles.contains(Role.query.get(1)))
-
-    admin_ids = [a.id for a in admins]
-
-    if current_user.has_admin_role():
-        nodes = MapNode.query.all()
-    elif current_user.is_map_admin():
-        nodes = MapNode.query.filter(not_(and_(MapNode.is_visible == False, MapNode.created_by_id.in_(admin_ids))))
-    else:
-        nodes = MapNode.query.filter(or_(MapNode.is_visible == True, MapNode.created_by_id == current_user.id)).all()
+    nodes = get_visible_nodes()
 
     nodes_dict = {}
 

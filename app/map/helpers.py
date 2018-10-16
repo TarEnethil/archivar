@@ -35,6 +35,18 @@ def gen_node_type_choices():
 
     return choices
 
+def get_visible_nodes():
+    if current_user.has_admin_role():
+        nodes = MapNode.query
+    elif current_user.is_map_admin():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        nodes = MapNode.query.filter(not_(and_(MapNode.is_visible == False, MapNode.created_by_id.in_(admin_ids))))
+    else:
+        nodes = MapNode.query.filter(or_(MapNode.is_visible == True, MapNode.created_by_id == current_user.id))
+
+    return nodes.all()
+
 def get_nodes_by_wiki_id(w_id):
     if current_user.has_admin_role():
         nodes = MapNode.query
