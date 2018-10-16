@@ -609,6 +609,15 @@
             });
 
             hide_loading();
+
+            {% if jump_to_node %}
+            if (_nodes[{{ jump_to_node }}] != undefined) {
+              var jump_to = _nodes[{{ jump_to_node }}].marker;
+              _map.panTo(jump_to.getLatLng());
+              jump_to.openPopup();
+            }
+            {% endif %}
+
             console.log("init done.");
           });
         });

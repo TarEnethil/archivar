@@ -27,6 +27,20 @@ def index():
 
     return render_template("map/index.html", settings=mapsettings, title=page_title(title))
 
+@bp.route("/node/<int:n_id>")
+@login_required
+def map_with_node(n_id):
+    settings = GeneralSetting.query.get(1)
+    mapsettings = MapSetting.query.get(1)
+    node = MapNode.query.filter_by(id=n_id).first_or_404()
+
+    if settings.world_name:
+        title = "Map of " + settings.world_name
+    else:
+        title = "Worldmap"
+
+    return render_template("map/index.html", settings=mapsettings, jump_to_node=node.id, title=page_title(title))
+
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
