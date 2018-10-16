@@ -4,10 +4,13 @@
 {% block app_content %}
     <h1>Install</h1>
 
-    <ul>
-        <li>Automatic: filling database with default values (roles, settings...)</li>
-        <li>Your task: Create first admin account</li>
-    </ul>
+    <p>
+        Installation is quick and easy.
+        During installation, the database will be initialized with some default values (user roles, base settings, ...).
+        Your task is simply to enter credentials for the admin account.
+        This account is special in a way, as its admin status can't be revoked by other admins - it is the ultimate account.
+        You can also choose if some default-nodes for the map should be installed so serve as an example.
+    </p>
 
     {{ wtf.quick_form(form) }}
 {% endblock %}
