@@ -1,7 +1,7 @@
 # Dungeon Master Control Panel (temporary name, subject to change)
 Hi.
 While DMing for my D&D group, I wanted a possibility for us to collaboratively build the world together.
-As my (not thorough) search came up with nothing, I naturally built something myself.
+As my (not thorough) search came up with nothing, I decided to build something myself.
 The following readme gives an introduction into what this project is (or isn't), how to install/use it and what it is built upon.
 
 **TL;DR**: This is a web-based tool for collaborative world building and campaign / session management for role playing groups.
@@ -95,8 +95,10 @@ The built-in map provider can be configured in the map settings, the map tiles h
 As this provider is possibly slow, you can also use an external provider such as nginx or apache.
 I am currently looking for suitable tools for creating XYZ-maptiles from an image.
 
-## Calendar
-_Up and coming._
+## Calendar and Events
+Finishing of the three big features is a customizable calendar with events.
+As admin you can create a calendar with customizable months, days and epochs.
+Players can then enter events to define how the world was shaped.
 
 # Roles
 ## Admin / DM
@@ -119,7 +121,8 @@ They dont see the hidden GM notes on articles.
 This role allows for someone to help with the worldbuilding without giving away all GM secrets.
 
 ## Event admin
-_Up and coming._
+As with Map and Wiki admins, this role can toggle the visibility of articles created by users and other event admins, but not the ones created by admins.
+This role is intended as a curator for the history of the world.
 
 ## Special
 _Reserved. No function as of yet._
@@ -127,7 +130,7 @@ _Reserved. No function as of yet._
 # Used tools and libraries
 * Backend is [Flask](http://flask.pocoo.org/) (Python), current Database is [SQLite](https://www.sqlite.org/index.html) (for used python libraries refer to requirements.txt)
 * Frontend with [Bootstrap 3.3](https://getbootstrap.com/docs/3.3/)
-* JavaScript framework is [jQuery](https://jquery.com/) (used by bootstrap), additional scripts: [multiselect](http://loudev.com/) (select characters for session)
-* Map built with [leaflet.js](https://leafletjs.com/) and [bootstrap-select](https://developer.snapappointments.com/bootstrap-select/)
+* JavaScript framework is [jQuery](https://jquery.com/) (used by bootstrap), additional scripts: [multiselect](http://loudev.com/) (select characters for session), [bootstrap-select](https://developer.snapappointments.com/bootstrap-select/)
+* Map built with [leaflet.js](https://leafletjs.com/)
 * Markdown done with [SimpleMDE](https://simplemde.com/) (WYSIWYG editor) and [marked.js](https://github.com/markedjs/marked) (in-page rendering)
 * Thanks to the [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) by Miguel Grinberg for getting me started with Flask
