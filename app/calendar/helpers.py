@@ -40,19 +40,19 @@ def calendar_sanity_check():
     if not epochs:
         tests_passed = False
         flash("Calendar needs at least one epoch.", "danger")
+    else:
+        current_epoch = Epoch.query.order_by(Epoch.order.desc()).limit(1).first()
 
-    current_epoch = Epoch.query.order_by(Epoch.order.desc()).limit(1).first()
-
-    if current_epoch.years != 0:
-        tests_passed = False
-        flash("The current epoch (" + current_epoch.name + ") needs a duration of 0.", "danger")
-
-    all_other_epochs = Epoch.query.filter(Epoch.id != current_epoch.id).all()
-
-    for epoch in all_other_epochs:
-        if epoch.years == 0:
+        if current_epoch.years != 0:
             tests_passed = False
-            flash("All epochs except the current one need a duration > 0. '" + epoch.name + "' violates that constraint." , "danger")
+            flash("The current epoch (" + current_epoch.name + ") needs a duration of 0.", "danger")
+
+        all_other_epochs = Epoch.query.filter(Epoch.id != current_epoch.id).all()
+
+        for epoch in all_other_epochs:
+            if epoch.years == 0:
+                tests_passed = False
+                flash("All epochs except the current one need a duration > 0. '" + epoch.name + "' violates that constraint." , "danger")
 
     months = Month.query.all()
 
