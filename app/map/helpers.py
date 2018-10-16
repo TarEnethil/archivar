@@ -1,7 +1,8 @@
 from app import app
 from app.helpers import flash_no_permission
-from app.models import MapNodeType
+from app.models import MapNodeType, MapNode, User, Role
 from flask_login import current_user
+from sqlalchemy import and_, not_, or_
 from werkzeug import secure_filename
 import os
 
@@ -33,3 +34,17 @@ def gen_node_type_choices():
         choices.append((node_type.id, node_type.name))
 
     return choices
+
+def get_nodes_by_wiki_id(w_id):
+    if current_user.has_admin_role():
+        nodes = MapNode.query
+    elif current_user.is_map_admin():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        nodes = MapNode.query.filter(not_(and_(MapNode.is_visible == False, MapNode.created_by_id.in_(admin_ids))))
+    else:
+        nodes = MapNode.query.filter(or_(MapNode.is_visible == True, MapNode.created_by_id == current_user.id))
+
+    nodes = nodes.filter_by(wiki_entry_id = w_id).all()
+
+    return nodes

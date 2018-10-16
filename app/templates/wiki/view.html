@@ -75,6 +75,15 @@
 <p>No content.</p>
 {% endif %}
 
+{% if map_nodes %}
+<h2>Associated map nodes</h2>
+<ul class="list-unstyled">
+{% for node in map_nodes %}
+<li><a href="{{ url_for('map.index_with_node', n_id=node.id) }}">{{ node.name }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+
 {% if current_user.has_admin_role() %}
     {% if entry.dm_content %}
     <hr>

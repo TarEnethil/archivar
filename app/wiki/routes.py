@@ -1,6 +1,7 @@
 from app import db
 from app.helpers import page_title, flash_no_permission
 from app.models import WikiEntry, WikiSetting, User, Role
+from app.map.helpers import get_nodes_by_wiki_id
 from app.wiki import bp
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm
 from app.wiki.helpers import redirect_non_wiki_admins, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited
@@ -120,7 +121,9 @@ def view(id):
         flash_no_permission()
         return redirect(url_for(no_perm))
 
-    return render_template("wiki/view.html", entry=wikientry, nav=(prepare_wiki_nav(), WikiSearchForm()), title=page_title("View wiki entry"))
+    map_nodes = get_nodes_by_wiki_id(id)
+
+    return render_template("wiki/view.html", entry=wikientry, nav=(prepare_wiki_nav(), WikiSearchForm()), map_nodes=map_nodes, title=page_title("View wiki entry"))
 
 @bp.route("/vis/<int:id>", methods=["GET"])
 @login_required

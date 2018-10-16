@@ -29,7 +29,7 @@ def index():
 
 @bp.route("/node/<int:n_id>")
 @login_required
-def map_with_node(n_id):
+def index_with_node(n_id):
     settings = GeneralSetting.query.get(1)
     mapsettings = MapSetting.query.get(1)
     node = MapNode.query.filter_by(id=n_id).first_or_404()
