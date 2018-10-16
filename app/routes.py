@@ -20,8 +20,10 @@ def before_request():
 
 @app.route("/")
 @app.route("/index")
-@login_required
 def index():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+
     settings = GeneralSetting.query.get(1)
     return render_template("index.html", settings=settings, title=page_title("Home"))
 
