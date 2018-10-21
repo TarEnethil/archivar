@@ -1,6 +1,7 @@
 from app.models import User
+from app.user.helpers import gen_date_string_choices
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField, SubmitField, SelectMultipleField
+from wtforms import StringField, TextAreaField, PasswordField, SubmitField, SelectMultipleField, SelectField, BooleanField
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 
 class CreateUserForm(FlaskForm):
@@ -25,5 +26,15 @@ class EditProfileForm(FlaskForm):
 
     # choices are populated later
     roles = SelectMultipleField("Roles")
+
+    submit = SubmitField("Submit")
+
+class SettingsForm(FlaskForm):
+    dateformat = SelectField("Date format", choices=gen_date_string_choices(), validators=[InputRequired()])
+    phb_session = BooleanField("Session: Use PHB-Style on markdown")
+    phb_wiki = BooleanField("Wiki: Use PHB-Style on markdown")
+    phb_character = BooleanField("Character: Use PHB-Style on markdown")
+    phb_party = BooleanField("Party: Use PHB-Style on markdown")
+    phb_calendar = BooleanField("Calendar: Use PHB-Style on markdown")
 
     submit = SubmitField("Submit")

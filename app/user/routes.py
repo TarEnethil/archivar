@@ -2,7 +2,7 @@ from app import db
 from app.helpers import page_title, redirect_non_admins
 from app.models import User, Role
 from app.user import bp
-from app.user.forms import CreateUserForm, EditProfileForm
+from app.user.forms import CreateUserForm, EditProfileForm, SettingsForm
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
@@ -125,3 +125,29 @@ def list():
     users = User.query.all()
 
     return render_template("user/list.html", users=users, title=page_title("User list"))
+
+@bp.route("/settings", methods=["GET", "POST"])
+@login_required
+def settings():
+    form = SettingsForm()
+
+    if form.validate_on_submit():
+        current_user.dateformat = form.dateformat.data
+        current_user.phb_session = form.phb_session.data
+        current_user.phb_wiki = form.phb_wiki.data
+        current_user.phb_character = form.phb_character.data
+        current_user.phb_party = form.phb_party.data
+        current_user.phb_calendar = form.phb_calendar.data
+
+        flash("Settings changed.", "success")
+
+        db.session.commit()
+    elif request.method == "GET":
+        form.dateformat.data = current_user.dateformat
+        form.phb_session.data = current_user.phb_session
+        form.phb_wiki.data = current_user.phb_wiki
+        form.phb_character.data = current_user.phb_character
+        form.phb_party.data = current_user.phb_party
+        form.phb_calendar.data = current_user.phb_calendar
+
+    return render_template("user/settings.html", form=form, title=page_title("User settings"))

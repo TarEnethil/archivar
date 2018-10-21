@@ -31,6 +31,12 @@
 
         {% if user == current_user  %}
         <li>
+            <a href="{{ url_for('user.settings') }}">
+                <span class="glyphicon glyphicon-cog"></span>
+                Settings
+            </a>
+        </li>
+        <li>
             <a href="{{ url_for('character.create') }}">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 New character

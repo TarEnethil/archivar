@@ -29,6 +29,13 @@ class User(UserMixin, db.Model):
     roles = db.relationship("Role", secondary=user_role_assoc, backref="users")
     characters = db.relationship("Character", backref="user")
 
+    dateformat = db.Column(db.String(25), default="LLL")
+    phb_session = db.Column(db.Boolean, default=False)
+    phb_wiki = db.Column(db.Boolean, default=False)
+    phb_character = db.Column(db.Boolean, default=False)
+    phb_party = db.Column(db.Boolean, default=False)
+    phb_calendar = db.Column(db.Boolean, default=False)
+
     def has_role(self, roleId):
         role = Role.query.get(roleId)
 
