@@ -138,12 +138,12 @@ def edit(id):
 
         update_timestamp(event.id)
 
-        flash("Wiki entry was edited.", "success")
+        flash("Event was edited.", "success")
 
         return redirect(url_for("calendar.index"))
     elif request.method == "GET":
         form.name.data = event.name
-        form.category.data = event.category
+        form.category.data = event.category_id
         form.description.data = event.description
         form.epoch.data = event.epoch_id
         form.year.data = event.year
