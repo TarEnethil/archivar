@@ -9,14 +9,14 @@ from flask_login import current_user, login_required
 
 no_perm = "index"
 
-@bp.route("/profile/<username>")
+@bp.route("/<username>")
 @login_required
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
 
     return render_template("user/profile.html", user=user, title=page_title("User profile"))
 
-@bp.route("/edit/<username>", methods=["GET", "POST"])
+@bp.route("/<username>/edit", methods=["GET", "POST"])
 @login_required
 def edit(username):
     if current_user.has_admin_role() or current_user.username == username:
