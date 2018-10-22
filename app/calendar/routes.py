@@ -63,6 +63,11 @@ def check():
     if deny_access:
         return redirect(url_for(no_perm))
 
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+            flash("Calendar has already been finalized, check not possible.", "danger")
+            return redirect(url_for('calendar.index'))
+
     status = calendar_sanity_check()
 
     if status == True:
@@ -79,11 +84,18 @@ def preview():
     if deny_access:
         return redirect(url_for(no_perm))
 
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("Calendar has already been finalized, preview not possible.", "danger")
+        return redirect(url_for('calendar.index'))
+
     status = calendar_sanity_check()
 
     if status == False:
         flash("There were errors previewing the calendar. See the other messages for more details.", "danger")
         return redirect(url_for("calendar.settings"))
+    else:
+        flash("All checks passed.", "success")
 
     stats = gen_calendar_preview_data()
 
@@ -107,6 +119,11 @@ def finalize():
     deny_access = redirect_non_admins()
     if deny_access:
         return redirect(url_for(no_perm))
+
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+            flash("Calendar has already been finalized.", "danger")
+            return redirect(url_for('calendar.index'))
 
     status = calendar_sanity_check()
 
