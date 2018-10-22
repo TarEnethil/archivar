@@ -68,7 +68,11 @@
 <h1>{{ entry.title }} </h1>
 
 {% if entry.content %}
+    {% if current_user.phb_wiki %}
+    <div id="content" class="custom-markdown phb-style">
+    {% else %}
     <div id="content" class="custom-markdown">
+    {% endif %}
 {{ entry.content }}
     </div>
 {% else %}

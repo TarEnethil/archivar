@@ -35,7 +35,11 @@
 {% endif %}
 
 {% if party.description %}
+{% if current_user.phb_party %}
     <div id="description" class="custom-markdown phb-style">
+{% else %}
+    <div id="description" class="custom-markdown">
+{% endif %}
 {{ party.description }}
     </div>
 {% else %}

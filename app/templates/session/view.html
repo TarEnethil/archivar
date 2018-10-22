@@ -58,7 +58,11 @@
 
 <h2>Summary</h2>
 {% if session.summary %}
+    {% if current_user.phb_session %}
     <div id="summary" class="custom-markdown phb-style">
+    {% else %}
+    <div id="summary" class="custom-markdown">
+    {% endif %}
 {{ session.summary }}
     </div>
 {% else %}

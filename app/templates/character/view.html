@@ -67,7 +67,11 @@
     {% endif %}
 
     {% if char.description %}
+    {% if current_user.phb_character %}
     <p id="char_description" class="custom-markdown phb-style">
+    {% else %}
+    <p id="char_description" class="custom-markdown">
+    {% endif %}
 {{ char.description }}
     </p>
     {% endif %}

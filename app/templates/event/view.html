@@ -31,7 +31,11 @@
     </dl>
 
 {% if event.description %}
+{% if current_user.phb_calendar %}
+    <p id="description" class="custom-markdown phb-style">
+{% else %}
     <p id="description" class="custom-markdown">
+{% endif %}
 {{ event.description }}
     </p>
 {% endif %}
