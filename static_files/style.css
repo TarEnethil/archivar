@@ -158,7 +158,7 @@ ul.nav-tabs li span.glyphicon {
     text-align:center;
 }
 
-.picker td:hover {
+.picker td[data-val]:hover {
     cursor:pointer;
     background:#ccc;
 }

@@ -104,12 +104,21 @@ function reload_epoch_picker() {
 
         cell.appendTo(row);
 
-        if (i % items_per_row == (epochs - 1) || i == (epochs - 1)) {
+        if ((i % items_per_row) % (epochs - 1) == 0 || i == (epochs - 1)) {
+            if (i == (epochs - 1) && (i % items_per_row) % (epochs - 1) != 0) {
+                console.log(i);
+                row_fillers = items_per_row - ((i + 1) % items_per_row);
+
+                for(var j = 0; j < row_fillers; j++) {
+                    $("<td/>").appendTo(row);
+                }
+            }
+
             row.appendTo("#epoch_picker");
         }
     }
 
-    $("#epoch_picker td").click(function() {
+    $("#epoch_picker td[data-val]").click(function() {
         $("#epoch_picker td").removeClass("picker-selected");
         $("#epoch").val($(this).attr("data-val")).change();
         $(this).addClass("picker-selected");
@@ -143,12 +152,20 @@ function reload_month_picker() {
 
         cell.appendTo(row);
 
-        if (i % items_per_row == (months - 1) || i == (months - 1)) {
+        if ((i % items_per_row) % (months - 1) == 0 || i == (months - 1)) {
+            if (i == (months - 1) && (i % items_per_row) % (months - 1) != 0 ) {
+                row_fillers = items_per_row - ((i + 1) % items_per_row);
+
+                for(var j = 0; j < row_fillers; j++) {
+                    $("<td/>").appendTo(row);
+                }
+            }
+
             row.appendTo("#month_picker");
         }
     }
 
-    $("#month_picker td").click(function() {
+    $("#month_picker td[data-val]").click(function() {
         $("#month_picker td").removeClass("picker-selected");
         $("#month").val($(this).attr("data-val")).change();
         $(this).addClass("picker-selected");
@@ -192,11 +209,19 @@ function reload_day_picker() {
         cell.appendTo(row);
 
         if (i % items_per_row == 0 || i == days) {
+            if (i == days && i % items_per_row != 0) {
+                row_fillers = items_per_row - (i % items_per_row);
+
+                for(var j = 0; j < row_fillers; j++) {
+                    $("<td/>").appendTo(row);
+                }
+            }
+
             row.appendTo("#day_picker");
         }
     }
 
-    $("#day_picker td").click(function() {
+    $("#day_picker td[data-val]").click(function() {
         $("#day_picker td").removeClass("picker-selected");
         $("#day").val($(this).attr("data-val")).change();
         $(this).addClass("picker-selected");
