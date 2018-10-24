@@ -16,7 +16,12 @@ def redirect_non_admins():
     return False
 
 def page_title(dynamic_part=None):
-    static_part = GeneralSetting.query.get(1).title
+    gset = GeneralSetting.query.get(1)
+
+    if not gset:
+        static_part = ""
+    else:
+        static_part = gset.title
 
     if dynamic_part != None:
         return static_part + " - " + dynamic_part

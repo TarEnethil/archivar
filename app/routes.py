@@ -32,6 +32,11 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for("index"))
 
+    gset = GeneralSetting.query.get(1)
+    if not gset:
+        flash("You were redirected to the setup.", "info")
+        return redirect(url_for("install"))
+
     form = LoginForm()
 
     if form.validate_on_submit():

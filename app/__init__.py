@@ -47,8 +47,10 @@ def utility_processor():
         gset = GeneralSetting.query.get(1)
         quicklinks = []
 
+        if not gset or not gset.quicklinks:
+            return quicklinks
+
         for line in gset.quicklinks.splitlines():
-            print(line)
             parts = line.split("|")
 
             if len(parts) == 2 and len(parts[0]) > 0 and len(parts[1]) > 0:
