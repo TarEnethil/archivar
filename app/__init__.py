@@ -39,4 +39,23 @@ app.register_blueprint(calendar_bp, url_prefix="/calendar")
 from app.event import bp as event_bp
 app.register_blueprint(event_bp, url_prefix="/event")
 
+from app.models import GeneralSetting
+
+@app.context_processor
+def utility_processor():
+    def load_quicklinks():
+        gset = GeneralSetting.query.get(1)
+        quicklinks = []
+
+        for line in gset.quicklinks.splitlines():
+            print(line)
+            parts = line.split("|")
+
+            if len(parts) == 2 and len(parts[0]) > 0 and len(parts[1]) > 0:
+                quicklinks.append(parts)
+
+        return quicklinks
+
+    return dict(load_quicklinks=load_quicklinks)
+
 from app import routes, models

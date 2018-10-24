@@ -13,6 +13,8 @@
 <script>
 {% include "simplemde.js" %}
 var simplemde = new SimpleMDE(generateSMDEConfig("welcome_page"));
+
+$("#quicklinks").attr("placeholder", "one link per line; format: url|title");
 </script>
 {% endblock %}
 
@@ -21,6 +23,8 @@ var simplemde = new SimpleMDE(generateSMDEConfig("welcome_page"));
 
     <p>
         Here you can adjust some basic settings like the page title, the name of your world and the display text on the "Home" page.
+        You can also add quicklinks to the top navigation.
+        They are added one link per line in the format url|linktitle.
     </p>
 
     {{ wtf.quick_form(form) }}

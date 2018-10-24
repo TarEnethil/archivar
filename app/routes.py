@@ -70,6 +70,7 @@ def settings():
         settings.title = form.title.data
         settings.world_name = form.world_name.data
         settings.welcome_page = form.welcome_page.data
+        settings.quicklinks = form.quicklinks.data
 
         flash("Settings changed.", "success")
 
@@ -78,6 +79,7 @@ def settings():
         form.title.data = settings.title
         form.world_name.data = settings.world_name
         form.welcome_page.data = settings.welcome_page
+        form.quicklinks.data = settings.quicklinks
 
     return render_template("settings.html", form=form, title=page_title("General settings"))
 
