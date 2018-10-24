@@ -4,6 +4,8 @@
 {{ super() }}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+{{ moment.include_moment() }}
+
 {% if entry.content or (entry.dm_content and current_user.has_admin_role()) %}
 <script type="text/javascript">
     options = {
@@ -105,9 +107,9 @@
 {% endif %}
 <hr>
 <ul class="list-unstyled">
-    <li>Created by <a href="{{ url_for('user.profile', username=entry.created_by.username) }}">{{ entry.created_by.username }}</a> ({{ entry.created }})</li>
+    <li>Created by <a href="{{ url_for('user.profile', username=entry.created_by.username) }}">{{ entry.created_by.username }}</a> ({{ moment(entry.created).format(current_user.dateformat) }})</li>
     {% if entry.edited_by %}
-    <li>Edited by <a href="{{ url_for('user.profile', username=entry.edited_by.username) }}">{{ entry.edited_by.username }}</a> ({{ entry.edited }})</li>
+    <li>Edited by <a href="{{ url_for('user.profile', username=entry.edited_by.username) }}">{{ entry.edited_by.username }}</a> ({{ moment(entry.edited).format(current_user.dateformat) }})</li>
     {% endif %}
 </ul>
 {% endblock %}

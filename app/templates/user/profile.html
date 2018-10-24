@@ -4,6 +4,8 @@
 {{ super() }}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+{{ moment.include_moment() }}
+
 {% if user.about %}
 <script type="text/javascript">
     options = {
@@ -108,8 +110,8 @@
 
     <h2>Misc</h2>
     <p>
-        Created: {{ user.created }} <br />
-        Last seen: {{ user.last_seen }}
+        Created: {{ moment(user.created).format(current_user.dateformat) }} <br />
+        Last seen: {{ moment(user.last_seen).format(current_user.dateformat) }}
     </p>
     {% endif %}
 

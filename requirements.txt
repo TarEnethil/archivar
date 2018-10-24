@@ -8,6 +8,7 @@ Flask-Login==0.4.1
 Flask-Migrate==2.2.1
 Flask-SQLAlchemy==2.3.2
 Flask-WTF==0.14.2
+flask-moment==0.6.0
 itsdangerous==0.24
 Jinja2==2.10
 Mako==1.0.7

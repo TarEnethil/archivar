@@ -57,6 +57,8 @@
    integrity="sha512-tAGcCfR4Sc5ZP5ZoVz0quoZDYX5aCtEm/eu1KhSLj2c9eFrylXZknQYmxUssFaVJKvvc0dJQixhGjG2yXWiV9Q=="
    crossorigin=""></script>
 
+{{ moment.include_moment() }}
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
 <script type="module">
@@ -417,10 +419,11 @@
 
       var info = $("<div />").addClass("popup_info")
 
-      info.append('<span>created by ' + created_by + ' (' + created + ')</span>')
+      info.append('<span>created by ' + created_by + ' (' + moment(created).format('{{current_user.dateformat}}') + ')</span>')
 
-      if (edited != undefined)
-        info.append('<br><span>edited by ' + edited_by + ' (' + edited + ')</span>')
+      if (edited != undefined) {
+        info.append('<br><span>edited by ' + edited_by + ' (' + moment(edited).format('{{current_user.dateformat}}') + ')</span>')
+      }
 
       pop.append(info);
       pop.append(btns);
@@ -434,6 +437,7 @@
         _nodes = data;
 
         for (var nid in _nodes) {
+          console.log(_nodes[nid].created);
           _nodes[nid].marker = gen_marker(_nodes[nid].x, _nodes[nid].y, _nodes[nid].node_type, _nodes[nid].visible);
           _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, _nodes[nid].wiki_id, _nodes[nid].edited, _nodes[nid].edited_by), { minWidth: 200 });
           _marker_layer.addLayer(_nodes[nid].marker);

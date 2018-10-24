@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block scripts %}
+{{ super () }}
+{{ moment.include_moment() }}
+
+<script>
+    $(document).ready(function() {
+        $("#dateformat option").each(function() {
+            $(this).html(moment("1970-01-01 00:00:00").format($(this).attr('value')));
+        });
+    });
+</script>
+{% endblock %}
+
 {% block app_content %}
     <h1>Edit user settings</h1>
 

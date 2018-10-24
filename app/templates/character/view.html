@@ -4,6 +4,8 @@
 {{ super() }}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+{{ moment.include_moment() }}
+
 <script type="text/javascript">
     options = {
         sanitize: true
@@ -87,8 +89,8 @@
 
     <p>
         <h2>Misc</h2>
-        Created: {{ char.created }} <br />
-        Edited: {{ char.edited }}
+        Created: {{ moment(char.created).format(current_user.dateformat) }} <br />
+        Edited: {{ moment(char.edited).format(current_user.dateformat) }}
     </p>
     {% endif %}
 
