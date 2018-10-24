@@ -32,10 +32,22 @@ iga = $("<span/>").addClass("input-group-addon");
 $("<span/>").addClass("glyphicon glyphicon-calendar").appendTo(iga);
 iga.appendTo($("#datetimepicker"));
 
+var dateformat_string = "YYYY-MM-DD HH:mm";
+
 $(function() {
+    utc_d = $("#date").val();
+    d = moment.utc(utc_d).local().format(dateformat_string);
+    $("#date").val(d);
+
     $("#datetimepicker").datetimepicker({
-        format: "YYYY-MM-DD HH:mm"
-    })
+        format: dateformat_string
+    });
+});
+
+$("form").submit(function(e) {
+    d = $("#date").val();
+    utc_d = moment(d).utc().format(dateformat_string);
+    $("#date").val(utc_d);
 });
 </script>
 {% endblock %}

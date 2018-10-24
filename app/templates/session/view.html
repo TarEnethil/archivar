@@ -4,6 +4,8 @@
 {{ super() }}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+{{ moment.include_moment() }}
+
 {% if session.summary or (session.dm_notes and current_user.has_admin_role()) %}
 <script type="text/javascript">
     options = {
@@ -25,7 +27,7 @@
 {% endblock %}
 
 {% block app_content %}
-<h1>{{ session.title }} ({{ session.date }})</h1>
+<h1>{{ session.title }} ({{ moment(session.date).format(current_user.dateformat) }})</h1>
 
 <ul class="nav nav-tabs">
 {% if prev %}

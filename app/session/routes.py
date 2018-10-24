@@ -13,8 +13,8 @@ no_perm = "session.index"
 @bp.route("/", methods=["GET"])
 @login_required
 def index():
-    sessions_past = Session.query.filter(Session.date < datetime.now()).order_by(Session.date.desc()).all()
-    sessions_future = Session.query.filter(Session.date > datetime.now()).order_by(Session.date.desc()).all()
+    sessions_past = Session.query.filter(Session.date < datetime.utcnow()).order_by(Session.date.desc()).all()
+    sessions_future = Session.query.filter(Session.date > datetime.utcnow()).order_by(Session.date.desc()).all()
 
     return render_template("session/list.html", sessions_past=sessions_past, sessions_future=sessions_future, title=page_title("Sessions"))
 
