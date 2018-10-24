@@ -32,9 +32,11 @@ iga = $("<span/>").addClass("input-group-addon");
 $("<span/>").addClass("glyphicon glyphicon-calendar").appendTo(iga);
 iga.appendTo($("#datetimepicker"));
 
+var dateformat_string = "YYYY-MM-DD HH:mm"
+
 $(function() {
     $("#datetimepicker").datetimepicker({
-        format: "YYYY-MM-DD HH:mm"
+        format: dateformat_string
     })
 });
 
