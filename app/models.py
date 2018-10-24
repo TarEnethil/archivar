@@ -157,8 +157,8 @@ class MapNode(db.Model):
         if self.edited_by:
             # do update here because otherwise, this lands in a list of length one for some reason
             dic.update({
-                "edited" : self.edited, 
-                "edited_by" : self.edited_by.usernam
+                "edited" : self.edited,
+                "edited_by" : self.edited_by.username
             })
 
         return dic
