@@ -106,8 +106,7 @@ function reload_epoch_picker() {
 
         if ((i % items_per_row) % (epochs - 1) == 0 || i == (epochs - 1)) {
             if (i == (epochs - 1) && (i % items_per_row) % (epochs - 1) != 0) {
-                console.log(i);
-                row_fillers = items_per_row - ((i + 1) % items_per_row);
+                row_fillers = (items_per_row - ((i + 1) % items_per_row)) % items_per_row;
 
                 for(var j = 0; j < row_fillers; j++) {
                     $("<td/>").appendTo(row);
@@ -154,7 +153,7 @@ function reload_month_picker() {
 
         if ((i % items_per_row) % (months - 1) == 0 || i == (months - 1)) {
             if (i == (months - 1) && (i % items_per_row) % (months - 1) != 0 ) {
-                row_fillers = items_per_row - ((i + 1) % items_per_row);
+                row_fillers = (items_per_row - ((i + 1) % items_per_row)) % items_per_row;
 
                 for(var j = 0; j < row_fillers; j++) {
                     $("<td/>").appendTo(row);
