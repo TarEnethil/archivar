@@ -46,7 +46,7 @@ def create():
         db.session.commit()
 
         flash("Wiki entry was added.", "success")
-        return redirect(url_for("wiki.index"))
+        return redirect(url_for("wiki.view", id=entry.id))
     elif request.method == "GET":
         if current_user.is_wiki_admin():
             wsettings = WikiSetting.query.get(1)
@@ -93,7 +93,7 @@ def edit(id):
         db.session.commit()
         flash("Wiki entry was edited.", "success")
 
-        return redirect(url_for("wiki.index"))
+        return redirect(url_for("wiki.view", id=id))
     elif request.method == "GET":
         form.title.data = wikientry.title
         form.content.data = wikientry.content
