@@ -77,6 +77,19 @@
 
     function hide_loading() {
       $('#loading').fadeOut(250);
+
+      // this is here because edit and delete buttons would randomly fail after 3 clicks, so the events get readded after every loading
+      $("div").one("click", '.node-edit-btn', function(event) {
+        setNextAction("none");
+        load_edit_form($(this).attr("data"));
+        L.DomEvent.stop(event);
+      });
+
+      $("div").one("click", '.node-delete-btn', function(event) {
+        setNextAction("none");
+        delete_node($(this).attr("data"));
+        L.DomEvent.stop(event);
+      });
     }
 
     function global_message(msgOptions) {
@@ -393,7 +406,7 @@
     }
 
     function gen_popup(id, name, description, created, created_by, wiki_id, edited=undefined, edited_by=undefined) {
-      var pop = $("<div />");
+      var pop = $("<div />").attr("id", "popup-" + id);
       pop.append("<h2>" + name + "</h2>");
 
       if (wiki_id != 0 && wiki_id != null) {
@@ -437,7 +450,6 @@
         _nodes = data;
 
         for (var nid in _nodes) {
-          console.log(_nodes[nid].created);
           _nodes[nid].marker = gen_marker(_nodes[nid].x, _nodes[nid].y, _nodes[nid].node_type, _nodes[nid].visible);
           _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, _nodes[nid].wiki_id, _nodes[nid].edited, _nodes[nid].edited_by), { minWidth: 200 });
           _marker_layer.addLayer(_nodes[nid].marker);
@@ -592,7 +604,7 @@
               $("#location-list").hide();
             });
 
-            $("div").one("click", '.node-edit-btn', function(event) {
+            /*$("div").one("click", '.node-edit-btn', function(event) {
               setNextAction("none");
               load_edit_form($(this).attr("data"));
               L.DomEvent.stop(event);
@@ -602,7 +614,7 @@
               setNextAction("none");
               delete_node($(this).attr("data"));
               L.DomEvent.stop(event);
-            });
+            });*/
 
             $("#filter_locations").on("keyup", function() {
               var value = $(this).val().toLowerCase();
