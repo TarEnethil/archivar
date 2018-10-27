@@ -105,10 +105,10 @@
 
     </ul>
     {% else %}
-    <p>User has no special rolls.</p>
+    <p>User has no special roles.</p>
     {% endif %}
 
-    <h2>Misc</h2>
+    <hr>
     <p>
         Created: {{ moment(user.created).format(current_user.dateformat) }} <br />
         Last seen: {{ moment(user.last_seen).format(current_user.dateformat) }}
