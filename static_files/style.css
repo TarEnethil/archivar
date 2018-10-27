@@ -43,6 +43,34 @@
     text-decoration:underline;
 }
 
+.custom-markdown table {
+    width:100%;
+}
+
+.custom-markdown tbody td {
+    padding:3px;
+}
+
+.custom-markdown thead th {
+    padding:0px 3px;
+}
+
+.custom-markdown thead tr {
+    background:#ffffff;
+}
+
+.custom-markdown tbody tr:nth-of-type(2n) {
+    background:#ffffff;
+}
+
+.custom-markdown tbody:nth-of-type(2n+1) {
+    background:#f9f9f9;
+}
+
+.phb-style tbody:nth-of-type(2n+1) {
+    background:#dfe5c1;
+}
+
 #users-glyph {
     border:2px solid #777;
     border-radius:10px;
