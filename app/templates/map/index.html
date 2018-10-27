@@ -71,10 +71,12 @@
 
     $.fn.selectpicker.Constructor.BootstrapVersion = '3';
 
+    // show loading screen (used while doing ajax request)
     function loading() {
       $('#loading').show();
     }
 
+    // hide loading screen
     function hide_loading() {
       $('#loading').fadeOut(250);
 
@@ -92,6 +94,7 @@
       });
     }
 
+    // show a message
     function global_message(msgOptions) {
       if(msgOptions.msg == undefined)
           msgOptions.msg = "";
@@ -124,6 +127,7 @@
       }
     }
 
+    // show a success message
     function global_success_message(message) {
       global_message({
         msg : message,
@@ -132,6 +136,7 @@
       });
     }
 
+    // show an error message
     function global_error_message(message, fadeOut=false) {
       global_message({
         msg : message,
@@ -140,20 +145,26 @@
       });
     }
 
+    // show error in node form
     function nodeform_error_message(message) {
       $("<p />").addClass("alert").addClass("alert-danger").css("display", "none").html(message).appendTo("#form_messagebox").fadeIn(500);
     }
 
+    // show warning in node form
     function nodeform_warning_message(message, extraclass="") {
       $("<p />").addClass("alert").addClass("alert-warning").addClass(extraclass).css("display", "none").html(message).appendTo("#form_messagebox").fadeIn(500);
     }
 
+    // remove a global message
     function fadeout_global_message(message_class) {
       $("." + message_class).fadeOut(500, function() {
         $("." + message_class).remove();
       })
     }
 
+    // evaluate the result of a sent edit form
+    // may contain success or
+    // failure (error while validating form)
     function evaluate_nodeform_success(data) {
       if (data.success == true) {
         global_success_message("server message: " + data.message + " markers will be reloaded automatically.");
@@ -177,6 +188,7 @@
       }
     }
 
+    // evaluate the result of a sent delete request
     function evaluate_node_delete_success(data) {
       if (data.success == true) {
         global_success_message("server message: " + data.message + " markers will be reloaded automatically.");
@@ -186,21 +198,27 @@
       }
     }
 
+    // show the node form
     function show_nodeform() {
       $("#nodeform input[type=submit]").removeClass("btn-default").addClass("btn-success");
       $("#nodeform").show();
     }
 
+    // hide the node form
     function hide_nodeform() {
       $("#nodeform").hide();
     }
 
+    // evaluate ajax error (reachability, loading, timeout, ...)
     function evaluate_ajax_error(data) {
       global_error_message(data);
     }
 
+    // attach listeners for the new-node form
     function attach_new_form_listener(event) {
       console.log("loaded new form functions");
+
+      // ajax on submit button
       $('form').submit(function (e) {
           var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
           $.ajax({
@@ -217,6 +235,7 @@
           e.preventDefault();
       });
 
+      // add csrf
       $.ajaxSetup({
           beforeSend: function(xhr, settings) {
               if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
@@ -225,20 +244,26 @@
           }
       });
 
+      // close 'x'
       $(".close-link").click(function() {
         hide_nodeform();
       });
 
+      // filterable dropdown of wiki articles
       $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
     }
 
+    // attach listeners for a edit-node form
     function attach_edit_form_listener(id) {
       console.log("loaded edit form functions");
+
+      // move button
       $("#btn-move-node").click(function() {
         hide_nodeform();
         setNextAction("moveNode");
       });
 
+      // ajax on submit button
       $('form').submit(function (e) {
           var url = "{{ url_for('map.node_edit', id='-42') }}"
           $.ajax({
@@ -255,6 +280,7 @@
           e.preventDefault();
       });
 
+      // add csrf
       $.ajaxSetup({
           beforeSend: function(xhr, settings) {
               if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
@@ -263,17 +289,19 @@
           }
       });
 
+      // close 'x'
       $(".close-link").click(function() {
         hide_nodeform();
       });
 
+      // filterable dropdown of wiki articles
       var wiki = $("#wiki_entry")
-
       if (wiki.attr("disabled") != "disabled") {
         $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
       }
     }
 
+    // insert the icons into the dropdown for the node type
     function prep_node_type_select() {
       $("#node_type option").each(function() {
         var v = $(this).prop("value");
@@ -285,6 +313,7 @@
       $('#node_type').selectpicker();
     }
 
+    // return the anchor point for an icon
     function icon_anchor(width, height) {
       {% if settings.icon_anchor == 1 %} {# icon anchor is center #}
       return [width/2, height/2]
@@ -293,6 +322,7 @@
       {% endif %}
     }
 
+    // return the anchoir point for a popup
     function popup_anchor(width, height) {
       {% if settings.icon_anchor == 1 %} {# icon anchor is center #}
       return [0, (height/2)*-1]
@@ -301,6 +331,7 @@
       {% endif %}
     }
 
+    // generate the IconStyle for an icon, can be normal or hidden
     function gen_icon_style(icon_fn, icon_width, icon_height, priv=false) {
       if (priv == false) {
         var icon_style = L.icon({
@@ -324,6 +355,8 @@
       return icon_style;
     }
 
+    // load the map node types via ajax and add them to the global variable
+    // generate icon styles for each and store them as well
     function load_map_node_types(cb) {
       console.log("start loading node types");
       $.getJSON("{{ url_for('map.node_type_json') }}", function(data) {
@@ -340,6 +373,7 @@
       });
     }
 
+    // generate a Marker for a node
     function gen_marker(x, y, node_type_id, visible) {
       var marker = L.marker([x, y]);
 
@@ -352,15 +386,19 @@
       return marker;
     }
 
+    // remove all markers from the layer
     function delete_markers() {
       _marker_layer.clearLayers()
     }
 
+    // clear the sidebar
     function clear_location_list() {
       $("#locations li").remove();
       _filterbase = {};
     }
 
+    // reload all markers
+    // i.e. delete all marker-related stuff and load them again
     function reload_markers() {
       loading();
       delete_markers();
@@ -375,6 +413,7 @@
       });
     }
 
+    // load the form for a node edit via ajax
     function load_edit_form(id) {
       loading();
       var url = "{{ url_for('map.node_edit', id='-42') }}"
@@ -387,6 +426,7 @@
       });
     }
 
+    // send a delete request for a node
     function delete_node(id) {
       var sure = confirm("Delete " + _nodes[id].name + "?");
 
@@ -405,6 +445,7 @@
       }
     }
 
+    // generate the popup for a node
     function gen_popup(id, name, description, created, created_by, wiki_id, edited=undefined, edited_by=undefined) {
       var pop = $("<div />").attr("id", "popup-" + id);
       pop.append("<h2>" + name + "</h2>");
@@ -444,6 +485,9 @@
       return pop.html();
     }
 
+    // load map nodes via ajax and store them globally
+    // generate the marker for the node
+    // add marker to layer
     function load_map_nodes(cb) {
       console.log("start loading nodes");
       $.getJSON("{{ url_for('map.node_json') }}", function(data) {
@@ -461,6 +505,7 @@
       });
     }
 
+    // compare two nodes lexigraphically
     function nodeCompare(a, b) {
       if (a.name.toLowerCase() < b.name.toLowerCase())
         return -1;
@@ -469,6 +514,7 @@
       return 0;
     }
 
+    // fill the location sidebar with categories and entries
     function fill_location_list(cb) {
       var list = $("ul#locations");
       for (var cat in _filterbase) {
@@ -495,6 +541,7 @@
       cb();
     }
 
+    // set the next action (on click)
     function setNextAction(act) {
       if(act == "newNode") {
         fadeout_global_message("move-node-info");
@@ -538,7 +585,9 @@
       }
     }
 
+    // initialize the map
     function init() {
+      // base map with options
       _map = L.map('map', {
         center: [0.0, 0.0],
         zoom: {{ settings.default_zoom }},
@@ -551,14 +600,17 @@
         var url = '{{ url_for("map.tile", filename="") }}{{ settings.tiles_path }}';
       {% endif %}
 
+      // tile provider
       L.tileLayer(url, {
           maxZoom: {{ settings.max_zoom }},
           minZoom: {{ settings.min_zoom }},
           noWrap: true,
       }).addTo(_map);
 
+      // marker layer
       _marker_layer = L.layerGroup();
 
+      // click handler, either create a new node or move an existing one
       _map.on('click', function(e) {
         if (_nextAction == "moveNode") {
           setNextAction("none");
@@ -583,6 +635,7 @@
         }
       });
 
+      // load chain for initialization: node types, nodes, location list, listeners
       load_map_node_types(function() {
         load_map_nodes(function() {
           fill_location_list(function() {
@@ -604,18 +657,6 @@
               $("#location-list").hide();
             });
 
-            /*$("div").one("click", '.node-edit-btn', function(event) {
-              setNextAction("none");
-              load_edit_form($(this).attr("data"));
-              L.DomEvent.stop(event);
-            });
-
-            $("div").one("click", '.node-delete-btn', function(event) {
-              setNextAction("none");
-              delete_node($(this).attr("data"));
-              L.DomEvent.stop(event);
-            });*/
-
             $("#filter_locations").on("keyup", function() {
               var value = $(this).val().toLowerCase();
 
@@ -626,6 +667,7 @@
 
             hide_loading();
 
+            // if the url contains a node id and it exists, jump to the marker
             {% if jump_to_node %}
             if (_nodes[{{ jump_to_node }}] != undefined) {
               var jump_to = _nodes[{{ jump_to_node }}].marker;
