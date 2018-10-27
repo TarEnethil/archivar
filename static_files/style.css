@@ -16,13 +16,18 @@
     font-size:1.3em;
 }
 
+.custom-markdown h4 {
+    font-size:1.15em;
+}
+
 .partymember-select {
     width:80% !important;
 }
 
 .phb-style h1,
 .phb-style h2,
-.phb-style h3 {
+.phb-style h3,
+.phb-style h4 {
     color: #58180d;
 }
 
@@ -63,12 +68,21 @@
     background:#ffffff;
 }
 
-.custom-markdown tbody:nth-of-type(2n+1) {
+.custom-markdown tbody tr:nth-of-type(2n+1) {
     background:#f9f9f9;
 }
 
-.phb-style tbody:nth-of-type(2n+1) {
-    background:#dfe5c1;
+.custom-markdown.phb-style tbody tr:nth-of-type(2n+1) {
+   background: #dfe5c1;
+}
+
+.custom-markdown hr {
+    height:2px;
+    border-top:2px solid #f9f9f9;
+}
+
+.custom-markdown.phb-style hr {
+    border-top:2px solid #c9ad6a;
 }
 
 #users-glyph {
