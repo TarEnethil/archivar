@@ -21,7 +21,7 @@
 
 {% block app_content %}
 
-    <h1> user profile for {{ user.username }}</h1>
+    <h1>User profile for {{ user.username }}</h1>
     {% if user == current_user or current_user.has_admin_role() %}
     <ul class="nav nav-tabs">
         <li>
@@ -53,7 +53,8 @@
     <p id="about_user" class="custom-markdown">
 {{ user.about }}
     </p>
-    <hr>
+    {% else %}
+    <p>No description given.</p>
     {% endif %}
 
     {% if user == current_user or user.characters %}
@@ -93,17 +94,15 @@
     {% endif %}
 
     {% if current_user.has_admin_role() %}
-    <hr>
     <h2>Roles</h2>
 
     {% if user.roles %}
-    <ul class="list-unstyled">
-
-    {% for role in user.roles %}
-        <li>{{ role.name }} ({{ role.description }})</li>
-    {% endfor %}
-
-    </ul>
+    <dl class="dl-horizontal">
+        {% for role in user.roles %}
+        <dt>{{ role.name }}</dt>
+        <dd>{{ role.description }}</dd>
+        {% endfor %}
+    </dl>
     {% else %}
     <p>User has no special roles.</p>
     {% endif %}
