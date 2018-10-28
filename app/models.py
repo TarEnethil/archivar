@@ -337,31 +337,72 @@ class Event(db.Model):
     edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     edited_by = db.relationship("User", foreign_keys=[edited_by_id])
 
-    def start_date(self, use_abbr, with_link=False, use_epoch=True, use_year=True, with_weekday=False):
-        day = str(self.day)
+    def format_date(self, epoch, year, month, day, timestamp, use_abbr, with_link=False, use_epoch=True, use_year=True, with_weekday=False):
+        day_str = str(day)
 
         if with_weekday:
-            day = self.day_of_the_week() + ", " + day
+            day_str = self.day_of_the_week(timestamp) + ", " + day_str
 
-        month = self.month.abbreviation if use_abbr and self.month.abbreviation else self.month.name
-        year = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch_year', e_id=self.epoch.id, year=self.year), self.year) if with_link else str(self.year)
-        epoch = self.epoch.abbreviation if use_abbr and self.epoch.abbreviation else self.epoch.name
-        epoch = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch', e_id=self.epoch.id), epoch) if with_link else epoch
+        month_str = month.abbreviation if use_abbr and month.abbreviation else month.name
+        year_str = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch_year', e_id=epoch.id, year=year), year) if with_link else str(year)
+        epoch_str = epoch.abbreviation if use_abbr and epoch.abbreviation else epoch.name
+        epoch_str = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch', e_id=epoch.id), epoch_str) if with_link else epoch_str
 
         if use_epoch and use_year:
-            return '{0}. {1} {2}, {3}'.format(day, month, year, epoch)
+            return '{0}. {1} {2}, {3}'.format(day_str, month_str, year_str, epoch_str)
         elif use_year and not use_epoch:
-            return '{0}. {1} {2}'.format(day, month, year)
+            return '{0}. {1} {2}'.format(day_str, month_str, year_str)
 
-        return '{0}. {1}'.format(day, month)
+        return '{0}. {1}'.format(day_str, month_str)
 
-    def end_date(self, use_abbr, with_link=False):
-        return "TODO"
+    def start_date(self, use_abbr, with_link=False, use_epoch=True, use_year=True, with_weekday=False):
+        return self.format_date(self.epoch, self.year, self.month, self.day, self.timestamp, use_abbr, with_link, use_epoch, use_year, with_weekday)
 
-    def day_of_the_week(self):
+    def end_date(self, use_abbr, with_link=False, use_epoch=True, use_year=True, with_weekday=False):
+        # timestamp of end-date
+        timestamp = self.timestamp + self.duration
+
+        epochs = Epoch.query.order_by(Epoch.order.asc()).all()
+        months = Month.query.order_by(Month.order.asc()).all()
+        days_per_year = months[-1].days_before + months[-1].days
+
+        # find epoch
+        total_years = int(timestamp / days_per_year)
+        epoch_idx = -1
+
+        for i, e in enumerate(epochs):
+            if total_years < e.years_before:
+                epoch_idx = max(0, i - 1)
+                break
+
+        epoch = epochs[epoch_idx]
+
+        # find year
+        year = total_years - epoch.years_before + 1
+
+        # find month
+        days_into_year = timestamp - (days_per_year * total_years)
+        month_idx = -1
+
+        for i, m in enumerate(months):
+            if days_into_year < m.days_before:
+                month_idx = max(0, i - 1)
+                break
+
+        month = months[month_idx]
+
+        # find day
+        day = days_into_year - month.days_before
+
+        return self.format_date(epoch, year, month, day, timestamp, use_abbr, with_link, use_epoch, use_year, with_weekday)
+
+    def day_of_the_week(self, timestamp=None):
         wd = Day.query.order_by(Day.order.asc()).all()
 
-        return wd[(self.timestamp % len(wd)) - 1].name
+        if timestamp == None:
+            return wd[(self.timestamp % len(wd)) - 1].name
+        else:
+            return wd[(timestamp % len(wd)) -1].name
 
 
 @login.user_loader

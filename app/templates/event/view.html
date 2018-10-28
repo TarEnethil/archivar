@@ -36,7 +36,12 @@
         <dd>{{ event.start_date(False, with_link=True, with_weekday=True)|safe }}</dd>
         {% if event.duration > 1 %}
         <dt>Duration</dt>
-        <dd>{{ event.duration }} days</dd>
+        <dd>{{ event.duration }} days
+
+        {% if event.duration > 1 %}
+        (until {{ event.end_date(False, with_link=True, with_weekday=False)|safe }})
+        {% endif %}
+        </dd>
         {% endif %}
     </dl>
 
