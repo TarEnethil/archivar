@@ -85,7 +85,7 @@ def create():
 
     form = CreateUserForm()
 
-    form.roles.choices = gen_role_choices
+    form.roles.choices = gen_role_choices()
 
     if form.validate_on_submit():
         new_user = User(username=form.username.data)
