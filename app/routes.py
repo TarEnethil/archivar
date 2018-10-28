@@ -102,11 +102,11 @@ def install():
 
             setting = GeneralSetting(title="My Page", welcome_page=welcome_msg)
 
-            admin_role = Role(name="Admin")
-            map_role = Role(name="Map")
-            wiki_role = Role(name="Wiki")
-            event_role = Role(name="Event")
-            special_role = Role(name="Special")
+            admin_role = Role(name="Admin", description="aka DM, can see everything and has text fields hidden from all other roles")
+            map_role = Role(name="Map admin", description="has access to map settings; can see invisible nodes (if not created by an admin); can hide/unhide map nodes")
+            wiki_role = Role(name="Wiki admin", description="has access to wiki settings; can see invisible articles (if not created by an admin); can hide/unhide wiki articles")
+            event_role = Role(name="Event admin", description="has access to event settings; can add/edit event categories; can see invisible events (if not created by an admin); can hide/unhide events")
+            special_role = Role(name="Special", description="no function as of yet")
 
             db.session.add(setting)
             db.session.add(admin_role)
