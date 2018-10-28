@@ -168,7 +168,13 @@ def category_create():
     form = CategoryForm()
 
     if form.validate_on_submit():
-        new_category = EventCategory(name=form.name.data, color=form.color.data.hex)
+        color = form.color.data.hex
+
+        # color picker does not work with "short" notation, so avoid it
+        if len(color) == 4:
+            color = "#" + color[1] + color[1] + color[2] + color[2] + color[3] + color[3]
+
+        new_category = EventCategory(name=form.name.data, color=color)
 
         db.session.add(new_category)
         db.session.commit()
@@ -191,8 +197,14 @@ def category_edit(id):
     category = EventCategory.query.filter_by(id=id).first_or_404()
 
     if form.validate_on_submit():
+        color = form.color.data.hex
+
+        # color picker does not work with "short" notation, so avoid it
+        if len(color) == 4:
+            color = "#" + color[1] + color[1] + color[2] + color[2] + color[3] + color[3]
+
         category.name = form.name.data
-        category.color = form.color.data.hex
+        category.color = color
 
         db.session.commit()
 
