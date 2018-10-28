@@ -21,13 +21,19 @@
         {% for event in events %}
             <tr style="border-left:7px solid {{ event.category.color }}">
                 <td>{{ event.name }}</td>
-                {% if epoch_flag %}
-                <td>{{ event.start_date(True, with_link=False, use_epoch=False, use_year=True) }}</td>
-                {% elif epoch_year_flag %}
-                <td>{{ event.start_date(True, with_link=False, use_epoch=False, use_year=False) }}</td>
-                {% else %}
-                <td>{{ event.start_date(True, with_link=False) }}</td>
-                {% endif %}
+                <td>
+                    {% if epoch_flag %}
+                    {{ event.start_date(True, with_link=False, use_epoch=False, use_year=True) }}
+                    {% elif epoch_year_flag %}
+                    {{ event.start_date(True, with_link=False, use_epoch=False, use_year=False) }}
+                    {% else %}
+                    {{ event.start_date(True, with_link=False) }}
+                    {% endif %}
+
+                    {% if event.duration > 1 %}
+                    (lasted {{ event.duration }} days)
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{{ url_for('event.view', id=event.id) }}" class="btn btn-default">
                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
