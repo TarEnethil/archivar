@@ -16,6 +16,7 @@
         <thead>
             <tr>
                 <th>User</th>
+                <th>Roles</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -24,6 +25,19 @@
         {% for user in users %}
             <tr>
                 <td> {{ user.username }}</td>
+                <td>
+                    {% if user.roles %}
+                        {% for role in user.roles %}
+                            {% if loop.index != 1 %}
+                            &bullet;
+                            {% endif %}
+
+                            {{ role.name }}
+                        {% endfor %}
+                    {% else %}
+                    User
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{{ url_for('user.profile', username=user.username) }}" class="btn btn-default">
                         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>

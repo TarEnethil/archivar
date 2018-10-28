@@ -52,10 +52,6 @@
                             {% else %}
                     <a href="{{ url_for('character.view', id=p.id) }}">{{ p.name }}</a>
                             {% endif %}
-
-                     {% if loop.index != 1 %}
-                     &bullet;
-                     {% endif %}
                         {% endfor %}
                     {% endif %}
                 </td>
