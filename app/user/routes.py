@@ -3,6 +3,7 @@ from app.helpers import page_title, redirect_non_admins
 from app.models import User, Role
 from app.user import bp
 from app.user.forms import CreateUserForm, EditProfileForm, SettingsForm
+from app.user.helpers import gen_role_choices
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
@@ -23,13 +24,7 @@ def edit(username):
         form = EditProfileForm()
 
         if current_user.has_admin_role():
-            role_choices = []
-
-            all_roles = Role.query.all()
-            for role in all_roles:
-                role_choices.append((str(role.id), role.name))
-
-            form.roles.choices = role_choices
+            form.roles.choices = gen_role_choices()
         else:
             del form.roles
 
@@ -90,13 +85,7 @@ def create():
 
     form = CreateUserForm()
 
-    role_choices = []
-
-    all_roles = Role.query.all()
-    for role in all_roles:
-        role_choices.append((str(role.id), role.name))
-
-    form.roles.choices = role_choices
+    form.roles.choices = gen_role_choices
 
     if form.validate_on_submit():
         new_user = User(username=form.username.data)
