@@ -1,10 +1,10 @@
-# Dungeon Master Control Panel (temporary name, subject to change)
-Hi.
+# Archivar, a collaborative world building tool
+Hi!
 While DMing for my D&D group, I wanted a possibility for us to collaboratively build the world together.
 As my (not thorough) search came up with nothing, I decided to build something myself.
 The following readme gives an introduction into what this project is (or isn't), how to install/use it and what it is built upon.
 
-**TL;DR**: This is a web-based tool for collaborative world building and campaign / session management for role playing groups.
+**TL;DR**: This is a web-based, engine agnostic tool for collaborative world building and campaign / session management for role playing groups.
 It is using Flask with SQLite as a backend with a bootstrap-powered frontend.
 
 # Installation
@@ -40,14 +40,14 @@ flask run -h localhost
 I barely managed to deploy this with apache, please refer to other tutorials on how to deploy a flask app on a real server.
 
 # What this is
-DMCP is a web-based tool for collaborative world building, as well as campaign management for role playing groups.
+Archivar is a web-based tool for collaborative world building, as well as campaign management for role playing groups.
 It is intended to be used with a small to semi-large group of people who trust each other and are interested in filling their world with places, information and stories.
-DMCP allows for people to collaborate on places in the world (map), knowledge about the world (wiki) and timelines within the world (calendar, tbd).
+Archivar allows for people to collaborate on places in the world (map), knowledge about the world (wiki) and timelines within the world (calendar, tbd).
 Users can create their own engine-agnostic characters and add information and stories about them as well.
 For DMs, this tool allows for keeping track of all the information of the world, as well as DM-specific tidbits that are hidden from other users.
 Besides the world building, it can be used to plan/announce play sessions for one or more campaigns within the world.
 
-DMCP was started and is fully intended to be a private project.
+Archivar was started and is fully intended to be a private project.
 This means that functionality or design may change at any time if I see it fit.
 It is a work in progress and probably will be for a long time.
 Only by using it will I be able to hone the experience (and also tailor it a bit towards my use cases).

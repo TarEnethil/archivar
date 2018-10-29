@@ -1,9 +1,9 @@
-# Welcome to this thing!
+# Welcome to Archivar!
 
-Thank you for trying out this thing.
+Thank you for trying out this Archivar.
 This is the welcome / home page, where every user will land after login.
 
-## First of: admin stuff
+## First things first: admin stuff
 
 The following is a list of things you can / should do before you let the users login for the first time.
 
@@ -102,5 +102,5 @@ After the calendar is finalized by an admin, users can create new events to fill
 If you run into any problems, you can contact me via:
 
 * [Github profile](https://github.com/tarenethil)
-* [Link to this project](https://github.com/tarenethil/dmcp)
+* [Link to this project](https://github.com/tarenethil/archivar)
 * [reddit](https://old.reddit.com/u/tarenethil)
