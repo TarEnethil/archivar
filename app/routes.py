@@ -5,6 +5,7 @@ from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, Wiki
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, send_from_directory
 from flask_login import current_user, login_user, login_required, logout_user
+from app.version import version
 from werkzeug.urls import url_parse
 
 @app.before_request
@@ -25,7 +26,11 @@ def index():
         return redirect(url_for('login'))
 
     settings = GeneralSetting.query.get(1)
-    return render_template("index.html", settings=settings, title=page_title("Home"))
+    return render_template("index.html", settings=settings, version=version(), title=page_title("Home"))
+
+@app.route("/about")
+def about():
+    return render_template("about.html", title=page_title("About Archivar"))
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

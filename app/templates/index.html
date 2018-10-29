@@ -34,5 +34,9 @@
     <div id="welcome_page">
 {{ settings.welcome_page }}
     </div>
+
+    <p id="footer">
+        version {{ version }} &bullet; <a href="{{ url_for('about') }}">About Archivar</a>
+    </p>
 {% endif %}
 {% endblock %}

@@ -1,3 +1,22 @@
+#footer {
+    font-size:.9em;
+    text-transform:uppercase;
+    color:#999;
+    text-align:center;
+    margin-top:50px;
+    border-top:1px solid #ddd;
+    padding-top:5px;
+}
+
+#footer a {
+    color:#999;
+}
+
+#logo {
+    display:block;
+    margin:20px auto;
+}
+
 .custom-markdown {
     border-left:7px #ccc solid;
     padding:1em;
