@@ -23,6 +23,14 @@ def view(id):
 
     return render_template("event/view.html", event=event, title=page_title("View event"))
 
+@bp.route("/list", methods=["GET"])
+@login_required
+def list():
+    title = "All events"
+    events = get_events()
+
+    return render_template("event/list.html", events=events, heading=title, title=page_title("View all events"))
+
 @bp.route("/list/epoch-<int:e_id>", methods=["GET"])
 @login_required
 def list_epoch(e_id):
