@@ -34,7 +34,7 @@ function toggleSidebar(editor) {
         sidebar.show();
         visible = true;
 
-        $(".close-link-sidebar").click(function() {
+        $("#editor-sidebar .close-link-sidebar").click(function() {
             sidebar.hide();
             visible = false;
         });
@@ -77,17 +77,23 @@ function insertReference(editor, name, url) {
     cm.replaceSelection(output);
 }
 
-reference = {
+var reference = {
     name: "insertReference",
     action: toggleSidebar,
     className: "fa fa-star fa-red",
     title: "Insert internal reference",
 }
 
-function generateSMDEConfig(id) {
+function generateSMDEConfig(id, withHeading=true) {
+    var toolb = ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference];
+
+    if (withHeading == false) {
+        toolb = ["bold", "italic", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference];
+    }
+
     return {
         element: document.getElementById(id),
-        toolbar: ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference],
+        toolbar: toolb,
         spellChecker: false,
         status: false
     }

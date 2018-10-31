@@ -113,13 +113,7 @@ $(document).ready(function() {
 
 {% block content %}
 <div class="big-wrapper">
-    <div id="editor-sidebar">
-        <a class="close-link-sidebar">
-            <span class="glyphicon glyphicon-remove"></span>
-        </a>
-        <input type="text" id="filter_things" placeholder="filter" />
-        <ul id="thinglist"></ul>
-    </div>
+    {% include "simplemde_sidebar.html" %}
 
     <div class="container">
     {% with messages = get_flashed_messages(with_categories=true) %}

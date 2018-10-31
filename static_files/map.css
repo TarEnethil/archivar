@@ -76,6 +76,18 @@
     font-size:.8em;
 }
 
+.popup-markdown h1,
+.popup-markdown h2,
+.popup-markdown h3,
+.popup-markdown h4 {
+    font-size:1em;
+}
+
+#editor-sidebar {
+    margin-top:0 !important;
+    z-index:51 !important;
+}
+
 .marker_icon {
     max-height:25px;
     max-width:25px;

@@ -8,6 +8,7 @@
    integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
    crossorigin=""/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 {% endblock %}
 
 {% block content %}
@@ -17,6 +18,8 @@
 
   <div id="map" class="map">
   </div>
+
+  {% include "simplemde_sidebar.html" %}
 
   <div id="messagebox"></div>
   <div id="nodeform" class="panel">
@@ -60,6 +63,8 @@
 {{ moment.include_moment() }}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 
 <script type="module">
     var _map;
@@ -214,9 +219,14 @@
       global_error_message(data);
     }
 
+    {% include "simplemde.js" %}
+
     // attach listeners for the new-node form
     function attach_new_form_listener(event) {
       console.log("loaded new form functions");
+
+      // needs to be bound before submit trigger, otherwise value doesnt get copied to original textarea
+      var simplemde = new SimpleMDE(generateSMDEConfig("description", false));
 
       // ajax on submit button
       $('form').submit(function (e) {
@@ -262,6 +272,9 @@
         hide_nodeform();
         setNextAction("moveNode");
       });
+
+      // needs to be bound before submit trigger, otherwise value doesnt get copied to original textarea
+      var simplemde = new SimpleMDE(generateSMDEConfig("description", false));
 
       // ajax on submit button
       $('form').submit(function (e) {
@@ -447,6 +460,10 @@
 
     // generate the popup for a node
     function gen_popup(id, name, description, created, created_by, wiki_id, edited=undefined, edited_by=undefined) {
+      var marked_options = {
+          sanitize: true
+      }
+
       var pop = $("<div />").attr("id", "popup-" + id);
       pop.append("<h2>" + name + "</h2>");
 
@@ -455,7 +472,7 @@
         pop.append('<a href="' + fake_url.replace("-1", wiki_id) + '"><span class="glyphicon glyphicon-arrow-right"></span> Wiki article</a>');
       }
 
-      pop.append("<p>" + description + "</p>");
+      pop.append($('<div />').addClass("popup-markdown").append(marked(description, marked_options)));
 
       var edit_btn = $("<a />").addClass("btn btn-default node-edit-btn").attr("data", id);
       edit_btn.append('<span class="glyphicon glyphicon-pencil"></span>');
@@ -653,7 +670,7 @@
               $("#location-list").show();
             });
 
-            $(".close-link-sidebar").click(function() {
+            $("#location-list .close-link-sidebar").click(function() {
               $("#location-list").hide();
             });
 
