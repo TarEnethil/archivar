@@ -125,7 +125,7 @@ def gen_day_choices(month_id):
     if m == None:
         return ([0, "ERROR month not found"])
 
-    return [(n, n) for n in xrange(1, m.days + 1)]
+    return [(n, n) for n in range(1, m.days + 1)]
 
 def get_epochs():
     e = Epoch.query.order_by(Epoch.order.asc()).all()
