@@ -16,11 +16,12 @@ def before_request():
 
         edit_url = url_for("user.edit", username=current_user.username)
         logout_url = url_for("logout")
+        password_url = url_for('user.password')
 
-        allowed_urls = [edit_url, logout_url]
+        allowed_urls = [edit_url, logout_url, password_url]
         if current_user.must_change_password and request.path not in allowed_urls:
             flash("You must change your password before proceeding", "warning")
-            return redirect(edit_url)
+            return redirect(password_url)
 
 @app.route("/")
 @app.route("/index")

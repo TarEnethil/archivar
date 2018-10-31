@@ -2,7 +2,7 @@ from app import db
 from app.helpers import page_title, redirect_non_admins
 from app.models import User, Role
 from app.user import bp
-from app.user.forms import CreateUserForm, EditProfileForm, SettingsForm
+from app.user.forms import CreateUserForm, EditProfileForm, SettingsForm, PasswordOnlyForm
 from app.user.helpers import gen_role_choices
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request
@@ -103,6 +103,21 @@ def create():
         return redirect(url_for('user.list'))
     else:
         return render_template("user/create.html", form=form, title=page_title("Create new user"))
+
+@bp.route("/password", methods=["GET", "POST"])
+@login_required
+def password():
+    form = PasswordOnlyForm()
+
+    if form.validate_on_submit():
+        current_user.set_password(form.password.data)
+        current_user.must_change_password = False
+        db.session.commit()
+
+        flash("Password was changed", "success")
+        return redirect(url_for('index'))
+
+    return render_template("user/password.html", form=form, title=page_title("Change password"))
 
 @bp.route("/list")
 @login_required

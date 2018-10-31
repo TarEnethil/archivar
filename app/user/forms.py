@@ -38,3 +38,9 @@ class SettingsForm(FlaskForm):
     phb_calendar = BooleanField("Calendar: Use PHB-Style on markdown")
 
     submit = SubmitField("Submit")
+
+class PasswordOnlyForm(FlaskForm):
+    password = PasswordField("Password", validators=[InputRequired()])
+    password2 = PasswordField("Password again", validators=[EqualTo("password")])
+
+    submit = SubmitField("Submit")
