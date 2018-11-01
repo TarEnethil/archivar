@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+{{ super() }}
+
+{{ moment.include_moment() }}
+{% endblock %}
+
 {% block app_content %}
     <h1>List of users </h1>
 
@@ -17,6 +23,7 @@
             <tr>
                 <th>User</th>
                 <th>Roles</th>
+                <th>Last seen</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -36,6 +43,13 @@
                         {% endfor %}
                     {% else %}
                     User
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.last_seen %}
+                        {{ moment(user.last_seen).format(current_user.dateformat) }}
+                    {% else %}
+                        Never
                     {% endif %}
                 </td>
                 <td>
