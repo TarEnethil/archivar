@@ -14,13 +14,12 @@ def before_request():
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
 
-        edit_url = url_for("user.edit", username=current_user.username)
         logout_url = url_for("logout")
         password_url = url_for('user.password')
 
-        allowed_urls = [edit_url, logout_url, password_url]
+        allowed_urls = [logout_url, password_url]
         if current_user.must_change_password and request.path not in allowed_urls:
-            flash("You must change your password before proceeding", "warning")
+            flash("You must change your password before proceeding.", "warning")
             return redirect(password_url)
 
 @app.route("/")

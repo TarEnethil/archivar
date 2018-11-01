@@ -7,6 +7,7 @@ from app.user.helpers import gen_role_choices
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
+from werkzeug import check_password_hash
 
 no_perm = "index"
 
@@ -110,11 +111,15 @@ def password():
     form = PasswordOnlyForm()
 
     if form.validate_on_submit():
-        current_user.set_password(form.password.data)
-        current_user.must_change_password = False
+        if check_password_hash(current_user.password_hash, form.password.data):
+            flash("You must choose a different password.", "danger")
+        else:
+            current_user.set_password(form.password.data)
+            current_user.must_change_password = False
+            flash("Password was changed.", "success")
+
         db.session.commit()
 
-        flash("Password was changed", "success")
         return redirect(url_for('index'))
 
     return render_template("user/password.html", form=form, title=page_title("Change password"))
