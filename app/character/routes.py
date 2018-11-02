@@ -87,6 +87,4 @@ def list():
 def sidebar():
     chars = Character.query.with_entities(Character.id, Character.name).order_by(Character.name.asc()).all()
 
-    print(chars)
-
     return jsonify(chars)
