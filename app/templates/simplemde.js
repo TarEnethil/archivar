@@ -56,11 +56,14 @@ function toggleSidebar(editor) {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
             });
         });
-    }
-
-    if (visible == false) {
-        $("#editor-sidebar").show();
-        visible = true;
+    } else {
+        if (visible == false) {
+            $("#editor-sidebar").show();
+            visible = true;
+        } else {
+            $("#editor-sidebar").hide();
+            visible = false;
+        }
     }
 }
 
