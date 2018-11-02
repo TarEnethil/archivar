@@ -67,19 +67,18 @@
 </p>
 {% endif %}
 
-<h1>{{ entry.title }} </h1>
-
-{% if entry.content %}
     {% if current_user.phb_wiki %}
     <div id="content" class="custom-markdown phb-style">
     {% else %}
     <div id="content" class="custom-markdown">
     {% endif %}
+{% if entry.content %}
+# {{ entry.title }}
 {{ entry.content }}
-    </div>
 {% else %}
-<p>No content.</p>
+No content.
 {% endif %}
+    </div>
 
 {% if map_nodes %}
 <h2>Associated map nodes</h2>
