@@ -41,11 +41,13 @@ $(document).ready(function() {
 
             </ul>
 
+            {% if current_user.is_authenticated %}
             <ul class="nav navbar-nav navbar-left" id="custom-links">
                 {% for link in load_quicklinks() %}
                 <li><a href="{{ link[0] }}"> {{ link[1] }}</a></li>
                 {% endfor %}
             </ul>
+            {% endif %}
 
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated and current_user.has_admin_role() %}
