@@ -1,3 +1,16 @@
+#topnav {
+    position:fixed;
+    top:0;
+    left:0;
+    display:block;
+    z-index:1030;
+    width:100%;
+}
+
+body {
+    padding-top:70px;
+}
+
 #footer {
     font-size:.9em;
     text-transform:uppercase;
@@ -129,7 +142,7 @@ ul.nav-tabs li span.glyphicon {
     width:250px;
     max-width:250px;
     height:100%;
-    padding:10px 0 10px 10px;
+    padding:70px 0px 10px 10px;
     border-right:10px solid #ccc;
     background:#fff;
     overflow-y:auto;
@@ -137,7 +150,7 @@ ul.nav-tabs li span.glyphicon {
     z-index:50;
     background:#eeeeee;
     left:0;
-    margin-top:-20px;
+    top:0;
 }
 
 #editor-sidebar #thinglist {
@@ -181,7 +194,7 @@ ul.nav-tabs li span.glyphicon {
 #editor-sidebar .close-link-sidebar {
     color:#000;
     position:absolute;
-    top:5px;
+    top:75px;
     right:5px;
 }
 

@@ -1,3 +1,7 @@
+body {
+    padding-top:50px !important;
+}
+
 .navbar {
     margin-bottom:0 !important;
 }
@@ -165,12 +169,14 @@
     width:250px;
     max-width:250px;
     height:100%;
-    padding:10px 0 10px 10px;
+    padding:70px 0 10px 10px;
     border-right:10px solid #ccc;
     background:#fff;
     overflow-y:auto;
     display:none;
-    z-index:50;
+    z-index:25;
+    top:0;
+    left:0;
 }
 
 #location-list #locations {
@@ -215,7 +221,7 @@
 #location-list .close-link-sidebar {
     color:#000;
     position:absolute;
-    top:5px;
+    top:75px;
     right:5px;
 }
 
