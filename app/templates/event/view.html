@@ -58,9 +58,9 @@
     <hr>
 
     <ul class="list-unstyled">
-        <li>Created by: <a href="{{ url_for('user.profile', username='event.created_by.username') }}">{{ event.created_by.username }}</a></li>
+        <li>Created by: <a href="{{ url_for('user.profile', username=event.created_by.username) }}">{{ event.created_by.username }}</a></li>
         {% if event.edited_by %}
-        <li>Edited by: <a href="{{ url_for('user.profile', username='event.edited_by.username') }}">{{ event.edited_by.username }}</a></li>
+        <li>Edited by: <a href="{{ url_for('user.profile', username=event.edited_by.username) }}">{{ event.edited_by.username }}</a></li>
         {% endif %}
     </ul>
 {% endblock %}
