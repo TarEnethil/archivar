@@ -434,6 +434,8 @@
           attach_edit_form_listener(id);
           prep_node_type_select();
           $("#btn-move-node").detach().appendTo(".edit_node_form form");
+          $("button[data-id=node_type]").css("height", "34px");
+          $("button[data-id=wiki_entry]").css("height", "34px");
           show_nodeform();
           hide_loading();
       });
@@ -645,6 +647,8 @@
           $("#nodeform_content").load(url.replace("x_coord", e.latlng.lat).replace("y_coord", e.latlng.lng), function() {
               attach_new_form_listener(e);
               prep_node_type_select();
+              $("button[data-id=node_type]").css("height", "34px");
+              $("button[data-id=wiki_entry]").css("height", "34px");
               show_nodeform();
               hide_loading();
           });
