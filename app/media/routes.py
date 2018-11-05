@@ -189,15 +189,12 @@ def settings():
 
     if form.validate_on_submit():
         settings.default_visible = form.default_visible.data
-        settings.max_filesize = form.max_filesize.data
 
         db.session.commit()
 
         flash("Event settings have been changed.", "success")
     elif request.method == "GET":
         form.default_visible.data = settings.default_visible
-        form.max_filesize.data = settings.max_filesize
-
 
     categories = MediaCategory.query.all()
 

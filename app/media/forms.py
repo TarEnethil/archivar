@@ -1,11 +1,10 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
-from wtforms import StringField, SubmitField, IntegerField, BooleanField, SelectField
-from wtforms.validators import Length, InputRequired, NumberRange, ValidationError
+from wtforms import StringField, SubmitField, BooleanField, SelectField
+from wtforms.validators import Length, InputRequired, ValidationError
 
 class SettingsForm(FlaskForm):
     default_visible = BooleanField("Events are visible by default")
-    max_filesize = IntegerField("Max file size (kB)", validators=[NumberRange(min=10),InputRequired()])
 
     submit = SubmitField("Submit")
 

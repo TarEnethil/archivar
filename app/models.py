@@ -414,7 +414,6 @@ class MediaSetting(db.Model):
     __tablename__ = "media_settings"
     id = db.Column(db.Integer, primary_key=True)
     default_visible = db.Column(db.Boolean)
-    max_filesize = db.Column(db.Integer)
 
 class MediaCategory(db.Model):
     __tablename__ = "media_categories"
