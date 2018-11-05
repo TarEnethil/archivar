@@ -10,3 +10,5 @@ class Config(object):
     MAPNODES_FILE_EXT = ["jpg", "png", "gif"]
     MAPTILES_DIR = os.path.join(basedir, 'data/map/')
     WELCOME_MD = os.path.join(basedir, "Welcome.md")
+    MEDIA_DIR = os.path.join(basedir, 'data/media/')
+    MAX_CONTENT_LENGTH = 1024 * 20

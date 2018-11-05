@@ -244,3 +244,15 @@ ul.nav-tabs li span.glyphicon {
 .picker td.picker-selected {
     background:#bbb;
 }
+
+tr.invisible_item {
+    color:#ab0000;
+    font-style:italic;
+}
+
+#preview_image {
+    max-width:100%;
+    padding:20px;
+    display:block;
+    margin:10px auto;
+}

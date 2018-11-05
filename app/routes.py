@@ -114,6 +114,7 @@ def install():
             map_role = Role(name="Map admin", description="has access to map settings; can see invisible nodes (if not created by an admin); can hide/unhide map nodes")
             wiki_role = Role(name="Wiki admin", description="has access to wiki settings; can see invisible articles (if not created by an admin); can hide/unhide wiki articles")
             event_role = Role(name="Event admin", description="has access to event settings; can add/edit event categories; can see invisible events (if not created by an admin); can hide/unhide events")
+            media_role = Role(name="Media admin", description="has access to media settings; can hide/unhide media; can add/edit media categories")
             special_role = Role(name="Special", description="no function as of yet")
 
             db.session.add(setting)
@@ -121,6 +122,7 @@ def install():
             db.session.add(map_role)
             db.session.add(wiki_role)
             db.session.add(event_role)
+            db.session.add(media_role)
             db.session.add(special_role)
 
             calendar_setting = CalendarSetting(finalized=False)

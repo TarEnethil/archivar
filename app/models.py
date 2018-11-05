@@ -53,8 +53,11 @@ class User(UserMixin, db.Model):
     def has_event_role(self):
         return self.has_role(4)
 
-    def has_special_role(self):
+    def has_media_role(self):
         return self.has_role(5)
+
+    def has_special_role(self):
+        return self.has_role(6)
 
     def is_map_admin(self):
         return self.has_admin_role() or self.has_map_role()
@@ -65,8 +68,11 @@ class User(UserMixin, db.Model):
     def is_event_admin(self):
         return self.has_admin_role() or self.has_event_role()
 
+    def is_media_admin(self):
+        return self.has_admin_role() or self.has_media_role()
+
     def has_access_to_some_settings(self):
-        return self.has_admin_role() or self.has_map_role() or self.has_wiki_role() or self.has_event_role()
+        return self.has_admin_role() or self.has_map_role() or self.has_wiki_role() or self.has_event_role() or self.has_media_role()
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -404,6 +410,42 @@ class Event(db.Model):
         else:
             return wd[(timestamp % len(wd)) -1].name
 
+class MediaSetting(db.Model):
+    __tablename__ = "media_settings"
+    id = db.Column(db.Integer, primary_key=True)
+    default_visible = db.Column(db.Boolean)
+    max_filesize = db.Column(db.Integer)
+
+class MediaCategory(db.Model):
+    __tablename__ = "media_categories"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+
+class MediaItem(db.Model):
+    __tablename__ = "media"
+    id = db.Column(db.Integer, primary_key=True)
+    is_visible = db.Column(db.Boolean)
+    name = db.Column(db.String(100))
+    filename = db.Column(db.String(100))
+    filesize = db.Column(db.Integer)
+    category_id = db.Column(db.Integer, db.ForeignKey("media_categories.id"))
+    category = db.relationship("MediaCategory", backref="events")
+
+    created_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_by = db.relationship("User", foreign_keys=[created_by_id])
+    edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    edited_by = db.relationship("User", foreign_keys=[edited_by_id])
+
+    def get_file_ext(self):
+        return (self.filename.split(".")[-1]).lower()
+
+    def get_nice_size(self):
+        num = self.filesize
+        for unit in ['', 'Ki', 'Mi', 'Gi']:
+            if abs(num) < 1024.0:
+                return "{0:3.1f} {1:s}{2:s}".format(num, unit, "B")
+            num /= 1024.0
+        return str(self.filesize) + " B"
 
 @login.user_loader
 def load_user(id):

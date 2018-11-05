@@ -39,6 +39,9 @@ app.register_blueprint(calendar_bp, url_prefix="/calendar")
 from app.event import bp as event_bp
 app.register_blueprint(event_bp, url_prefix="/event")
 
+from app.media import bp as media_bp
+app.register_blueprint(media_bp, url_prefix="/media")
+
 from app.models import GeneralSetting
 
 @app.context_processor
