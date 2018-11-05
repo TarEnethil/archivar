@@ -21,6 +21,14 @@ def dummy():
 def view(id):
     event = Event.query.filter_by(id=id).first_or_404()
 
+    if not current_user.is_event_admin() and event.is_visible == False and not event.created_by == current_user:
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
+    if not current_user.has_admin_role() and current_user.has_event_role() and event.is_visible == False and event.created_by.has_admin_role():
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
     return render_template("event/view.html", event=event, title=page_title("View event"))
 
 @bp.route("/list", methods=["GET"])
