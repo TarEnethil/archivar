@@ -200,9 +200,9 @@ def settings():
 
     return render_template("media/settings.html", categories=categories, form=form, title=page_title("Media settings"))
 
-@bp.route("/sidebar", methods=["GET"])
+@bp.route("/sidebar/<int:c_id>", methods=["GET"])
 @login_required
-def sidebar():
+def sidebar(c_id):
     if current_user.has_admin_role():
         entries = MediaItem.query
     elif current_user.has_media_role():
@@ -212,9 +212,25 @@ def sidebar():
     else:
         entries = MediaItem.query.filter(or_(MediaItem.is_visible == True, MediaItem.created_by_id == current_user.id))
 
-    entries = entries.with_entities(MediaItem.id, MediaItem.name, MediaItem.is_visible).order_by(MediaItem.name.asc()).all()
+    entries = entries.filter_by(category_id=c_id).order_by(MediaItem.name.asc()).all()
 
-    return jsonify(entries)
+    d = {}
+    for m in entries:
+        d[m.id] = m.to_dict();
+
+    return jsonify(d)
+
+@bp.route("/sidebar/categories", methods=["GET"])
+@login_required
+def sidebar_categories():
+    cats = MediaCategory.query.order_by(MediaCategory.name.asc()).all()
+
+    d = {}
+
+    for c in cats:
+        d[c.id] = c.to_dict()
+
+    return jsonify(d);
 
 @bp.route("/serve/<filename>")
 @login_required

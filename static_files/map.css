@@ -87,7 +87,7 @@ body {
     font-size:1em;
 }
 
-#editor-sidebar {
+.sidebar {
     margin-top:0 !important;
     z-index:51 !important;
 }

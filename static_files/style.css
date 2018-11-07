@@ -141,7 +141,7 @@ ul.nav-tabs li span.glyphicon {
     color:#ab0000 !important;
 }
 
-#editor-sidebar {
+.sidebar {
     position:fixed;
     width:250px;
     max-width:250px;
@@ -157,55 +157,59 @@ ul.nav-tabs li span.glyphicon {
     top:0;
 }
 
-#editor-sidebar #thinglist {
+.sidebar .itemlist {
     list-style: none;
     margin:0;
     padding:0;
 }
 
-#editor-sidebar input {
+.sidebar input[type=text] {
     display:block;
     width:90%;
     font-size:.8em;
 }
 
-#editor-sidebar #thinglist li.category {
+.sidebar .itemlist li.category {
     font-weight:bold;
     line-height:20px;
     margin-top:10px;
     border-bottom:1px solid #ccc;
 }
 
-#editor-sidebar #thinglist li.category img {
+.sidebar .itemlist li.category img {
     max-height:20px;
     max-width:20px;
 }
 
-#editor-sidebar #thinglist li.thing {
+.sidebar .itemlist li.thing {
     padding-left:10px;
 }
 
-#editor-sidebar #thinglist li.thing.invis {
+.sidebar .itemlist li.thing.invis {
     color:#ab5555;
     font-style:italic;
 }
 
-#editor-sidebar #thinglist li.thing:hover {
+.sidebar .itemlist li.thing:hover {
     cursor: pointer;
     background:#ccc;
 }
 
-#editor-sidebar .close-link-sidebar {
+.sidebar .close-link-sidebar {
     color:#000;
     position:absolute;
     top:75px;
     right:5px;
 }
 
-#editor-sidebar .close-link-sidebar:hover,
-#editor-sidebar .close-link-sidebar:focus {
+.sidebar .close-link-sidebar:hover,
+.sidebar .close-link-sidebar:focus {
     color:#ab0000;
     cursor:pointer;
+}
+
+.sidebar .file-ext {
+    font-size:0.8em;
 }
 
 #finalize-btn {

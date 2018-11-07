@@ -420,6 +420,14 @@ class MediaCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
 
+    def to_dict(self):
+        dic = {
+            "id" : self.id,
+            "name" : self.name,
+        }
+
+        return dic
+
 class MediaItem(db.Model):
     __tablename__ = "media"
     id = db.Column(db.Integer, primary_key=True)
@@ -445,6 +453,19 @@ class MediaItem(db.Model):
                 return "{0:3.1f} {1:s}{2:s}".format(num, unit, "B")
             num /= 1024.0
         return str(self.filesize) + " B"
+
+    def to_dict(self):
+        dic = {
+            "id" : self.id,
+            "name" : self.name,
+            "filename" : self.filename,
+            "filesize" : self.filesize,
+            "category" : self.category_id,
+            "file_ext" : self.get_file_ext(),
+            "is_visible" : self.is_visible
+        }
+
+        return dic
 
 @login.user_loader
 def load_user(id):
