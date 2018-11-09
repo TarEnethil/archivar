@@ -2,7 +2,6 @@
 app/*.pyc
 *.db
 *.sh
-migrations/
 venv/
 data/map/*
 !data/map/.gitkeep
@@ -15,3 +14,5 @@ data/mapnodes/*
 !data/mapnodes/quest.png
 !data/mapnodes/note.png
 !data/mapnodes/ruins.png
+migrations/*
+!migrations/versions
