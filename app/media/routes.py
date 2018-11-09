@@ -78,6 +78,9 @@ def upload():
 
         flash("Upload successful.", "success")
         return redirect(url_for("media.index"))
+    elif request.method == "GET":
+        if current_user.is_media_admin() and settings.default_visible:
+            form.is_visible.data = True
 
     return render_template("media/upload.html", form=form, title=page_title("Upload file"))
 
