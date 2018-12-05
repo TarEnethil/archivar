@@ -446,14 +446,6 @@ class MediaItem(db.Model):
     def get_file_ext(self):
         return (self.filename.split(".")[-1]).lower()
 
-    def get_nice_size(self):
-        num = self.filesize
-        for unit in ['', 'Ki', 'Mi', 'Gi']:
-            if abs(num) < 1024.0:
-                return "{0:3.1f} {1:s}{2:s}".format(num, unit, "B")
-            num /= 1024.0
-        return str(self.filesize) + " B"
-
     def to_dict(self):
         dic = {
             "id" : self.id,

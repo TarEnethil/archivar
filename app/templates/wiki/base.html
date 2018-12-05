@@ -64,11 +64,11 @@ $(document).ready(function() {
                     {% for cat in nav[0] %}
                         {% if cat != "" %}
                         <li>
-                            <a data-toggle="collapse" data-parent="#stacked-menu" href="#c_{{cat}}">{{ cat }} <span class="caret arrow"></span></a>
+                            <a data-toggle="collapse" data-parent="#stacked-menu" href="#{{cat|hash}}">{{ cat }} <span class="caret arrow"></span></a>
                             {% if entry and entry.category == cat %}
-                            <ul class="nav nav-pills nav-stacked collapse in" id="c_{{cat}}">
+                            <ul class="nav nav-pills nav-stacked collapse in" id="{{cat|hash}}">
                             {% else %}
-                            <ul class="nav nav-pills nav-stacked collapse" id="c_{{cat}}">
+                            <ul class="nav nav-pills nav-stacked collapse" id="{{cat|hash}}">
                             {% endif %}
 
                             {% for link in nav[0][cat] %}

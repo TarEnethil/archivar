@@ -19,7 +19,7 @@
         <dt>File name</dt>
         <dd>{{ item.filename }}</dd>
         <dt>File size</dt>
-        <dd>{{ item.get_nice_size() }} ({{ item.filesize }} Byte)</dd>
+        <dd>{{ item.filesize|filesizeformat(True) }} ({{ item.filesize }} Byte)</dd>
         <dt>Direct link</dt>
         <dd><a href="{{ url_for('media.serve_file', filename=item.filename) }}">{{ item.filename }}</a></dd>
     </dl>

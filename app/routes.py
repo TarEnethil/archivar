@@ -205,16 +205,5 @@ def internal_error(error):
 @app.errorhandler(413)
 def request_entity_too_large(error):
     size_bytes = app.config["MAX_CONTENT_LENGTH"]
-    num = size_bytes
-    for unit in ['', 'Ki', 'Mi', 'Gi']:
-        if abs(num) < 1024.0:
-            num = "{0:3.1f} {1:s}{2:s}".format(num, unit, "B")
-            break
-        num /= 1024.0
 
-    if not str(num).endswith("B"):
-        num = str(num) + " B"
-
-    size_bytes = str(size_bytes) + " Byte"
-
-    return render_template("413.html", size_bytes=size_bytes, size_nice=num, title="413"), 413
+    return render_template("413.html", size_bytes=size_bytes, title="413"), 413

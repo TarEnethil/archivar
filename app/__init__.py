@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
+import hashlib
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -62,5 +63,9 @@ def utility_processor():
         return quicklinks
 
     return dict(load_quicklinks=load_quicklinks)
+
+@app.template_filter()
+def hash(text):
+    return hashlib.md5(text).hexdigest()[:10]
 
 from app import routes, models

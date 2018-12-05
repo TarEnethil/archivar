@@ -6,10 +6,6 @@
     <p>
         The file you tried to upload was too large.
         The maximum allowed size is
-        {% if size_bytes != size_nice %}
-        {{ size_nice }} ({{ size_bytes }}).
-        {% else %}
-        {{ size_bytes }}.
-        {% endif %}
+        {{ size_bytes|filesizeformat(True) }} ({{ size_bytes }} Byte).
     </p>
 {% endblock %}
