@@ -100,6 +100,9 @@ Finishing of the three big features is a customizable calendar with events.
 As admin you can create a calendar with customizable months, days and epochs.
 Players can then enter events to define how the world was shaped.
 
+## Media
+Upload and categorize additional media like images (for wiki / character pages etc.) or additional documents like homebrew or house rules.
+
 # Roles
 ## Admin / DM
 Admin is the highest role available and has all privileges.
@@ -123,6 +126,9 @@ This role allows for someone to help with the worldbuilding without giving away 
 ## Event admin
 As with Map and Wiki admins, this role can toggle the visibility of articles created by users and other event admins, but not the ones created by admins.
 This role is intended as a curator for the history of the world.
+
+## Media admin
+Can hide/unhide/delete media.
 
 ## Special
 _Reserved. No function as of yet._
