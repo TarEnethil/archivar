@@ -82,7 +82,7 @@ def upload():
         if current_user.is_media_admin() and settings.default_visible:
             form.is_visible.data = True
 
-    return render_template("media/upload.html", form=form, title=page_title("Upload file"))
+    return render_template("media/upload.html", form=form, max_filesize=app.config["MAX_CONTENT_LENGTH"], title=page_title("Upload file"))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
