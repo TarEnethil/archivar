@@ -1,10 +1,26 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css">
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"></script>
+
+<script>
+{% include "datatable.js" %}
+makeDatatable("#media-table");
+</script>
+{% endblock %}
+
 {% block app_content %}
     <h1>All files in category {{ catname }}</h1>
 
     {% if media %}
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped" id="media-table">
         <thead>
             <tr>
                 <th>Title</th>
