@@ -135,6 +135,26 @@ def edit(id):
 
     return render_template("media/edit.html", form=form, title=page_title("Edit file"))
 
+@bp.route("/delete/<int:id>", methods=["GET"])
+@login_required
+def delete(id):
+    item = MediaItem.query.filter_by(id=id).first_or_404()
+
+    if not current_user.is_event_admin() and item.is_visible == False and not item.created_by == current_user:
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
+    if not current_user.has_admin_role() and current_user.has_media_role() and item.is_visible == False and item.created_by.has_admin_role():
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
+    remove(path.join(app.config["MEDIA_DIR"], item.filename))
+    db.session.delete(item)
+    db.session.commit()
+
+    flash("Media item was deleted.", "success")
+    return redirect(url_for('media.index'))
+
 @bp.route("/category/create", methods=["GET", "POST"])
 @login_required
 def category_create():

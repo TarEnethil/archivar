@@ -226,6 +226,15 @@ ul.nav-tabs li span.glyphicon {
     color:#ab0000 !important;
 }
 
+a.nav-danger {
+    background-color:#c9302c;
+    color:#000;
+}
+
+a.nav-danger:hover {
+    background-color:#c90000 !important;
+}
+
 .picker {
     width:90%;
     margin:0 auto;

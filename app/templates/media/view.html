@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block scripts %}
+{{ super() }}
+
+<script>
+$(document).ready(function() {
+    $("#delete-link").click(function(e) {
+        var p = confirm("Are you sure you want to delete '{{ item.name }}'?");
+
+        if (!p) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}
+
 {% block app_content %}
     <h1>{{ item.name }}</h1>
 
@@ -11,6 +27,15 @@
                 Edit
             </a>
         </li>
+
+        {% if current_user.is_media_admin() %}
+        <li>
+            <a href="{{ url_for('media.delete', id=item.id) }}" class="nav-danger" id="delete-link">
+                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                Delete
+            </a>
+        </li>
+        {% endif %}
     </ul>
 
     <dl class="dl-horizontal">

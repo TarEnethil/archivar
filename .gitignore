@@ -5,6 +5,8 @@ app/*.pyc
 venv/
 data/map/*
 !data/map/.gitkeep
+data/media/*
+!data/media/.gitkeep
 data/mapnodes/*
 !data/mapnodes/village.png
 !data/mapnodes/town.png
