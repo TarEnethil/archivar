@@ -2,9 +2,7 @@
 
 {% block scripts %}
 {{ super() }}
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-{{ moment.include_moment() }}
+{{ include_js(['marked', 'moment']) }}
 
 {% if entry.content or (entry.dm_content and current_user.has_admin_role()) %}
 <script type="text/javascript">

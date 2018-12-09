@@ -96,6 +96,7 @@ class GeneralSetting(db.Model):
     world_name = db.Column(db.String(64))
     welcome_page = db.Column(db.Text)
     quicklinks = db.Column(db.Text)
+    use_cdn = db.Column(db.Boolean, default=True)
 
 class MapSetting(db.Model):
     __tablename__ = "map_settings"

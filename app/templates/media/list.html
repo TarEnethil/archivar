@@ -2,13 +2,12 @@
 
 {% block styles %}
 {{ super() }}
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css">
+{{ include_css(['datatables']) }}
 {% endblock %}
 
 {% block scripts %}
-{{ super() }}
-<script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"></script>
+{{ super () }}
+{{ include_js(['datatables', 'moment']) }}
 
 <script>
 {% include "datatable.js" %}

@@ -1,10 +1,11 @@
-from flask import Flask
+from flask import Flask, url_for
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
+from jinja2 import Markup
 import hashlib
 
 app = Flask(__name__)
@@ -62,7 +63,110 @@ def utility_processor():
 
         return quicklinks
 
-    return dict(load_quicklinks=load_quicklinks)
+    def include_css(styles):
+        source = "cdn"
+        gset = GeneralSetting.query.get(1)
+        out = ""
+
+        if gset:
+            if gset.use_cdn == False:
+                source = "local"
+
+        local_url = url_for('static_files', filename="")
+
+        s = {
+            "simplemde" : {
+                "cdn" : ["https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"],
+                "local" : [local_url + "css/simplemde.min.css"]
+            },
+            "bootstrap-select" : {
+                "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css"],
+                "local" : [local_url + "css/bootstrap-select.min.css"]
+            },
+            "multi-select" : {
+                "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.min.css"],
+                "local" : [local_url + "css/multi-select.min.css"]
+            },
+            "leaflet" : {
+                "cdn" : ["https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"],
+                "local" : [local_url + "css/leaflet.css"]
+            },
+            "bootstrap-datetimepicker" : {
+                "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"],
+                "local" : [local_url + "css/bootstrap-datetimepicker.min.css"]
+            },
+            "datatables" : {
+                "cdn" : ["https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css"],
+                "local" : [local_url + "css/dataTables.bootstrap.min.css"]
+            }
+        }
+
+        for style in styles:
+            if style in s:
+                for url in s[style][source]:
+                    out += '<link rel="stylesheet" href="' + url + '">\n'
+
+        return Markup(out)
+
+    def include_js(scripts):
+        source = "cdn"
+        gset = GeneralSetting.query.get(1)
+        out = ""
+
+        if gset:
+            if gset.use_cdn == False:
+                source = "local"
+
+        local_url = url_for('static_files', filename="")
+
+        s = {
+            "marked" : {
+                "cdn" : ["https://cdn.jsdelivr.net/npm/marked/marked.min.js"],
+                "local" : [local_url + "js/marked.min.js"]
+            },
+            "simplemde" : {
+                "cdn" : ["https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"],
+                "local" : [local_url + "js/simplemde.min.js"]
+            },
+            "bootstrap-select" : {
+                "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"],
+                "local" : [local_url + "js/bootstrap-select.min.js"]
+            },
+            "multi-select" : {
+                "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js"],
+                "local" : [local_url + "js/multi-select.min.js"]
+            },
+            "leaflet" : {
+                "cdn" : ["https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"],
+                "local" : [local_url + "js/leaflet.js"]
+            },
+            "bootstrap-datetimepicker" : {
+                "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"],
+                "local" : [local_url + "js/bootstrap-datetimepicker.js"]
+            },
+            "datatables" : {
+                "cdn" : ["https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js", "https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"],
+                "local" : [local_url + "js/jquery.dataTales.min.js", local_url + "js/dataTables.bootstrap.min.js"]
+            }
+        }
+
+        for script in scripts:
+            if script in s:
+                for url in s[script][source]:
+                    out += '<script src="' + url + '"></script>\n'
+
+        out = Markup(out)
+
+        # special rules for moment.js
+        if "moment" in scripts:
+            if source == "cdn":
+                out += app.extensions['moment'].include_moment()
+            elif source == "local":
+                out += app.extensions['moment'].include_moment(local_js=local_url + "moment-with-locales.min.js")
+
+        return out
+
+    return dict(load_quicklinks=load_quicklinks, include_css=include_css, include_js=include_js)
 
 @app.template_filter()
 def hash(text):

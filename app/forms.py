@@ -11,6 +11,7 @@ class LoginForm(FlaskForm):
 class SettingsForm(FlaskForm):
     title = StringField("Title", validators=[Length(max=64)])
     world_name = StringField("Worldname", validators=[Length(max=64)])
+    use_cdn = BooleanField("Use CDN for scripts and styles")
     welcome_page = TextAreaField("Text for welcome page", render_kw={"rows": 20})
     quicklinks = TextAreaField("Quicklinks", render_kw={"rows": 7})
     submit = SubmitField("Submit")

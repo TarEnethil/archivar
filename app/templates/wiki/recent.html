@@ -3,7 +3,7 @@
 
 {% block scripts %}
 {{ super() }}
-{{ moment.include_moment() }}
+{{ include_js(['moment']) }}
 {% endblock %}
 
 {% block app_content %}

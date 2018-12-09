@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+{{ include_css(['test']) }}
+{% endblock %}
+
 {% block scripts %}
 {{ super() }}
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+{{ include_js(['marked']) }}
 
 {% if settings.welcome_page %}
 <script type="text/javascript">

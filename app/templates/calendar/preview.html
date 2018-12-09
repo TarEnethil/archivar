@@ -3,13 +3,12 @@
 
 {% block styles %}
 {{ super() }}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+{{ include_css(['bootstrap-select']) }}
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+{{ include_js(['bootstrap-select']) }}
 <script>
 $("#finalize-btn a").click(function(e) {
     var sure = confirm("Are you sure you want to finalize the calendar? After doing so, you can only change the names, abbreviations and descriptions of epochs, months and days.");
