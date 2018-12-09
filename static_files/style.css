@@ -117,6 +117,12 @@ body {
     border-top:2px solid #f9f9f9;
 }
 
+.custom-markdown img {
+    display:block;
+    max-width:85%;
+    margin:10px auto;
+}
+
 .custom-markdown.phb-style hr {
     border-top:2px solid #c9ad6a;
 }
