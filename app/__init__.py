@@ -66,6 +66,6 @@ def utility_processor():
 
 @app.template_filter()
 def hash(text):
-    return hashlib.md5(text).hexdigest()[:10]
+    return hashlib.md5(text.encode('utf-8')).hexdigest()[:10]
 
 from app import routes, models
