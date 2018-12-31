@@ -91,7 +91,7 @@
     </table>
     {% endif %}
 
-    {% if current_user.has_admin_role() %}
+    {% if current_user.has_admin_role() or current_user.id == user.id %}
     <h2>Roles</h2>
 
     {% if user.roles %}
