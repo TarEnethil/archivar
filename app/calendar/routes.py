@@ -1,8 +1,8 @@
 from app import db
 from app.helpers import page_title, redirect_non_admins
-from app.models import CalendarSetting, Epoch, Month, Day
+from app.models import CalendarSetting, Epoch, Month, Day, Moon
 from app.calendar import bp
-from app.calendar.forms import EpochForm, MonthForm, DayForm
+from app.calendar.forms import EpochForm, MonthForm, DayForm, MoonForm
 from app.calendar.helpers import get_next_epoch_order, get_next_month_order, get_next_day_order, calendar_sanity_check, gen_calendar_preview_data, gen_calendar_stats, get_years_in_epoch, get_epochs, gen_epoch_choices, gen_month_choices, gen_day_choices
 from app.event.forms import EventForm
 from app.event.helpers import get_event_categories
@@ -23,8 +23,9 @@ def settings():
     epochs = Epoch.query.order_by(Epoch.order.asc()).all()
     months = Month.query.order_by(Month.order.asc()).all()
     days = Day.query.order_by(Day.order.asc()).all()
+    moons = Moon.query.order_by(Moon.name.asc()).all()
 
-    return render_template("calendar/settings.html", settings=cset, epochs=epochs, months=months, days=days, title=page_title("Calendar settings"))
+    return render_template("calendar/settings.html", settings=cset, epochs=epochs, months=months, days=days, moons=moons, title=page_title("Calendar settings"))
 
 @bp.route("/index", methods=["GET"])
 @login_required
@@ -484,7 +485,7 @@ def day_edit(id):
 
         db.session.commit()
 
-        flash("day edited.", "success")
+        flash("Day edited.", "success")
         return redirect(url_for("calendar.settings"))
     elif request.method == "GET":
         form.name.data = day.name
@@ -572,4 +573,82 @@ def day_down(id):
     db.session.commit()
 
     flash("Order of '" + day_to_down.name + "' and '" + day_to_up.name + "' has been swapped.", "success")
+    return redirect(url_for("calendar.settings"))
+
+
+#####################################
+
+@bp.route("/moon/create", methods=["GET", "POST"])
+@login_required
+def moon_create():
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't add new moons.", "danger")
+        return redirect(url_for('calendar.settings'))
+
+    heading = "Create new moon"
+    form = MoonForm()
+
+    if form.validate_on_submit():
+        new_moon = Moon(name=form.name.data, description=form.description.data, phase_length=form.phase_length.data, phase_offset=form.phase_offset.data)
+
+        db.session.add(new_moon)
+        db.session.commit()
+
+        flash("Moon added.", "success")
+        return redirect(url_for("calendar.settings"))
+
+    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Create new moon"))
+
+@bp.route("/moon/edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def moon_edit(id):
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    heading = "Edit moon"
+    form = MoonForm()
+
+    moon = Moon.query.filter_by(id=id).first_or_404()
+
+    if form.validate_on_submit():
+        moon.name = form.name.data
+        moon.description = form.description.data
+        moon.phase_length = form.phase_length.data
+        moon.phase_offset = form.phase_offset.data
+        db.session.commit()
+
+        flash("Moon edited.", "success")
+        return redirect(url_for("calendar.settings"))
+    elif request.method == "GET":
+        form.name.data = moon.name
+        form.description.data = moon.description
+        form.phase_length.data = moon.phase_length
+        form.phase_offset.data = moon.phase_offset
+
+    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Edit moon"))
+
+@bp.route("/moon/delete/<int:id>", methods=["GET"])
+@login_required
+def moon_delete(id):
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == True:
+        flash("The calendar is finalized. You can't delete days.", "danger")
+        return redirect(url_for('calendar.settings'))
+
+    moon = Moon.query.filter_by(id=id).first_or_404()
+
+    db.session.delete(moon)
+    db.session.commit()
+
+    flash("Moon was deleted.", "success")
     return redirect(url_for("calendar.settings"))

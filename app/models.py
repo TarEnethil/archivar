@@ -308,6 +308,14 @@ class Day(db.Model):
     def __repr__(self):
         return str(self.to_dict())
 
+class Moon(db.Model):
+    __tablename__ = "moons"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+    phase_length = db.Column(db.Integer)
+    phase_offset = db.Column(db.Integer)
+
 class EventSetting(db.Model):
     __tablename__ = "event_settings"
     id = db.Column(db.Integer, primary_key=True)

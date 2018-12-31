@@ -31,6 +31,13 @@ var descr_ep_{{ day.id }} = document.getElementById("day-{{ day.id }}-desc")
 descr_ep_{{ day.id }}.innerHTML = marked(descr_ep_{{ day.id }}.innerHTML, options);
 {% endif %}
 {% endfor %}
+
+{% for moon in stats["moons"] %}
+{% if moon.description %}
+var descr_ep_{{ moon.id }} = document.getElementById("moon-{{ moon.id }}-desc")
+descr_ep_{{ moon.id }}.innerHTML = marked(descr_ep_{{ moon.id }}.innerHTML, options);
+{% endif %}
+{% endfor %}
 {% endif %}
 </script>
 {% endblock %}
@@ -43,12 +50,16 @@ descr_ep_{{ day.id }}.innerHTML = marked(descr_ep_{{ day.id }}.innerHTML, option
     </p>
 
     <dl class="dl-horizontal">
-        <dt>Days per week</dt>
+        <dt>Dayss per week</dt>
         <dd>{{ stats["days_per_week"] }}</dd>
         <dt>Days per year</dt>
         <dd>{{ stats["days_per_year"] }}</dd>
         <dt>Months per year</dt>
         <dd>{{ stats["months_per_year"] }}</dd>
+        {% if stats["moons"] %}
+        <dt>Moons</dt>
+        <dd>{{ stats["moons"]|length }}</dd>
+        {% endif %}
     </dl>
 
     {% if settings.finalized == True %}
@@ -161,7 +172,7 @@ descr_ep_{{ day.id }}.innerHTML = marked(descr_ep_{{ day.id }}.innerHTML, option
 
             {% if day.description %}
             <tr>
-                <td colspan="2">
+                <td>
                     <div id="day-{{ day.id }}-desc" class="custom-markdown">
 {{ day.description }}
                     </div>
@@ -171,6 +182,40 @@ descr_ep_{{ day.id }}.innerHTML = marked(descr_ep_{{ day.id }}.innerHTML, option
             {% endfor %}
         </tbody>
     </table>
+
+    <h2>Moons</h2>
+    <p>The world can be orbited by one or multiple moons, illuminating the dark night.</p>
+
+    {% if stats["moons"] %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phase length</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for moon in stats["moons"] %}
+            <tr>
+                <td>{{ moon.name }}</td>
+                <td>{{ moon.phase_length }} days</td>
+            </tr>
+
+            {% if moon.description %}
+            <tr>
+                <td colspan="2">
+                    <div id="moon-{{ moon.id }}-desc" class="custom-markdown">
+{{ moon.description }}
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>This world does not seem to have any known moons.</p>
+    {% endif %}
 
     {% else %}
     <p>The calendar has not yet been finalized by the DM.</p>

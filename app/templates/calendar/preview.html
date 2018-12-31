@@ -53,6 +53,10 @@ $("#finalize-btn a").click(function(e) {
         <dd>{{ calendar["days_per_year"] }}</dd>
         <dt>Months per year</dt>
         <dd>{{ calendar["months_per_year"] }}</dd>
+        {% if calendar["moons"] %}
+        <dt>Moons</dt>
+        <dd>{{ calendar["moons"]|length }}</dd>
+        {% endif %}
     </dl>
 
     <h2>Epochs</h2>
@@ -144,6 +148,30 @@ $("#finalize-btn a").click(function(e) {
             {% endfor %}
         </tbody>
     </table>
+
+    <h2>Moons</h2>
+    {% if calendar["moons"] %}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phase length</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for moon in calendar["moons"] %}
+            <tr>
+                <td>{{ moon.name }}</td>
+                <td>{{ moon.phase_length }} days</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>
+        The world has no moons.
+    </p>
+    {% endif %}
 
     <h2>Form Preview</h2>
     <p>Below is an example of how the datepicker for this calendar will integrate into the Event-form.</p>

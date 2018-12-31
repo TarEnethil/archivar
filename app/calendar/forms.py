@@ -25,3 +25,11 @@ class DayForm(FlaskForm):
     description = TextAreaField("Description", render_kw={"rows": 15})
 
     submit = SubmitField("Submit")
+
+class MoonForm(FlaskForm):
+    name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])
+    phase_length = IntegerField("Phase length (days)", validators=[InputRequired(),NumberRange(min=2)])
+    phase_offset = IntegerField("Phase shift (offset)", validators=[InputRequired(),NumberRange(min=0)], default=0)
+    description = TextAreaField("Description", render_kw={"rows": 15})
+
+    submit = SubmitField("Submit")

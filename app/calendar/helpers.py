@@ -1,5 +1,5 @@
 from app import db
-from app.models import CalendarSetting, Day, Epoch, Event, EventCategory, Month
+from app.models import CalendarSetting, Day, Epoch, Event, EventCategory, Month, Moon
 from flask import flash
 
 def get_next_epoch_order():
@@ -72,6 +72,7 @@ def gen_calendar_preview_data(commit=False):
     epochs = Epoch.query.order_by(Epoch.order.asc()).all()
     months = Month.query.order_by(Month.order.asc()).all()
     days = Day.query.order_by(Day.order.asc()).all()
+    moons = Moon.query.order_by(Moon.name.asc()).all()
 
     for i, epoch in enumerate(epochs):
         if i > 0:
@@ -93,6 +94,9 @@ def gen_calendar_preview_data(commit=False):
         preview_info["days_per_year"] = months[-1].days_before + months[-1].days
         preview_info["months_per_year"] = len(months)
 
+        if moons:
+            preview_info["moons"] = moons
+
         return preview_info
 
 def gen_calendar_stats():
@@ -100,6 +104,7 @@ def gen_calendar_stats():
     months = Month.query.order_by(Month.order.asc()).all()
     days = Day.query.order_by(Day.order.asc()).all()
     categories = EventCategory.query.all()
+    moons = Moon.query.order_by(Moon.name.asc()).all()
 
     stats = {}
     stats["epochs"] = epochs
@@ -110,6 +115,9 @@ def gen_calendar_stats():
     stats["days_per_week"] = len(days)
     stats["days_per_year"] = months[-1].days_before + months[-1].days
     stats["months_per_year"] = len(months)
+
+    if moons:
+        stats["moons"] = moons
 
     return stats
 
