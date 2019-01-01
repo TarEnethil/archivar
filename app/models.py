@@ -185,6 +185,7 @@ class Character(db.Model):
     class_ = db.Column(db.String(100))
     description = db.Column(db.Text)
     dm_notes = db.Column(db.Text)
+    private_notes = db.Column(db.Text)
 
 class Party(db.Model):
     __tablename__ = "parties"

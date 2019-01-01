@@ -13,7 +13,7 @@
 <script>
 {% include "simplemde.js" %}
 var simplemde = new SimpleMDE(generateSMDEConfig("description"));
-
+var simplemde = new SimpleMDE(generateSMDEConfig("private_notes"));
 
 {% if current_user.has_admin_role() %}
 var simplemde2 = new SimpleMDE(generateSMDEConfig("dm_notes"));

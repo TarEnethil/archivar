@@ -7,6 +7,7 @@ class CreateCharacterForm(FlaskForm):
     race = StringField("Race", validators=[InputRequired()])
     class_ = StringField("Class", validators=[InputRequired()])
     description = TextAreaField("Description", render_kw={"rows": 15})
+    private_notes = TextAreaField("Private Notes (hidden)", render_kw={"rows": 15})
 
     submit = SubmitField("Submit")
 
@@ -15,6 +16,7 @@ class EditCharacterForm(FlaskForm):
     race = StringField("Race", validators=[InputRequired()])
     class_ = StringField("Class", validators=[InputRequired()])
     description = TextAreaField("Description", render_kw={"rows": 15})
+    private_notes = TextAreaField("Private Notes (hidden)", render_kw={"rows": 15})
     dm_notes = TextAreaField("DM Notes (hidden)", render_kw={"rows": 15})
 
     submit = SubmitField("Submit")

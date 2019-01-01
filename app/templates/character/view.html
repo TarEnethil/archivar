@@ -14,6 +14,11 @@
     char_desc.innerHTML = marked(char_desc.innerHTML, options);
     {% endif %}
 
+    {% if char.private_notes and (current_user.has_admin_role() or char.player.id == current_user.id) %}
+    var priv_notes = document.getElementById('char_private_notes')
+    priv_notes.innerHTML = marked(priv_notes.innerHTML, options);
+    {% endif %}
+
     {% if char.dm_notes and current_user.has_admin_role() %}
     var dm_notes = document.getElementById('char_dm_notes')
     dm_notes.innerHTML = marked(dm_notes.innerHTML, options);
@@ -73,6 +78,14 @@
     <p id="char_description" class="custom-markdown">
     {% endif %}
 {{ char.description }}
+    </p>
+    {% endif %}
+
+    {% if char.private_notes and (current_user.has_admin_role() or char.player.id == current_user.id) %}
+    <hr>
+    <h2>Private Notes</h2>
+    <p id="char_private_notes" class="custom-markdown">
+{{ char.private_notes }}
     </p>
     {% endif %}
 

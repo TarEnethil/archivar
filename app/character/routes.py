@@ -15,7 +15,7 @@ def create():
     form = CreateCharacterForm()
 
     if form.validate_on_submit():
-        char = Character(name=form.name.data, race=form.race.data, class_=form.class_.data, description=form.description.data, user_id=current_user.id)
+        char = Character(name=form.name.data, race=form.race.data, class_=form.class_.data, description=form.description.data, private_notes=form.private_notes.data, user_id=current_user.id)
 
         db.session.add(char)
         db.session.commit()
@@ -51,6 +51,7 @@ def edit(id):
         char.race = form.race.data
         char.class_ = form.class_.data
         char.description = form.description.data
+        char.private_notes = form.private_notes.data
         char.edited = datetime.utcnow()
 
         if current_user.has_admin_role():
@@ -64,6 +65,7 @@ def edit(id):
         form.race.data = char.race
         form.class_.data = char.class_
         form.description.data = char.description
+        form.private_notes.data = char.private_notes
 
         if current_user.has_admin_role():
             form.dm_notes.data = char.dm_notes
