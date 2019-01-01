@@ -82,7 +82,6 @@ def settings():
     if form.validate_on_submit():
         settings.title = form.title.data
         settings.world_name = form.world_name.data
-        settings.use_cdn = form.use_cdn.data
         settings.welcome_page = form.welcome_page.data
         settings.quicklinks = form.quicklinks.data
 
@@ -92,7 +91,6 @@ def settings():
     else:
         form.title.data = settings.title
         form.world_name.data =  settings.world_name
-        form.use_cdn.data = settings.use_cdn
         form.welcome_page.data = settings.welcome_page
         form.quicklinks.data = settings.quicklinks
 

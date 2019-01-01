@@ -65,12 +65,10 @@ def utility_processor():
 
     def include_css(styles):
         source = "cdn"
-        gset = GeneralSetting.query.get(1)
         out = ""
 
-        if gset:
-            if gset.use_cdn == False:
-                source = "local"
+        if app.config["BOOTSTRAP_SERVE_LOCAL"] == True:
+            source = "local"
 
         local_url = url_for('static_files', filename="")
 
@@ -110,12 +108,10 @@ def utility_processor():
 
     def include_js(scripts):
         source = "cdn"
-        gset = GeneralSetting.query.get(1)
         out = ""
 
-        if gset:
-            if gset.use_cdn == False:
-                source = "local"
+        if app.config["BOOTSTRAP_SERVE_LOCAL"] == True:
+            source = "local"
 
         local_url = url_for('static_files', filename="")
 
