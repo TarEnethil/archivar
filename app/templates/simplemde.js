@@ -5,7 +5,7 @@ var mediaVisible = false;
 
 var img_extensions = ["png", "gif", "jpg", "jpeg"];
 
-active_editor = undefined;
+var active_editor = undefined;
 
 function intRefLoadResource(editor, category, url, fake_url) {
     var list = $("#intref-sidebar .itemlist");
@@ -112,8 +112,6 @@ function toggleIntRefSidebar(editor) {
 }
 
 function toggleMediaSidebar(editor) {
-    console.log(editor);
-
     if (mediaVisible == false && intRefVisible == true) {
         $("#intref-sidebar").hide();
         intRefVisible = false;
@@ -174,7 +172,6 @@ function insertReference(editor, name, url) {
 }
 
 function insertMedia(editor, name, id, filename, file_ext) {
-    console.log(active_editor);
     var cm = active_editor.codemirror;
     var stat = active_editor.getState(cm);
     var options = active_editor.options;

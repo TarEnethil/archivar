@@ -142,7 +142,7 @@ def utility_processor():
             },
             "datatables" : {
                 "cdn" : ["https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js", "https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"],
-                "local" : [local_url + "js/jquery.dataTales.min.js", local_url + "js/dataTables.bootstrap.min.js"]
+                "local" : [local_url + "js/jquery.dataTables.min.js", local_url + "js/dataTables.bootstrap.min.js"]
             }
         }
 
@@ -158,7 +158,7 @@ def utility_processor():
             if source == "cdn":
                 out += app.extensions['moment'].include_moment()
             elif source == "local":
-                out += app.extensions['moment'].include_moment(local_js=local_url + "moment-with-locales.min.js")
+                out += app.extensions['moment'].include_moment(local_js=local_url + "js/moment-with-locales.min.js")
 
         return out
 
