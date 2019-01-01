@@ -5,6 +5,8 @@ var mediaVisible = false;
 
 var img_extensions = ["png", "gif", "jpg", "jpeg"];
 
+active_editor = undefined;
+
 function intRefLoadResource(editor, category, url, fake_url) {
     var list = $("#intref-sidebar .itemlist");
     var listitem = undefined;
@@ -105,9 +107,13 @@ function toggleIntRefSidebar(editor) {
             intRefVisible = false;
         }
     }
+
+    active_editor = editor;
 }
 
 function toggleMediaSidebar(editor) {
+    console.log(editor);
+
     if (mediaVisible == false && intRefVisible == true) {
         $("#intref-sidebar").hide();
         intRefVisible = false;
@@ -150,12 +156,14 @@ function toggleMediaSidebar(editor) {
             mediaVisible = false;
         }
     }
+
+    active_editor = editor;
 }
 
 function insertReference(editor, name, url) {
-    var cm = editor.codemirror;
-    var stat = editor.getState(cm);
-    var options = editor.options;
+    var cm = active_editor.codemirror;
+    var stat = active_editor.getState(cm);
+    var options = active_editor.options;
     var oldText = cm.getSelection() || name;
 
     var output = "[linktext](url)";
@@ -166,9 +174,10 @@ function insertReference(editor, name, url) {
 }
 
 function insertMedia(editor, name, id, filename, file_ext) {
-    var cm = editor.codemirror;
-    var stat = editor.getState(cm);
-    var options = editor.options;
+    console.log(active_editor);
+    var cm = active_editor.codemirror;
+    var stat = active_editor.getState(cm);
+    var options = active_editor.options;
     var oldText = cm.getSelection() || name;
 
     var output = "[linktext](url)";
