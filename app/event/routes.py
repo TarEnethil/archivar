@@ -1,6 +1,6 @@
 from app import db
 from app.helpers import page_title, flash_no_permission
-from app.models import EventSetting, Event, EventCategory, Epoch, User, Role
+from app.models import EventSetting, Event, EventCategory, Epoch, User, Role, Moon
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
 from app.event.helpers import redirect_non_event_admins, update_timestamp, get_events, gen_event_category_choices, get_events_by_category
@@ -20,6 +20,7 @@ def dummy():
 @login_required
 def view(id):
     event = Event.query.filter_by(id=id).first_or_404()
+    moons = Moon.query.all()
 
     if not current_user.is_event_admin() and event.is_visible == False and not event.created_by == current_user:
         flash_no_permission()
@@ -29,7 +30,7 @@ def view(id):
         flash_no_permission()
         return redirect(url_for(no_perm))
 
-    return render_template("event/view.html", event=event, title=page_title("View event"))
+    return render_template("event/view.html", event=event, moons=moons, title=page_title("View event"))
 
 @bp.route("/list", methods=["GET"])
 @login_required

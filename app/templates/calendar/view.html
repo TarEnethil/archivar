@@ -39,6 +39,11 @@ descr_ep_{{ moon.id }}.innerHTML = marked(descr_ep_{{ moon.id }}.innerHTML, opti
 {% endif %}
 {% endfor %}
 {% endif %}
+
+$("#phase-button").click(function(e) {
+    $(".moon-phases").toggle();
+    e.preventDefault();
+});
 </script>
 {% endblock %}
 
@@ -50,7 +55,7 @@ descr_ep_{{ moon.id }}.innerHTML = marked(descr_ep_{{ moon.id }}.innerHTML, opti
     </p>
 
     <dl class="dl-horizontal">
-        <dt>Dayss per week</dt>
+        <dt>Days per week</dt>
         <dd>{{ stats["days_per_week"] }}</dd>
         <dt>Days per year</dt>
         <dd>{{ stats["days_per_year"] }}</dd>
@@ -187,6 +192,14 @@ descr_ep_{{ moon.id }}.innerHTML = marked(descr_ep_{{ moon.id }}.innerHTML, opti
     <p>The world can be orbited by one or multiple moons, illuminating the dark night.</p>
 
     {% if stats["moons"] %}
+    <ul class="nav nav-tabs">
+        <li>
+            <a href="" id="phase-button">
+                <span class="glyphicon glyphicon-adjust" aria-hidden="true"></span>
+                Toggle moon phases
+            </a>
+        </li>
+    </ul>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -198,7 +211,11 @@ descr_ep_{{ moon.id }}.innerHTML = marked(descr_ep_{{ moon.id }}.innerHTML, opti
             {% for moon in stats["moons"] %}
             <tr>
                 <td>{{ moon.name }}</td>
-                <td>{{ moon.phase_length }} days</td>
+                <td>{{ moon.phase_length }} days
+                    <div class="moon-phases">
+                        {{ moon.print_phases()|safe }}
+                    </div>
+                </td>
             </tr>
 
             {% if moon.description %}

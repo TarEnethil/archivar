@@ -316,6 +316,39 @@ class Moon(db.Model):
     phase_length = db.Column(db.Integer)
     phase_offset = db.Column(db.Integer)
 
+    def calc_phase(self, timestamp):
+        return (((timestamp + self.phase_offset - 1) % self.phase_length) / float(self.phase_length))
+
+    def print_phase(self, timestamp, moon_size=50, print_name=False):
+        phase_percent = self.calc_phase(timestamp)
+        name = ""
+
+        if print_name:
+            name = '<span class="moon-name">{0}</span>'.format(self.name)
+
+        # defaults for rising moon
+        transform = 0
+        shadow = 0
+        shadow_color = "f5f5f5"
+
+        # rising moon
+        if phase_percent > 0.5:
+            transform = 180
+            shadow = (phase_percent - 0.5) * 2 * moon_size
+            shadow_color = "fff8dc"
+        else: #rising moon
+            shadow = moon_size - (phase_percent * 2 * moon_size)
+
+        div = '<div class="moon-box">{1}<div class="moon-wrap" style="width:{0}px;height:{0}px"><div class="moon" style="transform:rotate({2}deg);box-shadow:inset {3}px 0 1px #{4}"></div></div></div>'.format(moon_size, name, transform, shadow, shadow_color);
+        return div
+
+    def print_phases(self, moon_size=50):
+        out = ""
+        for x in xrange(self.phase_length):
+            out += self.print_phase(x + 1, moon_size) + "\n"
+
+        return out
+
 class EventSetting(db.Model):
     __tablename__ = "event_settings"
     id = db.Column(db.Integer, primary_key=True)

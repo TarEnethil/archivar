@@ -55,6 +55,15 @@
     </p>
 {% endif %}
 
+{% if moons %}
+    <h2>Moons on this day</h2>
+    <div id="moons">
+{% for moon in moons %}
+    {{ moon.print_phase(event.timestamp, 100, True)|safe }}
+{% endfor %}
+    </div>
+{% endif %}
+
     <hr>
 
     <ul class="list-unstyled">
