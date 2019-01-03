@@ -319,6 +319,31 @@ class Moon(db.Model):
     def calc_phase(self, timestamp):
         return (((timestamp + self.phase_offset - 1) % self.phase_length) / float(self.phase_length))
 
+    def phase_name(self, phase):
+        delta = 2 # max deviation
+        phase *= 100
+
+        if phase < 50 - delta:
+            if phase <= 0 + delta:
+                return "Full moon"
+            elif phase < 25 - delta:
+                return "Waning gibbous"
+            elif phase <= 25 + delta:
+                return "Third quarter"
+            elif phase < 50 - delta:
+                return "Waning crescent"
+        elif phase > 50 + delta:
+            if 50 + delta < phase < 75 - delta:
+                return "Waxing crescent"
+            elif phase <= 75 + delta:
+                return "First quarter"
+            elif phase < 100 - delta:
+                return "Waxing gibbous"
+            elif 100 - delta <= phase:
+                return "Full moon"
+
+        return "New Moon"
+
     def print_phase(self, timestamp, moon_size=50, print_name=False, print_phase=False):
         phase_percent = self.calc_phase(timestamp)
         name = ""
@@ -329,7 +354,7 @@ class Moon(db.Model):
             name = '<span class="moon-name">{0}</span>'.format(self.name)
 
         if print_phase:
-            phase_name = '<span class="moon-name">{0}</span>'.format(phase_percent)
+            phase_name = '<span class="moon-name" title="{1}">{0}</span>'.format(self.phase_name(phase_percent), phase_percent)
 
         # defaults for rising moon
         transform = 0
