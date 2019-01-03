@@ -178,7 +178,7 @@ $("#phase-button").click(function(e) {
                 <td>
                     {{ moon.phase_length }} days
                     <div class="moon-phases">
-                    {{ moon.print_phases()|safe }}
+                    {{ moon.print_phases(print_phase=True)|safe }}
                     </div>
                 </td>
             </tr>

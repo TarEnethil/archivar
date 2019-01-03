@@ -59,7 +59,7 @@
     <h2>Moons on this day</h2>
     <div id="moons">
 {% for moon in moons %}
-    {{ moon.print_phase(event.timestamp, 100, True)|safe }}
+    {{ moon.print_phase(event.timestamp, 100, True, True)|safe }}
 {% endfor %}
     </div>
 {% endif %}

@@ -319,33 +319,40 @@ class Moon(db.Model):
     def calc_phase(self, timestamp):
         return (((timestamp + self.phase_offset - 1) % self.phase_length) / float(self.phase_length))
 
-    def print_phase(self, timestamp, moon_size=50, print_name=False):
+    def print_phase(self, timestamp, moon_size=50, print_name=False, print_phase=False):
         phase_percent = self.calc_phase(timestamp)
         name = ""
+        phase_name = ""
+        spread = 0
 
         if print_name:
             name = '<span class="moon-name">{0}</span>'.format(self.name)
 
+        if print_phase:
+            phase_name = '<span class="moon-name">{0}</span>'.format(phase_percent)
+
         # defaults for rising moon
         transform = 0
         shadow = 0
-        shadow_color = "f5f5f5"
+        shadow_color = "#f5f5f5"
 
         # rising moon
         if phase_percent > 0.5:
             transform = 180
             shadow = (phase_percent - 0.5) * 2 * moon_size
-            shadow_color = "fff8dc"
+            shadow_color = "#fff8dc"
+            spread = int((moon_size / -7) * 4 * (0.25 - abs(0.75 - phase_percent)))
         else: #rising moon
             shadow = moon_size - (phase_percent * 2 * moon_size)
+            spread = int((moon_size / -7) * 4 * (0.25 - abs(0.25 - phase_percent)))
 
-        div = '<div class="moon-box">{1}<div class="moon-wrap" style="width:{0}px;height:{0}px"><div class="moon" style="transform:rotate({2}deg);box-shadow:inset {3}px 0 1px #{4}"></div></div></div>'.format(moon_size, name, transform, shadow, shadow_color);
+        div = '<div class="moon-box">{1}<div class="moon-wrap" style="width:{0}px;height:{0}px"><div class="moon" style="transform:rotate({2}deg);box-shadow:inset {3}px 0 1px {4}px {5}"></div></div>{6}</div>'.format(moon_size, name, transform, shadow, spread, shadow_color, phase_name);
         return div
 
-    def print_phases(self, moon_size=50):
+    def print_phases(self, moon_size=50, print_name=False, print_phase=False):
         out = ""
         for x in xrange(self.phase_length):
-            out += self.print_phase(x + 1, moon_size) + "\n"
+            out += self.print_phase(x + 1, moon_size, print_name, print_phase) + "\n"
 
         return out
 
