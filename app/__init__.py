@@ -3,7 +3,7 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap, StaticCDN
 from flask_moment import Moment
 from jinja2 import Markup
 import hashlib
@@ -16,6 +16,13 @@ login = LoginManager(app)
 login.login_view = 'login'
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+
+# override ContitionalCDN with StaticCDN if local serve is wanted
+# reason: using the usual local cdn results in a 404 for bootstrap.min.css.map on every page
+# TODO how to do this correctly?
+if app.config["BOOTSTRAP_SERVE_LOCAL"]:
+    app.extensions['bootstrap']['cdns']['bootstrap'] = StaticCDN(static_endpoint='static_files')
+    app.extensions['bootstrap']['cdns']['jquery'] = StaticCDN(static_endpoint='static_files')
 
 from app.user import bp as user_bp
 app.register_blueprint(user_bp, url_prefix="/user")
