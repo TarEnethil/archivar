@@ -4,7 +4,7 @@ from wtforms import StringField, SubmitField, BooleanField, SelectField
 from wtforms.validators import Length, InputRequired, ValidationError
 
 class SettingsForm(FlaskForm):
-    default_visible = BooleanField("Events are visible by default")
+    default_visible = BooleanField("Media items are visible by default")
 
     submit = SubmitField("Submit")
 
