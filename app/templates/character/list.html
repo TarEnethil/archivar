@@ -1,5 +1,26 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+{{ include_css(['datatables']) }}
+{% endblock %}
+
+{% block scripts %}
+{{ super () }}
+{{ include_js(['datatables']) }}
+
+<script>
+{% include "datatable.js" %}
+{% if chars %}
+makeDatatable("#char-table");
+{% endif %}
+
+{% if parties %}
+makeDatatable("#parties-table");
+{% endif %}
+</script>
+{% endblock %}
+
 {% block app_content %}
 <h1>Characters and Parties</h1>
 <p>
@@ -7,7 +28,7 @@
 </p>
 <h2>Characters</h2>
 {% if chars %}
-<table class="table table-hover table-striped">
+<table class="table table-hover table-striped" id="char-table">
     <thead>
         <tr>
             <th>Name</th>
@@ -58,7 +79,7 @@
 {% endif %}
 
 {% if parties %}
-<table class="table table-hover table-striped">
+<table class="table table-hover table-striped" id="parties-table">
     <thead>
         <tr>
             <th>Name</th>
