@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins
+from app.helpers import page_title, redirect_non_admins, stretch_color
 from app.models import CalendarSetting, Epoch, Month, Day, Moon
 from app.calendar import bp
 from app.calendar.forms import EpochForm, MonthForm, DayForm, MoonForm
@@ -575,9 +575,6 @@ def day_down(id):
     flash("Order of '" + day_to_down.name + "' and '" + day_to_up.name + "' has been swapped.", "success")
     return redirect(url_for("calendar.settings"))
 
-
-#####################################
-
 @bp.route("/moon/create", methods=["GET", "POST"])
 @login_required
 def moon_create():
@@ -594,7 +591,7 @@ def moon_create():
     form = MoonForm()
 
     if form.validate_on_submit():
-        new_moon = Moon(name=form.name.data, description=form.description.data, phase_length=form.phase_length.data, phase_offset=form.phase_offset.data)
+        new_moon = Moon(name=form.name.data, description=form.description.data, phase_length=form.phase_length.data, phase_offset=form.phase_offset.data, waxing_color=stretch_color(form.waxing_color.data.hex), waning_color=stretch_color(form.waning_color.data.hex))
 
         db.session.add(new_moon)
         db.session.commit()
@@ -621,6 +618,8 @@ def moon_edit(id):
         moon.description = form.description.data
         moon.phase_length = form.phase_length.data
         moon.phase_offset = form.phase_offset.data
+        moon.waxing_color = stretch_color(form.waxing_color.data.hex)
+        moon.waning_color = stretch_color(form.waning_color.data.hex)
         db.session.commit()
 
         flash("Moon edited.", "success")
@@ -630,6 +629,8 @@ def moon_edit(id):
         form.description.data = moon.description
         form.phase_length.data = moon.phase_length
         form.phase_offset.data = moon.phase_offset
+        form.waxing_color.data = moon.waxing_color
+        form.waning_color.data = moon.waning_color
 
     return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Edit moon"))
 

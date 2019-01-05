@@ -28,6 +28,11 @@ def page_title(dynamic_part=None):
     else:
         return static_part
 
+def stretch_color(color):
+    if len(color) == 4:
+        return "#" + color[1] + color[1] + color[2] + color[2] + color[3] + color[3]
+    return color
+
 class XYZ_Validator(object):
     def __call__(self, form, field):
         if not "{x}" in field.data or not "{y}" in field.data or not "{z}" in field.data:

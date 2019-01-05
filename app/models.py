@@ -315,6 +315,9 @@ class Moon(db.Model):
     description = db.Column(db.Text)
     phase_length = db.Column(db.Integer)
     phase_offset = db.Column(db.Integer)
+    waxing_color = db.Column(db.String(10))
+    waning_color = db.Column(db.String(10))
+    color = db.Column(db.String(10))
     delta = 2 # max phase deviation
 
     def calc_phase(self, timestamp):
@@ -352,7 +355,7 @@ class Moon(db.Model):
         spread = 0
         moon_div = ""
         normal_moon_div = '<div class="moon" style="transform:rotate({0}deg);box-shadow:inset {1}px 0 0px {2}px {3}; background:{4};"></div>'
-        half_moon_div = '<span class="{0} half-moon" style="width:{1}px;{2};{3};"></span>'
+        half_moon_div = '<span class="half-moon" style="background:{0};width:{1}px;{2};{3};"></span>'
 
         if print_name:
             name = '<span class="moon-text">{0}</span>'.format(self.name)
@@ -363,7 +366,7 @@ class Moon(db.Model):
         # defaults for falling moon
         transform = 0
         shadow_size = 0
-        shadow_color = "#f5f5f5"
+        shadow_color = self.waning_color
         moon_color = "#444"
         align = ""
 
@@ -376,18 +379,18 @@ class Moon(db.Model):
                 size = moon_size - 4; # moon_size - 2 * padding
                 border1 = "border-top-right-radius:{0}px".format(size)
                 border2 = "border-bottom-right-radius:{0}px".format(size)
-                moon_div = half_moon_div.format("moon-first-quarter", size / 2, border1, border2)
+                moon_div = half_moon_div.format(self.waxing_color, size / 2, border1, border2)
                 align = "text-align:right;"
             else: # every other rising moon
                 transform = 180
                 shadow_size = (phase_percent - 0.5) * 2 * moon_size
-                shadow_color = "#fff8dc"
+                shadow_color = self.waxing_color
                 spread = int((moon_size / -7) * 4 * (0.25 - abs(0.75 - phase_percent)))
 
                 # from half moon to new moon, swap colors and transform
                 if phase_percent * 100 > 75 + self.delta:
                     transform = 0
-                    moon_color = "#fff8dc"
+                    moon_color = self.waxing_color
                     shadow_color = "#444"
                     shadow_size = moon_size - shadow_size
 
@@ -398,7 +401,8 @@ class Moon(db.Model):
                 size = moon_size - 4; # moon_size - 2 * padding
                 border1 = "border-top-left-radius:{0}px".format(size)
                 border2 = "border-bottom-left-radius:{0}px".format(size)
-                moon_div = half_moon_div.format("moon-third-quarter", size / 2, border1, border2)
+                moon_div = half_moon_div.format(self.waning_color, size / 2, border1, border2)
+                align = "text-align:left;"
             else: # every other falling moon
                 shadow = moon_size - (phase_percent * 2 * moon_size)
                 spread = int((moon_size / -7) * 4 * (0.25 - abs(0.25 - phase_percent)))
@@ -407,7 +411,7 @@ class Moon(db.Model):
                 if 0 + self.delta < phase_percent * 100 < 25 - self.delta:
                     transform = 180
                     shadow_color = "#444"
-                    moon_color = "#f5f5f5"
+                    moon_color = self.waning_color
                     shadow = moon_size - shadow
 
                 moon_div = normal_moon_div.format(transform, shadow, spread, shadow_color, moon_color)

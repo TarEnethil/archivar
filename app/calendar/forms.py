@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, IntegerField, BooleanField
+from wtforms_components import ColorField
 from wtforms.validators import Length, InputRequired, NumberRange
 
 class EpochForm(FlaskForm):
@@ -30,6 +31,8 @@ class MoonForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])
     phase_length = IntegerField("Phase length (days)", validators=[InputRequired(),NumberRange(min=2)])
     phase_offset = IntegerField("Phase shift (offset)", validators=[InputRequired(),NumberRange(min=0)], default=0)
+    waxing_color = ColorField("Waxing color (rising and full moon)", default="#fff8dc")
+    waning_color = ColorField("Waning color (falling moon)", default="#f5f5f5")
     description = TextAreaField("Description", render_kw={"rows": 15})
 
     submit = SubmitField("Submit")

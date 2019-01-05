@@ -296,20 +296,13 @@ tr.invisible_item {
 
 .moon-box {
     display:inline-block;
+    text-align:center;
 }
 
 .half-moon {
     border-radius:0;
     display:inline-block;
     height:100%;
-}
-
-.moon-first-quarter {
-    background:#fff8dc;
-}
-
-.moon-third-quarter {
-    background:#f5f5f5;
 }
 
 .moon-text {

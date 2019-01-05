@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, flash_no_permission
+from app.helpers import page_title, flash_no_permission, stretch_color
 from app.models import EventSetting, Event, EventCategory, Epoch, User, Role, Moon
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
@@ -185,13 +185,7 @@ def category_create():
     form = CategoryForm()
 
     if form.validate_on_submit():
-        color = form.color.data.hex
-
-        # color picker does not work with "short" notation, so avoid it
-        if len(color) == 4:
-            color = "#" + color[1] + color[1] + color[2] + color[2] + color[3] + color[3]
-
-        new_category = EventCategory(name=form.name.data, color=color)
+        new_category = EventCategory(name=form.name.data, color=stretch_color(form.color.data.hex))
 
         db.session.add(new_category)
         db.session.commit()
@@ -214,14 +208,8 @@ def category_edit(id):
     category = EventCategory.query.filter_by(id=id).first_or_404()
 
     if form.validate_on_submit():
-        color = form.color.data.hex
-
-        # color picker does not work with "short" notation, so avoid it
-        if len(color) == 4:
-            color = "#" + color[1] + color[1] + color[2] + color[2] + color[3] + color[3]
-
         category.name = form.name.data
-        category.color = color
+        category.color = stretch_color(form.color.data.hex)
 
         db.session.commit()
 
