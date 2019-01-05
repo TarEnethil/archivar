@@ -351,7 +351,8 @@ class Moon(db.Model):
     def print_phase(self, timestamp, moon_size=50, print_name=False, print_phase=False):
         phase_percent = self.calc_phase(timestamp)
         name = ""
-        phase_name = ""
+        phase_name = self.phase_name(phase_percent)
+        phase_name_span = ""
         spread = 0
         moon_div = ""
         normal_moon_div = '<div class="moon" style="transform:rotate({0}deg);box-shadow:inset {1}px 0 0px {2}px {3}; background:{4};"></div>'
@@ -361,7 +362,7 @@ class Moon(db.Model):
             name = '<span class="moon-text">{0}</span>'.format(self.name)
 
         if print_phase:
-            phase_name = '<span class="moon-text">{0}</span>'.format(self.phase_name(phase_percent))
+            phase_name_span = '<span class="moon-text">{0}</span>'.format(phase_name)
 
         # defaults for falling moon
         transform = 0
@@ -417,7 +418,7 @@ class Moon(db.Model):
                 moon_div = normal_moon_div.format(transform, shadow, spread, shadow_color, moon_color)
 
         wrap = '<div class="moon-wrap" style="width:{0}px;height:{0}px;{1}">{2}</div>'.format(moon_size, align, moon_div)
-        div = '<div class="moon-box" title="{0}">{1}{2}{3}</div>'.format(phase_percent, name, wrap, phase_name);
+        div = '<div class="moon-box" title="{0} ({1})">{2}{3}{4}</div>'.format(phase_name, phase_percent, name, wrap, phase_name_span);
         return div
 
     def print_phases(self, moon_size=50, print_name=False, print_phase=False):
