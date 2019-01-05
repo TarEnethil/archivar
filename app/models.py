@@ -422,7 +422,7 @@ class Moon(db.Model):
 
     def print_phases(self, moon_size=50, print_name=False, print_phase=False):
         out = ""
-        for x in xrange(self.phase_length):
+        for x in range(self.phase_length):
             out += self.print_phase(x + 1, moon_size, print_name, print_phase) + "\n"
 
         return out
