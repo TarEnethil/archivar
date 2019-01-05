@@ -277,7 +277,6 @@ tr.invisible_item {
 }
 
 .moon {
-    background:#444;
     border-radius:50%;
     display:inline-block;
     width:100%;
@@ -299,7 +298,21 @@ tr.invisible_item {
     display:inline-block;
 }
 
-.moon-name {
+.half-moon {
+    border-radius:0;
+    display:inline-block;
+    height:100%;
+}
+
+.moon-first-quarter {
+    background:#fff8dc;
+}
+
+.moon-third-quarter {
+    background:#f5f5f5;
+}
+
+.moon-text {
     display:block;
     text-align:center;
 }

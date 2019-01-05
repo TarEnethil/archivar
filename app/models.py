@@ -315,63 +315,105 @@ class Moon(db.Model):
     description = db.Column(db.Text)
     phase_length = db.Column(db.Integer)
     phase_offset = db.Column(db.Integer)
+    delta = 2 # max phase deviation
 
     def calc_phase(self, timestamp):
         return (((timestamp + self.phase_offset - 1) % self.phase_length) / float(self.phase_length))
 
     def phase_name(self, phase):
-        delta = 2 # max deviation
         phase *= 100
 
-        if phase < 50 - delta:
-            if phase <= 0 + delta:
+        if phase < 50 - self.delta:
+            if phase <= 0 + self.delta:
                 return "Full moon"
-            elif phase < 25 - delta:
+            elif phase < 25 - self.delta:
                 return "Waning gibbous"
-            elif phase <= 25 + delta:
+            elif phase <= 25 + self.delta:
                 return "Third quarter"
-            elif phase < 50 - delta:
+            elif phase < 50 - self.delta:
                 return "Waning crescent"
-        elif phase > 50 + delta:
-            if 50 + delta < phase < 75 - delta:
+        elif phase > 50 + self.delta:
+            if 50 + self.delta < phase < 75 - self.delta:
                 return "Waxing crescent"
-            elif phase <= 75 + delta:
+            elif phase <= 75 + self.delta:
                 return "First quarter"
-            elif phase < 100 - delta:
+            elif phase < 100 - self.delta:
                 return "Waxing gibbous"
-            elif 100 - delta <= phase:
+            elif 100 - self.delta <= phase:
                 return "Full moon"
 
         return "New Moon"
 
+    # this was a nice and elegant functions once
     def print_phase(self, timestamp, moon_size=50, print_name=False, print_phase=False):
         phase_percent = self.calc_phase(timestamp)
         name = ""
         phase_name = ""
         spread = 0
+        moon_div = ""
+        normal_moon_div = '<div class="moon" style="transform:rotate({0}deg);box-shadow:inset {1}px 0 0px {2}px {3}; background:{4};"></div>'
+        half_moon_div = '<span class="{0} half-moon" style="width:{1}px;{2};{3};"></span>'
 
         if print_name:
-            name = '<span class="moon-name">{0}</span>'.format(self.name)
+            name = '<span class="moon-text">{0}</span>'.format(self.name)
 
         if print_phase:
-            phase_name = '<span class="moon-name" title="{1}">{0}</span>'.format(self.phase_name(phase_percent), phase_percent)
+            phase_name = '<span class="moon-text">{0}</span>'.format(self.phase_name(phase_percent))
 
-        # defaults for rising moon
+        # defaults for falling moon
         transform = 0
-        shadow = 0
+        shadow_size = 0
         shadow_color = "#f5f5f5"
+        moon_color = "#444"
+        align = ""
 
-        # rising moon
-        if phase_percent > 0.5:
-            transform = 180
-            shadow = (phase_percent - 0.5) * 2 * moon_size
-            shadow_color = "#fff8dc"
-            spread = int((moon_size / -7) * 4 * (0.25 - abs(0.75 - phase_percent)))
-        else: #rising moon
-            shadow = moon_size - (phase_percent * 2 * moon_size)
-            spread = int((moon_size / -7) * 4 * (0.25 - abs(0.25 - phase_percent)))
+        # new moon: display nothing
+        if 50 - self.delta <= (phase_percent * 100) <= 50 + self.delta:
+            moon_div = '<div class="moon"></div>'
+        elif phase_percent > 0.5: # rising moon
+            # exactly half moon
+            if 75 - self.delta <= (phase_percent * 100) <= 75 + self.delta:
+                size = moon_size - 4; # moon_size - 2 * padding
+                border1 = "border-top-right-radius:{0}px".format(size)
+                border2 = "border-bottom-right-radius:{0}px".format(size)
+                moon_div = half_moon_div.format("moon-first-quarter", size / 2, border1, border2)
+                align = "text-align:right;"
+            else: # every other rising moon
+                transform = 180
+                shadow_size = (phase_percent - 0.5) * 2 * moon_size
+                shadow_color = "#fff8dc"
+                spread = int((moon_size / -7) * 4 * (0.25 - abs(0.75 - phase_percent)))
 
-        div = '<div class="moon-box">{1}<div class="moon-wrap" style="width:{0}px;height:{0}px"><div class="moon" style="transform:rotate({2}deg);box-shadow:inset {3}px 0 1px {4}px {5}"></div></div>{6}</div>'.format(moon_size, name, transform, shadow, spread, shadow_color, phase_name);
+                # from half moon to new moon, swap colors and transform
+                if phase_percent * 100 > 75 + self.delta:
+                    transform = 0
+                    moon_color = "#fff8dc"
+                    shadow_color = "#444"
+                    shadow_size = moon_size - shadow_size
+
+                moon_div = normal_moon_div.format(transform, shadow_size, spread, shadow_color, moon_color)
+        else: # falling moon
+            # exactly half moon
+            if 25 - self.delta <= (phase_percent * 100) <= 25 + self.delta:
+                size = moon_size - 4; # moon_size - 2 * padding
+                border1 = "border-top-left-radius:{0}px".format(size)
+                border2 = "border-bottom-left-radius:{0}px".format(size)
+                moon_div = half_moon_div.format("moon-third-quarter", size / 2, border1, border2)
+            else: # every other falling moon
+                shadow = moon_size - (phase_percent * 2 * moon_size)
+                spread = int((moon_size / -7) * 4 * (0.25 - abs(0.25 - phase_percent)))
+
+                # from new moon and half moon, swap colors and transform
+                if 0 + self.delta < phase_percent * 100 < 25 - self.delta:
+                    transform = 180
+                    shadow_color = "#444"
+                    moon_color = "#f5f5f5"
+                    shadow = moon_size - shadow
+
+                moon_div = normal_moon_div.format(transform, shadow, spread, shadow_color, moon_color)
+
+        wrap = '<div class="moon-wrap" style="width:{0}px;height:{0}px;{1}">{2}</div>'.format(moon_size, align, moon_div)
+        div = '<div class="moon-box" title="{0}">{1}{2}{3}</div>'.format(phase_percent, name, wrap, phase_name);
         return div
 
     def print_phases(self, moon_size=50, print_name=False, print_phase=False):
