@@ -109,6 +109,7 @@ class MapSetting(db.Model):
     default_visible = db.Column(db.Boolean, default=False)
     no_wrap = db.Column(db.Boolean, default=True)
     last_change = db.Column(db.DateTime, default=datetime.utcnow)
+    check_interval = db.Column(db.Integer, default=30)
 
 class MapNodeType(db.Model):
     __tablename__ = "map_node_types"

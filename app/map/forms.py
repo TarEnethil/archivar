@@ -18,6 +18,7 @@ class MapSettingsForm(FlaskForm):
     max_zoom = IntegerField("Max Zoom Level", validators=[InputRequired(), NumberRange(min=0, max=20), GreaterThanOrEqual("min_zoom")])
     default_zoom = IntegerField("Default Zoom Level", validators=[InputRequired(), NumberRange(min=0, max=20), LessThanOrEqual("max_zoom"), GreaterThanOrEqual("min_zoom")])
     no_wrap = BooleanField("Repeat map on x-axis?")
+    check_interval = IntegerField("Map change check interval (seconds, 0 = disabled)", validators=[InputRequired(), NumberRange(min=0)])
 
     icon_anchor = SelectField("Icon Anchor", choices=[(0, "bottom"), (1, "center")],coerce=int)
 

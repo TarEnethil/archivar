@@ -59,6 +59,7 @@ def settings():
         settings.tiles_path = form.tiles_path.data
         settings.default_visible = form.default_visible.data
         settings.no_wrap = form.no_wrap.data
+        settings.check_interval = form.check_interval.data
 
         db.session.commit()
 
@@ -72,6 +73,7 @@ def settings():
         form.tiles_path.data = settings.tiles_path
         form.default_visible.data = settings.default_visible
         form.no_wrap.data = settings.no_wrap
+        form.check_interval.data = settings.check_interval
 
     node_types = MapNodeType.query.all()
 

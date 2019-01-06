@@ -63,7 +63,7 @@
 
     var map_changed = false;
     var map_last_change;
-    var map_change_check_delay = 30000; // TODO: could be a MapSetting
+    var map_change_check_delay = {{ settings.check_interval * 1000 }};
 
     $.fn.selectpicker.Constructor.BootstrapVersion = '3';
 
@@ -89,7 +89,9 @@
                 }
 
                 map_last_change = new_date;
-                setTimeout(check_map_change, map_change_check_delay);
+                if(map_change_check_delay > 0) {
+                  setTimeout(check_map_change, map_change_check_delay);
+                }
               }
           });
     }
