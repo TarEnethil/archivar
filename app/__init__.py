@@ -137,7 +137,7 @@ def utility_processor():
             },
             "multi-select" : {
                 "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js"],
-                "local" : [local_url + "js/multi-select.min.js"]
+                "local" : [local_url + "js/jquery.multi-select.min.js"]
             },
             "leaflet" : {
                 "cdn" : ["https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"],
@@ -145,7 +145,7 @@ def utility_processor():
             },
             "bootstrap-datetimepicker" : {
                 "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"],
-                "local" : [local_url + "js/bootstrap-datetimepicker.js"]
+                "local" : [local_url + "js/bootstrap-datetimepicker.min.js"]
             },
             "datatables" : {
                 "cdn" : ["https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js", "https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"],
@@ -160,12 +160,12 @@ def utility_processor():
 
         out = Markup(out)
 
-        # special rules for moment.js
+        # special rules for moment.js, include first because it must be before datetimepicker
         if "moment" in scripts:
             if source == "cdn":
-                out += app.extensions['moment'].include_moment()
+                out = app.extensions['moment'].include_moment() + "\n" + out
             elif source == "local":
-                out += app.extensions['moment'].include_moment(local_js=local_url + "js/moment-with-locales.min.js")
+                out = app.extensions['moment'].include_moment(local_js=local_url + "js/moment-with-locales.min.js") + "\n" + out
 
         return out
 
