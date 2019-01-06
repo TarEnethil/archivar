@@ -1,2 +1,2 @@
 def version():
-    return "0.3.3 'Luna'"
+    return "0.3.4"
