@@ -7,10 +7,11 @@ This is the welcome / home page, where every user will land after login.
 
 The following is a list of things you can / should do before you let the users login for the first time.
 
+* Check config.py for settings like max media file size and CDN toggle
 * Check the general settings for things like the page title and this welcome message
 * Set up the map (see below)
 * Set up the calendar (see below)
-* Check the default settings for the modules such as default visibility for new wiki articles, events and map nodes
+* Check the default settings for the modules such as default visibility for new wiki articles, events, map nodes and media
 * Create users (they will be forced to change their password after the first login) with their respective roles
 
 ### Map setup
@@ -54,6 +55,9 @@ This role allows for someone to help with the worldbuilding without giving away 
 As with Map and Wiki admins, this role can toggle the visibility of articles created by users and other event admins, but not the ones created by admins.
 This role is intended as a curator for the history of the world.
 
+### Media admin
+By now, you can guess what a media admin can do.
+
 ### Special
 _Reserved. No function as of yet._
 
@@ -96,6 +100,9 @@ Articles can have tags and a category to group them (no category nesting support
 
 After the calendar is finalized by an admin, users can create new events to fill the history of the world with life.
 
+### Media
+
+Users can upload files here, which can be referenced in with the markdown editor sidebar.
 
 ## In case of bugs
 

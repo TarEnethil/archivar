@@ -20,6 +20,7 @@ pip install -r requirements.txt
 
 ## Initial configuration and database init
 ```bash
+edit config.py for some basic settings (like max upload file size)
 export FLASK_APP=dmcp.py
 flask db init
 flask db migrate
@@ -136,7 +137,7 @@ _Reserved. No function as of yet._
 # Used tools and libraries
 * Backend is [Flask](http://flask.pocoo.org/) (Python), current Database is [SQLite](https://www.sqlite.org/index.html) (for used python libraries refer to requirements.txt)
 * Frontend with [Bootstrap 3.3](https://getbootstrap.com/docs/3.3/)
-* JavaScript framework is [jQuery](https://jquery.com/) (used by bootstrap), additional scripts: [multiselect](http://loudev.com/) (select characters for session), [bootstrap-select](https://developer.snapappointments.com/bootstrap-select/)
+* JavaScript framework is [jQuery](https://jquery.com/) (used by bootstrap), additional scripts: [multiselect](http://loudev.com/) (select characters for session), [bootstrap-select](https://developer.snapappointments.com/bootstrap-select/), [quicksearch](https://deuxhuithuit.github.io/quicksearch/)
 * Map built with [leaflet.js](https://leafletjs.com/)
 * Markdown done with [SimpleMDE](https://simplemde.com/) (WYSIWYG editor) and [marked.js](https://github.com/markedjs/marked) (in-page rendering)
 * Thanks to the [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) by Miguel Grinberg for getting me started with Flask
