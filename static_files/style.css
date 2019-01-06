@@ -309,3 +309,9 @@ tr.invisible_item {
     display:block;
     text-align:center;
 }
+
+.search-filter {
+    display:block;
+    width:30%;
+    margin:10px;
+}

@@ -150,6 +150,10 @@ def utility_processor():
             "datatables" : {
                 "cdn" : ["https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js", "https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"],
                 "local" : [local_url + "js/jquery.dataTables.min.js", local_url + "js/dataTables.bootstrap.min.js"]
+            },
+            "quicksearch" : {
+                "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/jquery.quicksearch/2.4.0/jquery.quicksearch.min.js"],
+                "local" : [local_url + "js/jquery.quicksearch.min.js"]
             }
         }
 
