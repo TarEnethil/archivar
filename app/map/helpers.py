@@ -7,12 +7,14 @@ from sqlalchemy import and_, not_, or_
 from werkzeug import secure_filename
 import os
 
+# check if user has the map admin role
 def redirect_non_map_admins():
     if not current_user.is_map_admin():
         flash_no_permission()
         return True
     return False
 
+# find the best available file name for a map node type image
 def map_node_filename(filename_from_form):
     filename = secure_filename(filename_from_form)
 
@@ -26,6 +28,7 @@ def map_node_filename(filename_from_form):
 
     return filename
 
+# generate choices for the node type SelectField
 def gen_node_type_choices():
     choices = [(0, "choose...")]
 
@@ -36,6 +39,7 @@ def gen_node_type_choices():
 
     return choices
 
+# get all nodes that are visible for the current user
 def get_visible_nodes():
     if current_user.has_admin_role():
         nodes = MapNode.query
@@ -48,6 +52,7 @@ def get_visible_nodes():
 
     return nodes.all()
 
+# get all nodes that are associated with the specified wiki article
 def get_nodes_by_wiki_id(w_id):
     if current_user.has_admin_role():
         nodes = MapNode.query
@@ -62,6 +67,7 @@ def get_nodes_by_wiki_id(w_id):
 
     return nodes
 
+# set the last update time for a map
 def map_changed(id):
     mset = MapSetting.query.get(id)
 

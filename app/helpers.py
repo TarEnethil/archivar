@@ -3,18 +3,21 @@ from app.models import GeneralSetting, Epoch, Month
 from flask_login import current_user
 from wtforms.validators import ValidationError
 
+# flash generic error message
 def flash_no_permission(msg=None):
     if (msg != None):
         flash(msg)
     else:
         flash("No permission for this action.", "danger")
 
+# check that user has the admin role
 def redirect_non_admins():
     if not current_user.has_admin_role():
         flash_no_permission()
         return True
     return False
 
+# generate the page <title>
 def page_title(dynamic_part=None):
     gset = GeneralSetting.query.get(1)
 
@@ -28,16 +31,19 @@ def page_title(dynamic_part=None):
     else:
         return static_part
 
+# stretch color code from #xxx to #xxxxxx if needed
 def stretch_color(color):
     if len(color) == 4:
         return "#" + color[1] + color[1] + color[2] + color[2] + color[3] + color[3]
     return color
 
+# validate that a form field contains {x}, {y} and {z}
 class XYZ_Validator(object):
     def __call__(self, form, field):
         if not "{x}" in field.data or not "{y}" in field.data or not "{z}" in field.data:
             raise ValidationError("The tile provider needs the arguments {x} {y} and {z}")
 
+# validate that a form field contains a value that is <= that of another field
 class LessThanOrEqual(object):
     def __init__(self, comp_value_field_name):
         self.comp_value_field_name = comp_value_field_name
@@ -52,6 +58,7 @@ class LessThanOrEqual(object):
             if field.data > other_field.data:
                 raise ValidationError("Value must be less than or equal to %s" % self.comp_value_field_name)
 
+# validate that a form field contains a value that is >= that of another field
 class GreaterThanOrEqual(object):
     def __init__(self, comp_value_field_name):
         self.comp_value_field_name = comp_value_field_name
@@ -66,6 +73,7 @@ class GreaterThanOrEqual(object):
             if field.data < other_field.data:
                 raise ValidationError("Value must be greater than or equal to %s" % self.comp_value_field_name)
 
+# validate that a form field contains a year that is valid for a given epoch
 class YearPerEpochValidator(object):
     def __init__(self, epoch_id_field_name):
         self.epoch_field = epoch_id_field_name
@@ -81,6 +89,7 @@ class YearPerEpochValidator(object):
         if ep.years != 0 and (field.data < 1 or field.data > ep.years):
             raise ValidationError("Year " + field.data + " is invalid for this epoch.")
 
+# validate that a form field contains a valid day for a given month
 class DayPerMonthValidator(object):
     def __init__(self, month_id_field_name):
         self.month_field = month_id_field_name

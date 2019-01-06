@@ -1,5 +1,6 @@
 from app.models import Role
 
+# generate choices for the role SelectField
 def gen_role_choices():
     role_choices = []
 
@@ -9,6 +10,7 @@ def gen_role_choices():
 
     return role_choices
 
+# generate the choices for the date format SelectField
 def gen_date_string_choices():
     choices = []
 

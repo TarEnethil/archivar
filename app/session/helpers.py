@@ -1,6 +1,8 @@
 from app.models import Character, Party, Session
 from sqlalchemy import and_
 
+# generate choices for session participant SelectField (multi-select)
+# tuples are nested by party (=optgroup)
 def gen_participant_choices():
     choices = []
 
@@ -29,10 +31,12 @@ def gen_participant_choices():
 
     return choices
 
+# get the amount of sessions for the specified campaign code
 def get_session_number(code):
     q = Session.query.filter(Session.code == code)
     return q.count()
 
+# get the id of the previous session for a specified campaign code (if applicable)
 def get_previous_session_id(date, code):
     q = Session.query.filter(and_(Session.code == code, Session.date < date)).order_by(Session.date.desc()).first()
 
@@ -41,6 +45,7 @@ def get_previous_session_id(date, code):
     else:
         return
 
+# get the id of the next session for a specified campaign code (if applicable)
 def get_next_session_id(date, code):
     q = Session.query.filter(and_(Session.code == code, Session.date > date)).order_by(Session.date.asc()).first()
 

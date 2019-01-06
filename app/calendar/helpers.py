@@ -2,6 +2,7 @@ from app import db
 from app.models import CalendarSetting, Day, Epoch, Event, EventCategory, Month, Moon
 from flask import flash
 
+# get highest order num for newly created epoch
 def get_next_epoch_order():
     q = Epoch.query.order_by(Epoch.order.desc()).limit(1).first()
 
@@ -10,6 +11,7 @@ def get_next_epoch_order():
     else:
         return 1
 
+# get highest order num for newly created month
 def get_next_month_order():
     q = Month.query.order_by(Month.order.desc()).limit(1).first()
 
@@ -18,6 +20,7 @@ def get_next_month_order():
     else:
         return 1
 
+# def get highest order num for newly created day
 def get_next_day_order():
     q = Day.query.order_by(Day.order.desc()).limit(1).first()
 
@@ -26,6 +29,10 @@ def get_next_day_order():
     else:
         return 1
 
+# check constraints
+# contraints:
+# - at least one epoch, month and day
+# - only the epoch with the highest order (current epoch) can have duration 0
 def calendar_sanity_check():
     tests_passed = True
 
@@ -68,6 +75,8 @@ def calendar_sanity_check():
 
     return tests_passed
 
+# generate dict containing all info for the calendar preview
+# can be used to commit to database
 def gen_calendar_preview_data(commit=False):
     epochs = Epoch.query.order_by(Epoch.order.asc()).all()
     months = Month.query.order_by(Month.order.asc()).all()
@@ -99,6 +108,7 @@ def gen_calendar_preview_data(commit=False):
 
         return preview_info
 
+# generate dict containing all info for the calendar
 def gen_calendar_stats():
     epochs = Epoch.query.order_by(Epoch.order.asc()).all()
     months = Month.query.order_by(Month.order.asc()).all()
@@ -121,12 +131,15 @@ def gen_calendar_stats():
 
     return stats
 
+# generate choices for epoch SelectField
 def gen_epoch_choices():
     return [(e.id, e.name) for e in Epoch.query.order_by(Epoch.order.asc()).all()]
 
+# generate choices for month SelectField
 def gen_month_choices():
     return [(m.id, m.name) for m in Month.query.order_by(Month.order.asc()).all()]
 
+# generate choices for the days of a specified month
 def gen_day_choices(month_id):
     m = Month.query.filter_by(id=month_id).first()
 
@@ -135,11 +148,13 @@ def gen_day_choices(month_id):
 
     return [(n, n) for n in range(1, m.days + 1)]
 
+# get all epochs by order
 def get_epochs():
     e = Epoch.query.order_by(Epoch.order.asc()).all()
 
     return e
 
+# get all years in an epoch that have events
 def get_years_in_epoch(e_id):
     q = Event.query.with_entities(Event.year).filter_by(epoch_id=e_id).group_by(Event.year).order_by(Event.year.asc()).all()
 

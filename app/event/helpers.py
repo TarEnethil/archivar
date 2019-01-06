@@ -5,12 +5,14 @@ from app.calendar.helpers import gen_calendar_stats
 from flask_login import current_user
 from sqlalchemy import and_, or_, not_
 
+# check if current user is event admin
 def redirect_non_event_admins():
     if not current_user.is_event_admin():
         flash_no_permission()
         return True
     return False
 
+# generate choices for event category SelectField
 def gen_event_category_choices():
     choices = []
 
@@ -21,11 +23,13 @@ def gen_event_category_choices():
 
     return choices
 
+# get all event categories
 def get_event_categories():
     q = EventCategory.query.order_by(EventCategory.id.asc()).all()
 
     return q
 
+# (re)calculate the timestamp for an event
 def update_timestamp(event_id):
     timestamp = 0
     ev = Event.query.filter_by(id=event_id).first()
@@ -43,6 +47,7 @@ def update_timestamp(event_id):
     ev.timestamp = timestamp
     db.session.commit()
 
+# get events by epoch and/or year
 def get_events(filter_epoch=None, filter_year=None):
     if current_user.has_admin_role():
         events = Event.query
@@ -62,6 +67,7 @@ def get_events(filter_epoch=None, filter_year=None):
 
     return events
 
+# get all events for the specified category
 def get_events_by_category(category_id):
     if current_user.has_admin_role():
         events = Event.query

@@ -1,18 +1,20 @@
 from app import app, db
 from app.helpers import flash_no_permission
-from app.models import Event, Role, User, MediaItem, MediaCategory
+from app.models import Role, User, MediaItem, MediaCategory
 from app.calendar.helpers import gen_calendar_stats
 from flask_login import current_user
 from sqlalchemy import and_, or_, not_
 from werkzeug import secure_filename
 import os
 
+# check that user has the media admin role
 def redirect_non_media_admins():
     if not current_user.is_media_admin():
         flash_no_permission()
         return True
     return False
 
+# generate choices for the media category SelectField
 def gen_media_category_choices():
     choices = []
 
@@ -23,6 +25,7 @@ def gen_media_category_choices():
 
     return choices
 
+# get best available file name for an uploaded media item
 def media_filename(initial_filename):
     filename = secure_filename(initial_filename)
 
@@ -36,24 +39,7 @@ def media_filename(initial_filename):
 
     return filename
 
-
-def update_timestamp(event_id):
-    timestamp = 0
-    ev = Event.query.filter_by(id=event_id).first()
-    stats = gen_calendar_stats()
-
-    if ev == None:
-        return
-
-    years = ev.epoch.years_before + (ev.year - 1)
-
-    days_into_year = ev.month.days_before + ev.day
-
-    timestamp = years * stats["days_per_year"] + days_into_year
-
-    ev.timestamp = timestamp
-    db.session.commit()
-
+# get all media visible to the user, can be filtered by category
 def get_media(filter_category=None):
     if current_user.has_admin_role():
         media = MediaItem.query

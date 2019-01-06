@@ -4,13 +4,16 @@ from collections import OrderedDict
 from flask_login import current_user
 from sqlalchemy import and_, or_, not_
 
+# check that user has wiki admin role
 def redirect_non_wiki_admins():
     if not current_user.is_wiki_admin():
         flash_no_permission()
         return True
     return False
 
+# generate choices for the wiki link SelectField for map nodes
 def gen_wiki_entry_choices():
+    # get visible wiki entries for current user
     if current_user.has_admin_role():
         entries = WikiEntry.query
     elif current_user.has_wiki_role():
@@ -24,6 +27,7 @@ def gen_wiki_entry_choices():
 
     cat_dict = {}
 
+    # make dict by wiki category
     for entry in entries:
         if entry[0] not in cat_dict:
             cat_dict[entry[0]] = []
@@ -34,6 +38,7 @@ def gen_wiki_entry_choices():
 
     choices = [(0, "*no linked article*")]
 
+    # nested touples by category (optgroup)
     for k in ordered.keys():
         if k != "":
             p = (k, [])
@@ -47,7 +52,9 @@ def gen_wiki_entry_choices():
 
     return choices
 
+# generate data for the wiki navigation
 def prepare_wiki_nav():
+    # get all visible wiki entries for current user
     if current_user.has_admin_role():
         entries = WikiEntry.query.filter(WikiEntry.id != 1)
     elif current_user.has_wiki_role():
@@ -61,6 +68,7 @@ def prepare_wiki_nav():
 
     cat_dict = {}
 
+    # nested touples for categories
     for entry in entries:
         if entry[0] not in cat_dict:
             cat_dict[entry[0]] = []
@@ -69,6 +77,7 @@ def prepare_wiki_nav():
 
     return OrderedDict(sorted(cat_dict.items(), key=lambda t: t[0]))
 
+# get all visible wiki entries for the current user containing the search text
 def search_wiki_text(text):
     if current_user.has_admin_role():
         entries = WikiEntry.query.filter(WikiEntry.content.contains(text))
@@ -83,6 +92,7 @@ def search_wiki_text(text):
 
     return entries.all()
 
+# generate a text snipped from the whole text
 def get_search_context(term, entry_text):
     pos = entry_text.find(term)
 
@@ -94,6 +104,7 @@ def get_search_context(term, entry_text):
 
     return entry_text[left:right]
 
+# find context for every search match
 def prepare_search_result(term, entries):
     results = []
 
@@ -103,6 +114,7 @@ def prepare_search_result(term, entries):
 
     return results
 
+# search the tags of all visible entries for current user for specified tag
 def search_wiki_tag(tag):
     if current_user.has_admin_role():
         entries = WikiEntry.query.filter(WikiEntry.tags.contains(tag))
@@ -117,6 +129,7 @@ def search_wiki_tag(tag):
 
     return entries
 
+# get the last 5 created articles that are visible for the user
 def get_recently_created():
     if current_user.has_admin_role():
         entries = WikiEntry.query
@@ -131,6 +144,7 @@ def get_recently_created():
 
     return entries
 
+# get the last 5 edited articles that are visible for the user
 def get_recently_edited():
     if current_user.has_admin_role():
         entries = WikiEntry.query
