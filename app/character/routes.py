@@ -75,10 +75,6 @@ def edit(id):
 @bp.route("/list", methods=["GET"])
 @login_required
 def list():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     chars = Character.query.all()
     parties = Party.query.all()
 

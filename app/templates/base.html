@@ -68,9 +68,11 @@ $(document).ready(function() {
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('user.create') }}">New user</a></li>
                         <li><a href="{{ url_for('user.list') }}">User list</a></li>
-                        <li><a href="{{ url_for('character.list') }}">C&P</a></li>
+                        <li><a href="{{ url_for('character.list') }}">Chars & Parties</a></li>
                     </ul>
                 </li>
+                {% elif current_user.is_authenticated %}
+                <li><a href="{{ url_for('character.list') }}"><span class="glyphicon glyphicon-list"></span> Chars & Parties</a></li>
                 {% endif %}
 
                 {% if current_user.is_authenticated and current_user.has_access_to_some_settings() %}
