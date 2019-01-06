@@ -107,6 +107,8 @@ class MapSetting(db.Model):
     tiles_path = db.Column(db.String(128), default="tile_{z}_{x}-{y}.png")
     external_provider = db.Column(db.Boolean, default=False)
     default_visible = db.Column(db.Boolean, default=False)
+    no_wrap = db.Column(db.Boolean, default=True)
+    last_change = db.Column(db.DateTime, default=datetime.utcnow)
 
 class MapNodeType(db.Model):
     __tablename__ = "map_node_types"

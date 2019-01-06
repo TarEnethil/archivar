@@ -2,7 +2,7 @@ from app import app, db
 from app.helpers import page_title, flash_no_permission
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm
-from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices, get_visible_nodes
+from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed
 from app.models import GeneralSetting, MapNodeType, MapSetting, MapNode, WikiEntry
 from app.wiki.helpers import gen_wiki_entry_choices
 from datetime import datetime
@@ -58,6 +58,7 @@ def settings():
         settings.external_provider = form.external_provider.data
         settings.tiles_path = form.tiles_path.data
         settings.default_visible = form.default_visible.data
+        settings.no_wrap = form.no_wrap.data
 
         db.session.commit()
 
@@ -70,6 +71,7 @@ def settings():
         form.external_provider.data = settings.external_provider
         form.tiles_path.data = settings.tiles_path
         form.default_visible.data = settings.default_visible
+        form.no_wrap.data = settings.no_wrap
 
     node_types = MapNodeType.query.all()
 
@@ -108,8 +110,11 @@ def node_create(x, y):
             else:
                 message = "Node was created. Until approved, it is only visible to map admins and you."
 
+
         db.session.add(new_node)
         db.session.commit()
+
+        map_changed(1)
 
         return jsonify(data={'success' : True, 'message': message})
     elif request.method == "POST":
@@ -180,6 +185,7 @@ def node_edit(id):
             node.is_visible = form.is_visible.data
 
         db.session.commit()
+        map_changed(1)
 
         return jsonify(data={'success' : True, 'message': "Node was edited."})
     elif request.method == "POST":
@@ -213,6 +219,8 @@ def node_delete(id):
 
     db.session.delete(node)
     db.session.commit()
+
+    map_changed()
 
     return jsonify(data={"success": True, 'message': "Node was deleted."})
 
@@ -308,6 +316,13 @@ def node_json():
 @login_required
 def node_type_icon(filename):
     return send_from_directory(app.config["MAPNODES_DIR"], filename)
+
+@bp.route("/map/<int:id>/last_change")
+@login_required
+def last_change(id):
+    mset = MapSetting.query.filter_by(id=id).first_or_404()
+
+    return jsonify({'last_change' : str(mset.last_change) })
 
 @bp.route("/tile/<path:filename>")
 @login_required

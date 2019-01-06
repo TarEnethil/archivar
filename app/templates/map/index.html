@@ -61,7 +61,38 @@
     var _nextAction;
     var _filterbase = {};
 
+    var map_changed = false;
+    var map_last_change;
+    var map_change_check_delay = 30000; // TODO: could be a MapSetting
+
     $.fn.selectpicker.Constructor.BootstrapVersion = '3';
+
+    function check_map_change() {
+      if(map_changed)
+        return;
+
+      var new_date;
+      var url = "{{ url_for('map.last_change', id=1) }}"
+          $.ajax({
+              type: "GET",
+              url: url,
+              success: function(data) {
+                new_date = data.last_change;
+
+                if(map_last_change != undefined && map_last_change != new_date) {
+                  map_changed = true;
+                  global_message({
+                    msg : "The map nodes were changed by another user. Please refresh the page to ensure consitency!",
+                    msgtype : "warning",
+                    mode : "fadeIn"
+                  });
+                }
+
+                map_last_change = new_date;
+                setTimeout(check_map_change, map_change_check_delay);
+              }
+          });
+    }
 
     // show loading screen (used while doing ajax request)
     function loading() {
@@ -610,7 +641,11 @@
       L.tileLayer(url, {
           maxZoom: {{ settings.max_zoom }},
           minZoom: {{ settings.min_zoom }},
-          noWrap: true,
+          {% if settings.no_wrap == True %}
+          noWrap: false
+          {% else %}
+          noWrap: true
+          {% endif %}
       }).addTo(_map);
 
       // marker layer
@@ -647,6 +682,7 @@
       load_map_node_types(function() {
         load_map_nodes(function() {
           fill_location_list(function() {
+            check_map_change();
             _marker_layer.addTo(_map);
 
             $("#btn-add-node").click(function() {

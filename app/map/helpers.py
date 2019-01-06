@@ -1,6 +1,7 @@
-from app import app
+from app import app, db
 from app.helpers import flash_no_permission
-from app.models import MapNodeType, MapNode, User, Role
+from app.models import MapSetting, MapNodeType, MapNode, User, Role
+from datetime import datetime
 from flask_login import current_user
 from sqlalchemy import and_, not_, or_
 from werkzeug import secure_filename
@@ -60,3 +61,11 @@ def get_nodes_by_wiki_id(w_id):
     nodes = nodes.filter_by(wiki_entry_id = w_id).all()
 
     return nodes
+
+def map_changed(id):
+    mset = MapSetting.query.get(id)
+
+    if mset != None:
+        mset.last_change = datetime.utcnow()
+
+        db.session.commit()
