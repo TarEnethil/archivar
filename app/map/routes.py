@@ -3,7 +3,7 @@ from app.helpers import page_title, flash_no_permission
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm
 from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed
-from app.models import GeneralSetting, MapNodeType, MapSetting, MapNode, WikiEntry
+from app.models import GeneralSetting, Map, MapNodeType, MapSetting, MapNode, WikiEntry
 from app.wiki.helpers import gen_wiki_entry_choices
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
@@ -17,11 +17,18 @@ no_perm = "index"
 def index():
     settings = GeneralSetting.query.get(1)
     mapsettings = MapSetting.query.get(1)
+    indexmap = Map.query.get(1)
 
     if settings.world_name:
         title = "Map of " + settings.world_name
     else:
         title = "Worldmap"
+
+    if not indexmap:
+        if current_user.has_admin_role():
+            return redirect(url_for("map.create"))
+        flash("The admin has not created a map yet.", "danger")
+        return redirect(url_for("index"))
 
     return render_template("map/index.html", settings=mapsettings, title=page_title(title))
 
@@ -39,6 +46,11 @@ def index_with_node(n_id):
 
     return render_template("map/index.html", settings=mapsettings, jump_to_node=node.id, title=page_title(title))
 
+@bp.route("/create", methods=["GET", "POST"])
+@login_required
+def create():
+    return redirect(url_for("index"))
+
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
@@ -51,33 +63,34 @@ def settings():
     settings = MapSetting.query.get(1)
 
     if form.validate_on_submit():
-        settings.min_zoom = form.min_zoom.data
-        settings.max_zoom = form.max_zoom.data
-        settings.default_zoom = form.default_zoom.data
         settings.icon_anchor = form.icon_anchor.data
-        settings.external_provider = form.external_provider.data
-        settings.tiles_path = form.tiles_path.data
         settings.default_visible = form.default_visible.data
-        settings.no_wrap = form.no_wrap.data
         settings.check_interval = form.check_interval.data
 
         db.session.commit()
 
         flash("Map settings have been changed.", "success")
     elif request.method == "GET":
-        form.min_zoom.data = settings.min_zoom
-        form.max_zoom.data = settings.max_zoom
-        form.default_zoom.data = settings.default_zoom
         form.icon_anchor.data = settings.icon_anchor
-        form.external_provider.data = settings.external_provider
-        form.tiles_path.data = settings.tiles_path
         form.default_visible.data = settings.default_visible
-        form.no_wrap.data = settings.no_wrap
         form.check_interval.data = settings.check_interval
 
     node_types = MapNodeType.query.all()
 
     return render_template("map/settings.html", form=form, node_types=node_types, title=page_title("Map settings"))
+
+# settings.min_zoom = form.min_zoom.data
+# settings.max_zoom = form.max_zoom.data
+# settings.default_zoom = form.default_zoom.data
+# settings.external_provider = form.external_provider.data
+# settings.tiles_path = form.tiles_path.data
+# settings.no_wrap = form.no_wrap.data
+# form.no_wrap.data = settings.no_wrap
+# form.external_provider.data = settings.external_provider
+# form.tiles_path.data = settings.tiles_path
+# form.min_zoom.data = settings.min_zoom
+# form.max_zoom.data = settings.max_zoom
+# form.default_zoom.data = settings.default_zoom
 
 @bp.route("/node/create/<x>/<y>", methods=["GET", "POST"])
 @login_required

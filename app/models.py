@@ -100,16 +100,20 @@ class GeneralSetting(db.Model):
 class MapSetting(db.Model):
     __tablename__ = "map_settings"
     id = db.Column(db.Integer, primary_key=True)
+    icon_anchor = db.Column(db.Integer)
+    default_visible = db.Column(db.Boolean, default=False)
+    check_interval = db.Column(db.Integer, default=30)
+
+class Map(db.Model):
+    __tablename__ = "maps"
+    id = db.Column(db.Integer, primary_key=True)
     min_zoom = db.Column(db.Integer)
     max_zoom = db.Column(db.Integer)
     default_zoom = db.Column(db.Integer)
-    icon_anchor = db.Column(db.Integer)
     tiles_path = db.Column(db.String(128), default="tile_{z}_{x}-{y}.png")
     external_provider = db.Column(db.Boolean, default=False)
-    default_visible = db.Column(db.Boolean, default=False)
     no_wrap = db.Column(db.Boolean, default=True)
     last_change = db.Column(db.DateTime, default=datetime.utcnow)
-    check_interval = db.Column(db.Integer, default=30)
 
 class MapNodeType(db.Model):
     __tablename__ = "map_node_types"

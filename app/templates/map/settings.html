@@ -4,14 +4,16 @@
 {% block app_content %}
     <h1>Map settings</h1>
     <p>
-        The map settings are split into two parts: the configuration for the leaflet.js map and the different node types (icons) that can be used on the map.
+        The map settings are split into three parts: the general configuration (applies to all maps), the different node types (icons) that can be used on the map and the per-map configuration (found in the settings of the map).
     </p>
 
-    <h2>leaflet.js settings</h2>
+    <h2>General map settings</h2>
     <p>
-        Some of these settings directly translate to leaflet.js parameters.
+        <!-- Some of these settings directly translate to leaflet.js parameters.
         You can use an interal (directory data/map/) or external XYZ-Tileprovider.
-        To get the correct zoom levels is a bit of trial-and-error and might depend on the TileMaker used to tile the map.
+        To get the correct zoom levels is a bit of trial-and-error and might depend on the TileMaker used to tile the map. -->
+        The map check interval is used to asynchronously check with the server every x seconds if the map nodes have changed.
+        A warning is then displayed to ensure consistency.
         The icon anchor depends on the type of image you want to use as icons - the anchor is the part of the image that "points" to the actual location.
         "Bottom" means that the bottom center of the image will point to the location, center means that the center of the image is used instead.
     </p>

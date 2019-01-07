@@ -1,6 +1,6 @@
 from app import app, db
 from app.helpers import flash_no_permission
-from app.models import MapSetting, MapNodeType, MapNode, User, Role
+from app.models import Map, MapSetting, MapNodeType, MapNode, User, Role
 from datetime import datetime
 from flask_login import current_user
 from sqlalchemy import and_, not_, or_
@@ -69,9 +69,9 @@ def get_nodes_by_wiki_id(w_id):
 
 # set the last update time for a map
 def map_changed(id):
-    mset = MapSetting.query.get(id)
+    m = Map.query.get(id)
 
-    if mset != None:
-        mset.last_change = datetime.utcnow()
+    if m != None:
+        m.last_change = datetime.utcnow()
 
         db.session.commit()
