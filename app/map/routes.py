@@ -1,7 +1,7 @@
 from app import app, db
-from app.helpers import page_title, flash_no_permission
+from app.helpers import page_title, flash_no_permission, redirect_non_admins
 from app.map import bp
-from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm
+from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
 from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed
 from app.models import GeneralSetting, Map, MapNodeType, MapSetting, MapNode, WikiEntry
 from app.wiki.helpers import gen_wiki_entry_choices
@@ -15,14 +15,8 @@ no_perm = "index"
 @bp.route("/")
 @login_required
 def index():
-    settings = GeneralSetting.query.get(1)
     mapsettings = MapSetting.query.get(1)
     indexmap = Map.query.get(1)
-
-    if settings.world_name:
-        title = "Map of " + settings.world_name
-    else:
-        title = "Worldmap"
 
     if not indexmap:
         if current_user.has_admin_role():
@@ -30,26 +24,46 @@ def index():
         flash("The admin has not created a map yet.", "danger")
         return redirect(url_for("index"))
 
-    return render_template("map/index.html", settings=mapsettings, title=page_title(title))
+    return render_template("map/index.html", settings=mapsettings, map_sett=indexmap, title=page_title(indexmap.name))
 
 @bp.route("/node/<int:n_id>")
 @login_required
 def index_with_node(n_id):
-    settings = GeneralSetting.query.get(1)
     mapsettings = MapSetting.query.get(1)
+    map_ = Map.query.get(1)
     node = MapNode.query.filter_by(id=n_id).first_or_404()
 
-    if settings.world_name:
-        title = "Map of " + settings.world_name
-    else:
-        title = "Worldmap"
-
-    return render_template("map/index.html", settings=mapsettings, jump_to_node=node.id, title=page_title(title))
+    return render_template("map/index.html", settings=mapsettings, map_sett=map_, jump_to_node=node.id, title=page_title(map_.name))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
-    return redirect(url_for("index"))
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
+
+    is_first_map = (Map.query.get(1) == None)
+
+    form = MapForm()
+
+    if form.validate_on_submit():
+        new_map = Map(name=form.name.data, no_wrap=form.no_wrap.data, external_provider=form.external_provider.data, tiles_path=form.tiles_path.data, min_zoom=form.min_zoom.data, max_zoom=form.max_zoom.data, default_zoom=form.default_zoom.data)
+
+        db.session.add(new_map)
+        db.session.commit()
+
+        # no flash for now as the redirect goes to the map
+        #flash("Map created.", "success")
+        return redirect(url_for("map.index"))
+    elif request.method == "GET":
+        if is_first_map:
+            settings = GeneralSetting.query.get(1)
+            if settings.world_name:
+                form.name.data = "Map of " + settings.world_name
+            else:
+                form.name.data = "Worldmap"
+
+    return render_template("map/create.html", form=form, title=page_title("Create new map"))
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required

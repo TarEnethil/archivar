@@ -629,21 +629,21 @@
       // base map with options
       _map = L.map('map', {
         center: [0.0, 0.0],
-        zoom: {{ settings.default_zoom }},
+        zoom: {{ map_sett.default_zoom }},
         closePopupOnClick: true,
       });
 
-      {% if settings.external_provider %}
-        var url = '{{ settings.tiles_path }}'
+      {% if map_sett.external_provider %}
+        var url = '{{ map_sett.tiles_path }}'
       {% else %}
-        var url = '{{ url_for("map.tile", filename="") }}{{ settings.tiles_path }}';
+        var url = '{{ url_for("map.tile", filename="") }}{{ map_sett.tiles_path }}';
       {% endif %}
 
       // tile provider
       L.tileLayer(url, {
-          maxZoom: {{ settings.max_zoom }},
-          minZoom: {{ settings.min_zoom }},
-          {% if settings.no_wrap == True %}
+          maxZoom: {{ map_sett.max_zoom }},
+          minZoom: {{ map_sett.min_zoom }},
+          {% if map_sett.no_wrap == True %}
           noWrap: false
           {% else %}
           noWrap: true

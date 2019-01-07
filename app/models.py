@@ -107,6 +107,7 @@ class MapSetting(db.Model):
 class Map(db.Model):
     __tablename__ = "maps"
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
     min_zoom = db.Column(db.Integer)
     max_zoom = db.Column(db.Integer)
     default_zoom = db.Column(db.Integer)

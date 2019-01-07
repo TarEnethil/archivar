@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
 from wtforms import StringField, TextAreaField, SubmitField, SelectField, IntegerField, HiddenField, BooleanField
 from wtforms_components import SelectField as BetterSelectField
-from wtforms.validators import DataRequired, Length, ValidationError, InputRequired, NumberRange, Optional
+from wtforms.validators import Length, ValidationError, InputRequired, NumberRange, Optional
 
 def icon_is_valid(filename):
     if not "." in filename:
@@ -21,6 +21,7 @@ class MapSettingsForm(FlaskForm):
     submit = SubmitField("submit")
 
 class MapForm(FlaskForm):
+    name = StringField("Map name", validators=[InputRequired(), Length(max=100)])
     external_provider = BooleanField("Use external map provider")
     tiles_path = StringField("Provider pattern (internal: relative to data/map/, external: full url for an {x}{y}{z} map provider)", validators=[InputRequired(), XYZ_Validator()])
     min_zoom = IntegerField("Min Zoom Level", validators=[InputRequired(), NumberRange(min=0, max=20), LessThanOrEqual("max_zoom")])
@@ -44,7 +45,7 @@ class MapNodeForm(FlaskForm):
     submit = SubmitField("submit")
 
 class MapNodeTypeCreateForm(FlaskForm):
-    name = StringField("node type name", validators=[DataRequired(), Length(max=64)])
+    name = StringField("node type name", validators=[InputRequired(), Length(max=64)])
     description = StringField("node type description", validators=[Length(max=256)])
     icon = FileField("icon (x by x pixels recommended)", validators=[FileRequired()])
 
@@ -54,7 +55,7 @@ class MapNodeTypeCreateForm(FlaskForm):
         icon_is_valid(icon.data.filename)
 
 class MapNodeTypeEditForm(FlaskForm):
-    name = StringField("node type name", validators=[DataRequired(), Length(max=64)])
+    name = StringField("node type name", validators=[InputRequired(), Length(max=64)])
     description = StringField("node type description", validators=[Length(max=256)])
     icon = FileField("icon (x by x pixels recommended)")
 
