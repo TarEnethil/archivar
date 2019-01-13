@@ -156,6 +156,12 @@ body {
     left:10px;
 }
 
+#btn-settings {
+    position:fixed;
+    top:60px;
+    right:10px;
+}
+
 #bottom-menu .btn-left {
     float:left;
 }

@@ -38,6 +38,13 @@
     Location list
   </a>
 
+  {% if current_user.is_map_admin() %}
+  <a id="btn-settings" class="btn btn-default btn-right" href="{{ url_for('map.map_settings', id=map_sett.id) }}">
+    <span class="glyphicon glyphicon-cog"></span>
+    Settings
+  </a>
+  {% endif %}
+
   <a id="btn-add-node" class="btn btn-default btn-right">
     <span class="glyphicon glyphicon-plus"></span>
     New node

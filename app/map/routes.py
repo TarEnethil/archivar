@@ -65,6 +65,40 @@ def create():
 
     return render_template("map/create.html", form=form, title=page_title("Create new map"))
 
+@bp.route("/<int:id>/settings", methods=["GET", "POST"])
+@login_required
+def map_settings(id):
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
+
+    map_ = Map.query.filter_by(id=id).first_or_404()
+    is_first_map = (id == 1)
+    form = MapForm()
+
+    if form.validate_on_submit():
+        map_.name = form.name.data
+        map_.min_zoom = form.min_zoom.data
+        map_.max_zoom = form.max_zoom.data
+        map_.default_zoom = form.default_zoom.data
+        map_.external_provider = form.external_provider.data
+        map_.tiles_path = form.tiles_path.data
+        map_.no_wrap = form.no_wrap.data
+
+        db.session.commit()
+        flash("Map settings have been changed.", "success")
+        return redirect(url_for("index"))
+    else:
+        form.name.data = map_.name
+        form.no_wrap.data = map_.no_wrap
+        form.external_provider.data = map_.external_provider
+        form.tiles_path.data = map_.tiles_path
+        form.min_zoom.data = map_.min_zoom
+        form.max_zoom.data = map_.max_zoom
+        form.default_zoom.data = map_.default_zoom
+
+        return render_template("map/edit.html", form=form, title=page_title("Edit map"))
+
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
@@ -93,18 +127,8 @@ def settings():
 
     return render_template("map/settings.html", form=form, node_types=node_types, title=page_title("Map settings"))
 
-# settings.min_zoom = form.min_zoom.data
-# settings.max_zoom = form.max_zoom.data
-# settings.default_zoom = form.default_zoom.data
-# settings.external_provider = form.external_provider.data
-# settings.tiles_path = form.tiles_path.data
-# settings.no_wrap = form.no_wrap.data
-# form.no_wrap.data = settings.no_wrap
-# form.external_provider.data = settings.external_provider
-# form.tiles_path.data = settings.tiles_path
-# form.min_zoom.data = settings.min_zoom
-# form.max_zoom.data = settings.max_zoom
-# form.default_zoom.data = settings.default_zoom
+
+
 
 @bp.route("/node/create/<x>/<y>", methods=["GET", "POST"])
 @login_required
