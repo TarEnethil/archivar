@@ -39,6 +39,20 @@ def gen_node_type_choices():
 
     return choices
 
+# generate choices for the submap field
+def gen_submap_choices():
+    choices = [(0, "*no submap*")]
+
+    maps = Map.query.all()
+
+    for map_ in maps:
+        if map_.is_visible:
+            choices.append((map_.id, map_.name))
+        else:
+            choices.append((map_.id, "(invisible) {0}".format(map_.name)))
+
+    return choices
+
 # get all nodes that are visible for the current user
 def get_visible_nodes(map_id):
     if current_user.has_admin_role():

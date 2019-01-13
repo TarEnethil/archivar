@@ -155,6 +155,7 @@ class MapNode(db.Model):
     edited_by = db.relationship("User", foreign_keys=[edited_by_id])
     wiki_entry_id = db.Column(db.Integer, db.ForeignKey("wiki_entries.id"), default=0)
     on_map = db.Column(db.Integer, db.ForeignKey("maps.id"))
+    submap = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
 
     def to_dict(self):
         dic = {
@@ -167,7 +168,8 @@ class MapNode(db.Model):
             "visible" : self.is_visible,
             "created" : self.created,
             "created_by" : self.created_by.username,
-            "wiki_id" : self.wiki_entry_id
+            "wiki_id" : self.wiki_entry_id,
+            "submap" : self.submap
         }
 
         if self.edited_by:

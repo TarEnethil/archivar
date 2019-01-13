@@ -37,6 +37,7 @@ class MapNodeForm(FlaskForm):
     description = TextAreaField("description", validators=[Length(min=0, max=10000)], render_kw={"rows": 10})
     node_type = SelectField("node type", validators=[InputRequired(),NumberRange(min=1,message="Choose a valid node type")],coerce=int)
     wiki_entry = BetterSelectField("wiki article",validators=[Optional()],coerce=int)
+    submap = SelectField("sub map",validators=[Optional()],coerce=int)
 
     is_visible = BooleanField("Is approved / visible (to anyone)")
 

@@ -307,6 +307,10 @@
 
       // filterable dropdown of wiki articles
       $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
+
+      {% if current_user.has_admin_role() %}
+      $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
+      {% endif %}
     }
 
     // attach listeners for a edit-node form
@@ -358,6 +362,10 @@
       if (wiki.attr("disabled") != "disabled") {
         $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
       }
+
+      {% if current_user.has_admin_role() %}
+      $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
+      {% endif %}
     }
 
     // insert the icons into the dropdown for the node type
@@ -507,7 +515,7 @@
     }
 
     // generate the popup for a node
-    function gen_popup(id, name, description, created, created_by, wiki_id, edited=undefined, edited_by=undefined) {
+    function gen_popup(id, name, description, created, created_by, wiki_id, submap_id, edited=undefined, edited_by=undefined) {
       var marked_options = {
           sanitize: true
       }
@@ -517,7 +525,12 @@
 
       if (wiki_id != 0 && wiki_id != null) {
         var fake_url = "{{ url_for('wiki.view', id=-1) }}"
-        pop.append('<a href="' + fake_url.replace("-1", wiki_id) + '"><span class="glyphicon glyphicon-arrow-right"></span> Wiki article</a>');
+        pop.append('<a href="' + fake_url.replace("-1", wiki_id) + '"><span class="glyphicon glyphicon-arrow-right"></span> Wiki article</a><br />');
+      }
+
+      if (submap_id != 0 && submap_id != null) {
+        var fake_url = "{{ url_for('map.index_id', id=-1) }}"
+        pop.append('<a href="' + fake_url.replace("-1", submap_id) + '"><span class="glyphicon glyphicon-arrow-right"></span> View map</a>');
       }
 
       pop.append($('<div />').addClass("popup-markdown").append(marked(description, marked_options)));
@@ -560,7 +573,7 @@
 
         for (var nid in _nodes) {
           _nodes[nid].marker = gen_marker(_nodes[nid].x, _nodes[nid].y, _nodes[nid].node_type, _nodes[nid].visible);
-          _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, _nodes[nid].wiki_id, _nodes[nid].edited, _nodes[nid].edited_by), { minWidth: 200 });
+          _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, _nodes[nid].wiki_id, _nodes[nid].submap, _nodes[nid].edited, _nodes[nid].edited_by), { minWidth: 200 });
           _marker_layer.addLayer(_nodes[nid].marker);
           _filterbase[_nodes[nid].node_type].push({ name: _nodes[nid].name, id: _nodes[nid].id, visible: _nodes[nid].visible });
         }

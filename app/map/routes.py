@@ -2,7 +2,7 @@ from app import app, db
 from app.helpers import page_title, flash_no_permission, redirect_non_admins
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
-from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed
+from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed, gen_submap_choices
 from app.models import GeneralSetting, Map, MapNodeType, MapSetting, MapNode, WikiEntry
 from app.wiki.helpers import gen_wiki_entry_choices
 from datetime import datetime
@@ -172,6 +172,11 @@ def node_create(map_id, x, y):
     if not current_user.is_map_admin():
         del form.is_visible
 
+    if not current_user.has_admin_role():
+        del form.submap
+    else:
+        form.submap.choices = gen_submap_choices()
+
     form.coord_x.data = x
     form.coord_y.data = y
 
@@ -197,6 +202,8 @@ def node_create(map_id, x, y):
             else:
                 message = "Node was created. Until approved, it is only visible to map admins and you."
 
+        if current_user.has_admin_role():
+            new_node.submap = form.submap.data
 
         db.session.add(new_node)
         db.session.commit()
@@ -220,6 +227,11 @@ def node_edit(id):
 
     if not current_user.is_map_admin():
         del form.is_visible
+
+    if not current_user.has_admin_role():
+        del form.submap
+    else:
+        form.submap.choices = gen_submap_choices()
 
     form.node_type.choices = gen_node_type_choices()
 
@@ -271,6 +283,9 @@ def node_edit(id):
         if current_user.is_map_admin():
             node.is_visible = form.is_visible.data
 
+        if current_user.has_admin_role():
+            node.submap = form.submap.data
+
         db.session.commit()
         map_changed(node.on_map)
 
@@ -290,6 +305,9 @@ def node_edit(id):
 
     if current_user.is_map_admin():
         form.is_visible.data = node.is_visible
+
+    if current_user.has_admin_role():
+        form.submap.data = node.submap
 
     return render_template("map/node_edit.html", form=form, node=node)
 
