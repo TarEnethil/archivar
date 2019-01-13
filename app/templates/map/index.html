@@ -525,12 +525,12 @@
 
       if (wiki_id != 0 && wiki_id != null) {
         var fake_url = "{{ url_for('wiki.view', id=-1) }}"
-        pop.append('<a href="' + fake_url.replace("-1", wiki_id) + '"><span class="glyphicon glyphicon-arrow-right"></span> Wiki article</a><br />');
+        pop.append('<a href="' + fake_url.replace("-1", wiki_id) + '" class="btn btn-default"><span class="glyphicon glyphicon-education"></span> Wiki article</a> ');
       }
 
       if (submap_id != 0 && submap_id != null) {
         var fake_url = "{{ url_for('map.index_id', id=-1) }}"
-        pop.append('<a href="' + fake_url.replace("-1", submap_id) + '"><span class="glyphicon glyphicon-arrow-right"></span> View map</a>');
+        pop.append('<a href="' + fake_url.replace("-1", submap_id) + '" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span> View map</a>');
       }
 
       pop.append($('<div />').addClass("popup-markdown").append(marked(description, marked_options)));
