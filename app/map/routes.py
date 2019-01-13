@@ -26,11 +26,19 @@ def index():
 
     return render_template("map/index.html", settings=mapsettings, map_sett=indexmap, title=page_title(indexmap.name))
 
+@bp.route("/<int:id>")
+@login_required
+def index_id(id):
+    map_ = Map.query.filter_by(id=id).first_or_404()
+    settings = MapSetting.query.filter_by(id=1).first_or_404()
+
+    return render_template("map/index.html", settings=settings, map_sett=map_, title=page_title(map_.name))
+
 @bp.route("/node/<int:n_id>")
 @login_required
 def index_with_node(n_id):
-    mapsettings = MapSetting.query.get(1)
-    map_ = Map.query.get(1)
+    mapsettings = MapSetting.query.filter_by(id=1).first_or_404()
+    map_ = Map.query.filter_by(id=1).first_or_404()
     node = MapNode.query.filter_by(id=n_id).first_or_404()
 
     return render_template("map/index.html", settings=mapsettings, map_sett=map_, jump_to_node=node.id, title=page_title(map_.name))
@@ -52,9 +60,8 @@ def create():
         db.session.add(new_map)
         db.session.commit()
 
-        # no flash for now as the redirect goes to the map
-        #flash("Map created.", "success")
-        return redirect(url_for("map.index"))
+        flash("Map created.", "success")
+        return redirect(url_for("map.index_id", id=new_map.id))
     elif request.method == "GET":
         if is_first_map:
             settings = GeneralSetting.query.get(1)
@@ -87,7 +94,7 @@ def map_settings(id):
 
         db.session.commit()
         flash("Map settings have been changed.", "success")
-        return redirect(url_for("index"))
+        return redirect(url_for("map.index_id", id=map_.id))
     else:
         form.name.data = map_.name
         form.no_wrap.data = map_.no_wrap
@@ -126,9 +133,6 @@ def settings():
     node_types = MapNodeType.query.all()
 
     return render_template("map/settings.html", form=form, node_types=node_types, title=page_title("Map settings"))
-
-
-
 
 @bp.route("/node/create/<x>/<y>", methods=["GET", "POST"])
 @login_required
@@ -370,10 +374,10 @@ def node_json():
 def node_type_icon(filename):
     return send_from_directory(app.config["MAPNODES_DIR"], filename)
 
-@bp.route("/map/<int:id>/last_change")
+@bp.route("/<int:id>/last_change")
 @login_required
 def last_change(id):
-    mset = MapSetting.query.filter_by(id=id).first_or_404()
+    mset = Map.query.filter_by(id=id).first_or_404()
 
     return jsonify({'last_change' : str(mset.last_change) })
 

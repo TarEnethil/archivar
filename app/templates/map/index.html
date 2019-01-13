@@ -177,6 +177,14 @@
       });
     }
 
+    function bootstrap_message(message, msgtype) {
+      global_message({
+        msg: message,
+        msgtype: msgtype,
+        mode : "fadeIn"
+      });
+    }
+
     // show error in node form
     function nodeform_error_message(message) {
       $("<p />").addClass("alert").addClass("alert-danger").css("display", "none").html(message).appendTo("#form_messagebox").fadeIn(500);
@@ -736,6 +744,19 @@
     }
 
     $(document).ready(function() {
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+
+            {% if category != "message" %}
+                bootstrap_message("{{ message }}<br/>Click to dismiss.", "{{ category }}");
+            {% else %}
+                bootstrap_message("{{ message }}<br/>Click to dismiss.", "info")
+            {% endif %}
+
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
       init();
     });
 </script>
