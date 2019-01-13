@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+{{ include_css(['datatables']) }}
+{% endblock %}
+
+{% block scripts %}
+{{ super () }}
+{{ include_js(['datatables']) }}
+
+<script>
+{% include "datatable.js" %}
+{% if maps %}
+makeDatatable("#map-table");
+{% endif %}
+</script>
+{% endblock %}
+
+{% block app_content %}
+<h1>Maps</h1>
+
+<ul class="nav nav-tabs">
+    <li>
+        <a href="{{ url_for('map.create') }}">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            New map
+        </a>
+    </li>
+</ul>
+
+<p>
+    This page lists all maps.
+</p>
+
+{% if maps %}
+<table class="table table-hover table-striped" id="map-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for map in maps %}
+        <tr>
+            <td> {{ map.name }}</td>
+            <td>
+                <a href="{{ url_for('map.index_id', id=map.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    View
+                </a>
+                <a href="{{ url_for('map.map_settings', id=map.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                    Settings
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No Maps yet.</p>
+{% endif %}
+{% endblock %}

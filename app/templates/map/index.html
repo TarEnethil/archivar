@@ -38,22 +38,31 @@
     Location list
   </a>
 
-  {% if current_user.is_map_admin() %}
-  <a id="btn-settings" class="btn btn-default btn-right" href="{{ url_for('map.map_settings', id=map_sett.id) }}">
-    <span class="glyphicon glyphicon-cog"></span>
-    Settings
-  </a>
-  {% endif %}
-
-  <a id="btn-add-node" class="btn btn-default btn-right">
+  <div id="bottom-right-buttons">
+  <a id="btn-add-node" class="btn btn-default">
     <span class="glyphicon glyphicon-plus"></span>
     New node
   </a>
 
-  <a id="btn-cancel-add-node" class="btn btn-warning btn-right">
+  <a id="btn-cancel-add-node" class="btn btn-warning">
     <span class="glyphicon glyphicon-remove"></span>
     Cancel
   </a>
+  {% if current_user.has_admin_role() %}
+    <a id="btn-add-node" class="btn btn-default" href="{{ url_for('map.create') }}">
+      <span class="glyphicon glyphicon-plus"></span>
+      New map
+    </a>
+    <a id="btn-settings" class="btn btn-default" href="{{ url_for('map.list') }}">
+      <span class="glyphicon glyphicon-list"></span>
+      Ĺist
+    </a>
+    <a id="btn-settings" class="btn btn-default" href="{{ url_for('map.map_settings', id=map_sett.id) }}">
+      <span class="glyphicon glyphicon-cog"></span>
+      Settings
+    </a>
+  {% endif %}
+  </div>
 {% endblock %}
 
 {% block scripts %}
@@ -79,7 +88,7 @@
         return;
 
       var new_date;
-      var url = "{{ url_for('map.last_change', id=1) }}"
+      var url = "{{ url_for('map.last_change', id=map_sett.id) }}"
           $.ajax({
               type: "GET",
               url: url,
@@ -610,7 +619,7 @@
 
         $("#map").addClass("crosshair");
 
-        $("#btn-cancel-add-node").show();
+        $("#btn-cancel-add-node").css("display", "inline-block");
         $("#btn-add-node").hide();
 
         _nextAction = act;

@@ -84,7 +84,6 @@ def map_settings(id):
         return redirect(url_for('index'))
 
     map_ = Map.query.filter_by(id=id).first_or_404()
-    is_first_map = (id == 1)
     form = MapForm()
 
     if form.validate_on_submit():
@@ -138,6 +137,17 @@ def settings():
 
     return render_template("map/settings.html", form=form, node_types=node_types, title=page_title("Map settings"))
 
+@bp.route("/list")
+@login_required
+def list():
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
+
+    maps = Map.query.all()
+
+    return render_template("map/list.html", maps=maps, title=page_title("List of maps"))
+
 @bp.route("/node/create/<int:map_id>/<x>/<y>", methods=["GET", "POST"])
 @login_required
 def node_create(map_id, x, y):
@@ -177,7 +187,7 @@ def node_create(map_id, x, y):
         db.session.add(new_node)
         db.session.commit()
 
-        map_changed(1)
+        map_changed(new_node.on_map)
 
         return jsonify(data={'success' : True, 'message': message})
     elif request.method == "POST":
@@ -248,7 +258,7 @@ def node_edit(id):
             node.is_visible = form.is_visible.data
 
         db.session.commit()
-        map_changed(1)
+        map_changed(node.on_map)
 
         return jsonify(data={'success' : True, 'message': "Node was edited."})
     elif request.method == "POST":
@@ -280,10 +290,12 @@ def node_delete(id):
     if not node:
         return jsonify(data={'success': False, 'message': "No such id to delete."})
 
+    map_id = node.on_map
+
     db.session.delete(node)
     db.session.commit()
 
-    map_changed()
+    map_changed(map_id)
 
     return jsonify(data={"success": True, 'message': "Node was deleted."})
 
