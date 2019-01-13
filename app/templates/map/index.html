@@ -762,12 +762,16 @@
             {% if category != "message" %}
                 bootstrap_message("{{ message }}<br/>Click to dismiss.", "{{ category }}");
             {% else %}
-                bootstrap_message("{{ message }}<br/>Click to dismiss.", "info")
+                bootstrap_message("{{ message }}<br/>Click to dismiss.", "info");
             {% endif %}
 
             {% endfor %}
         {% endif %}
         {% endwith %}
+
+      {% if map_sett.is_visible == False %}
+      bootstrap_message("This map is currently invisible.", "warning");
+      {% endif %}
       init();
     });
 </script>

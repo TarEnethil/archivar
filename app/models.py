@@ -115,6 +115,7 @@ class Map(db.Model):
     external_provider = db.Column(db.Boolean, default=False)
     no_wrap = db.Column(db.Boolean, default=True)
     last_change = db.Column(db.DateTime, default=datetime.utcnow)
+    is_visible = db.Column(db.Boolean, default=True)
 
 class MapNodeType(db.Model):
     __tablename__ = "map_node_types"

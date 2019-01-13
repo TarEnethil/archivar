@@ -24,6 +24,10 @@ def index():
         flash("The admin has not created a map yet.", "danger")
         return redirect(url_for("index"))
 
+    if indexmap.is_visible == False and not current_user.has_admin_role():
+        flash("This map is not visible.", "danger")
+        return redirect(url_for("index"))
+
     return render_template("map/index.html", settings=mapsettings, map_sett=indexmap, title=page_title(indexmap.name))
 
 @bp.route("/<int:id>")
@@ -31,6 +35,10 @@ def index():
 def index_id(id):
     map_ = Map.query.filter_by(id=id).first_or_404()
     settings = MapSetting.query.filter_by(id=1).first_or_404()
+
+    if map_.is_visible == False and not current_user.has_admin_role():
+        flash("This map is not visible.", "danger")
+        return redirect(url_for("index"))
 
     return render_template("map/index.html", settings=settings, map_sett=map_, title=page_title(map_.name))
 
@@ -40,6 +48,10 @@ def index_id_with_node(id, n_id):
     mapsettings = MapSetting.query.filter_by(id=1).first_or_404()
     map_ = Map.query.filter_by(id=id).first_or_404()
     node = MapNode.query.filter_by(id=n_id).first_or_404()
+
+    if map_.is_visible == False and not current_user.has_admin_role():
+        flash("This map is not visible.", "danger")
+        return redirect(url_for("index"))
 
     if node.on_map != map_.id:
         flash("Map node {0} could not be found on this map".format(node.id), "danger")
@@ -94,6 +106,7 @@ def map_settings(id):
         map_.external_provider = form.external_provider.data
         map_.tiles_path = form.tiles_path.data
         map_.no_wrap = form.no_wrap.data
+        map_.is_visible = form.is_visible.data
 
         db.session.commit()
         flash("Map settings have been changed.", "success")
@@ -106,6 +119,7 @@ def map_settings(id):
         form.min_zoom.data = map_.min_zoom
         form.max_zoom.data = map_.max_zoom
         form.default_zoom.data = map_.default_zoom
+        form.is_visible.data = map_.is_visible
 
         return render_template("map/edit.html", form=form, title=page_title("Edit map"))
 

@@ -22,6 +22,7 @@ class MapSettingsForm(FlaskForm):
 
 class MapForm(FlaskForm):
     name = StringField("Map name", validators=[InputRequired(), Length(max=100)])
+    is_visible = BooleanField("Map is visible")
     external_provider = BooleanField("Use external map provider")
     tiles_path = StringField("Provider pattern (internal: relative to data/map/, external: full url for an {x}{y}{z} map provider)", validators=[InputRequired(), XYZ_Validator()])
     min_zoom = IntegerField("Min Zoom Level", validators=[InputRequired(), NumberRange(min=0, max=20), LessThanOrEqual("max_zoom")])
