@@ -16,11 +16,18 @@ no_perm = "index"
 @login_required
 def index():
     mapsettings = MapSetting.query.get(1)
-    indexmap = Map.query.get(1)
+    indexmap = Map.query.get(mapsettings.default_map)
 
     if not indexmap:
         if current_user.has_admin_role():
-            return redirect(url_for("map.create"))
+            maps = Map.query.all()
+
+            if maps:
+                flash("You need to select a default map to make this link work.", "warning")
+                return redirect(url_for("map.settings"))
+            else:
+                flash("No map was created yet. You were redirected to the map creation.", "info")
+                return redirect(url_for("map.create"))
         flash("The admin has not created a map yet.", "danger")
         return redirect(url_for("index"))
 
@@ -71,9 +78,17 @@ def create():
     form = MapForm()
 
     if form.validate_on_submit():
+        maps = Map.query.all()
+
         new_map = Map(name=form.name.data, no_wrap=form.no_wrap.data, external_provider=form.external_provider.data, tiles_path=form.tiles_path.data, min_zoom=form.min_zoom.data, max_zoom=form.max_zoom.data, default_zoom=form.default_zoom.data)
 
         db.session.add(new_map)
+
+        if not maps:
+            mset = MapSetting.query.get(1)
+            mset.default_map = new_map.id
+            flash("This map was automatically selected as the default map. To change this, please visit the map settings.", "info")
+
         db.session.commit()
 
         flash("Map created.", "success")
@@ -134,10 +149,18 @@ def settings():
 
     settings = MapSetting.query.get(1)
 
+    if not current_user.has_admin_role():
+        del form.default_map
+    else:
+        form.default_map.choices = gen_submap_choices("disabled")
+
     if form.validate_on_submit():
         settings.icon_anchor = form.icon_anchor.data
         settings.default_visible = form.default_visible.data
         settings.check_interval = form.check_interval.data
+
+        if current_user.has_admin_role():
+            settings.default_map = form.default_map.data
 
         db.session.commit()
 
@@ -146,6 +169,9 @@ def settings():
         form.icon_anchor.data = settings.icon_anchor
         form.default_visible.data = settings.default_visible
         form.check_interval.data = settings.check_interval
+
+        if current_user.has_admin_role():
+            form.default_map.data = settings.default_map
 
     node_types = MapNodeType.query.all()
 

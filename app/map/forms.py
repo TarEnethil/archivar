@@ -17,6 +17,7 @@ class MapSettingsForm(FlaskForm):
     check_interval = IntegerField("Map change check interval (seconds, 0 = disabled)", validators=[InputRequired(), NumberRange(min=0)])
     icon_anchor = SelectField("Icon Anchor", choices=[(0, "bottom"), (1, "center")],coerce=int)
     default_visible = BooleanField("New nodes are visible by default")
+    default_map = SelectField("Default map",validators=[Optional()],coerce=int)
 
     submit = SubmitField("submit")
 

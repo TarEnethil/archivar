@@ -103,6 +103,7 @@ class MapSetting(db.Model):
     icon_anchor = db.Column(db.Integer)
     default_visible = db.Column(db.Boolean, default=False)
     check_interval = db.Column(db.Integer, default=30)
+    default_map = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
 
 class Map(db.Model):
     __tablename__ = "maps"

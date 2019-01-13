@@ -40,8 +40,8 @@ def gen_node_type_choices():
     return choices
 
 # generate choices for the submap field
-def gen_submap_choices():
-    choices = [(0, "*no submap*")]
+def gen_submap_choices(zerochoice="*no submap*"):
+    choices = [(0, zerochoice)]
 
     maps = Map.query.all()
 
