@@ -33,21 +33,25 @@
     <ul id="locations"></ul>
   </div>
 
+  <span id="worldname" class="btn btn-default">
+    {{ map_sett.name }}
+  </span>
+
   <a id="btn-loc-sidebar" class="btn btn-default btn-left">
     <span class="glyphicon glyphicon-list"></span>
     Location list
   </a>
 
   <div id="bottom-right-buttons">
-  <a id="btn-add-node" class="btn btn-default">
-    <span class="glyphicon glyphicon-plus"></span>
-    New node
-  </a>
+    <a id="btn-add-node" class="btn btn-default">
+      <span class="glyphicon glyphicon-plus"></span>
+      New node
+    </a>
 
-  <a id="btn-cancel-add-node" class="btn btn-warning">
-    <span class="glyphicon glyphicon-remove"></span>
-    Cancel
-  </a>
+    <a id="btn-cancel-add-node" class="btn btn-warning">
+      <span class="glyphicon glyphicon-remove"></span>
+      Cancel
+    </a>
   {% if current_user.has_admin_role() %}
     <a id="btn-add-node" class="btn btn-default" href="{{ url_for('map.create') }}">
       <span class="glyphicon glyphicon-plus"></span>

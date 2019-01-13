@@ -141,6 +141,12 @@ body {
   }
 }
 
+#worldname {
+    position:fixed;
+    top:60px;
+    right:10px;
+}
+
 #bottom-right-buttons {
     display:inline-block;
     position:fixed;
