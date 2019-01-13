@@ -40,7 +40,7 @@ def gen_node_type_choices():
     return choices
 
 # get all nodes that are visible for the current user
-def get_visible_nodes():
+def get_visible_nodes(map_id):
     if current_user.has_admin_role():
         nodes = MapNode.query
     elif current_user.is_map_admin():
@@ -50,7 +50,7 @@ def get_visible_nodes():
     else:
         nodes = MapNode.query.filter(or_(MapNode.is_visible == True, MapNode.created_by_id == current_user.id))
 
-    return nodes.all()
+    return nodes.filter_by(on_map=map_id).all()
 
 # get all nodes that are associated with the specified wiki article
 def get_nodes_by_wiki_id(w_id):

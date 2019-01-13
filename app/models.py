@@ -153,6 +153,7 @@ class MapNode(db.Model):
     edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     edited_by = db.relationship("User", foreign_keys=[edited_by_id])
     wiki_entry_id = db.Column(db.Integer, db.ForeignKey("wiki_entries.id"), default=0)
+    on_map = db.Column(db.Integer, db.ForeignKey("maps.id"))
 
     def to_dict(self):
         dic = {

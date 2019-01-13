@@ -34,12 +34,16 @@ def index_id(id):
 
     return render_template("map/index.html", settings=settings, map_sett=map_, title=page_title(map_.name))
 
-@bp.route("/node/<int:n_id>")
+@bp.route("<int:id>/node/<int:n_id>")
 @login_required
-def index_with_node(n_id):
+def index_id_with_node(id, n_id):
     mapsettings = MapSetting.query.filter_by(id=1).first_or_404()
-    map_ = Map.query.filter_by(id=1).first_or_404()
+    map_ = Map.query.filter_by(id=id).first_or_404()
     node = MapNode.query.filter_by(id=n_id).first_or_404()
+
+    if node.on_map != map_.id:
+        flash("Map node {0} could not be found on this map".format(node.id), "danger")
+        return render_template("map/index.html", settings=mapsettings, map_sett=map_, title=page_title(map_.name))
 
     return render_template("map/index.html", settings=mapsettings, map_sett=map_, jump_to_node=node.id, title=page_title(map_.name))
 
@@ -134,9 +138,11 @@ def settings():
 
     return render_template("map/settings.html", form=form, node_types=node_types, title=page_title("Map settings"))
 
-@bp.route("/node/create/<x>/<y>", methods=["GET", "POST"])
+@bp.route("/node/create/<int:map_id>/<x>/<y>", methods=["GET", "POST"])
 @login_required
-def node_create(x, y):
+def node_create(map_id, x, y):
+    map_ = Map.query.filter_by(id=map_id).first_or_404()
+
     form = MapNodeForm()
 
     if not current_user.is_map_admin():
@@ -149,7 +155,7 @@ def node_create(x, y):
     form.wiki_entry.choices = gen_wiki_entry_choices()
 
     if form.validate_on_submit():
-        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, created_by=current_user, wiki_entry_id=form.wiki_entry.data)
+        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, created_by=current_user, wiki_entry_id=form.wiki_entry.data, on_map=map_id)
 
         if current_user.is_map_admin():
             new_node.is_visible = form.is_visible.data
@@ -357,10 +363,10 @@ def node_type_json():
 
     return jsonify(all_types_dict)
 
-@bp.route("/node/json")
+@bp.route("<int:id>/node/json")
 @login_required
-def node_json():
-    nodes = get_visible_nodes()
+def node_json(id):
+    nodes = get_visible_nodes(id)
 
     nodes_dict = {}
 

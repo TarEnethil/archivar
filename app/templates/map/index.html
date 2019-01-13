@@ -210,6 +210,7 @@
         global_success_message("server message: " + data.message + " markers will be reloaded automatically.");
         hide_nodeform();
         reload_markers();
+        map_last_change = undefined;
       }
       else {
         // iterate over data.errors -> keys are names of the <input> for which there are errors
@@ -233,6 +234,7 @@
       if (data.success == true) {
         global_success_message("server message: " + data.message + " markers will be reloaded automatically.");
         reload_markers();
+        map_last_change = undefined;
       } else {
         global_error_message("server message: " + data.message, true)
       }
@@ -265,7 +267,7 @@
 
       // ajax on submit button
       $('form').submit(function (e) {
-          var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
+          var url = "{{ url_for('map.node_create', map_id=map_sett.id, x='x_coord', y='y_coord') }}"
           $.ajax({
               type: "POST",
               url: url.replace("x_coord", event.latlng.lat).replace("y_coord", event.latlng.lng),
@@ -544,7 +546,7 @@
     // add marker to layer
     function load_map_nodes(cb) {
       console.log("start loading nodes");
-      $.getJSON("{{ url_for('map.node_json') }}", function(data) {
+      $.getJSON("{{ url_for('map.node_json', id=map_sett.id) }}", function(data) {
         _nodes = data;
 
         for (var nid in _nodes) {
@@ -682,7 +684,7 @@
 
         if (_nextAction == "newNode") {
           loading();
-          var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
+          var url = "{{ url_for('map.node_create', map_id=map_sett.id, x='x_coord', y='y_coord') }}"
           $("#nodeform_content").load(url.replace("x_coord", e.latlng.lat).replace("y_coord", e.latlng.lng), function() {
               attach_new_form_listener(e);
               prep_node_type_select();
