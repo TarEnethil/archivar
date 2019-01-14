@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+{{ include_css(['datatables']) }}
+{% endblock %}
+
 {% block scripts %}
 {{ super() }}
-{{ include_js(['marked', 'moment']) }}
+{{ include_js(['marked', 'moment', 'datatables']) }}
 
 {% if user.about %}
 <script type="text/javascript">
@@ -12,6 +17,11 @@
 
     var about_user = document.getElementById('about_user')
     about_user.innerHTML = marked(about_user.innerHTML, options);
+
+    {% if user.characters and user.characters|length > 9 %}
+    {% include "datatable.js" %}
+    makeDatatable("#char-table");
+    {% endif %}
 </script>
 
 {% endif %}
@@ -60,7 +70,7 @@
     {% endif %}
 
     {% if user.characters %}
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped" id="char-table">
         <thead>
             <tr>
                 <th>Character</th>
@@ -78,7 +88,7 @@
                         View
                     </a>
 
-                    {% if user == current_user %}
+                    {% if user == current_user or current_user.has_admin_role() %}
                     <a href="{{ url_for('character.edit', id=char.id) }}" class="btn btn-default">
                         <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                         Edit
