@@ -34,7 +34,7 @@
   </div>
 
   <span id="worldname" class="btn btn-default">
-    {{ map_sett.name }}
+    {{ map_.name }}
   </span>
 
   <a id="btn-loc-sidebar" class="btn btn-default btn-left">
@@ -61,7 +61,7 @@
       <span class="glyphicon glyphicon-list"></span>
       Ĺist
     </a>
-    <a id="btn-settings" class="btn btn-default" href="{{ url_for('map.map_settings', id=map_sett.id) }}">
+    <a id="btn-settings" class="btn btn-default" href="{{ url_for('map.map_settings', id=map_.id) }}">
       <span class="glyphicon glyphicon-cog"></span>
       Settings
     </a>
@@ -92,7 +92,7 @@
         return;
 
       var new_date;
-      var url = "{{ url_for('map.last_change', id=map_sett.id) }}"
+      var url = "{{ url_for('map.last_change', id=map_.id) }}"
           $.ajax({
               type: "GET",
               url: url,
@@ -280,7 +280,7 @@
 
       // ajax on submit button
       $('form').submit(function (e) {
-          var url = "{{ url_for('map.node_create', map_id=map_sett.id, x='x_coord', y='y_coord') }}"
+          var url = "{{ url_for('map.node_create', map_id=map_.id, x='x_coord', y='y_coord') }}"
           $.ajax({
               type: "POST",
               url: url.replace("x_coord", event.latlng.lat).replace("y_coord", event.latlng.lng),
@@ -533,7 +533,7 @@
       }
 
       if (submap_id != 0 && submap_id != null) {
-        var fake_url = "{{ url_for('map.index_id', id=-1) }}"
+        var fake_url = "{{ url_for('map.view', id=-1) }}"
         pop.append('<a href="' + fake_url.replace("-1", submap_id) + '" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span> View map</a>');
       }
 
@@ -572,7 +572,7 @@
     // add marker to layer
     function load_map_nodes(cb) {
       console.log("start loading nodes");
-      $.getJSON("{{ url_for('map.node_json', id=map_sett.id) }}", function(data) {
+      $.getJSON("{{ url_for('map.node_json', id=map_.id) }}", function(data) {
         _nodes = data;
 
         for (var nid in _nodes) {
@@ -672,21 +672,21 @@
       // base map with options
       _map = L.map('map', {
         center: [0.0, 0.0],
-        zoom: {{ map_sett.default_zoom }},
+        zoom: {{ map_.default_zoom }},
         closePopupOnClick: true,
       });
 
-      {% if map_sett.external_provider %}
-        var url = '{{ map_sett.tiles_path }}'
+      {% if map_.external_provider %}
+        var url = '{{ map_.tiles_path }}'
       {% else %}
-        var url = '{{ url_for("map.tile", filename="") }}{{ map_sett.tiles_path }}';
+        var url = '{{ url_for("map.tile", filename="") }}{{ map_.tiles_path }}';
       {% endif %}
 
       // tile provider
       L.tileLayer(url, {
-          maxZoom: {{ map_sett.max_zoom }},
-          minZoom: {{ map_sett.min_zoom }},
-          {% if map_sett.no_wrap == True %}
+          maxZoom: {{ map_.max_zoom }},
+          minZoom: {{ map_.min_zoom }},
+          {% if map_.no_wrap == True %}
           noWrap: false
           {% else %}
           noWrap: true
@@ -710,7 +710,7 @@
 
         if (_nextAction == "newNode") {
           loading();
-          var url = "{{ url_for('map.node_create', map_id=map_sett.id, x='x_coord', y='y_coord') }}"
+          var url = "{{ url_for('map.node_create', map_id=map_.id, x='x_coord', y='y_coord') }}"
           $("#nodeform_content").load(url.replace("x_coord", e.latlng.lat).replace("y_coord", e.latlng.lng), function() {
               attach_new_form_listener(e);
               prep_node_type_select();
@@ -786,7 +786,7 @@
         {% endif %}
         {% endwith %}
 
-      {% if map_sett.is_visible == False %}
+      {% if map_.is_visible == False %}
       bootstrap_message("This map is currently invisible.", "warning");
       {% endif %}
       init();

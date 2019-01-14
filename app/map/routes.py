@@ -35,11 +35,11 @@ def index():
         flash("This map is not visible.", "danger")
         return redirect(url_for("index"))
 
-    return render_template("map/index.html", settings=mapsettings, map_sett=indexmap, title=page_title(indexmap.name))
+    return render_template("map/index.html", settings=mapsettings, map_=indexmap, title=page_title(indexmap.name))
 
 @bp.route("/<int:id>")
 @login_required
-def index_id(id):
+def view(id):
     map_ = Map.query.filter_by(id=id).first_or_404()
     settings = MapSetting.query.filter_by(id=1).first_or_404()
 
@@ -47,12 +47,12 @@ def index_id(id):
         flash("This map is not visible.", "danger")
         return redirect(url_for("index"))
 
-    return render_template("map/index.html", settings=settings, map_sett=map_, title=page_title(map_.name))
+    return render_template("map/index.html", settings=settings, map_=map_, title=page_title(map_.name))
 
 @bp.route("<int:id>/node/<int:n_id>")
 @login_required
-def index_id_with_node(id, n_id):
-    mapsettings = MapSetting.query.filter_by(id=1).first_or_404()
+def view_with_node(id, n_id):
+    mapsettings = MapSetting.query.get(1)
     map_ = Map.query.filter_by(id=id).first_or_404()
     node = MapNode.query.filter_by(id=n_id).first_or_404()
 
@@ -62,9 +62,9 @@ def index_id_with_node(id, n_id):
 
     if node.on_map != map_.id:
         flash("Map node {0} could not be found on this map".format(node.id), "danger")
-        return render_template("map/index.html", settings=mapsettings, map_sett=map_, title=page_title(map_.name))
+        return render_template("map/index.html", settings=mapsettings, map_=map_, title=page_title(map_.name))
 
-    return render_template("map/index.html", settings=mapsettings, map_sett=map_, jump_to_node=node.id, title=page_title(map_.name))
+    return render_template("map/index.html", settings=mapsettings, map_=map_, jump_to_node=node.id, title=page_title(map_.name))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
@@ -72,8 +72,6 @@ def create():
     deny_access = redirect_non_admins()
     if deny_access:
         return redirect(url_for('index'))
-
-    is_first_map = (Map.query.get(1) == None)
 
     form = MapForm()
 
@@ -92,17 +90,11 @@ def create():
         db.session.commit()
 
         flash("Map created.", "success")
-        return redirect(url_for("map.index_id", id=new_map.id))
-    elif request.method == "GET":
-        if is_first_map:
-            settings = GeneralSetting.query.get(1)
-            if settings.world_name:
-                form.name.data = "Map of " + settings.world_name
-            else:
-                form.name.data = "Worldmap"
+        return redirect(url_for("map.view", id=new_map.id))
 
     return render_template("map/create.html", form=form, title=page_title("Create new map"))
 
+# map specific settings
 @bp.route("/<int:id>/settings", methods=["GET", "POST"])
 @login_required
 def map_settings(id):
@@ -125,7 +117,7 @@ def map_settings(id):
 
         db.session.commit()
         flash("Map settings have been changed.", "success")
-        return redirect(url_for("map.index_id", id=map_.id))
+        return redirect(url_for("map.view", id=map_.id))
     else:
         form.name.data = map_.name
         form.no_wrap.data = map_.no_wrap
@@ -138,6 +130,7 @@ def map_settings(id):
 
         return render_template("map/edit.html", form=form, title=page_title("Edit map"))
 
+# global map settings
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
