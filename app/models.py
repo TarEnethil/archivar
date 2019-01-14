@@ -421,7 +421,7 @@ class Moon(db.Model):
                 moon_div = normal_moon_div.format(transform, shadow, spread, shadow_color, moon_color)
 
         wrap = '<div class="moon-wrap" style="width:{0}px;height:{0}px;{1}">{2}</div>'.format(moon_size, align, moon_div)
-        div = '<div class="moon-box" title="{0} ({1})">{2}{3}{4}</div>'.format(phase_name, phase_percent, name, wrap, phase_name_span);
+        div = '<div class="moon-box" title="{0} ({1:4.3f})">{2}{3}{4}</div>'.format(phase_name, phase_percent, name, wrap, phase_name_span);
         return div
 
     def print_phases(self, moon_size=50, print_name=False, print_phase=False):
