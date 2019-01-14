@@ -126,7 +126,7 @@ def install():
             db.session.add(special_role)
 
             calendar_setting = CalendarSetting(finalized=False)
-            map_setting = MapSetting(min_zoom=0, max_zoom=0, default_zoom=0, icon_anchor=0)
+            map_setting = MapSetting(icon_anchor=0)
             wiki_setting = WikiSetting(default_visible=False)
             event_setting = EventSetting(default_visible=False)
             media_setting = MediaSetting(default_visible=False)

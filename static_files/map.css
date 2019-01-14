@@ -36,6 +36,10 @@ body {
     text-align:center;
 }
 
+#messagebox p:hover {
+    cursor:pointer;
+}
+
 .close-link {
     display:block;
     text-align:right;
@@ -137,17 +141,21 @@ body {
   }
 }
 
-#btn-cancel-add-node {
+#worldname {
     position:fixed;
-    bottom:10px;
+    top:60px;
     right:10px;
-    display:none;
 }
 
-#btn-add-node {
+#bottom-right-buttons {
+    display:inline-block;
     position:fixed;
     bottom:10px;
     right:10px;
+}
+
+#btn-cancel-add-node {
+    display:none;
 }
 
 #btn-loc-sidebar {
@@ -158,10 +166,6 @@ body {
 
 #bottom-menu .btn-left {
     float:left;
-}
-
-#bottom-menu .btn-right {
-    float:right;
 }
 
 #location-list {

@@ -33,20 +33,40 @@
     <ul id="locations"></ul>
   </div>
 
+  <span id="worldname" class="btn btn-default">
+    {{ map_.name }}
+  </span>
+
   <a id="btn-loc-sidebar" class="btn btn-default btn-left">
     <span class="glyphicon glyphicon-list"></span>
     Location list
   </a>
 
-  <a id="btn-add-node" class="btn btn-default btn-right">
-    <span class="glyphicon glyphicon-plus"></span>
-    New node
-  </a>
+  <div id="bottom-right-buttons">
+    <a id="btn-add-node" class="btn btn-default">
+      <span class="glyphicon glyphicon-plus"></span>
+      New node
+    </a>
 
-  <a id="btn-cancel-add-node" class="btn btn-warning btn-right">
-    <span class="glyphicon glyphicon-remove"></span>
-    Cancel
-  </a>
+    <a id="btn-cancel-add-node" class="btn btn-warning">
+      <span class="glyphicon glyphicon-remove"></span>
+      Cancel
+    </a>
+  {% if current_user.has_admin_role() %}
+    <a id="btn-add-node" class="btn btn-default" href="{{ url_for('map.create') }}">
+      <span class="glyphicon glyphicon-plus"></span>
+      New map
+    </a>
+    <a id="btn-settings" class="btn btn-default" href="{{ url_for('map.list') }}">
+      <span class="glyphicon glyphicon-list"></span>
+      Ĺist
+    </a>
+    <a id="btn-settings" class="btn btn-default" href="{{ url_for('map.map_settings', id=map_.id) }}">
+      <span class="glyphicon glyphicon-cog"></span>
+      Settings
+    </a>
+  {% endif %}
+  </div>
 {% endblock %}
 
 {% block scripts %}
@@ -72,7 +92,7 @@
         return;
 
       var new_date;
-      var url = "{{ url_for('map.last_change', id=1) }}"
+      var url = "{{ url_for('map.last_change', id=map_.id) }}"
           $.ajax({
               type: "GET",
               url: url,
@@ -170,6 +190,14 @@
       });
     }
 
+    function bootstrap_message(message, msgtype) {
+      global_message({
+        msg: message,
+        msgtype: msgtype,
+        mode : "fadeIn"
+      });
+    }
+
     // show error in node form
     function nodeform_error_message(message) {
       $("<p />").addClass("alert").addClass("alert-danger").css("display", "none").html(message).appendTo("#form_messagebox").fadeIn(500);
@@ -195,6 +223,7 @@
         global_success_message("server message: " + data.message + " markers will be reloaded automatically.");
         hide_nodeform();
         reload_markers();
+        map_last_change = undefined;
       }
       else {
         // iterate over data.errors -> keys are names of the <input> for which there are errors
@@ -218,6 +247,7 @@
       if (data.success == true) {
         global_success_message("server message: " + data.message + " markers will be reloaded automatically.");
         reload_markers();
+        map_last_change = undefined;
       } else {
         global_error_message("server message: " + data.message, true)
       }
@@ -250,7 +280,7 @@
 
       // ajax on submit button
       $('form').submit(function (e) {
-          var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
+          var url = "{{ url_for('map.node_create', map_id=map_.id, x='x_coord', y='y_coord') }}"
           $.ajax({
               type: "POST",
               url: url.replace("x_coord", event.latlng.lat).replace("y_coord", event.latlng.lng),
@@ -281,6 +311,10 @@
 
       // filterable dropdown of wiki articles
       $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
+
+      {% if current_user.has_admin_role() %}
+      $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
+      {% endif %}
     }
 
     // attach listeners for a edit-node form
@@ -332,6 +366,10 @@
       if (wiki.attr("disabled") != "disabled") {
         $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
       }
+
+      {% if current_user.has_admin_role() %}
+      $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
+      {% endif %}
     }
 
     // insert the icons into the dropdown for the node type
@@ -481,7 +519,7 @@
     }
 
     // generate the popup for a node
-    function gen_popup(id, name, description, created, created_by, wiki_id, edited=undefined, edited_by=undefined) {
+    function gen_popup(id, name, description, created, created_by, wiki_id, submap_id, edited=undefined, edited_by=undefined) {
       var marked_options = {
           sanitize: true
       }
@@ -491,7 +529,12 @@
 
       if (wiki_id != 0 && wiki_id != null) {
         var fake_url = "{{ url_for('wiki.view', id=-1) }}"
-        pop.append('<a href="' + fake_url.replace("-1", wiki_id) + '"><span class="glyphicon glyphicon-arrow-right"></span> Wiki article</a>');
+        pop.append('<a href="' + fake_url.replace("-1", wiki_id) + '" class="btn btn-default"><span class="glyphicon glyphicon-education"></span> Wiki article</a> ');
+      }
+
+      if (submap_id != 0 && submap_id != null) {
+        var fake_url = "{{ url_for('map.view', id=-1) }}"
+        pop.append('<a href="' + fake_url.replace("-1", submap_id) + '" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span> View map</a>');
       }
 
       pop.append($('<div />').addClass("popup-markdown").append(marked(description, marked_options)));
@@ -529,12 +572,12 @@
     // add marker to layer
     function load_map_nodes(cb) {
       console.log("start loading nodes");
-      $.getJSON("{{ url_for('map.node_json') }}", function(data) {
+      $.getJSON("{{ url_for('map.node_json', id=map_.id) }}", function(data) {
         _nodes = data;
 
         for (var nid in _nodes) {
           _nodes[nid].marker = gen_marker(_nodes[nid].x, _nodes[nid].y, _nodes[nid].node_type, _nodes[nid].visible);
-          _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, _nodes[nid].wiki_id, _nodes[nid].edited, _nodes[nid].edited_by), { minWidth: 200 });
+          _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, _nodes[nid].wiki_id, _nodes[nid].submap, _nodes[nid].edited, _nodes[nid].edited_by), { minWidth: 200 });
           _marker_layer.addLayer(_nodes[nid].marker);
           _filterbase[_nodes[nid].node_type].push({ name: _nodes[nid].name, id: _nodes[nid].id, visible: _nodes[nid].visible });
         }
@@ -593,7 +636,7 @@
 
         $("#map").addClass("crosshair");
 
-        $("#btn-cancel-add-node").show();
+        $("#btn-cancel-add-node").css("display", "inline-block");
         $("#btn-add-node").hide();
 
         _nextAction = act;
@@ -629,21 +672,21 @@
       // base map with options
       _map = L.map('map', {
         center: [0.0, 0.0],
-        zoom: {{ settings.default_zoom }},
+        zoom: {{ map_.default_zoom }},
         closePopupOnClick: true,
       });
 
-      {% if settings.external_provider %}
-        var url = '{{ settings.tiles_path }}'
+      {% if map_.external_provider %}
+        var url = '{{ map_.tiles_path }}'
       {% else %}
-        var url = '{{ url_for("map.tile", filename="") }}{{ settings.tiles_path }}';
+        var url = '{{ url_for("map.tile", filename="") }}{{ map_.tiles_path }}';
       {% endif %}
 
       // tile provider
       L.tileLayer(url, {
-          maxZoom: {{ settings.max_zoom }},
-          minZoom: {{ settings.min_zoom }},
-          {% if settings.no_wrap == True %}
+          maxZoom: {{ map_.max_zoom }},
+          minZoom: {{ map_.min_zoom }},
+          {% if map_.no_wrap == True %}
           noWrap: false
           {% else %}
           noWrap: true
@@ -667,7 +710,7 @@
 
         if (_nextAction == "newNode") {
           loading();
-          var url = "{{ url_for('map.node_create', x='x_coord', y='y_coord') }}"
+          var url = "{{ url_for('map.node_create', map_id=map_.id, x='x_coord', y='y_coord') }}"
           $("#nodeform_content").load(url.replace("x_coord", e.latlng.lat).replace("y_coord", e.latlng.lng), function() {
               attach_new_form_listener(e);
               prep_node_type_select();
@@ -729,6 +772,23 @@
     }
 
     $(document).ready(function() {
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+
+            {% if category != "message" %}
+                bootstrap_message("{{ message }}<br/>Click to dismiss.", "{{ category }}");
+            {% else %}
+                bootstrap_message("{{ message }}<br/>Click to dismiss.", "info");
+            {% endif %}
+
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+      {% if map_.is_visible == False %}
+      bootstrap_message("This map is currently invisible.", "warning");
+      {% endif %}
       init();
     });
 </script>

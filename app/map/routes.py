@@ -1,9 +1,9 @@
 from app import app, db
-from app.helpers import page_title, flash_no_permission
+from app.helpers import page_title, flash_no_permission, redirect_non_admins
 from app.map import bp
-from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm
-from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed
-from app.models import GeneralSetting, MapNodeType, MapSetting, MapNode, WikiEntry
+from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
+from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed, gen_submap_choices
+from app.models import Map, MapNodeType, MapSetting, MapNode, WikiEntry
 from app.wiki.helpers import gen_wiki_entry_choices
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
@@ -15,30 +15,122 @@ no_perm = "index"
 @bp.route("/")
 @login_required
 def index():
-    settings = GeneralSetting.query.get(1)
     mapsettings = MapSetting.query.get(1)
+    indexmap = Map.query.get(mapsettings.default_map)
 
-    if settings.world_name:
-        title = "Map of " + settings.world_name
-    else:
-        title = "Worldmap"
+    if not indexmap:
+        if current_user.has_admin_role():
+            maps = Map.query.all()
 
-    return render_template("map/index.html", settings=mapsettings, title=page_title(title))
+            if maps:
+                flash("You need to select a default map to make this link work.", "warning")
+                return redirect(url_for("map.settings"))
+            else:
+                flash("No map was created yet. You were redirected to the map creation.", "info")
+                return redirect(url_for("map.create"))
+        flash("The admin has not created a map yet.", "danger")
+        return redirect(url_for("index"))
 
-@bp.route("/node/<int:n_id>")
+    if indexmap.is_visible == False and not current_user.has_admin_role():
+        flash("This map is not visible.", "danger")
+        return redirect(url_for("index"))
+
+    return render_template("map/index.html", settings=mapsettings, map_=indexmap, title=page_title(indexmap.name))
+
+@bp.route("/<int:id>")
 @login_required
-def index_with_node(n_id):
-    settings = GeneralSetting.query.get(1)
+def view(id):
+    map_ = Map.query.filter_by(id=id).first_or_404()
+    settings = MapSetting.query.filter_by(id=1).first_or_404()
+
+    if map_.is_visible == False and not current_user.has_admin_role():
+        flash("This map is not visible.", "danger")
+        return redirect(url_for("index"))
+
+    return render_template("map/index.html", settings=settings, map_=map_, title=page_title(map_.name))
+
+@bp.route("<int:id>/node/<int:n_id>")
+@login_required
+def view_with_node(id, n_id):
     mapsettings = MapSetting.query.get(1)
+    map_ = Map.query.filter_by(id=id).first_or_404()
     node = MapNode.query.filter_by(id=n_id).first_or_404()
 
-    if settings.world_name:
-        title = "Map of " + settings.world_name
+    if map_.is_visible == False and not current_user.has_admin_role():
+        flash("This map is not visible.", "danger")
+        return redirect(url_for("index"))
+
+    if node.on_map != map_.id:
+        flash("Map node {0} could not be found on this map".format(node.id), "danger")
+        return render_template("map/index.html", settings=mapsettings, map_=map_, title=page_title(map_.name))
+
+    return render_template("map/index.html", settings=mapsettings, map_=map_, jump_to_node=node.id, title=page_title(map_.name))
+
+@bp.route("/create", methods=["GET", "POST"])
+@login_required
+def create():
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
+
+    form = MapForm()
+
+    if form.validate_on_submit():
+        maps = Map.query.all()
+
+        new_map = Map(name=form.name.data, no_wrap=form.no_wrap.data, external_provider=form.external_provider.data, tiles_path=form.tiles_path.data, min_zoom=form.min_zoom.data, max_zoom=form.max_zoom.data, default_zoom=form.default_zoom.data)
+
+        db.session.add(new_map)
+
+        if not maps:
+            mset = MapSetting.query.get(1)
+            mset.default_map = new_map.id
+            flash("This map was automatically selected as the default map. To change this, please visit the map settings.", "info")
+
+        db.session.commit()
+
+        flash("Map created.", "success")
+        return redirect(url_for("map.view", id=new_map.id))
+
+    return render_template("map/create.html", form=form, title=page_title("Create new map"))
+
+# map specific settings
+@bp.route("/<int:id>/settings", methods=["GET", "POST"])
+@login_required
+def map_settings(id):
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
+
+    map_ = Map.query.filter_by(id=id).first_or_404()
+    form = MapForm()
+
+    if form.validate_on_submit():
+        map_.name = form.name.data
+        map_.min_zoom = form.min_zoom.data
+        map_.max_zoom = form.max_zoom.data
+        map_.default_zoom = form.default_zoom.data
+        map_.external_provider = form.external_provider.data
+        map_.tiles_path = form.tiles_path.data
+        map_.no_wrap = form.no_wrap.data
+        map_.is_visible = form.is_visible.data
+
+        db.session.commit()
+        flash("Map settings have been changed.", "success")
+        return redirect(url_for("map.view", id=map_.id))
     else:
-        title = "Worldmap"
+        form.name.data = map_.name
+        form.no_wrap.data = map_.no_wrap
+        form.external_provider.data = map_.external_provider
+        form.tiles_path.data = map_.tiles_path
+        form.min_zoom.data = map_.min_zoom
+        form.max_zoom.data = map_.max_zoom
+        form.default_zoom.data = map_.default_zoom
+        form.is_visible.data = map_.is_visible
 
-    return render_template("map/index.html", settings=mapsettings, jump_to_node=node.id, title=page_title(title))
+        return render_template("map/edit.html", form=form, title=page_title("Edit map"))
 
+# global map settings
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
@@ -50,42 +142,59 @@ def settings():
 
     settings = MapSetting.query.get(1)
 
+    if not current_user.has_admin_role():
+        del form.default_map
+    else:
+        form.default_map.choices = gen_submap_choices("disabled")
+
     if form.validate_on_submit():
-        settings.min_zoom = form.min_zoom.data
-        settings.max_zoom = form.max_zoom.data
-        settings.default_zoom = form.default_zoom.data
         settings.icon_anchor = form.icon_anchor.data
-        settings.external_provider = form.external_provider.data
-        settings.tiles_path = form.tiles_path.data
         settings.default_visible = form.default_visible.data
-        settings.no_wrap = form.no_wrap.data
         settings.check_interval = form.check_interval.data
+
+        if current_user.has_admin_role():
+            settings.default_map = form.default_map.data
 
         db.session.commit()
 
         flash("Map settings have been changed.", "success")
     elif request.method == "GET":
-        form.min_zoom.data = settings.min_zoom
-        form.max_zoom.data = settings.max_zoom
-        form.default_zoom.data = settings.default_zoom
         form.icon_anchor.data = settings.icon_anchor
-        form.external_provider.data = settings.external_provider
-        form.tiles_path.data = settings.tiles_path
         form.default_visible.data = settings.default_visible
-        form.no_wrap.data = settings.no_wrap
         form.check_interval.data = settings.check_interval
+
+        if current_user.has_admin_role():
+            form.default_map.data = settings.default_map
 
     node_types = MapNodeType.query.all()
 
     return render_template("map/settings.html", form=form, node_types=node_types, title=page_title("Map settings"))
 
-@bp.route("/node/create/<x>/<y>", methods=["GET", "POST"])
+@bp.route("/list")
 @login_required
-def node_create(x, y):
+def list():
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for('index'))
+
+    maps = Map.query.all()
+
+    return render_template("map/list.html", maps=maps, title=page_title("List of maps"))
+
+@bp.route("/node/create/<int:map_id>/<x>/<y>", methods=["GET", "POST"])
+@login_required
+def node_create(map_id, x, y):
+    map_ = Map.query.filter_by(id=map_id).first_or_404()
+
     form = MapNodeForm()
 
     if not current_user.is_map_admin():
         del form.is_visible
+
+    if not current_user.has_admin_role():
+        del form.submap
+    else:
+        form.submap.choices = gen_submap_choices()
 
     form.coord_x.data = x
     form.coord_y.data = y
@@ -94,7 +203,7 @@ def node_create(x, y):
     form.wiki_entry.choices = gen_wiki_entry_choices()
 
     if form.validate_on_submit():
-        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, created_by=current_user, wiki_entry_id=form.wiki_entry.data)
+        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, created_by=current_user, wiki_entry_id=form.wiki_entry.data, on_map=map_id)
 
         if current_user.is_map_admin():
             new_node.is_visible = form.is_visible.data
@@ -112,11 +221,13 @@ def node_create(x, y):
             else:
                 message = "Node was created. Until approved, it is only visible to map admins and you."
 
+        if current_user.has_admin_role():
+            new_node.submap = form.submap.data
 
         db.session.add(new_node)
         db.session.commit()
 
-        map_changed(1)
+        map_changed(new_node.on_map)
 
         return jsonify(data={'success' : True, 'message': message})
     elif request.method == "POST":
@@ -135,6 +246,11 @@ def node_edit(id):
 
     if not current_user.is_map_admin():
         del form.is_visible
+
+    if not current_user.has_admin_role():
+        del form.submap
+    else:
+        form.submap.choices = gen_submap_choices()
 
     form.node_type.choices = gen_node_type_choices()
 
@@ -186,8 +302,11 @@ def node_edit(id):
         if current_user.is_map_admin():
             node.is_visible = form.is_visible.data
 
+        if current_user.has_admin_role():
+            node.submap = form.submap.data
+
         db.session.commit()
-        map_changed(1)
+        map_changed(node.on_map)
 
         return jsonify(data={'success' : True, 'message': "Node was edited."})
     elif request.method == "POST":
@@ -206,6 +325,9 @@ def node_edit(id):
     if current_user.is_map_admin():
         form.is_visible.data = node.is_visible
 
+    if current_user.has_admin_role():
+        form.submap.data = node.submap
+
     return render_template("map/node_edit.html", form=form, node=node)
 
 @bp.route("/node/delete/<id>", methods=["POST"])
@@ -219,10 +341,12 @@ def node_delete(id):
     if not node:
         return jsonify(data={'success': False, 'message': "No such id to delete."})
 
+    map_id = node.on_map
+
     db.session.delete(node)
     db.session.commit()
 
-    map_changed()
+    map_changed(map_id)
 
     return jsonify(data={"success": True, 'message': "Node was deleted."})
 
@@ -302,10 +426,10 @@ def node_type_json():
 
     return jsonify(all_types_dict)
 
-@bp.route("/node/json")
+@bp.route("<int:id>/node/json")
 @login_required
-def node_json():
-    nodes = get_visible_nodes()
+def node_json(id):
+    nodes = get_visible_nodes(id)
 
     nodes_dict = {}
 
@@ -319,10 +443,10 @@ def node_json():
 def node_type_icon(filename):
     return send_from_directory(app.config["MAPNODES_DIR"], filename)
 
-@bp.route("/map/<int:id>/last_change")
+@bp.route("/<int:id>/last_change")
 @login_required
 def last_change(id):
-    mset = MapSetting.query.filter_by(id=id).first_or_404()
+    mset = Map.query.filter_by(id=id).first_or_404()
 
     return jsonify({'last_change' : str(mset.last_change) })
 

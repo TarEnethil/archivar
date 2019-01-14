@@ -100,16 +100,23 @@ class GeneralSetting(db.Model):
 class MapSetting(db.Model):
     __tablename__ = "map_settings"
     id = db.Column(db.Integer, primary_key=True)
+    icon_anchor = db.Column(db.Integer)
+    default_visible = db.Column(db.Boolean, default=False)
+    check_interval = db.Column(db.Integer, default=30)
+    default_map = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
+
+class Map(db.Model):
+    __tablename__ = "maps"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
     min_zoom = db.Column(db.Integer)
     max_zoom = db.Column(db.Integer)
     default_zoom = db.Column(db.Integer)
-    icon_anchor = db.Column(db.Integer)
     tiles_path = db.Column(db.String(128), default="tile_{z}_{x}-{y}.png")
     external_provider = db.Column(db.Boolean, default=False)
-    default_visible = db.Column(db.Boolean, default=False)
     no_wrap = db.Column(db.Boolean, default=True)
     last_change = db.Column(db.DateTime, default=datetime.utcnow)
-    check_interval = db.Column(db.Integer, default=30)
+    is_visible = db.Column(db.Boolean, default=True)
 
 class MapNodeType(db.Model):
     __tablename__ = "map_node_types"
@@ -148,6 +155,8 @@ class MapNode(db.Model):
     edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     edited_by = db.relationship("User", foreign_keys=[edited_by_id])
     wiki_entry_id = db.Column(db.Integer, db.ForeignKey("wiki_entries.id"), default=0)
+    on_map = db.Column(db.Integer, db.ForeignKey("maps.id"))
+    submap = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
 
     def to_dict(self):
         dic = {
@@ -160,7 +169,8 @@ class MapNode(db.Model):
             "visible" : self.is_visible,
             "created" : self.created,
             "created_by" : self.created_by.username,
-            "wiki_id" : self.wiki_entry_id
+            "wiki_id" : self.wiki_entry_id,
+            "submap" : self.submap
         }
 
         if self.edited_by:

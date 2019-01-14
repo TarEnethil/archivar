@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Edit map</h1>
+
+    <p>
+        Some of these settings directly translate to leaflet.js parameters.
+        You can use an interal (directory data/map/) or external XYZ-Tileprovider.
+        To get the correct zoom levels is a bit of trial-and-error and might depend on the TileMaker used to tile the map.
+    </p>
+
+    {{ wtf.quick_form(form) }}
+{% endblock %}
