@@ -1,2 +1,2 @@
 def version():
-    return "0.3.4"
+    return "0.4.0 M-M-M-Multi-Map"
