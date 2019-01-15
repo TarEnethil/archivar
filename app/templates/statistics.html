@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<h1>Statistics</h1>
+
+<p>A small show of numbers to summarize the collaboration effort.</p>
+
+{% if stats %}
+<dl class="dl-horizontal">
+    {% for key in stats %}
+    <dt>{{ key }}</dt>
+    <dd>{{ stats[key] }}</dd>
+    {% endfor %}
+</dl>
+{% endif %}
+{% endblock %}

@@ -1,7 +1,8 @@
 from app import app, db
 from app.forms import LoginForm, SettingsForm, InstallForm
-from app.helpers import page_title, redirect_non_admins
+from app.helpers import page_title, redirect_non_admins, count_rows
 from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting, EventSetting, EventCategory, MediaSetting, MediaCategory
+from app.models import Character, Party, Session, Map, MapNode, Event, MediaItem
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, send_from_directory
 from flask_login import current_user, login_user, login_required, logout_user
@@ -34,6 +35,29 @@ def index():
 @app.route("/about")
 def about():
     return render_template("about.html", title=page_title("About Archivar"))
+
+@app.route("/changelog")
+def changelog():
+    return render_template("changelog.html", title=page_title("Changelog"))
+
+@app.route("/statistics")
+@login_required
+def statistics():
+    stats = {}
+
+    stats["Users"] = count_rows(User)
+    stats["Characters"] = count_rows(Character)
+    stats["Parties"] = count_rows(Party)
+    stats["Sessions"] = count_rows(Session)
+    stats["Maps"] = count_rows(Map)
+    stats["Map nodes"] = count_rows(MapNode)
+    stats["Map node types"] = count_rows(MapNodeType)
+    stats["Wiki articles"] = count_rows(WikiEntry)
+    stats["Events"] = count_rows(Event)
+    stats["Event categories"] = count_rows(EventCategory)
+    stats["Media items"] = count_rows(MediaItem)
+
+    return render_template("statistics.html", stats=stats, title=page_title("Statistics"))
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

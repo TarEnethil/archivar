@@ -1,6 +1,8 @@
 from flask import flash
+from app import db
 from app.models import GeneralSetting, Epoch, Month
 from flask_login import current_user
+from sqlalchemy import func
 from wtforms.validators import ValidationError
 
 # flash generic error message
@@ -36,6 +38,10 @@ def stretch_color(color):
     if len(color) == 4:
         return "#" + color[1] + color[1] + color[2] + color[2] + color[3] + color[3]
     return color
+
+# make a COUNT(id) query for a db object
+def count_rows(db_class):
+    return db.session.query(func.count(db_class.id)).scalar()
 
 # validate that a form field contains {x}, {y} and {z}
 class XYZ_Validator(object):
