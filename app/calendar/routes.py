@@ -7,7 +7,7 @@ from app.calendar.helpers import get_next_epoch_order, get_next_month_order, get
 from app.event.forms import EventForm
 from app.event.helpers import get_event_categories
 from flask import render_template, flash, redirect, url_for, request
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 no_perm = "index"
 
@@ -27,7 +27,7 @@ def settings():
 
     return render_template("calendar/settings.html", settings=cset, epochs=epochs, months=months, days=days, moons=moons, title=page_title("Calendar settings"))
 
-@bp.route("/index", methods=["GET"])
+@bp.route("/", methods=["GET"])
 @login_required
 def index():
     cset = CalendarSetting.query.get(1)
@@ -35,6 +35,9 @@ def index():
 
     if cset.finalized == True:
         calendar = gen_calendar_stats()
+    elif current_user.has_admin_role():
+        flash("The calendar has not been finalized, you have been redirected to the calendar setup.", "warning")
+        return redirect(url_for('calendar.settings'))
 
     epochs = get_epochs()
     years = {}
