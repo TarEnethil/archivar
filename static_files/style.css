@@ -315,3 +315,7 @@ tr.invisible_item {
     width:30%;
     margin:10px;
 }
+
+.CodeMirror {
+    height: 320px !important;
+}
