@@ -174,6 +174,25 @@ def edit(id):
     calendar_helper = gen_calendar_stats()
     return render_template("event/edit.html", form=form, calendar=calendar_helper, title=page_title("Edit event"))
 
+@bp.route("/delete/<int:id>")
+@login_required
+def delete(id):
+    event = Event.query.filter_by(id=id).first_or_404()
+
+    if not current_user.has_admin_role() and current_user.has_event_role() and event.is_visible == False and event.created_by.has_admin_role():
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
+    if not current_user.is_event_admin() and event.is_visible == False and not event.created_by == current_user:
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
+    db.session.delete(event)
+    db.session.commit()
+
+    flash("Event was deleted", "success")
+    return redirect(url_for("calendar.index"))
+
 @bp.route("/category/create", methods=["GET", "POST"])
 @login_required
 def category_create():

@@ -13,6 +13,16 @@
 
     var desc = document.getElementById('description')
     desc.innerHTML = marked(desc.innerHTML, options);
+
+    $(document).ready(function() {
+        $("#delete-link").click(function(e) {
+            var p = confirm("Are you sure you want to delete '{{ event.name }}'?");
+
+            if (!p) {
+                e.preventDefault();
+            }
+        });
+    });
 </script>
 {% endif %}
 {% endblock %}
@@ -27,6 +37,14 @@
                 Edit
             </a>
         </li>
+        {% if current_user.is_event_admin() %}
+        <li>
+            <a href="{{ url_for('event.delete', id=event.id) }}" class="nav-danger" id="delete-link">
+                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                Delete
+            </a>
+        </li>
+        {% endif %}
     </ul>
 
     <dl class="dl-horizontal">
