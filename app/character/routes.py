@@ -80,6 +80,23 @@ def list():
 
     return render_template("character/list.html", chars=chars, parties=parties, title=page_title("Characters and parties"))
 
+@bp.route("/delete/<int:id>")
+@login_required
+def delete(id):
+    char = Character.query.filter_by(id=id).first_or_404()
+
+    if current_user.id != char.user_id and current_user.has_admin_role() == False:
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
+    player = char.player.username
+
+    db.session.delete(char)
+    db.session.commit()
+
+    flash("Character was deleted.", "success")
+    return redirect(url_for('user.profile', username=player))
+
 @bp.route("/sidebar", methods=["GET"])
 @login_required
 def sidebar():
