@@ -59,7 +59,7 @@ def edit(id):
 
         db.session.commit()
         flash("Character changes have been saved.", "success")
-        return redirect(url_for("user.profile", username=current_user.username))
+        return redirect(url_for("character.view", id=id))
     else:
         form.name.data = char.name
         form.race.data = char.race
