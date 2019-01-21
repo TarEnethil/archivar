@@ -4,20 +4,33 @@
 {{ super() }}
 {{ include_js(['marked']) }}
 
-{% if party.description %}
 <script type="text/javascript">
+{% if party.description %}
     options = {
         sanitize: true
     }
 
     var descr = document.getElementById('description')
     descr.innerHTML = marked(descr.innerHTML, options);
+{% endif %}
 
+{% if party.dm_notes %}
     var dm_notes = document.getElementById('dm_notes')
     dm_notes.innerHTML = marked(dm_notes.innerHTML, options);
-</script>
-
 {% endif %}
+
+{% if current_user.has_admin_role() %}
+    $(document).ready(function() {
+        $("#delete-link").click(function(e) {
+            var p = confirm("Are you sure you want to delete '{{ party.name }}'?");
+
+            if (!p) {
+                e.preventDefault();
+            }
+        });
+    });
+{% endif %}
+</script>
 {% endblock %}
 
 {% block app_content %}
@@ -31,6 +44,14 @@
             Edit
         </a>
     </li>
+    {% if current_user.is_event_admin() %}
+    <li>
+        <a href="{{ url_for('party.delete', id=party.id) }}" class="nav-danger" id="delete-link">
+            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+            Delete
+        </a>
+    </li>
+{% endif %}
 </ul>
 {% endif %}
 
