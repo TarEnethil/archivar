@@ -125,6 +125,29 @@ def view(id):
 
     return render_template("wiki/view.html", entry=wikientry, nav=(prepare_wiki_nav(), WikiSearchForm()), map_nodes=map_nodes, title=page_title("View wiki entry"))
 
+@bp.route("/delete/<int:id>", methods=["GET"])
+@login_required
+def delete(id):
+    if id == 1:
+        flash("The wiki main page can't be deleted", "danger")
+        return redirect(url_for('wiki.index'))
+
+    wikientry = WikiEntry.query.filter_by(id=id).first_or_404()
+
+    if not current_user.is_wiki_admin() and wikientry.is_visible == False and not wikientry.created_by == current_user:
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
+    if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
+        flash_no_permission()
+        return redirect(url_for(no_perm))
+
+    db.session.delete(wikientry)
+    db.session.commit()
+
+    flash("Wiki article was deleted.", "success")
+    return redirect(url_for('wiki.index'))
+
 @bp.route("/vis/<int:id>", methods=["GET"])
 @login_required
 def toggle_vis(id):

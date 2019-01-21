@@ -4,8 +4,8 @@
 {{ super() }}
 {{ include_js(['marked', 'moment']) }}
 
-{% if entry.content or (entry.dm_content and current_user.has_admin_role()) %}
 <script type="text/javascript">
+{% if entry.content or (entry.dm_content and current_user.has_admin_role()) %}
     options = {
         sanitize: true
     }
@@ -19,8 +19,20 @@
     var dm_content = document.getElementById('entry_dm_content')
     dm_content.innerHTML = marked(dm_content.innerHTML, options);
     {% endif %}
-</script>
 {% endif %}
+
+{% if current_user.is_wiki_admin() and entry.id != 1 %}
+    $(document).ready(function() {
+        $("#delete-link").click(function(e) {
+            var p = confirm("Are you sure you want to delete '{{ entry.title }}'?");
+
+            if (!p) {
+                e.preventDefault();
+            }
+        });
+    });
+{% endif %}
+</script>
 {% endblock %}
 
 {% block app_content %}
@@ -52,6 +64,14 @@
             {% endif %}
         </a>
     </li>
+    {% if entry.id != 1 %}
+    <li>
+        <a href="{{ url_for('wiki.delete', id=entry.id) }}" class="nav-danger" id="delete-link">
+            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+            Delete
+        </a>
+    </li>
+    {% endif %}
     {% endif %}
 </ul>
 
