@@ -4,8 +4,8 @@
 {{ super() }}
 {{ include_js(['marked', 'moment']) }}
 
-{% if session.summary or (session.dm_notes and current_user.has_admin_role()) %}
 <script type="text/javascript">
+{% if session.summary or (session.dm_notes and current_user.has_admin_role()) %}
     options = {
         sanitize: true
     }
@@ -19,9 +19,20 @@
     var dm_notes = document.getElementById('session_dm_notes')
     dm_notes.innerHTML = marked(dm_notes.innerHTML, options);
     {% endif %}
-</script>
-
 {% endif %}
+
+{% if current_user.has_admin_role() %}
+    $(document).ready(function() {
+        $("#delete-link").click(function(e) {
+            var p = confirm("Are you sure you want to delete '{{ session.title }}'?");
+
+            if (!p) {
+                e.preventDefault();
+            }
+        });
+    });
+{% endif %}
+</script>
 {% endblock %}
 
 {% block app_content %}
@@ -51,6 +62,15 @@
         <a href="{{ url_for('session.view', id=next) }}">
             <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
             Next session
+        </a>
+    </li>
+{% endif %}
+
+{% if current_user.is_event_admin() %}
+    <li>
+        <a href="{{ url_for('session.delete', id=session.id) }}" class="nav-danger" id="delete-link">
+            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+            Delete
         </a>
     </li>
 {% endif %}

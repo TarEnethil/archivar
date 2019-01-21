@@ -99,6 +99,21 @@ def view(id):
 
     return render_template("session/view.html", session=session, prev=prev_session_id, next=next_session_id, title=page_title("View session"))
 
+@bp.route("/delete/<int:id>")
+@login_required
+def delete(id):
+    deny_access = redirect_non_admins()
+    if deny_access:
+        return redirect(url_for(no_perm))
+
+    session = Session.query.filter_by(id=id).first_or_404()
+
+    db.session.delete(session)
+    db.session.commit()
+
+    flash("Session was deleted.", "success")
+    return redirect(url_for("session.index"))
+
 @bp.route("/sidebar", methods=["GET"])
 @login_required
 def sidebar():
