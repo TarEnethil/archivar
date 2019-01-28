@@ -1,4 +1,4 @@
-function genMultiSelect(id, selectableHeading, selectionHeading, cssCls) {
+function makeMultiSelect(id, selectableHeading, selectionHeading, cssCls) {
 var filter = $('<input type="text" class="search-filter" autocomplete="off" placeholder="filter">')
 filter.insertAfter("label[for=" + id + "]");
 $("#" + id).multiSelect({

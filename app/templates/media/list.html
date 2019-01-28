@@ -10,8 +10,7 @@
 {{ include_js(['datatables', 'moment']) }}
 
 <script>
-{% include "datatable.js" %}
-makeDatatable("#media-table");
+makeDatatable("media-table", 25);
 </script>
 {% endblock %}
 
