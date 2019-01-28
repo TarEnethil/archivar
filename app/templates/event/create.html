@@ -11,8 +11,7 @@
 {{ include_js(['simplemde', 'bootstrap-select']) }}
 <script>
 {% include "datepicker.js" %}
-{% include "simplemde.js" %}
-var simplemde = new SimpleMDE(generateSMDEConfig("description"));
+makeSMDE("description");
 </script>
 {% endblock %}
 

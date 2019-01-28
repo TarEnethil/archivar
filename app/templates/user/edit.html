@@ -11,8 +11,7 @@
 {{ include_js(['simplemde']) }}
 
 <script>
-{% include "simplemde.js" %}
-var simplemde = new SimpleMDE(generateSMDEConfig("about"));
+makeSMDE("about");
 </script>
 {% endblock %}
 

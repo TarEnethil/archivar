@@ -225,3 +225,7 @@ function generateSMDEConfig(id, withHeading=true) {
         status: false
     }
 }
+
+function makeSMDE(id, withHeading=true) {
+    new SimpleMDE(generateSMDEConfig(id, withHeading=true))
+}

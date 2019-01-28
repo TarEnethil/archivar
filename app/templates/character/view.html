@@ -5,23 +5,17 @@
 {{ include_js(['marked', 'moment']) }}
 
 <script type="text/javascript">
-    options = {
-        sanitize: true
-    }
 
     {% if char.description %}
-    var char_desc = document.getElementById('char_description')
-    char_desc.innerHTML = marked(char_desc.innerHTML, options);
+    makeMarked('char_description');
     {% endif %}
 
     {% if char.private_notes and (current_user.has_admin_role() or char.player.id == current_user.id) %}
-    var priv_notes = document.getElementById('char_private_notes')
-    priv_notes.innerHTML = marked(priv_notes.innerHTML, options);
+    makeMarked('char_private_notes');
     {% endif %}
 
     {% if char.dm_notes and current_user.has_admin_role() %}
-    var dm_notes = document.getElementById('char_dm_notes')
-    dm_notes.innerHTML = marked(dm_notes.innerHTML, options);
+    makeMarked('char_dm_notes');
     {% endif %}
 
     {% if char.player.id == current_user.id or current_user.has_admin_role() %}

@@ -6,17 +6,11 @@
 
 <script type="text/javascript">
 {% if party.description %}
-    options = {
-        sanitize: true
-    }
-
-    var descr = document.getElementById('description')
-    descr.innerHTML = marked(descr.innerHTML, options);
+    makeMarked('description');
 {% endif %}
 
 {% if party.dm_notes %}
-    var dm_notes = document.getElementById('dm_notes')
-    dm_notes.innerHTML = marked(dm_notes.innerHTML, options);
+    makeMarked('dm_notes');
 {% endif %}
 
 {% if current_user.has_admin_role() %}

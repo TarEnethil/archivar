@@ -11,16 +11,10 @@
 
 <script type="text/javascript">
 {% if user.about %}
-    options = {
-        sanitize: true
-    }
-
-    var about_user = document.getElementById('about_user')
-    about_user.innerHTML = marked(about_user.innerHTML, options);
+    makeMarked('about_user');
 {% endif %}
 
 {% if user.characters and (user.characters)|length > 8 %}
-    {% include "datatable.js" %}
     makeDatatable("#char-table");
 {% endif %}
 </script>

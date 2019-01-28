@@ -6,18 +6,12 @@
 
 <script type="text/javascript">
 {% if entry.content or (entry.dm_content and current_user.has_admin_role()) %}
-    options = {
-        sanitize: true
-    }
-
     {% if entry.content %}
-    var content = document.getElementById('content')
-    content.innerHTML = marked(content.innerHTML, options);
+    makeMarked('content');
     {% endif %}
 
     {% if entry.dm_content and current_user.has_admin_role() %}
-    var dm_content = document.getElementById('entry_dm_content')
-    dm_content.innerHTML = marked(dm_content.innerHTML, options);
+    makeMarked('entry_dm_content');
     {% endif %}
 {% endif %}
 

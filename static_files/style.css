@@ -56,6 +56,16 @@ body {
     font-size:1.15em;
 }
 
+.custom-markdown blockquote {
+    padding:10px 20px;
+    display:block;
+    width:80%;
+    margin:10px auto;
+    border:none;
+    border-bottom:2px solid #000000;
+    border-top:2px solid #000000;
+}
+
 .partymember-select {
     width:80% !important;
 }
@@ -82,6 +92,10 @@ body {
 .phb-style a:active {
     color:#58180d;
     text-decoration:underline;
+}
+
+.phb-style blockquote {
+    background:#dfe5c1;
 }
 
 .custom-markdown table {

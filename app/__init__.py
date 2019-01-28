@@ -125,11 +125,13 @@ def utility_processor():
         s = {
             "marked" : {
                 "cdn" : ["https://cdn.jsdelivr.net/npm/marked/marked.min.js"],
-                "local" : [local_url + "js/marked.min.js"]
+                "local" : [local_url + "js/marked.min.js"],
+                "helper" : [local_url + "js/helpers/marked.js"]
             },
             "simplemde" : {
                 "cdn" : ["https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"],
-                "local" : [local_url + "js/simplemde.min.js"]
+                "local" : [local_url + "js/simplemde.min.js"],
+                "helper" : [local_url + "js/helpers/simplemde.js"]
             },
             "bootstrap-select" : {
                 "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"],
@@ -137,7 +139,8 @@ def utility_processor():
             },
             "multi-select" : {
                 "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js"],
-                "local" : [local_url + "js/jquery.multi-select.min.js"]
+                "local" : [local_url + "js/jquery.multi-select.min.js"],
+                "helper" : [local_url + "js/helpers/multi-select.js"]
             },
             "leaflet" : {
                 "cdn" : ["https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"],
@@ -149,7 +152,8 @@ def utility_processor():
             },
             "datatables" : {
                 "cdn" : ["https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js", "https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"],
-                "local" : [local_url + "js/jquery.dataTables.min.js", local_url + "js/dataTables.bootstrap.min.js"]
+                "local" : [local_url + "js/jquery.dataTables.min.js", local_url + "js/dataTables.bootstrap.min.js"],
+                "helper" : [local_url + "js/helpers/datatables.js"]
             },
             "quicksearch" : {
                 "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/jquery.quicksearch/2.4.0/jquery.quicksearch.min.js"],
@@ -161,6 +165,10 @@ def utility_processor():
             if script in s:
                 for url in s[script][source]:
                     out += '<script src="' + url + '"></script>\n'
+
+                if "helper" in s[script]:
+                    for url in s[script]["helper"]:
+                        out += '<script src="' + url + '"></script>\n'
 
         out = Markup(out)
 

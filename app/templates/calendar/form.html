@@ -12,9 +12,7 @@
 {{ include_js(['simplemde']) }}
 
 <script>
-{% include "simplemde.js" %}
-var simplemde = new SimpleMDE(generateSMDEConfig("description"));
-
+SimpleMDE(generateSMDEConfig("description"));
 </script>
 {% endblock %}
 

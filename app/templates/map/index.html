@@ -269,14 +269,12 @@
       global_error_message(data);
     }
 
-    {% include "simplemde.js" %}
-
     // attach listeners for the new-node form
     function attach_new_form_listener(event) {
       console.log("loaded new form functions");
 
       // needs to be bound before submit trigger, otherwise value doesnt get copied to original textarea
-      var simplemde = new SimpleMDE(generateSMDEConfig("description", false));
+      makeSMDE("description", false);
 
       // ajax on submit button
       $('form').submit(function (e) {
@@ -328,7 +326,7 @@
       });
 
       // needs to be bound before submit trigger, otherwise value doesnt get copied to original textarea
-      var simplemde = new SimpleMDE(generateSMDEConfig("description", false));
+      makeSMDE("description", false);
 
       // ajax on submit button
       $('form').submit(function (e) {
@@ -520,10 +518,6 @@
 
     // generate the popup for a node
     function gen_popup(id, name, description, created, created_by, wiki_id, submap_id, edited=undefined, edited_by=undefined) {
-      var marked_options = {
-          sanitize: true
-      }
-
       var pop = $("<div />").attr("id", "popup-" + id);
       pop.append("<h2>" + name + "</h2>");
 
@@ -537,7 +531,7 @@
         pop.append('<a href="' + fake_url.replace("-1", submap_id) + '" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span> View map</a>');
       }
 
-      pop.append($('<div />').addClass("popup-markdown").append(marked(description, marked_options)));
+      pop.append($('<div />').addClass("popup-markdown").append(marked(description, { sanitized: true })));
 
       var edit_btn = $("<a />").addClass("btn btn-default node-edit-btn").attr("data", id);
       edit_btn.append('<span class="glyphicon glyphicon-pencil"></span>');

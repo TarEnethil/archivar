@@ -7,35 +7,28 @@
 
 <script>
 {% if settings.finalized == true %}
-options = {
-    sanitize: true
-}
 
 {% for epoch in stats["epochs"] %}
 {% if epoch.description %}
-var descr_ep_{{ epoch.id }} = document.getElementById("epoch-{{ epoch.id }}-desc")
-descr_ep_{{ epoch.id }}.innerHTML = marked(descr_ep_{{ epoch.id }}.innerHTML, options);
+makeMarked("epoch-{{ epoch.id }}-desc");
 {% endif %}
 {% endfor %}
 
 {% for month in stats["months"] %}
 {% if month.description %}
-var descr_ep_{{ month.id }} = document.getElementById("month-{{ month.id }}-desc")
-descr_ep_{{ month.id }}.innerHTML = marked(descr_ep_{{ month.id }}.innerHTML, options);
+makeMarked("month-{{ month.id }}-desc");
 {% endif %}
 {% endfor %}
 
 {% for day in stats["days"] %}
 {% if day.description %}
-var descr_ep_{{ day.id }} = document.getElementById("day-{{ day.id }}-desc")
-descr_ep_{{ day.id }}.innerHTML = marked(descr_ep_{{ day.id }}.innerHTML, options);
+makeMarked("day-{{ day.id }}-desc");
 {% endif %}
 {% endfor %}
 
 {% for moon in stats["moons"] %}
 {% if moon.description %}
-var descr_ep_{{ moon.id }} = document.getElementById("moon-{{ moon.id }}-desc")
-descr_ep_{{ moon.id }}.innerHTML = marked(descr_ep_{{ moon.id }}.innerHTML, options);
+makeMarked("moon-{{ moon.id }}-desc");
 {% endif %}
 {% endfor %}
 {% endif %}

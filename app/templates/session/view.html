@@ -6,18 +6,12 @@
 
 <script type="text/javascript">
 {% if session.summary or (session.dm_notes and current_user.has_admin_role()) %}
-    options = {
-        sanitize: true
-    }
-
     {% if session.summary %}
-    var summary_ = document.getElementById('summary')
-    summary_.innerHTML = marked(summary_.innerHTML, options);
+    makeMarked("summary");
     {% endif %}
 
     {% if session.dm_notes and current_user.has_admin_role() %}
-    var dm_notes = document.getElementById('session_dm_notes')
-    dm_notes.innerHTML = marked(dm_notes.innerHTML, options);
+    makeMarked("session_dm_notes");
     {% endif %}
 {% endif %}
 

@@ -11,12 +11,9 @@
 {{ include_js(['simplemde', 'multi-select', 'quicksearch']) }}
 
 <script>
-{% include "simplemde.js" %}
-var simplemde = new SimpleMDE(generateSMDEConfig("description"));
+makeSMDE("description");
+makeSMDE("dm_notes");
 
-var simplemde = new SimpleMDE(generateSMDEConfig("dm_notes"));
-
-{% include "multi-select.js" %}
 genMultiSelect("members", "Non-party character", "Party members", "partymember-select");
 </script>
 {% endblock %}

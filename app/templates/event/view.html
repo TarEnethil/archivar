@@ -7,12 +7,7 @@
 {{ include_js(['marked']) }}
 
 <script>
-    options = {
-        sanitize: true
-    }
-
-    var desc = document.getElementById('description')
-    desc.innerHTML = marked(desc.innerHTML, options);
+    makeMarked('description');
 
     $(document).ready(function() {
         $("#delete-link").click(function(e) {

@@ -11,12 +11,9 @@
 {{ include_js(['simplemde', 'multi-select', 'bootstrap-datetimepicker', 'moment', 'quicksearch']) }}
 
 <script>
-{% include "simplemde.js" %}
-var simplemde = new SimpleMDE(generateSMDEConfig("summary"));
+makeSMDE("summary");
+makeSMDE("dm_notes");
 
-var simplemde = new SimpleMDE(generateSMDEConfig("dm_notes"));
-
-{% include "multi-select.js" %}
 genMultiSelect("participants", "Available", "Participants", "partymember-select");
 
 moment.updateLocale('en', {

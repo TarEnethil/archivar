@@ -11,12 +11,10 @@
 {{ include_js(['simplemde']) }}
 
 <script>
-{% include "simplemde.js" %}
-var simplemde = new SimpleMDE(generateSMDEConfig("content"));
-
+makeSMDE("content");
 
 {% if current_user.has_admin_role() %}
-var simplemde2 = new SimpleMDE(generateSMDEConfig("dm_content"));
+makeSMDE("dm_content");
 {% endif %}
 </script>
 {% endblock %}
