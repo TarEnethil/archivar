@@ -17,6 +17,7 @@ virtualenv venv
 . venv/bin/activate
 pip install -r requirements.txt
 ```
+If the installation of Pillow gives you troubles, you might need to install the packages libjpeg8-dev, zlib1g-dev and python-dev (or python3-dev).
 
 ## Initial configuration and database init
 ```bash
