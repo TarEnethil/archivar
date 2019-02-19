@@ -130,8 +130,7 @@ def utility_processor():
             },
             "simplemde" : {
                 "cdn" : ["https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"],
-                "local" : [local_url + "js/simplemde.min.js"],
-                "helper" : [local_url + "js/helpers/simplemde.js"]
+                "local" : [local_url + "js/simplemde.min.js"]
             },
             "bootstrap-select" : {
                 "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"],

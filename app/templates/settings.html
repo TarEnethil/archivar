@@ -11,6 +11,7 @@
 {{ include_js(['simplemde']) }}
 
 <script>
+{% include "sidebars.js" %}
 makeSMDE("welcome_page");
 
 $("#quicklinks").attr("placeholder", "one link per line; format: url|title");

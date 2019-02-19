@@ -11,6 +11,7 @@
 {{ include_js(['simplemde']) }}
 
 <script>
+{% include "sidebars.js" %}
 makeSMDE("content");
 
 {% if current_user.has_admin_role() %}
