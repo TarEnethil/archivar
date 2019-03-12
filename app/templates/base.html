@@ -61,7 +61,7 @@ $(document).ready(function() {
                 {% endif %}
 
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('character.list') }}"><span class="glyphicon glyphicon-list"></span> Chars & Parties</a></li>
+                <li><a href="{{ url_for('character.list') }}"><span class="glyphicon glyphicon-list"></span> Parties & Chars</a></li>
                 {% endif %}
 
                 {% if current_user.is_authenticated and current_user.has_admin_role() %}
