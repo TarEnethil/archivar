@@ -556,6 +556,9 @@
         info.append('<br><span>edited by ' + edited_by + ' (' + moment(edited).format('{{current_user.dateformat}}') + ')</span>')
       }
 
+      var fake_url = "{{ url_for('map.view_with_node', id=map_.id, n_id=-1) }}"
+      pop.append('Permalink: <input class="perma-nodelink" type="text" value="' + fake_url.replace("-1", id) + '" />');
+
       pop.append(info);
       pop.append(btns);
 

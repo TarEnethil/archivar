@@ -234,3 +234,8 @@ body {
     color:#ab0000;
     cursor:pointer;
 }
+
+.perma-nodelink {
+    padding:1px;
+    border-width:1px !important;
+}
