@@ -29,7 +29,7 @@ $(document).ready(function() {
         </li>
 
         {% if current_user.is_media_admin() %}
-        <li>
+        <li class="delete-li">
             <a href="{{ url_for('media.delete', id=item.id) }}" class="nav-danger" id="delete-link">
                 <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
                 Delete

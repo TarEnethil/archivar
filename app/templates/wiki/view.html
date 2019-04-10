@@ -59,7 +59,7 @@
         </a>
     </li>
     {% if entry.id != 1 %}
-    <li>
+    <li class="delete-li">
         <a href="{{ url_for('wiki.delete', id=entry.id) }}" class="nav-danger" id="delete-link">
             <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
             Delete
