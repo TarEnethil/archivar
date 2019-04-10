@@ -239,3 +239,7 @@ body {
     padding:1px;
     border-width:1px !important;
 }
+
+#nodeform .CodeMirror {
+    height:320px !important;
+}
