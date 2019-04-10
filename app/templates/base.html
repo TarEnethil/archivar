@@ -12,6 +12,12 @@
 {{ super() }}
 <link rel="icon" href="{{ url_for('static_files', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static_files', filename='style.css') }}">
+
+<style type="text/css">
+.CodeMirror {
+    height: {{ current_user.editor_height }}px !important;
+}
+</style>
 {% endblock %}
 
 {% block scripts %}
