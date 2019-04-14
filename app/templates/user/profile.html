@@ -46,9 +46,9 @@
 
     {% if user.about %}
     <h2>About</h2>
-    <p id="about_user" class="custom-markdown">
+    <div id="about_user" class="custom-markdown">
 {{ user.about|markdown }}
-    </p>
+    </div>
     {% else %}
     <p>No description given.</p>
     {% endif %}

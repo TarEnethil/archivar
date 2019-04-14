@@ -77,9 +77,9 @@
     {% if session.dm_notes %}
     <hr>
     <h2>DM Notes</h2>
-    <p id="session_dm_notes" class="custom-markdown">
+    <div id="session_dm_notes" class="custom-markdown">
 {{ session.dm_notes|markdown }}
-        </p>
+    </div>
     {% endif %}
 {% endif %}
 

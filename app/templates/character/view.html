@@ -72,29 +72,29 @@
 
     {% if char.description %}
     {% if current_user.phb_character %}
-    <p id="char_description" class="custom-markdown phb-style">
+    <div id="char_description" class="custom-markdown phb-style">
     {% else %}
-    <p id="char_description" class="custom-markdown">
+    <div id="char_description" class="custom-markdown">
     {% endif %}
 {{ char.description|markdown }}
-    </p>
+    </div>
     {% endif %}
 
     {% if char.private_notes and (current_user.has_admin_role() or char.player.id == current_user.id) %}
     <hr>
     <h2>Private Notes</h2>
-    <p id="char_private_notes" class="custom-markdown">
+    <div id="char_private_notes" class="custom-markdown">
 {{ char.private_notes|markdown }}
-    </p>
+    </div>
     {% endif %}
 
     {% if current_user.has_admin_role() %}
         {% if char.dm_notes %}
         <hr>
         <h2>DM Notes</h2>
-        <p id="char_dm_notes" class="custom-markdown">
+        <div id="char_dm_notes" class="custom-markdown">
 {{ char.dm_notes|markdown }}
-        </p>
+        </div>
         {% endif %}
 
     <hr>
