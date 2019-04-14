@@ -6,6 +6,7 @@ from flask_login import LoginManager
 from flask_bootstrap import Bootstrap, StaticCDN
 from flask_moment import Moment
 from jinja2 import Markup
+from app.version import version
 import hashlib
 
 app = Flask(__name__)
@@ -180,7 +181,10 @@ def utility_processor():
 
         return out
 
-    return dict(load_quicklinks=load_quicklinks, include_css=include_css, include_js=include_js)
+    def get_archivar_version():
+        return version()
+
+    return dict(load_quicklinks=load_quicklinks, include_css=include_css, include_js=include_js, get_archivar_version=get_archivar_version)
 
 @app.template_filter()
 def hash(text):
