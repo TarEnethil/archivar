@@ -71,7 +71,7 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['leaflet', 'marked', 'simplemde', 'bootstrap-select', 'moment']) }}
+{{ include_js(['leaflet', 'simplemde', 'bootstrap-select', 'moment']) }}
 
 <script type="module">
 {% include "sidebars.js" %}
@@ -532,7 +532,7 @@
         pop.append('<a href="' + fake_url.replace("-1", submap_id) + '" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span> View map</a>');
       }
 
-      pop.append($('<div />').addClass("popup-markdown").append(marked(description, { sanitized: true })));
+      pop.append($('<div />').addClass("popup-markdown").append(description));
 
       var edit_btn = $("<a />").addClass("btn btn-default node-edit-btn").attr("data", id);
       edit_btn.append('<span class="glyphicon glyphicon-pencil"></span>');

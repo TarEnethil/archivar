@@ -7,13 +7,9 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['marked', 'moment', 'datatables']) }}
+{{ include_js(['moment', 'datatables']) }}
 
 <script type="text/javascript">
-{% if user.about %}
-    makeMarked('about_user');
-{% endif %}
-
 {% if user.characters and (user.characters)|length > 8 %}
     makeDatatable("char-table");
 {% endif %}
@@ -51,7 +47,7 @@
     {% if user.about %}
     <h2>About</h2>
     <p id="about_user" class="custom-markdown">
-{{ user.about }}
+{{ user.about|markdown }}
     </p>
     {% else %}
     <p>No description given.</p>

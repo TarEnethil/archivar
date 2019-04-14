@@ -2,19 +2,9 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['marked', 'moment']) }}
+{{ include_js(['moment']) }}
 
 <script type="text/javascript">
-{% if entry.content or (entry.dm_content and current_user.has_admin_role()) %}
-    {% if entry.content %}
-    makeMarked('content');
-    {% endif %}
-
-    {% if entry.dm_content and current_user.has_admin_role() %}
-    makeMarked('entry_dm_content');
-    {% endif %}
-{% endif %}
-
 {% if current_user.is_wiki_admin() and entry.id != 1 %}
     $(document).ready(function() {
         $("#delete-link").click(function(e) {
@@ -85,8 +75,10 @@
     <div id="content" class="custom-markdown">
     {% endif %}
 {% if entry.content %}
+{% filter markdown %}
 # {{ entry.title }}
-{{ entry.content }}
+{% endfilter %}
+{{ entry.content|markdown }}
 {% else %}
 No content.
 {% endif %}
@@ -106,7 +98,7 @@ No content.
     <hr>
     <h2>DM Notes</h2>
     <p id="entry_dm_content" class="custom-markdown">
-{{ entry.dm_content }}
+{{ entry.dm_content|markdown }}
     </p>
     {% endif %}
 {% endif %}

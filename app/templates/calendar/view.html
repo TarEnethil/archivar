@@ -3,36 +3,8 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['marked']) }}
 
 <script>
-{% if settings.finalized == true %}
-
-{% for epoch in stats["epochs"] %}
-{% if epoch.description %}
-makeMarked("epoch-{{ epoch.id }}-desc");
-{% endif %}
-{% endfor %}
-
-{% for month in stats["months"] %}
-{% if month.description %}
-makeMarked("month-{{ month.id }}-desc");
-{% endif %}
-{% endfor %}
-
-{% for day in stats["days"] %}
-{% if day.description %}
-makeMarked("day-{{ day.id }}-desc");
-{% endif %}
-{% endfor %}
-
-{% for moon in stats["moons"] %}
-{% if moon.description %}
-makeMarked("moon-{{ moon.id }}-desc");
-{% endif %}
-{% endfor %}
-{% endif %}
-
 $("#phase-button").click(function(e) {
     $(".moon-phases").toggle();
     e.preventDefault();
@@ -100,7 +72,7 @@ $("#phase-button").click(function(e) {
             <tr>
                 <td colspan="2">
                     <div id="epoch-{{ epoch.id }}-desc" class="custom-markdown">
-{{ epoch.description }}
+{{ epoch.description|markdown }}
                     </div>
                 </td>
             </tr>
@@ -138,7 +110,7 @@ $("#phase-button").click(function(e) {
             <tr>
                 <td colspan="2">
                     <div id="month-{{ month.id }}-desc" class="custom-markdown">
-{{ month.description }}
+{{ month.description|markdown }}
                     </div>
                 </td>
             </tr>
@@ -172,7 +144,7 @@ $("#phase-button").click(function(e) {
             <tr>
                 <td>
                     <div id="day-{{ day.id }}-desc" class="custom-markdown">
-{{ day.description }}
+{{ day.description|markdown }}
                     </div>
                 </td>
             </tr>
@@ -215,7 +187,7 @@ $("#phase-button").click(function(e) {
             <tr>
                 <td colspan="2">
                     <div id="moon-{{ moon.id }}-desc" class="custom-markdown">
-{{ moon.description }}
+{{ moon.description|markdown }}
                     </div>
                 </td>
             </tr>

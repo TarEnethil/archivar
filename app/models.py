@@ -2,6 +2,7 @@ from app import db, login
 from flask import url_for
 from flask_login import UserMixin
 from datetime import datetime
+from flask_misaka import markdown
 from werkzeug.security import generate_password_hash, check_password_hash
 
 user_role_assoc = db.Table("user_role_assoc",
@@ -179,7 +180,7 @@ class MapNode(db.Model):
             "x" : self.coord_x,
             "y" : self.coord_y,
             "name" : self.name,
-            "desc" : self.description,
+            "desc" : markdown(self.description, tables=True, fenced_code=True, escape=True),
             "node_type" : self.node_type,
             "visible" : self.is_visible,
             "created" : self.created,

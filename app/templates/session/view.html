@@ -2,19 +2,9 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['marked', 'moment']) }}
+{{ include_js(['moment']) }}
 
 <script type="text/javascript">
-{% if session.summary or (session.dm_notes and current_user.has_admin_role()) %}
-    {% if session.summary %}
-    makeMarked("summary");
-    {% endif %}
-
-    {% if session.dm_notes and current_user.has_admin_role() %}
-    makeMarked("session_dm_notes");
-    {% endif %}
-{% endif %}
-
 {% if current_user.has_admin_role() %}
     $(document).ready(function() {
         $("#delete-link").click(function(e) {
@@ -77,7 +67,7 @@
     {% else %}
     <div id="summary" class="custom-markdown">
     {% endif %}
-{{ session.summary }}
+{{ session.summary|markdown }}
     </div>
 {% else %}
 <p>No summary.</p>
@@ -88,7 +78,7 @@
     <hr>
     <h2>DM Notes</h2>
     <p id="session_dm_notes" class="custom-markdown">
-{{ session.dm_notes }}
+{{ session.dm_notes|markdown }}
         </p>
     {% endif %}
 {% endif %}

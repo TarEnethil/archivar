@@ -136,9 +136,9 @@ Can hide/unhide/delete media.
 _Reserved. No function as of yet._
 
 # Used tools and libraries
-* Backend is [Flask](http://flask.pocoo.org/) (Python), current Database is [SQLite](https://www.sqlite.org/index.html) (for used python libraries refer to requirements.txt)
+* Backend is [Flask](http://flask.pocoo.org/) (Python), current Database is [SQLite](https://www.sqlite.org/index.html) (for used python libraries and flask extensions refer to requirements.txt)
 * Frontend with [Bootstrap 3.3](https://getbootstrap.com/docs/3.3/)
 * JavaScript framework is [jQuery](https://jquery.com/) (used by bootstrap), additional scripts: [multiselect](http://loudev.com/) (select characters for session), [bootstrap-select](https://developer.snapappointments.com/bootstrap-select/), [quicksearch](https://deuxhuithuit.github.io/quicksearch/)
 * Map built with [leaflet.js](https://leafletjs.com/)
-* Markdown done with [SimpleMDE](https://simplemde.com/) (WYSIWYG editor) and [marked.js](https://github.com/markedjs/marked) (in-page rendering)
+* Markdown done with [SimpleMDE](https://simplemde.com/) (WYSIWYG editor) and Flask-Misaka (on-server rendering)
 * Thanks to the [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) by Miguel Grinberg for getting me started with Flask

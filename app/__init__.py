@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap, StaticCDN
 from flask_moment import Moment
+from flask_misaka import Misaka
 from jinja2 import Markup
 from app.version import version
 import hashlib
@@ -16,6 +17,7 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 bootstrap = Bootstrap(app)
+markdown = Misaka(app, tables=True, fenced_code=True, escape=True)
 moment = Moment(app)
 
 # override ContitionalCDN with StaticCDN if local serve is wanted
@@ -124,11 +126,6 @@ def utility_processor():
         local_url = url_for('static_files', filename="")
 
         s = {
-            "marked" : {
-                "cdn" : ["https://cdn.jsdelivr.net/npm/marked/marked.min.js"],
-                "local" : [local_url + "js/marked.min.js"],
-                "helper" : [local_url + "js/helpers/marked.js"]
-            },
             "simplemde" : {
                 "cdn" : ["https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"],
                 "local" : [local_url + "js/simplemde.min.js"]

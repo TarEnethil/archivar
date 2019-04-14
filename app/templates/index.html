@@ -1,25 +1,6 @@
 {% extends "base.html" %}
 
-{% block styles %}
-{{ super() }}
-{{ include_css(['test']) }}
-{% endblock %}
-
-{% block scripts %}
-{{ super() }}
-
-{{ include_js(['marked']) }}
-
-{% if settings.welcome_page %}
-<script type="text/javascript">
-    makeMarked('welcome_page');
-</script>
-
-{% endif %}
-{% endblock %}
-
 {% block app_content %}
-
 {% if current_user.has_admin_role() %}
     <ul class="nav nav-tabs">
         <li>
@@ -33,9 +14,7 @@
 
 {% if settings.welcome_page %}
     <div id="welcome_page">
-{{ settings.welcome_page }}
+{{ settings.welcome_page|markdown }}
     </div>
-
-
 {% endif %}
 {% endblock %}

@@ -2,22 +2,9 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['marked', 'moment']) }}
+{{ include_js(['moment']) }}
 
 <script type="text/javascript">
-
-    {% if char.description %}
-    makeMarked('char_description');
-    {% endif %}
-
-    {% if char.private_notes and (current_user.has_admin_role() or char.player.id == current_user.id) %}
-    makeMarked('char_private_notes');
-    {% endif %}
-
-    {% if char.dm_notes and current_user.has_admin_role() %}
-    makeMarked('char_dm_notes');
-    {% endif %}
-
     {% if char.player.id == current_user.id or current_user.has_admin_role() %}
     $(document).ready(function() {
         $("#delete-link").click(function(e) {
@@ -89,7 +76,7 @@
     {% else %}
     <p id="char_description" class="custom-markdown">
     {% endif %}
-{{ char.description }}
+{{ char.description|markdown }}
     </p>
     {% endif %}
 
@@ -97,7 +84,7 @@
     <hr>
     <h2>Private Notes</h2>
     <p id="char_private_notes" class="custom-markdown">
-{{ char.private_notes }}
+{{ char.private_notes|markdown }}
     </p>
     {% endif %}
 
@@ -106,7 +93,7 @@
         <hr>
         <h2>DM Notes</h2>
         <p id="char_dm_notes" class="custom-markdown">
-{{ char.dm_notes }}
+{{ char.dm_notes|markdown }}
         </p>
         {% endif %}
 

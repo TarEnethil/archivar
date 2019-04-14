@@ -3,12 +3,7 @@
 
 {% block scripts %}
 {{ super() }}
-{% if event.description %}
-{{ include_js(['marked']) }}
-
 <script>
-    makeMarked('description');
-
     $(document).ready(function() {
         $("#delete-link").click(function(e) {
             var p = confirm("Are you sure you want to delete '{{ event.name }}'?");
@@ -19,7 +14,6 @@
         });
     });
 </script>
-{% endif %}
 {% endblock %}
 
 {% block app_content %}
@@ -64,7 +58,7 @@
 {% else %}
     <p id="description" class="custom-markdown">
 {% endif %}
-{{ event.description }}
+{{ event.description|markdown }}
     </p>
 {% endif %}
 
