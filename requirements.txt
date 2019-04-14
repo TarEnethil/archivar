@@ -10,7 +10,7 @@ Flask-SQLAlchemy==2.3.2
 Flask-WTF==0.14.2
 flask-moment==0.6.0
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2==2.10.1
 Mako==1.0.7
 MarkupSafe==1.0
 Pillow==3.1.2
