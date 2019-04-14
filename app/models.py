@@ -81,6 +81,13 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def has_char_in_party(self, party):
+        for char in self.characters:
+            if char in party.members:
+                return True
+
+        return False
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 

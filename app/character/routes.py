@@ -1,7 +1,7 @@
 from app import db
 from app.character import bp
 from app.character.forms import CreateCharacterForm, EditCharacterForm
-from app.helpers import page_title, redirect_non_admins, flash_no_permission
+from app.helpers import page_title, flash_no_permission
 from app.models import Character, Party
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, jsonify

@@ -1,11 +1,11 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins
+from app.helpers import page_title, redirect_non_admins, redirect_non_admins_non_members
 from app.models import Character, Party
 from app.party import bp
 from app.party.forms import PartyForm
 from app.party.helpers import gen_party_members_choices
 from flask import render_template, flash, redirect, url_for, request, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 no_perm = "character.list"
 
@@ -35,22 +35,31 @@ def create():
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
 def edit(id):
-    deny_access = redirect_non_admins()
+    # load party first so that we can check if the user has a character in it
+    party = Party.query.filter_by(id=id).first_or_404()
+
+    deny_access = redirect_non_admins_non_members(party)
     if deny_access:
         return redirect(url_for(no_perm))
 
-    party = Party.query.filter_by(id=id).first_or_404()
-
     form = PartyForm()
-    form.members.choices = gen_party_members_choices()
+
+    is_admin = current_user.has_admin_role()
+
+    if is_admin:
+        form.members.choices = gen_party_members_choices()
+    else:
+        del form.members
+        del form.dm_notes
 
     if form.validate_on_submit():
         party.name = form.name.data
         party.description = form.description.data
-        party.dm_notes = form.dm_notes.data
 
-        members = Character.query.filter(Character.id.in_(form.members.data)).all()
-        party.members = members
+        if is_admin:
+            party.dm_notes = form.dm_notes.data
+            members = Character.query.filter(Character.id.in_(form.members.data)).all()
+            party.members = members
 
         db.session.commit()
         flash("Party was changed.", "success")
@@ -59,14 +68,16 @@ def edit(id):
     elif request.method == "GET":
         form.name.data = party.name
         form.description.data = party.description
-        form.dm_notes.dat = party.dm_notes
 
-        members = []
+        if is_admin:
+            form.dm_notes.data = party.dm_notes
 
-        for m in party.members:
-            members.append(m.id)
+            members = []
 
-        form.members.data = members
+            for m in party.members:
+                members.append(m.id)
+
+            form.members.data = members
 
     return render_template("party/edit.html", form=form, title=page_title("Edit party"))
 

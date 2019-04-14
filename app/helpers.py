@@ -19,6 +19,13 @@ def redirect_non_admins():
         return True
     return False
 
+# check that user has admin role or a character in the party
+def redirect_non_admins_non_members(party):
+    if not current_user.has_admin_role() and not current_user.has_char_in_party(party):
+        flash_no_permission()
+        return True
+    return False
+
 # generate the page <title>
 def page_title(dynamic_part=None):
     gset = GeneralSetting.query.get(1)
