@@ -88,6 +88,13 @@ class User(UserMixin, db.Model):
 
         return False
 
+    def has_char_in_session(self, session):
+        for char in self.characters:
+            if session in char.sessions:
+                return True
+
+        return False
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 

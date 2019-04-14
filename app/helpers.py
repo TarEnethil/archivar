@@ -20,10 +20,19 @@ def redirect_non_admins():
     return False
 
 # check that user has admin role or a character in the party
-def redirect_non_admins_non_members(party):
+def redirect_non_admins_non_party(party):
     if not current_user.has_admin_role() and not current_user.has_char_in_party(party):
         flash_no_permission()
         return True
+
+    return False
+
+# check that user has admin role or a character in the session
+def redirect_non_admins_non_session(session):
+    if not current_user.has_admin_role() and not current_user.has_char_in_session(session):
+        flash_no_permission()
+        return True
+
     return False
 
 # generate the page <title>

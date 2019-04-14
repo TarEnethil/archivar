@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, redirect_non_admins_non_members
+from app.helpers import page_title, redirect_non_admins, redirect_non_admins_non_party
 from app.models import Character, Party
 from app.party import bp
 from app.party.forms import PartyForm
@@ -38,7 +38,7 @@ def edit(id):
     # load party first so that we can check if the user has a character in it
     party = Party.query.filter_by(id=id).first_or_404()
 
-    deny_access = redirect_non_admins_non_members(party)
+    deny_access = redirect_non_admins_non_party(party)
     if deny_access:
         return redirect(url_for(no_perm))
 

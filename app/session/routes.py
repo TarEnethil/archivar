@@ -1,12 +1,12 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins
+from app.helpers import page_title, redirect_non_admins, redirect_non_admins_non_session
 from app.models import Character, Session
 from app.session import bp
 from app.session.forms import SessionForm
 from app.session.helpers import gen_participant_choices, get_session_number, get_previous_session_id, get_next_session_id
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 no_perm = "session.index"
 
@@ -50,43 +50,56 @@ def create():
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
 def edit(id):
-    deny_access = redirect_non_admins()
+    # load session first so we can check if the user has a character in it
+    session = Session.query.filter_by(id=id).first_or_404()
+
+    deny_access = redirect_non_admins_non_session(session)
     if deny_access:
         return redirect(url_for(no_perm))
 
-    session = Session.query.filter_by(id=id).first_or_404()
+    is_admin = current_user.has_admin_role()
 
     form = SessionForm()
-    form.participants.choices = gen_participant_choices()
+    if is_admin:
+        form.participants.choices = gen_participant_choices()
+    else:
+        del form.participants
+        del form.code
+        del form.dm_notes
+        del form.date
 
     del form.add_session_no
 
     if form.validate_on_submit():
         session.title = form.title.data
-        session.code = form.code.data
         session.summary = form.summary.data
-        session.dm_notes = form.dm_notes.data
-        session.date = form.date.data
 
-        participants = Character.query.filter(Character.id.in_(form.participants.data)).all()
-        session.participants = participants
+        if is_admin:
+            session.code = form.code.data
+            session.dm_notes = form.dm_notes.data
+            session.date = form.date.data
+
+            participants = Character.query.filter(Character.id.in_(form.participants.data)).all()
+            session.participants = participants
 
         db.session.commit()
         flash("Session was changed.", "success")
         return redirect(url_for("session.index"))
     elif request.method == "GET":
         form.title.data = session.title
-        form.code.data = session.code
         form.summary.data = session.summary
-        form.dm_notes.data = session.dm_notes
-        form.date.data = session.date
 
-        participants = []
+        if is_admin:
+            form.code.data = session.code
+            form.dm_notes.data = session.dm_notes
+            form.date.data = session.date
 
-        for p in session.participants:
-            participants.append(p.id)
+            participants = []
 
-        form.participants.data = participants
+            for p in session.participants:
+                participants.append(p.id)
+
+            form.participants.data = participants
 
     return render_template("session/edit.html", form=form, title=page_title("Edit session"))
 
