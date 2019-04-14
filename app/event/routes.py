@@ -89,7 +89,7 @@ def create():
         del form.is_visible
 
     if form.validate_on_submit():
-        new_event = Event(name=form.name.data, category_id=form.category.data, description=form.description.data, epoch_id=form.epoch.data, year=form.year.data, month_id=form.month.data, day=form.day.data, duration=form.duration.data, created_by_id=current_user.id)
+        new_event = Event(name=form.name.data, category_id=form.category.data, description=form.description.data, epoch_id=form.epoch.data, year=form.year.data, month_id=form.month.data, day=form.day.data, duration=form.duration.data)
 
         if current_user.is_event_admin():
             new_event.is_visible = form.is_visible.data
@@ -143,7 +143,6 @@ def edit(id):
         event.month_id = form.month.data
         event.day = form.day.data
         event.duration = form.duration.data
-        event.edited_by_id = current_user.id
 
         if current_user.is_event_admin():
             event.is_visible = form.is_visible.data

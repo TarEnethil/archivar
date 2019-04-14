@@ -192,7 +192,7 @@ def node_create(map_id, x, y):
     form.wiki_entry.choices = gen_wiki_entry_choices()
 
     if form.validate_on_submit():
-        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, created_by=current_user, wiki_entry_id=form.wiki_entry.data, on_map=map_id)
+        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, wiki_entry_id=form.wiki_entry.data, on_map=map_id)
 
         if current_user.is_map_admin():
             new_node.is_visible = form.is_visible.data
@@ -282,9 +282,6 @@ def node_edit(id):
 
         node.coord_x = form.coord_x.data
         node.coord_y = form.coord_y.data
-
-        node.edited = datetime.utcnow()
-        node.edited_by = current_user
 
         if wiki_entry_ok == True:
             node.wiki_entry_id = form.wiki_entry.data

@@ -40,7 +40,7 @@ def create():
         if current_user.has_admin_role():
             dm_content = form.dm_content.data
 
-        entry = WikiEntry(title=form.title.data, content=form.content.data, category=form.category.data, tags=form.tags.data, is_visible=visible, dm_content=dm_content, created_by=current_user)
+        entry = WikiEntry(title=form.title.data, content=form.content.data, category=form.category.data, tags=form.tags.data, is_visible=visible, dm_content=dm_content)
 
         db.session.add(entry)
         db.session.commit()
@@ -87,9 +87,6 @@ def edit(id):
 
         if current_user.has_admin_role():
             wikientry.dm_content = form.dm_content.data
-
-        wikientry.edited_by = current_user
-        wikientry.edited = datetime.utcnow()
 
         db.session.commit()
         flash("Wiki entry was edited.", "success")

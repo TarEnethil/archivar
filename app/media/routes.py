@@ -62,7 +62,7 @@ def upload():
 
         size = stat(filepath).st_size
 
-        new_media = MediaItem(name=form.name.data, filename=filename, filesize=size, category_id=form.category.data, created_by_id=current_user.id)
+        new_media = MediaItem(name=form.name.data, filename=filename, filesize=size, category_id=form.category.data)
 
         if current_user.is_media_admin():
             new_media.is_visible = form.is_visible.data
@@ -105,7 +105,6 @@ def edit(id):
     if form.validate_on_submit():
         item.name = form.name.data
         item.category_id = form.category.data
-        item.edited_by_id = current_user.id
 
         if current_user.is_event_admin():
             item.is_visible = form.is_visible.data

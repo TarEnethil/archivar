@@ -2,7 +2,9 @@ from app import db, login
 from flask import url_for
 from flask_login import UserMixin
 from datetime import datetime
+from flask_login import current_user
 from flask_misaka import markdown
+from sqlalchemy.ext.declarative import declared_attr
 from werkzeug.security import generate_password_hash, check_password_hash
 
 user_role_assoc = db.Table("user_role_assoc",
@@ -17,6 +19,32 @@ session_character_assoc = db.Table("session_character_assoc",
                     db.Column("session_id", db.Integer, db.ForeignKey("sessions.id")),
                     db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
 
+def current_user_id():
+    try:
+        return current_user.id
+    except:
+        None
+
+class SimpleAuditMixin(object):
+    created = db.Column(db.DateTime, default=datetime.utcnow)
+    edited = db.Column(db.DateTime, default=None, onupdate=datetime.utcnow)
+
+    @declared_attr
+    def created_by_id(cls):
+        return db.Column(db.Integer, db.ForeignKey("users.id"), default=current_user_id)
+
+    @declared_attr
+    def created_by(cls):
+        return db.relationship(User, primaryjoin=lambda: User.id == cls.created_by_id, foreign_keys = cls.created_by_id)
+
+    @declared_attr
+    def edited_by_id(cls):
+        return db.Column(db.Integer, db.ForeignKey("users.id"), default=None, onupdate=current_user_id)
+
+    @declared_attr
+    def edited_by(cls):
+        return db.relationship("User", primaryjoin=lambda: User.id == cls.edited_by_id, foreign_keys = cls.edited_by_id)
+
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -24,11 +52,12 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     about = db.Column(db.String(1000))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-    created = db.Column(db.DateTime, default=datetime.utcnow)
     must_change_password = db.Column(db.Boolean, default=True)
 
+    created = db.Column(db.DateTime, default=datetime.utcnow)
+    edited = db.Column(db.DateTime, default=None, onupdate=datetime.utcnow)
+
     roles = db.relationship("Role", secondary=user_role_assoc, backref="users")
-    characters = db.relationship("Character", backref="user")
 
     dateformat = db.Column(db.String(25), default="LLL")
     editor_height = db.Column(db.Integer, default=500)
@@ -113,7 +142,7 @@ class GeneralSetting(db.Model):
     welcome_page = db.Column(db.Text)
     quicklinks = db.Column(db.Text)
 
-class MapSetting(db.Model):
+class MapSetting(db.Model, SimpleAuditMixin):
     __tablename__ = "map_settings"
     id = db.Column(db.Integer, primary_key=True)
     icon_anchor = db.Column(db.Integer)
@@ -121,7 +150,7 @@ class MapSetting(db.Model):
     check_interval = db.Column(db.Integer, default=30)
     default_map = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
 
-class Map(db.Model):
+class Map(db.Model, SimpleAuditMixin):
     __tablename__ = "maps"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -134,7 +163,7 @@ class Map(db.Model):
     last_change = db.Column(db.DateTime, default=datetime.utcnow)
     is_visible = db.Column(db.Boolean, default=True)
 
-class MapNodeType(db.Model):
+class MapNodeType(db.Model, SimpleAuditMixin):
     __tablename__ = "map_node_types"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
@@ -155,7 +184,7 @@ class MapNodeType(db.Model):
 
         return dic
 
-class MapNode(db.Model):
+class MapNode(db.Model, SimpleAuditMixin):
     __tablename__ = "map_nodes"
     id = db.Column(db.Integer, primary_key=True)
     coord_x = db.Column(db.Float)
@@ -164,12 +193,6 @@ class MapNode(db.Model):
     description = db.Column(db.String(10000))
     node_type = db.Column(db.Integer, db.ForeignKey("map_node_types.id"))
     is_visible = db.Column(db.Boolean, default=False)
-    created = db.Column(db.DateTime, default=datetime.utcnow)
-    created_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    created_by = db.relationship("User", foreign_keys=[created_by_id])
-    edited = db.Column(db.DateTime, default=datetime.utcnow)
-    edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    edited_by = db.relationship("User", foreign_keys=[edited_by_id])
     wiki_entry_id = db.Column(db.Integer, db.ForeignKey("wiki_entries.id"), default=0)
     on_map = db.Column(db.Integer, db.ForeignKey("maps.id"))
     submap = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
@@ -198,14 +221,11 @@ class MapNode(db.Model):
 
         return dic
 
-class Character(db.Model):
+class Character(db.Model, SimpleAuditMixin):
     __tablename__ = "characters"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    player = db.relationship("User")
-
-    created = db.Column(db.DateTime, default=datetime.utcnow)
-    edited = db.Column(db.DateTime, default=datetime.utcnow)
+    player = db.relationship("User", backref="characters", foreign_keys=[user_id])
 
     parties = db.relationship("Party", secondary=character_party_assoc, backref="members")
 
@@ -216,14 +236,14 @@ class Character(db.Model):
     dm_notes = db.Column(db.Text)
     private_notes = db.Column(db.Text)
 
-class Party(db.Model):
+class Party(db.Model, SimpleAuditMixin):
     __tablename__ = "parties"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     description = db.Column(db.Text)
     dm_notes = db.Column(db.Text)
 
-class Session(db.Model):
+class Session(db.Model, SimpleAuditMixin):
     __tablename__ = "sessions"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
@@ -233,20 +253,14 @@ class Session(db.Model):
     date = db.Column(db.DateTime)
     participants = db.relationship("Character", secondary=session_character_assoc, backref="sessions")
 
-class WikiSetting(db.Model):
+class WikiSetting(db.Model, SimpleAuditMixin):
     __tablename__ = "wiki_settings"
     id = db.Column(db.Integer, primary_key=True)
     default_visible = db.Column(db.Boolean, default=False)
 
-class WikiEntry(db.Model):
+class WikiEntry(db.Model, SimpleAuditMixin):
     __tablename__ = "wiki_entries"
     id = db.Column(db.Integer, primary_key=True)
-    created = db.Column(db.DateTime, default=datetime.utcnow)
-    created_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    created_by = db.relationship("User", foreign_keys=[created_by_id])
-    edited = db.Column(db.DateTime, default=datetime.utcnow)
-    edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    edited_by = db.relationship("User", foreign_keys=[edited_by_id])
 
     title = db.Column(db.String(255))
     category = db.Column(db.String(100))
@@ -258,12 +272,12 @@ class WikiEntry(db.Model):
     def split_tags(self):
         return self.tags.split(" ")
 
-class CalendarSetting(db.Model):
+class CalendarSetting(db.Model, SimpleAuditMixin):
     __tablename__ = "calendar_settings"
     id = db.Column(db.Integer, primary_key=True)
     finalized = db.Column(db.Boolean, default=False)
 
-class Epoch(db.Model):
+class Epoch(db.Model, SimpleAuditMixin):
     __tablename__ = "epochs"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -291,7 +305,7 @@ class Epoch(db.Model):
     def __repr__(self):
         return str(self.to_dict())
 
-class Month(db.Model):
+class Month(db.Model, SimpleAuditMixin):
     __tablename__ = "months"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -317,7 +331,7 @@ class Month(db.Model):
     def __repr__(self):
         return str(self.to_dict())
 
-class Day(db.Model):
+class Day(db.Model, SimpleAuditMixin):
     __tablename__ = "days"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -337,7 +351,7 @@ class Day(db.Model):
     def __repr__(self):
         return str(self.to_dict())
 
-class Moon(db.Model):
+class Moon(db.Model, SimpleAuditMixin):
     __tablename__ = "moons"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -457,7 +471,7 @@ class Moon(db.Model):
 
         return out
 
-class EventSetting(db.Model):
+class EventSetting(db.Model, SimpleAuditMixin):
     __tablename__ = "event_settings"
     id = db.Column(db.Integer, primary_key=True)
     default_visible = db.Column(db.Boolean)
@@ -465,13 +479,13 @@ class EventSetting(db.Model):
     default_epoch = db.Column(db.Integer, db.ForeignKey("epochs.id"))
     default_year = db.Column(db.Integer)
 
-class EventCategory(db.Model):
+class EventCategory(db.Model, SimpleAuditMixin):
     __tablename__ = "event_categories"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     color = db.Column(db.String(10))
 
-class Event(db.Model):
+class Event(db.Model, SimpleAuditMixin):
     __tablename__ = "events"
     id = db.Column(db.Integer, primary_key=True)
     is_visible = db.Column(db.Boolean)
@@ -487,11 +501,6 @@ class Event(db.Model):
     day = db.Column(db.Integer)
     timestamp = db.Column(db.Integer)
     duration = db.Column(db.Integer)
-
-    created_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    created_by = db.relationship("User", foreign_keys=[created_by_id])
-    edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    edited_by = db.relationship("User", foreign_keys=[edited_by_id])
 
     def format_date(self, epoch, year, month, day, timestamp, use_abbr, with_link=False, use_epoch=True, use_year=True, with_weekday=False):
         day_str = str(day)
@@ -560,12 +569,12 @@ class Event(db.Model):
         else:
             return wd[(timestamp % len(wd)) -1].name
 
-class MediaSetting(db.Model):
+class MediaSetting(db.Model, SimpleAuditMixin):
     __tablename__ = "media_settings"
     id = db.Column(db.Integer, primary_key=True)
     default_visible = db.Column(db.Boolean)
 
-class MediaCategory(db.Model):
+class MediaCategory(db.Model, SimpleAuditMixin):
     __tablename__ = "media_categories"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -578,7 +587,7 @@ class MediaCategory(db.Model):
 
         return dic
 
-class MediaItem(db.Model):
+class MediaItem(db.Model, SimpleAuditMixin):
     __tablename__ = "media"
     id = db.Column(db.Integer, primary_key=True)
     is_visible = db.Column(db.Boolean)
@@ -587,11 +596,6 @@ class MediaItem(db.Model):
     filesize = db.Column(db.Integer)
     category_id = db.Column(db.Integer, db.ForeignKey("media_categories.id"))
     category = db.relationship("MediaCategory", backref="events")
-
-    created_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    created_by = db.relationship("User", foreign_keys=[created_by_id])
-    edited_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    edited_by = db.relationship("User", foreign_keys=[edited_by_id])
 
     def get_file_ext(self):
         return (self.filename.split(".")[-1]).lower()
