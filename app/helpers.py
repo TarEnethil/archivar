@@ -1,6 +1,7 @@
-from flask import flash
+from flask import flash, redirect, url_for
+from functools import wraps
 from app import db
-from app.models import GeneralSetting, Epoch, Month
+from app.models import GeneralSetting, Epoch, Month, Party, Session
 from flask_login import current_user
 from sqlalchemy import func
 from wtforms.validators import ValidationError
@@ -12,28 +13,55 @@ def flash_no_permission(msg=None):
     else:
         flash("No permission for this action.", "danger")
 
-# check that user has the admin role
-def redirect_non_admins():
-    if not current_user.has_admin_role():
-        flash_no_permission()
-        return True
-    return False
+# @admin_required decorater, use AFTER login_required
+def admin_required(url="index"):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.has_admin_role():
+                flash("You need to be admin to perform this action.", "danger")
+                return redirect(url_for(url))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
-# check that user has admin role or a character in the party
-def redirect_non_admins_non_party(party):
-    if not current_user.has_admin_role() and not current_user.has_char_in_party(party):
-        flash_no_permission()
-        return True
+# @admin_or_party_required decorator, use AFTER login_required
+# url must contain 'id'-param which is assumed to be a party id
+def admin_or_party_required(url="index"):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not 'id' in kwargs:
+                flash("@admin_or_party_required was used incorrectly, contact the administrator", "danger")
+                return redirect(url_for(url))
 
-    return False
+            party = Party.query.filter_by(id=kwargs['id']).first_or_404()
 
-# check that user has admin role or a character in the session
-def redirect_non_admins_non_session(session):
-    if not current_user.has_admin_role() and not current_user.has_char_in_session(session):
-        flash_no_permission()
-        return True
+            if not current_user.has_admin_role() and not current_user.has_char_in_party(party):
+                flash("You need to be admin or have a character in this party to perform this action.", "danger")
+                return redirect(url_for(url))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
-    return False
+# @admin_or_session_required decorator, use AFTER login_required
+# url must contain 'id'-param which is assumed to be a session id
+def admin_or_session_required(url="index"):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not 'id' in kwargs:
+                flash("@admin_or_session_required was used incorrectly, contact the administrator", "danger")
+                return redirect(url_for(url))
+
+            session = Session.query.filter_by(id=kwargs['id']).first_or_404()
+
+            if not current_user.has_admin_role() and not current_user.has_char_in_session(session):
+                flash("You need to be admin or have a character in this session to perform this action.", "danger")
+                return redirect(url_for(url))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 # generate the page <title>
 def page_title(dynamic_part=None):

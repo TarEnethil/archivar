@@ -3,18 +3,13 @@ from app.helpers import page_title, flash_no_permission
 from app.models import MediaSetting, MediaItem, MediaCategory, User, Role
 from app.media import bp
 from app.media.forms import SettingsForm, MediaItemCreateForm, MediaItemEditForm, CategoryForm
-from app.media.helpers import redirect_non_media_admins, get_media, gen_media_category_choices, media_filename
+from app.media.helpers import media_admin_required, get_media, gen_media_category_choices, media_filename
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
 from flask_login import login_required, current_user
 from sqlalchemy import not_, and_, or_
 from os import path, remove, stat
 
-no_perm = "media.index"
-
-@bp.route("/dummy", methods=["GET"])
-@login_required
-def dummy():
-    return redirect(url_for("index"))
+no_perm_url = "media.index"
 
 @bp.route("/index", methods=["GET"])
 @bp.route("/list", methods=["GET"])
@@ -30,13 +25,14 @@ def index():
 def view(id):
     item = MediaItem.query.filter_by(id=id).first_or_404()
 
+    # TODO: write custom decorator for this?
     if not current_user.is_event_admin() and item.is_visible == False and not item.created_by == current_user:
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.has_admin_role() and current_user.has_media_role() and item.is_visible == False and item.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     return render_template("media/view.html", item=item, title=page_title("View file"))
 
@@ -92,13 +88,14 @@ def edit(id):
     form = MediaItemEditForm()
     form.category.choices = gen_media_category_choices()
 
+    # TODO: write custom decorator for this?
     if not current_user.has_admin_role() and current_user.has_media_role() and item.is_visible == False and item.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.is_media_admin() and item.is_visible == False and not item.created_by == current_user:
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.is_media_admin():
         del form.is_visible
@@ -142,11 +139,11 @@ def delete(id):
 
     if not current_user.is_event_admin() and item.is_visible == False and not item.created_by == current_user:
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.has_admin_role() and current_user.has_media_role() and item.is_visible == False and item.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     remove(path.join(app.config["MEDIA_DIR"], item.filename))
     db.session.delete(item)
@@ -157,11 +154,8 @@ def delete(id):
 
 @bp.route("/category/create", methods=["GET", "POST"])
 @login_required
+@media_admin_required
 def category_create():
-    deny_access = redirect_non_media_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     heading = "Create new media category"
     form = CategoryForm()
 
@@ -178,11 +172,8 @@ def category_create():
 
 @bp.route("/category/edit/<int:id>", methods=["GET", "POST"])
 @login_required
+@media_admin_required
 def category_edit(id):
-    deny_access = redirect_non_media_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     heading = "Edit media category"
     form = CategoryForm()
 
@@ -202,11 +193,8 @@ def category_edit(id):
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
+@media_admin_required
 def settings():
-    deny_access = redirect_non_media_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     settings = MediaSetting.query.get(1)
     form = SettingsForm()
 

@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, redirect_non_admins_non_session
+from app.helpers import page_title, admin_required, admin_or_session_required
 from app.models import Character, Session
 from app.session import bp
 from app.session.forms import SessionForm
@@ -8,7 +8,7 @@ from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 
-no_perm = "session.index"
+no_perm_url = "session.index"
 
 @bp.route("/", methods=["GET"])
 @login_required
@@ -20,11 +20,8 @@ def index():
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def create():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     form = SessionForm()
     form.participants.choices = gen_participant_choices()
 
@@ -49,14 +46,9 @@ def create():
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
+@admin_or_session_required(no_perm_url)
 def edit(id):
-    # load session first so we can check if the user has a character in it
     session = Session.query.filter_by(id=id).first_or_404()
-
-    deny_access = redirect_non_admins_non_session(session)
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     is_admin = current_user.has_admin_role()
 
     form = SessionForm()
@@ -114,11 +106,8 @@ def view(id):
 
 @bp.route("/delete/<int:id>")
 @login_required
+@admin_required(no_perm_url)
 def delete(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     session = Session.query.filter_by(id=id).first_or_404()
 
     db.session.delete(session)

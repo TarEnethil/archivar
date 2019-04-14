@@ -1,8 +1,8 @@
 from app import app, db
-from app.helpers import page_title, flash_no_permission, redirect_non_admins
+from app.helpers import page_title, flash_no_permission, admin_required
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
-from app.map.helpers import redirect_non_map_admins, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed, gen_submap_choices
+from app.map.helpers import map_admin_required, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed, gen_submap_choices
 from app.models import Map, MapNodeType, MapSetting, MapNode, WikiEntry
 from app.wiki.helpers import gen_wiki_entry_choices
 from datetime import datetime
@@ -10,7 +10,8 @@ from flask import render_template, flash, redirect, url_for, request, jsonify, s
 from flask_login import current_user, login_required
 from os import path, remove
 from PIL import Image
-no_perm = "index"
+
+no_perm_url = "index"
 
 @bp.route("/")
 @login_required
@@ -68,11 +69,8 @@ def view_with_node(id, n_id):
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def create():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for('index'))
-
     form = MapForm()
 
     if form.validate_on_submit():
@@ -97,11 +95,8 @@ def create():
 # map specific settings
 @bp.route("/<int:id>/settings", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def map_settings(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for('index'))
-
     map_ = Map.query.filter_by(id=id).first_or_404()
     form = MapForm()
 
@@ -133,11 +128,8 @@ def map_settings(id):
 # global map settings
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
+@map_admin_required
 def settings():
-    deny_access = redirect_non_map_admins()
-    if deny_access:
-        return redirect(url_for('index'))
-
     form = MapSettingsForm()
 
     settings = MapSetting.query.get(1)
@@ -172,11 +164,8 @@ def settings():
 
 @bp.route("/list")
 @login_required
+@admin_required(no_perm_url)
 def list():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for('index'))
-
     maps = Map.query.all()
 
     return render_template("map/list.html", maps=maps, title=page_title("List of maps"))
@@ -184,7 +173,7 @@ def list():
 @bp.route("/node/create/<int:map_id>/<x>/<y>", methods=["GET", "POST"])
 @login_required
 def node_create(map_id, x, y):
-    map_ = Map.query.filter_by(id=map_id).first_or_404()
+    Map.query.filter_by(id=map_id).first_or_404()
 
     form = MapNodeForm()
 
@@ -256,13 +245,14 @@ def node_edit(id):
 
     node = MapNode.query.filter_by(id=id).first_or_404()
 
+    # TODO: make custom decorators for this?
     if not current_user.has_admin_role() and current_user.has_map_role() and node.is_visible == False and node.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.is_map_admin() and node.is_visible == False and not node.created_by == current_user:
         flash_no_permission()
-        redirect(url_for(no_perm))
+        redirect(url_for(no_perm_url))
 
     wiki_entry_ok = True
 
@@ -352,11 +342,8 @@ def node_delete(id):
 
 @bp.route("/node_type/create", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def node_type_create():
-    deny_access = redirect_non_map_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     form = MapNodeTypeCreateForm()
 
     if form.validate_on_submit():
@@ -379,11 +366,8 @@ def node_type_create():
 
 @bp.route("/node_type/edit/<id>", methods=["GET", "POST"])
 @login_required
+@map_admin_required
 def node_type_edit(id):
-    deny_access = redirect_non_map_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     form = MapNodeTypeEditForm()
     node = MapNodeType.query.filter_by(id=id).first_or_404()
 

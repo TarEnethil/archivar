@@ -4,13 +4,13 @@ from app.models import WikiEntry, WikiSetting, User, Role
 from app.map.helpers import get_nodes_by_wiki_id
 from app.wiki import bp
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm
-from app.wiki.helpers import redirect_non_wiki_admins, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited
+from app.wiki.helpers import wiki_admin_required, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import current_user, login_required
 from sqlalchemy import and_, or_, not_
 
-no_perm = "wiki.index"
+no_perm_url = "wiki.index"
 
 @bp.route("/", methods=["GET"])
 @login_required
@@ -61,13 +61,14 @@ def edit(id):
 
     form = WikiEntryForm()
 
+    # TODO: write custom decorators for this?
     if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.is_wiki_admin() and wikientry.is_visible == False and not wikientry.created_by == current_user:
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.is_wiki_admin():
         del form.is_visible
@@ -113,13 +114,14 @@ def edit(id):
 def view(id):
     wikientry = WikiEntry.query.filter_by(id=id).first_or_404()
 
+    # TODO: write custom decorator / function for this?
     if not current_user.is_wiki_admin() and wikientry.is_visible == False and not wikientry.created_by == current_user:
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     map_nodes = get_nodes_by_wiki_id(id)
 
@@ -134,13 +136,14 @@ def delete(id):
 
     wikientry = WikiEntry.query.filter_by(id=id).first_or_404()
 
+    # TODO: write custom decorator / function for this
     if not current_user.is_wiki_admin() and wikientry.is_visible == False and not wikientry.created_by == current_user:
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     db.session.delete(wikientry)
     db.session.commit()
@@ -150,16 +153,14 @@ def delete(id):
 
 @bp.route("/vis/<int:id>", methods=["GET"])
 @login_required
+@wiki_admin_required
 def toggle_vis(id):
-    deny_access = redirect_non_wiki_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     wikientry = WikiEntry.query.filter_by(id=id).first_or_404()
 
+    # TODO: write custom decorator / function for this ?
     if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if wikientry.is_visible == True:
         wikientry.is_visible = False
@@ -196,11 +197,8 @@ def recent():
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
+@wiki_admin_required
 def settings():
-    deny_access = redirect_non_wiki_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     form = WikiSettingsForm()
     settings = WikiSetting.query.get(1)
 

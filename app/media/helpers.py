@@ -1,18 +1,21 @@
-from app import app, db
-from app.helpers import flash_no_permission
+from app import app
 from app.models import Role, User, MediaItem, MediaCategory
-from app.calendar.helpers import gen_calendar_stats
+from flask import redirect, url_for, flash
+from functools import wraps
 from flask_login import current_user
 from sqlalchemy import and_, or_, not_
 from werkzeug import secure_filename
 import os
 
-# check that user has the media admin role
-def redirect_non_media_admins():
-    if not current_user.is_media_admin():
-        flash_no_permission()
-        return True
-    return False
+# @media_admin_required decorater, use AFTER login_required
+def media_admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_media_admin():
+            flash("You need to be a media admin to perform this action.", "danger")
+            return redirect(url_for("media.index"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # generate choices for the media category SelectField
 def gen_media_category_choices():

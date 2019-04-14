@@ -1,18 +1,22 @@
 from app import app, db
-from app.helpers import flash_no_permission
-from app.models import Map, MapSetting, MapNodeType, MapNode, User, Role
+from app.models import Map, MapNodeType, MapNode, User, Role
+from flask import flash, redirect, url_for
+from functools import wraps
 from datetime import datetime
 from flask_login import current_user
 from sqlalchemy import and_, not_, or_
 from werkzeug import secure_filename
 import os
 
-# check if user has the map admin role
-def redirect_non_map_admins():
-    if not current_user.is_map_admin():
-        flash_no_permission()
-        return True
-    return False
+# @map_admin_required decorater, use AFTER login_required
+def map_admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_map_admin():
+            flash("You need to be a map admin to perform this action.", "danger")
+            return redirect(url_for("index"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # find the best available file name for a map node type image
 def map_node_filename(filename_from_form):

@@ -1,6 +1,6 @@
 from app import app, db
 from app.forms import LoginForm, SettingsForm, InstallForm
-from app.helpers import page_title, redirect_non_admins, count_rows
+from app.helpers import page_title, count_rows, admin_required
 from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting, EventSetting, EventCategory, MediaSetting, MediaCategory
 from app.models import Character, Party, Session, Map, MapNode, Event, MediaItem
 from datetime import datetime
@@ -95,11 +95,8 @@ def logout():
 
 @app.route("/settings", methods=["GET", "POST"])
 @login_required
+@admin_required("index")
 def settings():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for('index'))
-
     form = SettingsForm()
     settings = GeneralSetting.query.get(1)
 

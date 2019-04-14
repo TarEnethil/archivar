@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins
+from app.helpers import page_title, admin_required
 from app.models import User, Role
 from app.user import bp
 from app.user.forms import CreateUserForm, EditProfileForm, SettingsForm, PasswordOnlyForm
@@ -9,7 +9,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
 from werkzeug import check_password_hash
 
-no_perm = "index"
+no_perm_url = "index"
 
 @bp.route("/<username>")
 @login_required
@@ -21,6 +21,7 @@ def profile(username):
 @bp.route("/<username>/edit", methods=["GET", "POST"])
 @login_required
 def edit(username):
+    # TODO: make a custom decorator for this?
     if current_user.has_admin_role() or current_user.username == username:
         form = EditProfileForm()
 
@@ -75,15 +76,12 @@ def edit(username):
         return render_template("user/edit.html", form=form, user=user, title=page_title("Edit profile"))
     else:
         flash("You dont have the neccessary role to perform this action.", "danger")
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def create():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     form = CreateUserForm()
 
     form.roles.choices = gen_role_choices()
@@ -126,11 +124,8 @@ def password():
 
 @bp.route("/list")
 @login_required
+@admin_required(no_perm_url)
 def list():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     users = User.query.all()
 
     return render_template("user/list.html", users=users, title=page_title("User list"))

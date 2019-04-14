@@ -1,15 +1,19 @@
-from app.helpers import flash_no_permission
 from app.models import Role, User, WikiEntry
+from flask import redirect, flash, url_for
+from functools import wraps
 from collections import OrderedDict
 from flask_login import current_user
 from sqlalchemy import and_, or_, not_
 
-# check that user has wiki admin role
-def redirect_non_wiki_admins():
-    if not current_user.is_wiki_admin():
-        flash_no_permission()
-        return True
-    return False
+# @wiki_admin_required decorater, use AFTER login_required
+def wiki_admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_wiki_admin():
+            flash("You need to be a wiki admin to perform this action.", "danger")
+            return redirect(url_for("wiki.index"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # generate choices for the wiki link SelectField for map nodes
 def gen_wiki_entry_choices():

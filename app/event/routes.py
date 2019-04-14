@@ -3,18 +3,13 @@ from app.helpers import page_title, flash_no_permission, stretch_color
 from app.models import EventSetting, Event, EventCategory, Epoch, User, Role, Moon
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
-from app.event.helpers import redirect_non_event_admins, update_timestamp, get_events, gen_event_category_choices, get_events_by_category
+from app.event.helpers import event_admin_required, update_timestamp, get_events, gen_event_category_choices, get_events_by_category
 from app.calendar.helpers import gen_calendar_stats, gen_epoch_choices, gen_month_choices, gen_day_choices
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import not_, and_, or_
 
-no_perm = "calendar.index"
-
-@bp.route("/dummy", methods=["GET"])
-@login_required
-def dummy():
-    return redirect(url_for("index"))
+no_perm_url = "calendar.index"
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
@@ -22,13 +17,14 @@ def view(id):
     event = Event.query.filter_by(id=id).first_or_404()
     moons = Moon.query.all()
 
+    # TODO: write decorator for this?
     if not current_user.is_event_admin() and event.is_visible == False and not event.created_by == current_user:
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.has_admin_role() and current_user.has_event_role() and event.is_visible == False and event.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     return render_template("event/view.html", event=event, moons=moons, title=page_title("View event"))
 
@@ -126,13 +122,14 @@ def edit(id):
     else:
         form.day.choices = gen_day_choices(event.month_id)
 
+    # TODO: write custom decorator for this?
     if not current_user.has_admin_role() and current_user.has_event_role() and event.is_visible == False and event.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.is_event_admin() and event.is_visible == False and not event.created_by == current_user:
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.is_event_admin():
         del form.is_visible
@@ -179,13 +176,14 @@ def edit(id):
 def delete(id):
     event = Event.query.filter_by(id=id).first_or_404()
 
+    # TODO: write custom decorator for this?
     if not current_user.has_admin_role() and current_user.has_event_role() and event.is_visible == False and event.created_by.has_admin_role():
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     if not current_user.is_event_admin() and event.is_visible == False and not event.created_by == current_user:
         flash_no_permission()
-        return redirect(url_for(no_perm))
+        return redirect(url_for(no_perm_url))
 
     db.session.delete(event)
     db.session.commit()
@@ -195,11 +193,8 @@ def delete(id):
 
 @bp.route("/category/create", methods=["GET", "POST"])
 @login_required
+@event_admin_required
 def category_create():
-    deny_access = redirect_non_event_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     heading = "Create new event category"
     form = CategoryForm()
 
@@ -216,11 +211,8 @@ def category_create():
 
 @bp.route("/category/edit/<int:id>", methods=["GET", "POST"])
 @login_required
+@event_admin_required
 def category_edit(id):
-    deny_access = redirect_non_event_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     heading = "Edit event category"
     form = CategoryForm()
 
@@ -242,11 +234,8 @@ def category_edit(id):
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
+@event_admin_required
 def settings():
-    deny_access = redirect_non_event_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     settings = EventSetting.query.get(1)
     form = SettingsForm()
     form.default_category.choices = gen_event_category_choices()

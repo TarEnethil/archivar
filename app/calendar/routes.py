@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, stretch_color
+from app.helpers import page_title, admin_required, stretch_color
 from app.models import CalendarSetting, Epoch, Month, Day, Moon
 from app.calendar import bp
 from app.calendar.forms import EpochForm, MonthForm, DayForm, MoonForm
@@ -9,15 +9,12 @@ from app.event.helpers import get_event_categories
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 
-no_perm = "index"
+no_perm_url = "index"
 
 @bp.route("/settings", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def settings():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
 
     epochs = Epoch.query.order_by(Epoch.order.asc()).all()
@@ -62,11 +59,8 @@ def view():
 
 @bp.route("/check", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def check():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
             flash("Calendar has already been finalized, check not possible.", "danger")
@@ -83,11 +77,8 @@ def check():
 
 @bp.route("/preview", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def preview():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("Calendar has already been finalized, preview not possible.", "danger")
@@ -119,11 +110,8 @@ def preview():
 
 @bp.route("/finalize", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def finalize():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
             flash("Calendar has already been finalized.", "danger")
@@ -145,11 +133,8 @@ def finalize():
 
 @bp.route("/epoch/create", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def epoch_create():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't add new epochs.", "danger")
@@ -174,11 +159,8 @@ def epoch_create():
 
 @bp.route("/epoch/edit/<int:id>", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def epoch_edit(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     heading = "Edit epoch"
     form = EpochForm()
 
@@ -215,11 +197,8 @@ def epoch_edit(id):
 
 @bp.route("/epoch/delete/<int:id>", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def epoch_delete(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't delete epochs.", "danger")
@@ -236,11 +215,8 @@ def epoch_delete(id):
 
 @bp.route("/epoch/up/<int:id>", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def epoch_up(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't change the order of epochs.", "danger")
@@ -266,11 +242,8 @@ def epoch_up(id):
 
 @bp.route("/epoch/down/<int:id>", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def epoch_down(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't change the order of epochs.", "danger")
@@ -296,11 +269,8 @@ def epoch_down(id):
 
 @bp.route("/month/create", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def month_create():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't add new months.", "danger")
@@ -324,11 +294,8 @@ def month_create():
 
 @bp.route("/month/edit/<int:id>", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def month_edit(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     heading = "Edit month"
     form = MonthForm()
 
@@ -362,11 +329,8 @@ def month_edit(id):
 
 @bp.route("/month/delete/<int:id>", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def month_delete(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't deletet months.", "danger")
@@ -383,11 +347,8 @@ def month_delete(id):
 
 @bp.route("/month/up/<int:id>", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def month_up(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't change the order of months.", "danger")
@@ -413,11 +374,8 @@ def month_up(id):
 
 @bp.route("/month/down/<int:id>", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def month_down(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't change the order of months.", "danger")
@@ -443,11 +401,8 @@ def month_down(id):
 
 @bp.route("/day/create", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def day_create():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't add new days.", "danger")
@@ -471,11 +426,8 @@ def day_create():
 
 @bp.route("/day/edit/<int:id>", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def day_edit(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     heading = "Edit day"
     form = DayForm()
 
@@ -499,11 +451,8 @@ def day_edit(id):
 
 @bp.route("/day/delete/<int:id>", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def day_delete(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't delete days.", "danger")
@@ -520,11 +469,8 @@ def day_delete(id):
 
 @bp.route("/day/up/<int:id>", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def day_up(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't change the order of days.", "danger")
@@ -550,11 +496,8 @@ def day_up(id):
 
 @bp.route("/day/down/<int:id>", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def day_down(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't change the order of days.", "danger")
@@ -580,11 +523,8 @@ def day_down(id):
 
 @bp.route("/moon/create", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def moon_create():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't add new moons.", "danger")
@@ -606,11 +546,8 @@ def moon_create():
 
 @bp.route("/moon/edit/<int:id>", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def moon_edit(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     heading = "Edit moon"
     form = MoonForm()
 
@@ -639,11 +576,8 @@ def moon_edit(id):
 
 @bp.route("/moon/delete/<int:id>", methods=["GET"])
 @login_required
+@admin_required(no_perm_url)
 def moon_delete(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         flash("The calendar is finalized. You can't delete days.", "danger")

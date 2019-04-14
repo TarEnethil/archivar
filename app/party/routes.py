@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, redirect_non_admins, redirect_non_admins_non_party
+from app.helpers import page_title, admin_required, admin_or_party_required
 from app.models import Character, Party
 from app.party import bp
 from app.party.forms import PartyForm
@@ -7,15 +7,12 @@ from app.party.helpers import gen_party_members_choices
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 
-no_perm = "character.list"
+no_perm_url = "character.list"
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def create():
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     form = PartyForm()
     form.members.choices = gen_party_members_choices()
 
@@ -34,18 +31,12 @@ def create():
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
+@admin_or_party_required(no_perm_url)
 def edit(id):
-    # load party first so that we can check if the user has a character in it
     party = Party.query.filter_by(id=id).first_or_404()
-
-    deny_access = redirect_non_admins_non_party(party)
-    if deny_access:
-        return redirect(url_for(no_perm))
-
-    form = PartyForm()
-
     is_admin = current_user.has_admin_role()
 
+    form = PartyForm()
     if is_admin:
         form.members.choices = gen_party_members_choices()
     else:
@@ -90,11 +81,8 @@ def view(id):
 
 @bp.route("/delete/<int:id>", methods=["GET", "POST"])
 @login_required
+@admin_required(no_perm_url)
 def delete(id):
-    deny_access = redirect_non_admins()
-    if deny_access:
-        return redirect(url_for(no_perm))
-
     party = Party.query.filter_by(id=id).first_or_404()
 
     db.session.delete(party)

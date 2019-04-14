@@ -1,16 +1,20 @@
 from app import db
-from app.helpers import flash_no_permission
 from app.models import Event, EventCategory, Role, User
 from app.calendar.helpers import gen_calendar_stats
+from flask import redirect, url_for, flash
+from functools import wraps
 from flask_login import current_user
 from sqlalchemy import and_, or_, not_
 
-# check if current user is event admin
-def redirect_non_event_admins():
-    if not current_user.is_event_admin():
-        flash_no_permission()
-        return True
-    return False
+# @event_admin_required decorater, use AFTER login_required
+def event_admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_event_admin():
+            flash("You need to be a event admin to perform this action.", "danger")
+            return redirect(url_for("calendar.index"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # generate choices for event category SelectField
 def gen_event_category_choices():
