@@ -76,6 +76,14 @@ makeDatatable("parties-table");
 <hr>
 
 <h2>Characters</h2>
+<ul class="nav nav-tabs">
+    <li>
+        <a href="{{ url_for('character.create') }}">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            New character
+        </a>
+    </li>
+</ul>
 {% if chars %}
 <table class="table table-hover table-striped" id="char-table">
     <thead>
