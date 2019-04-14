@@ -23,8 +23,8 @@ def before_request():
             flash("You must change your password before proceeding.", "warning")
             return redirect(password_url)
 
-@app.route("/")
 @app.route("/index")
+@app.route("/")
 def index():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
