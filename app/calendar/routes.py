@@ -193,7 +193,7 @@ def epoch_edit(id):
             form.years.data = epoch.years
             form.circa.data = epoch.circa
 
-    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Edit epoch"))
+    return render_template("calendar/form.html", item=epoch, form=form, heading=heading, title=page_title("Edit epoch"))
 
 @bp.route("/epoch/delete/<int:id>", methods=["GET"])
 @login_required
@@ -325,7 +325,7 @@ def month_edit(id):
         if cset.finalized == False:
             form.days.data = month.days
 
-    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Edit month"))
+    return render_template("calendar/form.html", item=month, form=form, heading=heading, title=page_title("Edit month"))
 
 @bp.route("/month/delete/<int:id>", methods=["GET"])
 @login_required
@@ -447,7 +447,7 @@ def day_edit(id):
         form.abbreviation.data = day.abbreviation
         form.description.data = day.description
 
-    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Edit day"))
+    return render_template("calendar/form.html", item=day, form=form, heading=heading, title=page_title("Edit day"))
 
 @bp.route("/day/delete/<int:id>", methods=["GET"])
 @login_required
@@ -572,7 +572,7 @@ def moon_edit(id):
         form.waxing_color.data = moon.waxing_color
         form.waning_color.data = moon.waning_color
 
-    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Edit moon"))
+    return render_template("calendar/form.html", item=moon, form=form, heading=heading, title=page_title("Edit moon"))
 
 @bp.route("/moon/delete/<int:id>", methods=["GET"])
 @login_required

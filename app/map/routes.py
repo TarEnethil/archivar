@@ -123,7 +123,7 @@ def map_settings(id):
         form.default_zoom.data = map_.default_zoom
         form.is_visible.data = map_.is_visible
 
-        return render_template("map/edit.html", form=form, title=page_title("Edit map"))
+        return render_template("map/edit.html", map=map_, form=form, title=page_title("Edit map"))
 
 # global map settings
 @bp.route("/settings", methods=["GET", "POST"])
@@ -160,7 +160,7 @@ def settings():
 
     node_types = MapNodeType.query.all()
 
-    return render_template("map/settings.html", form=form, node_types=node_types, title=page_title("Map settings"))
+    return render_template("map/settings.html", form=form, settings=settings, node_types=node_types, title=page_title("Map settings"))
 
 @bp.route("/list")
 @login_required

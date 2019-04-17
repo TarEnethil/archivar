@@ -188,7 +188,7 @@ def category_edit(id):
     elif request.method == "GET":
         form.name.data = category.name
 
-    return render_template("media/category.html", form=form, heading=heading, title=page_title(heading))
+    return render_template("media/category.html", category=category, form=form, heading=heading, title=page_title(heading))
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
@@ -208,7 +208,7 @@ def settings():
 
     categories = MediaCategory.query.all()
 
-    return render_template("media/settings.html", categories=categories, form=form, title=page_title("Media settings"))
+    return render_template("media/settings.html", settings=settings, categories=categories, form=form, title=page_title("Media settings"))
 
 @bp.route("/sidebar/<int:c_id>", methods=["GET"])
 @login_required

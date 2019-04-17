@@ -9,7 +9,7 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['simplemde']) }}
+{{ include_js(['simplemde', 'moment']) }}
 
 <script>
 SimpleMDE(generateSMDEConfig("description"));
@@ -20,4 +20,8 @@ SimpleMDE(generateSMDEConfig("description"));
     <h1>{{ heading }}</h1>
 
     {{ wtf.quick_form(form) }}
+
+    {% if item %}
+    {{ item.print_info() }}
+    {% endif %}
 {% endblock %}

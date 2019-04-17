@@ -3,6 +3,8 @@
 {% block scripts %}
 {{ super() }}
 
+{{ include_js(['moment']) }}
+
 <script type="text/javascript">
 {% if current_user.has_admin_role() %}
     $(document).ready(function() {
@@ -71,4 +73,6 @@
 {{ party.dm_notes|markdown }}
 </div>
 {% endif %}
+
+{{ party.print_info() }}
 {% endblock %}

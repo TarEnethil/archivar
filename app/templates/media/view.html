@@ -4,6 +4,8 @@
 {% block scripts %}
 {{ super() }}
 
+{{ include_js(['moment']) }}
+
 <script>
 $(document).ready(function() {
     $("#delete-link").click(function(e) {
@@ -55,4 +57,6 @@ $(document).ready(function() {
     <img src="{{ url_for('media.serve_file', filename=item.filename) }}" id="preview_image" />
 
     {% endif %}
+
+    {{ item.print_info() }}
 {% endblock %}

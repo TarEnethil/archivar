@@ -8,7 +8,7 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['simplemde']) }}
+{{ include_js(['simplemde', 'moment']) }}
 
 <script>
 {% include "sidebars.js" %}
@@ -28,4 +28,6 @@ $("#quicklinks").attr("placeholder", "one link per line; format: url|title");
     </p>
 
     {{ wtf.quick_form(form) }}
+
+    {{ settings.print_info(create=False) }}
 {% endblock %}

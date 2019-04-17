@@ -208,7 +208,7 @@ def settings():
     elif request.method == "GET":
         form.default_visible.data = settings.default_visible
 
-    return render_template("wiki/settings.html", form=form, title=page_title("Wiki settings"))
+    return render_template("wiki/settings.html", settings=settings, form=form, title=page_title("Wiki settings"))
 
 @bp.route("/sidebar", methods=["GET"])
 @login_required

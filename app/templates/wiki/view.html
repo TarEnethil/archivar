@@ -108,11 +108,6 @@ No content.
     <a href="{{ url_for('wiki.search_tag', tag=tag) }}">#{{ tag }}</a>
     {% endfor %}
 {% endif %}
-<hr>
-<ul class="list-unstyled">
-    <li>Created by <a href="{{ url_for('user.profile', username=entry.created_by.username) }}">{{ entry.created_by.username }}</a> ({{ moment(entry.created).format(current_user.dateformat) }})</li>
-    {% if entry.edited_by %}
-    <li>Edited by <a href="{{ url_for('user.profile', username=entry.edited_by.username) }}">{{ entry.edited_by.username }}</a> ({{ moment(entry.edited).format(current_user.dateformat) }})</li>
-    {% endif %}
-</ul>
+
+{{ entry.print_info() }}
 {% endblock %}

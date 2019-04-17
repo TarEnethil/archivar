@@ -229,7 +229,7 @@ def category_edit(id):
         form.name.data = category.name
         form.color.data = category.color
 
-    return render_template("event/category.html", form=form, heading=heading, title=page_title(heading))
+    return render_template("event/category.html", category=category, form=form, heading=heading, title=page_title(heading))
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
@@ -257,7 +257,7 @@ def settings():
 
     categories = EventCategory.query.all()
 
-    return render_template("event/settings.html", categories=categories, form=form, title=page_title("Event settings"))
+    return render_template("event/settings.html", settings=settings, categories=categories, form=form, title=page_title("Event settings"))
 
 @bp.route("/sidebar", methods=["GET"])
 @login_required

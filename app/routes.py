@@ -115,7 +115,7 @@ def settings():
         form.welcome_page.data = settings.welcome_page
         form.quicklinks.data = settings.quicklinks
 
-    return render_template("settings.html", form=form, title=page_title("General settings"))
+    return render_template("settings.html", settings=settings, form=form, title=page_title("General settings"))
 
 @app.route("/__install__", methods=["GET", "POST"])
 def install():

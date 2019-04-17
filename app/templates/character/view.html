@@ -96,12 +96,7 @@
 {{ char.dm_notes|markdown }}
         </div>
         {% endif %}
-
-    <hr>
-    <p>
-        Created: {{ moment(char.created).format(current_user.dateformat) }} <br />
-        Edited: {{ moment(char.edited).format(current_user.dateformat) }}
-    </p>
     {% endif %}
 
+    {{ char.print_info() }}
 {% endblock %}

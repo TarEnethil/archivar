@@ -1,9 +1,10 @@
-from app import db, login
+from app import app, db, login
+from datetime import datetime
 from flask import url_for
 from flask_login import UserMixin
-from datetime import datetime
 from flask_login import current_user
 from flask_misaka import markdown
+from jinja2 import Markup, Template, contextfunction
 from sqlalchemy.ext.declarative import declared_attr
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -44,6 +45,44 @@ class SimpleAuditMixin(object):
     @declared_attr
     def edited_by(cls):
         return db.relationship("User", primaryjoin=lambda: User.id == cls.edited_by_id, foreign_keys = cls.edited_by_id)
+
+    @contextfunction
+    def print_info(self, context, create=True, edit=True, hr=True):
+        out = ""
+
+        if hr == True:
+            out += '<hr>'
+
+        out += '<ul class="list-unstyled">'
+
+        if create == True and (self.created_by or self.created):
+            out += "<li>Created"
+
+            if self.created_by:
+                out += ' by <a href="%s">%s</a>' % (url_for('user.profile', username=self.created_by.username), self.created_by.username)
+
+            if self.created:
+                out += " on %s" % app.extensions["moment"](self.created).format(current_user.dateformat)
+
+            out += "</li>"
+
+
+        if edit == True and (self.edited_by or self.edited):
+            out += "<li>Edited"
+
+            if self.edited_by:
+                out += ' by <a href="%s">%s</a>' % (url_for('user.profile', username=self.edited_by.username), self.edited_by.username)
+
+            if self.edited:
+                out += " on %s" % app.extensions["moment"](self.edited).format(current_user.dateformat)
+
+            out += "</li>"
+
+        if not "Created" in out and not "Edited" in out:
+            return ""
+
+        return Markup(Template(out).render(context))
+
 
 class User(UserMixin, db.Model):
     __tablename__ = "users"
@@ -134,7 +173,7 @@ class Role(db.Model):
     name = db.Column(db.String(64), index=True, unique=True)
     description = db.Column(db.String(256))
 
-class GeneralSetting(db.Model):
+class GeneralSetting(db.Model, SimpleAuditMixin):
     __tablename__ = "general_settings"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64))
