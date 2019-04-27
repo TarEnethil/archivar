@@ -100,6 +100,8 @@ class User(UserMixin, db.Model):
 
     dateformat = db.Column(db.String(25), default="LLL")
     editor_height = db.Column(db.Integer, default=500)
+    use_direct_links = db.Column(db.Boolean, default=True)
+    use_embedded_images = db.Column(db.Boolean, default=True)
     phb_session = db.Column(db.Boolean, default=False)
     phb_wiki = db.Column(db.Boolean, default=False)
     phb_character = db.Column(db.Boolean, default=False)

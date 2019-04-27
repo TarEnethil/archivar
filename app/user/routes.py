@@ -138,6 +138,8 @@ def settings():
     if form.validate_on_submit():
         current_user.dateformat = form.dateformat.data
         current_user.editor_height = form.editor_height.data
+        current_user.use_direct_links = form.use_direct_links.data
+        current_user.use_embedded_images = form.use_embedded_images.data
         current_user.phb_session = form.phb_session.data
         current_user.phb_wiki = form.phb_wiki.data
         current_user.phb_character = form.phb_character.data
@@ -150,6 +152,8 @@ def settings():
     elif request.method == "GET":
         form.dateformat.data = current_user.dateformat
         form.editor_height.data = current_user.editor_height
+        form.use_direct_links.data = current_user.use_direct_links
+        form.use_embedded_images.data = current_user.use_embedded_images
         form.phb_session.data = current_user.phb_session
         form.phb_wiki.data = current_user.phb_wiki
         form.phb_character.data = current_user.phb_character

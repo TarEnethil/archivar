@@ -1,3 +1,4 @@
+{% if current_user.is_authenticated %}
 <div class="sidebar" id="intref-sidebar">
     <a class="close-link-sidebar">
         <span class="glyphicon glyphicon-remove"></span>
@@ -11,7 +12,21 @@
         <span class="glyphicon glyphicon-remove"></span>
     </a>
     <input type="text" id="filter_media" placeholder="filter" />
-    <input type="checkbox" id="use_direct_links" checked="checked" /> <label for="use_direct_links">Use direct links</label> <br>
-    <input type="checkbox" id="use_embedded_images" checked="checked" /> <label for="use_embedded_images">Embed images</label>
+
+    {% if current_user.use_direct_links %}
+    <input type="checkbox" id="use_direct_links" checked="checked" />
+    {% else %}
+    <input type="checkbox" id="use_direct_links" >
+    {% endif %}
+    <label for="use_direct_links">Use direct links</label> <br>
+
+    {% if cond %}
+    <input type="checkbox" id="use_embedded_images" checked="checked" />
+    {% else %}
+    <input type="checkbox" id="use_embedded_images" />
+    {% endif %}
+    <label for="use_embedded_images">Embed images</label>
+
     <ul class="itemlist"></ul>
 </div>
+{% endif %}
