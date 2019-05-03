@@ -40,7 +40,7 @@ def create():
         db.session.commit()
 
         flash("Session was created.", "success")
-        return redirect(url_for("session.index"))
+        return redirect(url_for("session.view", id=new_session.id))
 
     return render_template("session/create.html", form=form, title=page_title("Create session"))
 
@@ -76,7 +76,7 @@ def edit(id):
 
         db.session.commit()
         flash("Session was changed.", "success")
-        return redirect(url_for("session.index"))
+        return redirect(url_for("session.view", id=id))
     elif request.method == "GET":
         form.title.data = session.title
         form.summary.data = session.summary

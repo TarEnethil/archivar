@@ -102,7 +102,7 @@ def create():
         update_timestamp(new_event.id)
 
         flash("Event was created.", "success")
-        return redirect(url_for("calendar.index"))
+        return redirect(url_for("event.view", id=new_event.id))
 
     calendar_helper = gen_calendar_stats()
     return render_template("event/create.html", form=form, calendar=calendar_helper, title=page_title("Create new event"))
@@ -153,7 +153,7 @@ def edit(id):
 
         flash("Event was edited.", "success")
 
-        return redirect(url_for("calendar.index"))
+        return redirect(url_for("event.view", id=id))
     elif request.method == "GET":
         form.name.data = event.name
         form.category.data = event.category_id

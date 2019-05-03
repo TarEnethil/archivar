@@ -99,7 +99,7 @@ def create():
         db.session.commit()
 
         flash("New user " + new_user.username + " created.", "success")
-        return redirect(url_for('user.list'))
+        return redirect(url_for('user.profile', username=new_user.username))
     else:
         return render_template("user/create.html", form=form, title=page_title("Create new user"))
 

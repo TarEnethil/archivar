@@ -73,7 +73,7 @@ def upload():
         db.session.commit()
 
         flash("Upload successful.", "success")
-        return redirect(url_for("media.index"))
+        return redirect(url_for("media.view", id=new_media.id))
     elif request.method == "GET":
         if current_user.is_media_admin() and settings.default_visible:
             form.is_visible.data = True
@@ -121,7 +121,7 @@ def edit(id):
 
         flash("File was edited.", "success")
 
-        return redirect(url_for("media.index"))
+        return redirect(url_for("media.view", id=id))
     elif request.method == "GET":
         form.name.data = item.name
         form.category.data = item.category_id

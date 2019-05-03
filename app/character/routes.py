@@ -21,7 +21,7 @@ def create():
         db.session.commit()
         flash("Character was created.", "success")
 
-        return redirect(url_for("user.profile", username=current_user.username))
+        return redirect(url_for("character.view", id=char.id))
     else:
         return render_template("character/create.html", form=form, title=page_title("Create new character"))
 
