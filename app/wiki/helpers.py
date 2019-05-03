@@ -56,6 +56,19 @@ def gen_wiki_entry_choices():
 
     return choices
 
+# get a list of distinct categories, excluding the empty category
+def gen_wiki_category_choices():
+    choices = [("", "choose a category")]
+
+    categories = WikiEntry.query.with_entities(WikiEntry.category).distinct()
+
+    for cat in categories:
+        if cat[0] != "":
+            choices.append((cat[0], cat[0]))
+
+
+    return choices
+
 # generate data for the wiki navigation
 def prepare_wiki_nav():
     # get all visible wiki entries for current user

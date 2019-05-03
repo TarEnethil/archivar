@@ -3,9 +3,8 @@ from app.helpers import page_title, flash_no_permission
 from app.models import WikiEntry, WikiSetting, User, Role
 from app.map.helpers import get_nodes_by_wiki_id
 from app.wiki import bp
-from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm
-from app.wiki.helpers import wiki_admin_required, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited
-from datetime import datetime
+from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm, WikiMoveCategoryForm
+from app.wiki.helpers import wiki_admin_required, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited, gen_wiki_category_choices
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import current_user, login_required
 from sqlalchemy import and_, or_, not_
@@ -197,18 +196,31 @@ def recent():
 @wiki_admin_required
 def settings():
     form = WikiSettingsForm()
+    move_form = WikiMoveCategoryForm()
     settings = WikiSetting.query.get(1)
 
-    if form.validate_on_submit():
+    move_form.old_category.choices = gen_wiki_category_choices()
+
+    if form.validate_on_submit() and form.submit.data:
         settings.default_visible = form.default_visible.data
 
         db.session.commit()
 
         flash("Settings have been saved.", "success")
+    elif move_form.validate_on_submit() and move_form.submit_move.data:
+        WikiEntry.query.filter(WikiEntry.category == move_form.old_category.data).update({WikiEntry.category: move_form.new_category.data})
+
+        db.session.commit()
+
+        flash('Category "' + move_form.old_category.data + '" was moved to "' + move_form.new_category.data + '".', "success")
+
+        move_form.old_category.data = ""
+        move_form.new_category.data = ""
+        move_form.old_category.choices = gen_wiki_category_choices()
     elif request.method == "GET":
         form.default_visible.data = settings.default_visible
 
-    return render_template("wiki/settings.html", settings=settings, form=form, title=page_title("Wiki settings"))
+    return render_template("wiki/settings.html", settings=settings, form=form, move_form=move_form, title=page_title("Wiki settings"))
 
 @bp.route("/sidebar", methods=["GET"])
 @login_required

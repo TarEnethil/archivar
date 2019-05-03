@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField, BooleanField, RadioField
+from wtforms import StringField, TextAreaField, SubmitField, BooleanField, RadioField, SelectField
 from wtforms.validators import Length, InputRequired
 
 class WikiEntryForm(FlaskForm):
@@ -22,3 +22,10 @@ class WikiSearchForm(FlaskForm):
     tags = RadioField(choices=[('text', "Text"), ('tag', "Tags")], default='text')
 
     submit = SubmitField("Search")
+
+class WikiMoveCategoryForm(FlaskForm):
+    old_category = SelectField("Category to be renamed",validators=[InputRequired()])
+    new_category = StringField("New name", validators=[Length(min=0, max=100)])
+
+    # different name because we have two forms on the same page
+    submit_move = SubmitField("Submit")

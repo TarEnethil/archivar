@@ -15,5 +15,13 @@
 
     {{ wtf.quick_form(form) }}
 
+    <h2>Rename wiki category</h2>
+    <p>
+        You can quickly rename a category or merge it with another. Note that the main category (empty field) can't be renamed.
+        <b>Note: If you leave the second field empty, all articles will be moved to the main category!</b>
+    </p>
+
+    {{ wtf.quick_form(move_form) }}
+
     {{ settings.print_info(create=False) }}
 {% endblock %}
