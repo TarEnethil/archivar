@@ -6,7 +6,7 @@ from wtforms.validators import Length, InputRequired, ValidationError
 class SettingsForm(FlaskForm):
     default_visible = BooleanField("Media items are visible by default")
 
-    submit = SubmitField("Submit")
+    submit = SubmitField("Save settings")
 
 class MediaItemCreateForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])
@@ -18,7 +18,7 @@ class MediaItemCreateForm(FlaskForm):
         if not "." in file.data.filename:
             raise ValidationError("No file extension found.")
 
-    submit = SubmitField("Submit")
+    submit = SubmitField("Upload file")
 
 class MediaItemEditForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])
@@ -30,7 +30,7 @@ class MediaItemEditForm(FlaskForm):
         if file.data and not "." in file.data.filename:
             raise ValidationError("No file extension found.")
 
-    submit = SubmitField("Submit")
+    submit = SubmitField("Save item")
 
 class CategoryForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])

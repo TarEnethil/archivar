@@ -15,7 +15,7 @@ class WikiEntryForm(FlaskForm):
 class WikiSettingsForm(FlaskForm):
     default_visible = BooleanField("New wiki entries are visible by default")
 
-    submit = SubmitField("Submit")
+    submit = SubmitField("Save settings")
 
 class WikiSearchForm(FlaskForm):
     searchterm = StringField("", validators=[InputRequired()])
@@ -28,4 +28,4 @@ class WikiMoveCategoryForm(FlaskForm):
     new_category = StringField("New name", validators=[Length(min=0, max=100)])
 
     # different name because we have two forms on the same page
-    submit_move = SubmitField("Submit")
+    submit_move = SubmitField("Move category")

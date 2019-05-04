@@ -142,7 +142,7 @@ def epoch_create():
 
     heading = "Create new epoch"
     form = EpochForm()
-
+    form.submit.label.text = "Create epoch"
 
     if form.validate_on_submit():
         order_num = get_next_epoch_order()
@@ -163,6 +163,7 @@ def epoch_create():
 def epoch_edit(id):
     heading = "Edit epoch"
     form = EpochForm()
+    form.submit.label.text = "Save epoch"
 
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
@@ -278,6 +279,7 @@ def month_create():
 
     heading = "Create new month"
     form = MonthForm()
+    form.submit.label.text = "Create month"
 
     if form.validate_on_submit():
         order_num = get_next_month_order()
@@ -298,6 +300,7 @@ def month_create():
 def month_edit(id):
     heading = "Edit month"
     form = MonthForm()
+    form.submit.label.text = "Save month"
 
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
@@ -410,6 +413,7 @@ def day_create():
 
     heading = "Create new day"
     form = DayForm()
+    form.submit.label.text = "Create day"
 
     if form.validate_on_submit():
         order_num = get_next_day_order()
@@ -430,6 +434,7 @@ def day_create():
 def day_edit(id):
     heading = "Edit day"
     form = DayForm()
+    form.submit.label.text = "Save day"
 
     day = Day.query.filter_by(id=id).first_or_404()
 
@@ -532,6 +537,7 @@ def moon_create():
 
     heading = "Create new moon"
     form = MoonForm()
+    form.submit.label.text = "Create moon"
 
     if form.validate_on_submit():
         new_moon = Moon(name=form.name.data, description=form.description.data, phase_length=form.phase_length.data, phase_offset=form.phase_offset.data, waxing_color=stretch_color(form.waxing_color.data.hex), waning_color=stretch_color(form.waning_color.data.hex))
@@ -550,6 +556,7 @@ def moon_create():
 def moon_edit(id):
     heading = "Edit moon"
     form = MoonForm()
+    form.submit.label.text = "Save moon"
 
     moon = Moon.query.filter_by(id=id).first_or_404()
 

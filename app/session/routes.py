@@ -23,6 +23,7 @@ def index():
 @admin_required(no_perm_url)
 def create():
     form = SessionForm()
+    form.submit.label.text = "Create session"
     form.participants.choices = gen_participant_choices()
 
     if form.validate_on_submit():
@@ -52,6 +53,8 @@ def edit(id):
     is_admin = current_user.has_admin_role()
 
     form = SessionForm()
+    form.submit.label.text = "Save session"
+
     if is_admin:
         form.participants.choices = gen_participant_choices()
     else:

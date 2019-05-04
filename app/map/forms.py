@@ -19,7 +19,7 @@ class MapSettingsForm(FlaskForm):
     default_visible = BooleanField("New nodes are visible by default")
     default_map = SelectField("Default map",validators=[Optional()],coerce=int)
 
-    submit = SubmitField("submit")
+    submit = SubmitField("Save settings")
 
 class MapForm(FlaskForm):
     name = StringField("Map name", validators=[InputRequired(), Length(max=100)])
@@ -52,7 +52,7 @@ class MapNodeTypeCreateForm(FlaskForm):
     description = StringField("node type description", validators=[Length(max=256)])
     icon = FileField("icon (x by x pixels recommended)", validators=[FileRequired()])
 
-    submit = SubmitField("submit")
+    submit = SubmitField("Create node type")
 
     def validate_icon(self, icon):
         icon_is_valid(icon.data.filename)
@@ -62,7 +62,7 @@ class MapNodeTypeEditForm(FlaskForm):
     description = StringField("node type description", validators=[Length(max=256)])
     icon = FileField("icon (x by x pixels recommended)")
 
-    submit = SubmitField("submit")
+    submit = SubmitField("Save node type")
 
     def validate_icon(self, icon):
         if icon.data:

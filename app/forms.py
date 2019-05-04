@@ -6,14 +6,14 @@ class LoginForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
     password = PasswordField("Password", validators=[DataRequired()])
     remember_me = BooleanField("Remember me")
-    submit = SubmitField("Sign in ")
+    submit = SubmitField("Sign in")
 
 class SettingsForm(FlaskForm):
     title = StringField("Title", validators=[Length(max=64)])
     world_name = StringField("Worldname", validators=[Length(max=64)])
     welcome_page = TextAreaField("Text for welcome page", render_kw={"rows": 20})
     quicklinks = TextAreaField("Quicklinks", render_kw={"rows": 7})
-    submit = SubmitField("Submit")
+    submit = SubmitField("Save settings")
 
 class InstallForm(FlaskForm):
     admin_name = StringField("Admin username", validators=[DataRequired()])
@@ -22,5 +22,5 @@ class InstallForm(FlaskForm):
 
     default_mapnodes = BooleanField("Install default map node types (city, village,...)")
 
-    submit = SubmitField("Submit")
+    submit = SubmitField("Install Archivar")
 

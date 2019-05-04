@@ -20,6 +20,7 @@ def index():
 @login_required
 def create():
     form = WikiEntryForm()
+    form.submit.label.text = "Create article"
 
     if not current_user.is_wiki_admin():
         del form.is_visible
@@ -59,6 +60,7 @@ def edit(id):
     wikientry = WikiEntry.query.filter_by(id=id).first_or_404()
 
     form = WikiEntryForm()
+    form.submit.label.text = "Save article"
 
     # TODO: write custom decorators for this?
     if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():

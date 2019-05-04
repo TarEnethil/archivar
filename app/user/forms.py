@@ -11,7 +11,7 @@ class CreateUserForm(FlaskForm):
 
     # choices are populated later
     roles = SelectMultipleField("Roles")
-    submit = SubmitField("Submit")
+    submit = SubmitField("Create user")
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
@@ -27,7 +27,7 @@ class EditProfileForm(FlaskForm):
     # choices are populated later
     roles = SelectMultipleField("Roles")
 
-    submit = SubmitField("Submit")
+    submit = SubmitField("Save changes")
 
 class SettingsForm(FlaskForm):
     dateformat = SelectField("Date format", choices=gen_date_string_choices(), validators=[InputRequired()])
@@ -40,10 +40,10 @@ class SettingsForm(FlaskForm):
     phb_party = BooleanField("Party: Use PHB-Style on markdown")
     phb_calendar = BooleanField("Calendar: Use PHB-Style on markdown")
 
-    submit = SubmitField("Submit")
+    submit = SubmitField("Save settings")
 
 class PasswordOnlyForm(FlaskForm):
     password = PasswordField("Password", validators=[InputRequired()])
     password2 = PasswordField("Password again", validators=[EqualTo("password")])
 
-    submit = SubmitField("Submit")
+    submit = SubmitField("Change password")

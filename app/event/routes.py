@@ -68,6 +68,7 @@ def list_category(c_id):
 def create():
     settings = EventSetting.query.get(1)
     form = EventForm()
+    form.submit.label.text = "Create event"
     form.category.choices = gen_event_category_choices()
     form.epoch.choices = gen_epoch_choices()
     form.month.choices = gen_month_choices()
@@ -113,6 +114,7 @@ def edit(id):
     event = Event.query.filter_by(id=id).first_or_404()
 
     form = EventForm()
+    form.submit.label.text = "Save event"
     form.category.choices = gen_event_category_choices()
     form.epoch.choices = gen_epoch_choices()
     form.month.choices = gen_month_choices()
@@ -196,6 +198,7 @@ def delete(id):
 def category_create():
     heading = "Create new event category"
     form = CategoryForm()
+    form.submit.label.text = "Create category"
 
     if form.validate_on_submit():
         new_category = EventCategory(name=form.name.data, color=stretch_color(form.color.data.hex))
@@ -214,6 +217,7 @@ def category_create():
 def category_edit(id):
     heading = "Edit event category"
     form = CategoryForm()
+    form.submit.label.text = "Edit category"
 
     category = EventCategory.query.filter_by(id=id).first_or_404()
 
