@@ -100,5 +100,31 @@
 <p>No participants.</p>
 {% endif %}
 
+{% if session.journals %}
+<h2>Journals</h2>
+<ul class="list-unstyled">
+    {% for journal in session.journals %}
+    {% if journal.is_visible or journal.character.player == current_user or current_user.has_admin_role() %}
+    <li>
+        {% if journal.is_visible %}
+        "<a href="{{ url_for('character.journal_view', c_id=journal.character_id, j_id=journal.id) }}">{{ journal.title }}</a>"
+        {% else %}
+        "<a class="invisible_item" href="{{ url_for('character.journal_view', c_id=journal.character_id, j_id=journal.id) }}">{{ journal.title }}</a>"
+        {% endif %}
+
+        by
+
+        {% if journal.character in session.participants %}
+        {{ journal.character.name }}
+        {% else %}
+        <a href="{{ url_for('character.view', id=journal.character_id) }}">{{ journal.character.name }}</a>
+        {% endif %}
+    </li>
+    {% endif %}
+    {% endfor %}
+    <li></li>
+</ul>
+{% endif %}
+
 {{ session.print_info() }}
 {% endblock %}
