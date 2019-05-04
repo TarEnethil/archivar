@@ -654,6 +654,20 @@ class MediaItem(db.Model, SimpleAuditMixin):
 
         return dic
 
+class Journal(db.Model, SimpleAuditMixin):
+    __tablename__ = "journal"
+
+    id = db.Column(db.Integer, primary_key=True)
+    is_visible = db.Column(db.Boolean)
+    title = db.Column(db.String(100))
+    content = db.Column(db.Text)
+
+    character_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
+    character = db.relationship("Character", backref="journals", foreign_keys=[character_id])
+
+    session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
+    session = db.relationship("Session", backref="journals", foreign_keys=[session_id])
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

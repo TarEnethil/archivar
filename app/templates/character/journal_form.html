@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{ super() }}
+{{ include_css(['simplemde']) }}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ include_js(['simplemde']) }}
+
+<script>
+{% include "sidebars.js" %}
+makeSMDE("content");
+</script>
+{% endblock %}
+
+{% block app_content %}
+    <h1>{{ heading }}</h1>
+
+    {{ wtf.quick_form(form) }}
+{% endblock %}

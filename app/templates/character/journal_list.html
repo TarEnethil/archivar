@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+
+{% block app_content %}
+
+<h1>Journals for {{ char.name }}</h1>
+
+<ul class="nav nav-tabs">
+    <li>
+        <a href="{{ url_for('character.view', id=char.id) }}">
+            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+            Back to char
+        </a>
+    </li>
+
+{% if current_user == char.player %}
+    <li>
+        <a href="{{ url_for('character.journal_create', c_id=char.id) }}">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            Add entry
+        </a>
+    </li>
+{% endif %}
+</ul>
+
+<p>
+    Here you can CTRL+F your heart out.
+
+    {% if current_user == char.player or current_user.has_admin_role() %}
+    <span class="invisible_item">Red text denotes a non-public entry.</span>
+    {% endif %}
+</p>
+
+{% if journals %}
+{% for journal in journals|reverse %}
+{% if journal.is_visible or current_user == char.player or current_user.has_admin_role() %}
+    <hr>
+    {% if journal.is_visible %}
+    <h2>{{ journal.title }}</h2>
+    {% else %}
+    <h2 class="invisible_item">{{ journal.title }}</h2>
+    {% endif %}
+    <a href="{{ url_for('character.journal_view', c_id=char.id, j_id=journal.id) }}">View</a>
+    {% if current_user == char.player or current_user.has_admin_role() %}
+    &bullet; <a href="{{ url_for('character.journal_edit', c_id=char.id, j_id=journal.id) }}">Edit</a>
+    {% endif %}
+
+    {% if journal.content %}
+    <div class="custom-markdown">
+{{ journal.content|markdown }}
+    </div>
+    {% endif %}
+{% endif %}
+{% endfor %}
+{% else %}
+<p>This character has no (public) journals.</p>
+{% endif %}
+
+{% endblock %}

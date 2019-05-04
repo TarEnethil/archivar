@@ -279,7 +279,8 @@ a.nav-danger:hover {
     background:#bbb;
 }
 
-tr.invisible_item {
+tr.invisible_item,
+.invisible_item {
     color:#ab0000;
     font-style:italic;
 }
