@@ -1,8 +1,9 @@
 from app import app, db
 from app.forms import LoginForm, SettingsForm, InstallForm
 from app.helpers import page_title, count_rows, admin_required
-from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting, EventSetting, EventCategory, MediaSetting, MediaCategory
+from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting, EventSetting, EventCategory, MediaSetting, MediaCategory, Journal
 from app.models import Character, Party, Session, Map, MapNode, Event, MediaItem
+from collections import OrderedDict
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, send_from_directory
 from flask_login import current_user, login_user, login_required, logout_user
@@ -43,10 +44,11 @@ def changelog():
 @app.route("/statistics")
 @login_required
 def statistics():
-    stats = {}
+    stats = OrderedDict()
 
     stats["Users"] = count_rows(User)
     stats["Characters"] = count_rows(Character)
+    stats["Journals"] = count_rows(Journal)
     stats["Parties"] = count_rows(Party)
     stats["Sessions"] = count_rows(Session)
     stats["Maps"] = count_rows(Map)
@@ -55,7 +57,8 @@ def statistics():
     stats["Wiki articles"] = count_rows(WikiEntry)
     stats["Events"] = count_rows(Event)
     stats["Event categories"] = count_rows(EventCategory)
-    stats["Media items"] = count_rows(MediaItem)
+    stats["Media files"] = count_rows(MediaItem)
+    stats["Media categories"] = count_rows(MediaCategory)
 
     return render_template("statistics.html", stats=stats, title=page_title("Statistics"))
 
