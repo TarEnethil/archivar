@@ -46,7 +46,11 @@
     {% endif %}
 
     {% if journal.content %}
-    <div class="custom-markdown">
+    {% if current_user.markdown_phb_style %}
+        <div class="custom-markdown phb-style">
+    {% else %}
+        <div class="custom-markdown">
+    {% endif %}
 {{ journal.content|markdown }}
     </div>
     {% endif %}

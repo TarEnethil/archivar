@@ -71,7 +71,11 @@ $("#phase-button").click(function(e) {
             {% if epoch.description %}
             <tr>
                 <td colspan="2">
-                    <div id="epoch-{{ epoch.id }}-desc" class="custom-markdown">
+                {% if current_user.markdown_phb_style %}
+                    <div class="custom-markdown phb-style">
+                {% else %}
+                    <div class="custom-markdown">
+                {% endif %}
 {{ epoch.description|markdown }}
                     </div>
                 </td>
@@ -109,7 +113,11 @@ $("#phase-button").click(function(e) {
             {% if month.description %}
             <tr>
                 <td colspan="2">
-                    <div id="month-{{ month.id }}-desc" class="custom-markdown">
+                {% if current_user.markdown_phb_style %}
+                    <div class="custom-markdown phb-style">
+                {% else %}
+                    <div class="custom-markdown">
+                {% endif %}
 {{ month.description|markdown }}
                     </div>
                 </td>
@@ -143,7 +151,11 @@ $("#phase-button").click(function(e) {
             {% if day.description %}
             <tr>
                 <td>
-                    <div id="day-{{ day.id }}-desc" class="custom-markdown">
+                {% if current_user.markdown_phb_style %}
+                    <div class="custom-markdown phb-style">
+                {% else %}
+                    <div class="custom-markdown">
+                {% endif %}
 {{ day.description|markdown }}
                     </div>
                 </td>
@@ -186,7 +198,11 @@ $("#phase-button").click(function(e) {
             {% if moon.description %}
             <tr>
                 <td colspan="2">
-                    <div id="moon-{{ moon.id }}-desc" class="custom-markdown">
+                {% if current_user.markdown_phb_style %}
+                    <div class="custom-markdown phb-style">
+                {% else %}
+                    <div class="custom-markdown">
+                {% endif %}
 {{ moon.description|markdown }}
                     </div>
                 </td>

@@ -13,7 +13,11 @@
 {% endif %}
 
 {% if settings.welcome_page %}
-    <div id="welcome_page">
+{% if current_user.markdown_phb_style %}
+    <div class="custom-markdown phb-style">
+{% else %}
+    <div>
+{% endif %}
 {{ settings.welcome_page|markdown }}
     </div>
 {% endif %}

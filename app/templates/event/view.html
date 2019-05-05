@@ -56,10 +56,10 @@
     </dl>
 
 {% if event.description %}
-{% if current_user.phb_calendar %}
-    <div id="description" class="custom-markdown phb-style">
+{% if current_user.markdown_phb_style %}
+    <div class="custom-markdown phb-style">
 {% else %}
-    <div id="description" class="custom-markdown">
+    <div class="custom-markdown">
 {% endif %}
 {{ event.description|markdown }}
     </div>

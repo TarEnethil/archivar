@@ -34,11 +34,7 @@ class SettingsForm(FlaskForm):
     editor_height = IntegerField("Height of markdown editor (px)", validators=[InputRequired()])
     use_direct_links = BooleanField("Media sidebar: Use direct links")
     use_embedded_images = BooleanField("Media sidebar: Embed images")
-    phb_session = BooleanField("Session: Use PHB-Style on markdown")
-    phb_wiki = BooleanField("Wiki: Use PHB-Style on markdown")
-    phb_character = BooleanField("Character: Use PHB-Style on markdown")
-    phb_party = BooleanField("Party: Use PHB-Style on markdown")
-    phb_calendar = BooleanField("Calendar: Use PHB-Style on markdown")
+    markdown_phb_style = BooleanField("Use PHB-Style for markdown")
 
     submit = SubmitField("Save settings")
 

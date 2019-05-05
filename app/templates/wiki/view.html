@@ -69,11 +69,11 @@
 </p>
 {% endif %}
 
-    {% if current_user.phb_wiki %}
-    <div id="content" class="custom-markdown phb-style">
-    {% else %}
-    <div id="content" class="custom-markdown">
-    {% endif %}
+{% if current_user.markdown_phb_style %}
+    <div class="custom-markdown phb-style">
+{% else %}
+    <div class="custom-markdown">
+{% endif %}
 {% if entry.content %}
 {% filter markdown %}
 # {{ entry.title }}
@@ -97,7 +97,11 @@ No content.
     {% if entry.dm_content %}
     <hr>
     <h2>DM Notes</h2>
-    <div id="entry_dm_content" class="custom-markdown">
+{% if current_user.markdown_phb_style %}
+    <div class="custom-markdown phb-style">
+{% else %}
+    <div class="custom-markdown">
+{% endif %}
 {{ entry.dm_content|markdown }}
     </div>
     {% endif %}

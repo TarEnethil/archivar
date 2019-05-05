@@ -91,10 +91,10 @@
     {% endif %}
 
     {% if char.description %}
-    {% if current_user.phb_character %}
-    <div id="char_description" class="custom-markdown phb-style">
+    {% if current_user.markdown_phb_style %}
+        <div class="custom-markdown phb-style">
     {% else %}
-    <div id="char_description" class="custom-markdown">
+        <div class="custom-markdown">
     {% endif %}
 {{ char.description|markdown }}
     </div>
@@ -150,7 +150,11 @@
     {% if char.private_notes and (current_user.has_admin_role() or char.player.id == current_user.id) %}
     <hr>
     <h2>Private Notes</h2>
-    <div id="char_private_notes" class="custom-markdown">
+{% if current_user.markdown_phb_style %}
+    <div class="custom-markdown phb-style">
+{% else %}
+    <div class="custom-markdown">
+{% endif %}
 {{ char.private_notes|markdown }}
     </div>
     {% endif %}
@@ -159,7 +163,11 @@
         {% if char.dm_notes %}
         <hr>
         <h2>DM Notes</h2>
-        <div id="char_dm_notes" class="custom-markdown">
+    {% if current_user.markdown_phb_style %}
+        <div class="custom-markdown phb-style">
+    {% else %}
+        <div class="custom-markdown">
+    {% endif %}
 {{ char.dm_notes|markdown }}
         </div>
         {% endif %}

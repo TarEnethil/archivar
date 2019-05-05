@@ -102,11 +102,13 @@ class User(UserMixin, db.Model):
     editor_height = db.Column(db.Integer, default=500)
     use_direct_links = db.Column(db.Boolean, default=True)
     use_embedded_images = db.Column(db.Boolean, default=True)
-    phb_session = db.Column(db.Boolean, default=False)
-    phb_wiki = db.Column(db.Boolean, default=False)
-    phb_character = db.Column(db.Boolean, default=False)
-    phb_party = db.Column(db.Boolean, default=False)
-    phb_calendar = db.Column(db.Boolean, default=False)
+    markdown_phb_style = db.Column(db.Boolean, default=False)
+
+    #phb_session = db.Column(db.Boolean, default=False)
+    #phb_wiki = db.Column(db.Boolean, default=False)
+    #phb_character = db.Column(db.Boolean, default=False)
+    #phb_party = db.Column(db.Boolean, default=False)
+    #phb_calendar = db.Column(db.Boolean, default=False)
 
     def has_role(self, roleId):
         role = Role.query.get(roleId)
