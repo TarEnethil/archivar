@@ -439,3 +439,26 @@ def last_change(id):
 @login_required
 def tile(filename):
     return send_from_directory(app.config["MAPTILES_DIR"], filename)
+
+@bp.route("/sidebar/<int:m_id>", methods=["GET"])
+@login_required
+def sidebar(m_id):
+    nodes = get_visible_nodes(m_id)
+
+    d = {}
+    for n in nodes:
+        d[n.id] = n.sidebar_dict();
+
+    return jsonify(d)
+
+@bp.route("/sidebar/maps", methods=["GET"])
+@login_required
+def sidebar_maps():
+    cats = Map.query.order_by(Map.id.asc()).all()
+
+    d = {}
+
+    for c in cats:
+        d[c.id] = c.to_dict()
+
+    return jsonify(d);

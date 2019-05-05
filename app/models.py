@@ -104,12 +104,6 @@ class User(UserMixin, db.Model):
     use_embedded_images = db.Column(db.Boolean, default=True)
     markdown_phb_style = db.Column(db.Boolean, default=False)
 
-    #phb_session = db.Column(db.Boolean, default=False)
-    #phb_wiki = db.Column(db.Boolean, default=False)
-    #phb_character = db.Column(db.Boolean, default=False)
-    #phb_party = db.Column(db.Boolean, default=False)
-    #phb_calendar = db.Column(db.Boolean, default=False)
-
     def has_role(self, roleId):
         role = Role.query.get(roleId)
 
@@ -206,6 +200,14 @@ class Map(db.Model, SimpleAuditMixin):
     last_change = db.Column(db.DateTime, default=datetime.utcnow)
     is_visible = db.Column(db.Boolean, default=True)
 
+    def to_dict(self):
+        dic = {
+            "id" : self.id,
+            "name" : self.name,
+        }
+
+        return dic
+
 class MapNodeType(db.Model, SimpleAuditMixin):
     __tablename__ = "map_node_types"
     id = db.Column(db.Integer, primary_key=True)
@@ -261,6 +263,15 @@ class MapNode(db.Model, SimpleAuditMixin):
                 "edited" : self.edited,
                 "edited_by" : self.edited_by.username
             })
+
+        return dic
+
+    def sidebar_dict(self):
+        dic = {
+            "id" : self.id,
+            "name" : self.name,
+            "visible": self.is_visible
+        }
 
         return dic
 

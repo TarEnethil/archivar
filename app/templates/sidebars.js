@@ -2,6 +2,8 @@ var intRefLoaded = false;
 var intRefVisible = false;
 var mediaLoaded = false;
 var mediaVisible = false;
+var mapLoaded = false;
+var mapVisible = false;
 
 var img_extensions = ["png", "gif", "jpg", "jpeg"];
 
@@ -65,10 +67,42 @@ function mediaLoadResource(editor, category, url) {
     });
 }
 
+function mapLoadResource(editor, category, url) {
+    var fake_url = "{{ url_for('map.view_with_node', id=-1, n_id=0) }}".replace("-1", category.id);
+    var list = $("#map-sidebar .itemlist");
+    var listitem = undefined;
+
+    $.getJSON(url, function(data) {
+        if ($.isEmptyObject(data))
+            return;
+
+        var x = $("<li/>").addClass("category").text(category.name).appendTo(list);
+
+        for (var i in data) {
+            if (listitem == undefined)
+                listitem = $("<li/>").appendTo(list);
+            else
+                listitem = $("<li/>").insertAfter(listitem);
+
+            listitem.addClass("thing").text(data[i].name).attr("data-url", fake_url.replace("0", data[i].id));
+
+            if (data[i].visible == false) {
+                listitem.addClass("invis");
+            }
+
+            $(listitem).click(function() {
+                insertReference(editor, $(this).text(), $(this).attr("data-url"));
+            });
+        }
+    });
+}
+
 function toggleIntRefSidebar(editor) {
-    if (intRefVisible == false && mediaVisible == true) {
+    if (intRefVisible == false && (mediaVisible == true || mapVisible == true)) {
         $("#media-sidebar").hide();
+        $("#map-sidebar").hide();
         mediaVisible = false;
+        mapVisible = false;
     }
 
     if (intRefLoaded == false) {
@@ -115,9 +149,11 @@ function toggleIntRefSidebar(editor) {
 }
 
 function toggleMediaSidebar(editor) {
-    if (mediaVisible == false && intRefVisible == true) {
+    if (mediaVisible == false && (intRefVisible == true || mapVisible == true)) {
         $("#intref-sidebar").hide();
+        $("#map-sidebar").hide();
         intRefVisible = false;
+        mapVisible = false;
     }
 
     if (mediaLoaded == false) {
@@ -155,6 +191,55 @@ function toggleMediaSidebar(editor) {
         } else {
             $("#media-sidebar").hide();
             mediaVisible = false;
+        }
+    }
+
+    active_editor = editor;
+}
+
+function toggleMapSidebar(editor) {
+    if (mapVisible == false && (intRefVisible == true || mediaVisible == true)) {
+        $("#intref-sidebar").hide();
+        $("#media-sidebar").hide();
+        intRefVisible = false;
+        mediaVisible = false;
+    }
+
+    // LOAD MAP NODES
+    var sidebar = $("#map-sidebar");
+
+    if (mapLoaded == false) {
+        // load and show
+        mapLoaded = true;
+        sidebar.show();
+        mapVisible = true;
+
+        $("#map-sidebar .close-link-sidebar").click(function() {
+            sidebar.hide();
+            mapVisible = false;
+        });
+
+        $.getJSON("{{ url_for('map.sidebar_maps') }}", function(data) {
+            var url = "{{ url_for('map.sidebar', m_id='0') }}";
+            for (var i in data) {
+                mapLoadResource(editor, data[i], url.replace("0", data[i].id));
+            }
+        });
+
+        $("#filter_mapnodes").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+
+            $("#map-sidebar .itemlist li.thing").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    } else {
+        if (mapVisible == false) {
+            $("#map-sidebar").show();
+            mapVisible = true;
+        } else {
+            $("#map-sidebar").hide();
+            mapVisible = false;
         }
     }
 
@@ -214,11 +299,18 @@ var media = {
     title: "Insert media"
 }
 
+var maps = {
+    name: "insertMapNode",
+    action: toggleMapSidebar,
+    className: "fa fa-map-marker fa-red",
+    title: "Insert map node"
+}
+
 function generateSMDEConfig(id, withHeading=true) {
-    var toolb = ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media];
+    var toolb = ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps];
 
     if (withHeading == false) {
-        toolb = ["bold", "italic", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media];
+        toolb = ["bold", "italic", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps];
     }
 
     return {
