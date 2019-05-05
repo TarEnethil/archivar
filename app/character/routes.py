@@ -5,7 +5,7 @@ from app.character.helpers import gen_session_choices
 from app.helpers import page_title, flash_no_permission
 from app.models import Character, Party, Journal
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, jsonify
+from flask import render_template, flash, redirect, url_for, jsonify, request
 from flask_login import current_user, login_required
 
 no_perm = "index"
@@ -141,6 +141,16 @@ def journal_create(c_id):
 
         return redirect(url_for("character.journal_view", c_id=c_id, j_id=journal_entry.id))
     else:
+        # pre-select session if get-param was passed
+        session_id = request.args.get("session")
+
+        # will do nothing if session_id not an int or not in choices
+        if session_id:
+            try:
+                form.session.data = int(session_id)
+            except:
+                pass
+
         return render_template("character/journal_form.html", heading=heading, form=form, title=page_title("Create new journal entry"))
 
 @bp.route("/journal/<int:c_id>/edit/<int:j_id>", methods=["GET", "POST"])
