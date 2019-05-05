@@ -104,6 +104,32 @@ def create():
 
         flash("Event was created.", "success")
         return redirect(url_for("event.view", id=new_event.id))
+    elif request.method == "GET":
+        # pre-select fields if get-params were passed
+        epoch_id = request.args.get("epoch")
+        year = request.args.get("year")
+        category_id = request.args.get("category")
+
+        # will do nothing if var is not an int or not in choices
+        if epoch_id:
+            try:
+                form.epoch.data = int(epoch_id)
+            except:
+                pass
+
+        # will do nothing if var is not an int or not in choices
+        if year:
+            try:
+                form.year.data = int(year)
+            except:
+                pass
+
+        # will do nothing if var is not an int or not in choices
+        if category_id:
+            try:
+                form.category.data = int(category_id)
+            except:
+                pass
 
     calendar_helper = gen_calendar_stats()
     return render_template("event/create.html", form=form, calendar=calendar_helper, title=page_title("Create new event"))

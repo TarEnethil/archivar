@@ -19,6 +19,21 @@ makeDatatable("event-table");
 {% block app_content %}
     <h1>{{ heading }}</h1>
 
+    <ul class="nav nav-tabs">
+        <li>
+        {% if epoch_flag %}
+            <a href="{{ url_for('event.create', epoch=request.view_args['e_id']) }}">
+        {% elif epoch_year_flag %}
+            <a href="{{ url_for('event.create', epoch=request.view_args['e_id'], year=request.view_args['year']) }}">
+        {% elif category_flag %}
+            <a href="{{ url_for('event.create', category=request.view_args['c_id']) }}">
+        {% endif %}
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                New event here
+            </a>
+        </li>
+    </ul>
+
     <p>
         The following events match the search criteria:
     </p>
