@@ -12,9 +12,11 @@
 
 <script>
 {% include "sidebars.js" %}
-{% include "sidebars.js" %}
 makeSMDE("summary");
+
+{% if current_user.has_admin_role() %}
 makeSMDE("dm_notes");
+{% endif %}
 
 makeMultiSelect("participants", "Available", "Participants", "partymember-select");
 

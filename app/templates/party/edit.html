@@ -13,7 +13,10 @@
 <script>
 {% include "sidebars.js" %}
 makeSMDE("description");
+
+{% if current_user.has_admin_role() %}
 makeSMDE("dm_notes");
+{% endif %}
 
 makeMultiSelect("members", "Non-party character", "Party members", "partymember-select");
 </script>
