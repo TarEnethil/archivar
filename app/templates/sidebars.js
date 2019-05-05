@@ -38,6 +38,9 @@ function mediaLoadResource(editor, category, url) {
     var listitem = undefined;
 
     $.getJSON(url, function(data) {
+        if ($.isEmptyObject(data))
+            return;
+
         var x = $("<li/>").addClass("category").text(category).appendTo(list);
 
         for (var i in data) {
