@@ -24,6 +24,15 @@ makeDatatable("media-table", 25);
                 New media
             </a>
         </li>
+
+        {% if current_user.is_media_admin() %}
+        <li>
+            <a href="{{ url_for('media.settings') }}">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                Media settings
+            </a>
+        </li>
+        {% endif %}
     </ul>
 
     {% if media %}

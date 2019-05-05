@@ -21,6 +21,24 @@ The calendar has not been finalized by the admin yet.
             New event
         </a>
     </li>
+
+    {% if current_user.has_admin_role() %}
+    <li>
+        <a href="{{ url_for('calendar.settings') }}">
+            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            Calendar settings
+        </a>
+    </li>
+    {% endif %}
+
+    {% if current_user.is_event_admin() %}
+     <li>
+        <a href="{{ url_for('event.settings') }}">
+            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            Event settings
+        </a>
+    </li>
+    {% endif %}
 </ul>
 
 <p>
