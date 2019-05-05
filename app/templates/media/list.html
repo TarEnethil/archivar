@@ -15,7 +15,16 @@ makeDatatable("media-table", 25);
 {% endblock %}
 
 {% block app_content %}
-    <h1>All files in category {{ catname }}</h1>
+    <h1>All files in category {{ cat.name }}</h1>
+
+    <ul class="nav nav-tabs">
+        <li>
+            <a href="{{ url_for('media.upload', category=cat.id) }}">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                New media here
+            </a>
+        </li>
+    </ul>
 
     {% if media %}
     <table class="table table-hover table-striped" id="media-table">

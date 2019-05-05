@@ -42,7 +42,7 @@ def list_by_cat(c_id):
     m = MediaCategory.query.filter_by(id=c_id).first_or_404()
     files = get_media(c_id)
 
-    return render_template("media/list.html", media=files, catname=m.name, title=page_title("View files in category"))
+    return render_template("media/list.html", media=files, cat=m, title=page_title("View files in category"))
 
 @bp.route("/upload", methods=["GET", "POST"])
 @login_required
@@ -77,6 +77,17 @@ def upload():
     elif request.method == "GET":
         if current_user.is_media_admin() and settings.default_visible:
             form.is_visible.data = True
+
+        # pre-select session if get-param was passed
+        category_id = request.args.get("category")
+
+        # will do nothing if session_id not an int or not in choices
+        if category_id:
+            try:
+                form.category.data = int(category_id)
+            except:
+                pass
+
 
     return render_template("media/upload.html", form=form, max_filesize=app.config["MAX_CONTENT_LENGTH"], title=page_title("Upload file"))
 
