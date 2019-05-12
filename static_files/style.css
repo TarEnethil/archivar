@@ -344,3 +344,8 @@ tr.invisible_item,
     float:right !important;
     margin-right:10px;
 }
+
+#login-wrap {
+    margin:0 auto;
+    width:40%;
+}

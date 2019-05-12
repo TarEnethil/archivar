@@ -2,7 +2,9 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
+    <div id="login-wrap">
     <h1>Login</h1>
 
     {{ wtf.quick_form(form) }}
+    </div>
 {% endblock %}
