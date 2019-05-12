@@ -133,7 +133,7 @@ def journal_create(c_id):
         journal_entry = Journal(title=form.title.data, content=form.content.data, is_visible=form.is_visible.data, character_id=c_id)
 
         if (form.session.data != 0):
-            journal_entry.session = form.session.data
+            journal_entry.session_id = form.session.data
 
         db.session.add(journal_entry)
         db.session.commit()
