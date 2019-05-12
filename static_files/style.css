@@ -76,13 +76,19 @@ body {
 .phb-style h1,
 .phb-style h2,
 .phb-style h3,
-.phb-style h4 {
+.phb-style h4,
+.phb-style h5,
+.phb-style h6 {
     color: #58180d;
 }
 
 .phb-style h2,
 .phb-style h3 {
     border-bottom:2px solid #c9ad6a;
+}
+
+.phb-style h5 {
+    font-weight:bold;
 }
 
 .phb-style {
