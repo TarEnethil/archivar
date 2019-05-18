@@ -2,7 +2,7 @@ from flask import Flask, url_for
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_bootstrap import Bootstrap, StaticCDN
 from flask_moment import Moment
 from flask_misaka import Misaka
@@ -75,6 +75,20 @@ def utility_processor():
             return quicklinks
 
         for line in gset.quicklinks.splitlines():
+            parts = line.split("|")
+
+            if len(parts) == 2 and len(parts[0]) > 0 and len(parts[1]) > 0:
+                quicklinks.append(parts)
+
+        return quicklinks
+
+    def load_user_quicklinks():
+        quicklinks = []
+
+        if not current_user.quicklinks:
+            return quicklinks
+
+        for line in current_user.quicklinks.splitlines():
             parts = line.split("|")
 
             if len(parts) == 2 and len(parts[0]) > 0 and len(parts[1]) > 0:
@@ -190,7 +204,7 @@ def utility_processor():
     def get_archivar_version():
         return version()
 
-    return dict(load_global_quicklinks=load_global_quicklinks, include_css=include_css, include_js=include_js, get_archivar_version=get_archivar_version)
+    return dict(load_global_quicklinks=load_global_quicklinks, load_user_quicklinks=load_user_quicklinks, include_css=include_css, include_js=include_js, get_archivar_version=get_archivar_version)
 
 @app.template_filter()
 def hash(text):

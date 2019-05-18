@@ -54,11 +54,34 @@ $(document).ready(function() {
             </ul>
 
             {% if current_user.is_authenticated %}
-            {% set global_ql = load_global_quicklinks() %}
-                {% if global_ql|length > 0 %}
+                {% set user_ql = load_user_quicklinks() %}
+                {% set global_ql = load_global_quicklinks() %}
+
+                {% if user_ql|length > 0 or global_ql|length > 0 %}
             <ul class="nav navbar-nav navbar-left">
+                    {% if user_ql|length == 1 %}
+                <li class="user-quicklinks"><a href="{{ user_ql[0][0] }}"> {{ user_ql[0][1] }}</a></li>
+                    {% else %}
+                <li class="dropdown user-quicklinks">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="glyphicon glyphicon-flash"></span> Quicklinks <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% for link in user_ql %}
+                        <li><a href="{{ link[0] }}">{{ link[1] }}</a></li>
+                        {% endfor %}
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ url_for('user.settings') }}">
+                            <span class="glyphicon glyphicon-cog"></span>
+                            Edit quicklinks
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                    {% endif %}
+
                     {% for link in global_ql %}
-                <li><a href="{{ link[0] }}"> {{ link[1] }}</a></li>
+                <li><a href="{{ link[0] }}">{{ link[1] }}</a></li>
                     {% endfor %}
             </ul>
                 {% endif %}

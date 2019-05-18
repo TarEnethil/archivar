@@ -141,6 +141,7 @@ def settings():
         current_user.use_direct_links = form.use_direct_links.data
         current_user.use_embedded_images = form.use_embedded_images.data
         current_user.markdown_phb_style = form.markdown_phb_style.data
+        current_user.quicklinks = form.quicklinks.data
 
         flash("Settings changed.", "success")
 
@@ -151,5 +152,6 @@ def settings():
         form.use_direct_links.data = current_user.use_direct_links
         form.use_embedded_images.data = current_user.use_embedded_images
         form.markdown_phb_style.data = current_user.markdown_phb_style
+        form.quicklinks.data = current_user.quicklinks
 
     return render_template("user/settings.html", form=form, title=page_title("User settings"))

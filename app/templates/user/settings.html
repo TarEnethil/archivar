@@ -10,6 +10,8 @@
         $("#dateformat option").each(function() {
             $(this).html(moment("1970-01-01 00:00:00").format($(this).attr('value')));
         });
+
+        $("#quicklinks").attr("placeholder", "one link per line; format: url|title");
     });
 </script>
 {% endblock %}
