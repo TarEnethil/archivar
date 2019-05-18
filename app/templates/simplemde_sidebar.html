@@ -20,7 +20,7 @@
     {% endif %}
     <label for="use_direct_links">Use direct links</label> <br>
 
-    {% if cond %}
+    {% if current_user.use_embedded_images %}
     <input type="checkbox" id="use_embedded_images" checked="checked" />
     {% else %}
     <input type="checkbox" id="use_embedded_images" />
