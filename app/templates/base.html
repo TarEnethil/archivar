@@ -54,11 +54,14 @@ $(document).ready(function() {
             </ul>
 
             {% if current_user.is_authenticated %}
+            {% set global_ql = load_global_quicklinks() %}
+                {% if global_ql|length > 0 %}
             <ul class="nav navbar-nav navbar-left">
-                {% for link in load_quicklinks() %}
+                    {% for link in global_ql %}
                 <li><a href="{{ link[0] }}"> {{ link[1] }}</a></li>
-                {% endfor %}
+                    {% endfor %}
             </ul>
+                {% endif %}
             {% endif %}
 
             <ul class="nav navbar-nav navbar-right">

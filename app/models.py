@@ -103,6 +103,7 @@ class User(UserMixin, db.Model):
     use_direct_links = db.Column(db.Boolean, default=True)
     use_embedded_images = db.Column(db.Boolean, default=True)
     markdown_phb_style = db.Column(db.Boolean, default=False)
+    quicklinks = db.Column(db.Text)
 
     def has_role(self, roleId):
         role = Role.query.get(roleId)

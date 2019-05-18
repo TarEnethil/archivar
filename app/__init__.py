@@ -67,7 +67,7 @@ from app.models import GeneralSetting
 
 @app.context_processor
 def utility_processor():
-    def load_quicklinks():
+    def load_global_quicklinks():
         gset = GeneralSetting.query.get(1)
         quicklinks = []
 
@@ -190,7 +190,7 @@ def utility_processor():
     def get_archivar_version():
         return version()
 
-    return dict(load_quicklinks=load_quicklinks, include_css=include_css, include_js=include_js, get_archivar_version=get_archivar_version)
+    return dict(load_global_quicklinks=load_global_quicklinks, include_css=include_css, include_js=include_js, get_archivar_version=get_archivar_version)
 
 @app.template_filter()
 def hash(text):
