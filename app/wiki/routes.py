@@ -4,7 +4,7 @@ from app.models import WikiEntry, WikiSetting, User, Role
 from app.map.helpers import get_nodes_by_wiki_id
 from app.wiki import bp
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm, WikiMoveCategoryForm
-from app.wiki.helpers import wiki_admin_required, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited, gen_wiki_category_choices
+from app.wiki.helpers import wiki_admin_required, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited, gen_wiki_category_choices, gen_category_strings
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import current_user, login_required
 from sqlalchemy import and_, or_, not_
@@ -21,6 +21,7 @@ def index():
 def create():
     form = WikiEntryForm()
     form.submit.label.text = "Create article"
+    cats = gen_category_strings()
 
     if not current_user.is_wiki_admin():
         del form.is_visible
@@ -52,7 +53,7 @@ def create():
             wsettings = WikiSetting.query.get(1)
             form.is_visible.data = wsettings.default_visible
 
-    return render_template("wiki/create.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), title=page_title("Create wiki entry"))
+    return render_template("wiki/create.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), cats=cats, title=page_title("Create wiki entry"))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -61,6 +62,7 @@ def edit(id):
 
     form = WikiEntryForm()
     form.submit.label.text = "Save article"
+    cats = gen_category_strings()
 
     # TODO: write custom decorators for this?
     if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
@@ -105,7 +107,7 @@ def edit(id):
         if current_user.has_admin_role():
             form.dm_content.data = wikientry.dm_content
 
-    return render_template("wiki/edit.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), entry=wikientry, title=page_title("Edit wiki entry"))
+    return render_template("wiki/edit.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), cats=cats, entry=wikientry, title=page_title("Edit wiki entry"))
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required

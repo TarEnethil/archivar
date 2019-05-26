@@ -175,3 +175,24 @@ def get_recently_edited():
     entries = entries.join(User, WikiEntry.edited_by_id == User.id).with_entities(WikiEntry.id, WikiEntry.title, WikiEntry.edited, User.username).order_by(WikiEntry.edited.desc()).limit(5).all()
 
     return entries
+
+# generate list of categories (excluding '')
+def gen_category_strings():
+    if current_user.has_admin_role():
+        entries = WikiEntry.query
+    elif current_user.has_wiki_role():
+        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
+        admin_ids = [a.id for a in admins]
+        entries = WikiEntry.query.filter(not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))))
+    else:
+        entries = WikiEntry.query.filter(or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id))
+
+    entries = entries.with_entities(WikiEntry.category).distinct().all()
+
+    cats = []
+
+    for cat in entries:
+        if cat[0] != '':
+            cats.append(cat[0])
+
+    return cats

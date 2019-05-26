@@ -24,5 +24,11 @@ makeSMDE("dm_content");
 {{ super() }}
     <h1>Create new wiki entry</h1>
 
+    <datalist id="category-list">
+        {% for cat in cats %}
+        <option value="{{ cat }}">
+        {% endfor %}
+    </datalist>
+
     {{ wtf.quick_form(form) }}
 {% endblock %}
