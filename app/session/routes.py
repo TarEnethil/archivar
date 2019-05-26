@@ -16,6 +16,12 @@ def index():
     sessions_past = Session.query.filter(Session.date < datetime.utcnow()).order_by(Session.date.desc()).all()
     sessions_future = Session.query.filter(Session.date > datetime.utcnow()).order_by(Session.date.desc()).all()
 
+    for session in sessions_future:
+        session.participants.sort(key=lambda x: x.name)
+
+    for session in sessions_past:
+        session.participants.sort(key=lambda x: x.name)
+
     return render_template("session/list.html", sessions_past=sessions_past, sessions_future=sessions_future, title=page_title("Sessions"))
 
 @bp.route("/create", methods=["GET", "POST"])
@@ -104,6 +110,8 @@ def view(id):
     session = Session.query.filter_by(id=id).first_or_404()
     prev_session_id = get_previous_session_id(session.date, session.code)
     next_session_id = get_next_session_id(session.date, session.code)
+
+    session.participants.sort(key=lambda x: x.name)
 
     return render_template("session/view.html", session=session, prev=prev_session_id, next=next_session_id, title=page_title("View session"))
 
