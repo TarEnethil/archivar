@@ -53,3 +53,14 @@ def get_next_session_id(date, code):
         return q.id
     else:
         return
+
+# generate a list of used campaign codes (excluding '')
+def gen_codes():
+    q = Session.query.with_entities(Session.code).distinct().all()
+    codes = []
+
+    for tup in q:
+        if tup[0] != '':
+            codes.append(tup[0])
+
+    return codes

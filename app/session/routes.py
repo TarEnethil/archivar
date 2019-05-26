@@ -3,7 +3,7 @@ from app.helpers import page_title, admin_required, admin_or_session_required
 from app.models import Character, Session
 from app.session import bp
 from app.session.forms import SessionForm
-from app.session.helpers import gen_participant_choices, get_session_number, get_previous_session_id, get_next_session_id
+from app.session.helpers import gen_participant_choices, get_session_number, get_previous_session_id, get_next_session_id, gen_codes
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
@@ -31,6 +31,7 @@ def create():
     form = SessionForm()
     form.submit.label.text = "Create session"
     form.participants.choices = gen_participant_choices()
+    codes = gen_codes()
 
     if form.validate_on_submit():
         participants = Character.query.filter(Character.id.in_(form.participants.data)).all()
@@ -49,7 +50,7 @@ def create():
         flash("Session was created.", "success")
         return redirect(url_for("session.view", id=new_session.id))
 
-    return render_template("session/create.html", form=form, title=page_title("Create session"))
+    return render_template("session/create.html", form=form, codes=codes, title=page_title("Create session"))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -60,6 +61,7 @@ def edit(id):
 
     form = SessionForm()
     form.submit.label.text = "Save session"
+    codes = gen_codes()
 
     if is_admin:
         form.participants.choices = gen_participant_choices()
@@ -102,7 +104,7 @@ def edit(id):
 
             form.participants.data = participants
 
-    return render_template("session/edit.html", form=form, title=page_title("Edit session"))
+    return render_template("session/edit.html", form=form, codes=codes, title=page_title("Edit session"))
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required

@@ -5,7 +5,7 @@ from wtforms.validators import Length, InputRequired
 
 class SessionForm(FlaskForm):
     title = StringField("Title", validators=[InputRequired(),Length(min=0, max=100)])
-    code = StringField("Campaign code", validators=[Length(min=0,max=5)])
+    code = StringField("Campaign code", validators=[Length(min=0,max=5)], render_kw={"list": "code-list"})
     add_session_no = BooleanField("Prepend session number to title")
     summary = TextAreaField("Summary", render_kw={"rows": 15})
     dm_notes = TextAreaField("DM Notes", render_kw={"rows": 15})
