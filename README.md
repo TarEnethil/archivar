@@ -4,32 +4,49 @@ While DMing for my D&D group, I wanted a possibility for us to collaboratively b
 As my (not thorough) search came up with nothing, I decided to build something myself.
 The following readme gives an introduction into what this project is (or isn't), how to install/use it and what it is built upon.
 
-**TL;DR**: This is a web-based, engine agnostic tool for collaborative world building and campaign / session management for role playing groups.
+**TL;DR**: This is a web-based, game engine agnostic tool for collaborative world building and campaign / session management for role playing groups.
 It is using Flask with SQLite as a backend with a bootstrap-powered frontend.
 
 # Installation
 Until now, I only did this on linux.
 Because the use of virtual environments, it should be no big deal to use this on Windows too.
 
-## Create virtual env
+## Set up python virtual environment
+Flask apps are usually run inside python virtual environments, which allows the installation of dependencies without needing global permissions.
+You can either set them up with python or python3.
+
+### python
 ```bash
 virtualenv venv
+```
+
+### python3
+```bash
+python3 -m venv venv
+```
+
+### enter venv and install dependencies
+```bash
 . venv/bin/activate
 pip install -r requirements.txt
 ```
+
 If the installation of Pillow gives you troubles, you might need to install the packages libjpeg8-dev, zlib1g-dev and python-dev (or python3-dev).
 
 ## Initial configuration and database init
+First, edit config.py for some basic settings (like max upload file size or CDN usage)
+
 ```bash
-edit config.py for some basic settings (like max upload file size)
-export FLASK_APP=dmcp.py
-flask db init
-flask db migrate
-flask db upgrade
+python db-init.py
+    or
+python3 db-init.py
 ```
+
+The script will run flask db init and flask db upgrade, while providing the migration-files from this repository (allowing for incremental database structure changes).
 
 ## Local run (or deploy on a server)
 ```bash
+export FLASK_APP=dmcp.py
 flask run -h localhost
 ```
 
@@ -39,7 +56,7 @@ flask run -h localhost
 * After installation, log in with the admin account and head to the (module) settings
 
 # Deployment
-I barely managed to deploy this with apache, please refer to other tutorials on how to deploy a flask app on a real server.
+I nanaged to deploy this with apache, please refer to other tutorials on how to deploy a flask application on a real server.
 
 # What this is
 Archivar is a web-based tool for collaborative world building, as well as campaign management for role playing groups.
