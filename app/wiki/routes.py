@@ -107,7 +107,7 @@ def edit(id):
         if current_user.has_admin_role():
             form.dm_content.data = wikientry.dm_content
 
-    return render_template("wiki/edit.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), cats=cats, entry=wikientry, title=page_title("Edit wiki entry"))
+    return render_template("wiki/edit.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), cats=cats, entry=wikientry, title=page_title("Edit wiki entry '%s'" % wikientry.title))
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
@@ -125,7 +125,7 @@ def view(id):
 
     map_nodes = get_nodes_by_wiki_id(id)
 
-    return render_template("wiki/view.html", entry=wikientry, nav=(prepare_wiki_nav(), WikiSearchForm()), map_nodes=map_nodes, title=page_title("View wiki entry"))
+    return render_template("wiki/view.html", entry=wikientry, nav=(prepare_wiki_nav(), WikiSearchForm()), map_nodes=map_nodes, title=page_title("View wiki entry '%s'" % wikientry.title))
 
 @bp.route("/delete/<int:id>", methods=["GET"])
 @login_required
@@ -178,14 +178,14 @@ def search_text(text):
     results = search_wiki_text(text)
     results = prepare_search_result(text, results)
 
-    return render_template("wiki/search_text.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results, term=text, title=page_title("Search for tag"))
+    return render_template("wiki/search_text.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results, term=text, title=page_title("Search for '%s'" % text))
 
 @bp.route("/tag/<string:tag>", methods=["GET"])
 @login_required
 def search_tag(tag):
     results = search_wiki_tag(tag)
 
-    return render_template("wiki/search_tag.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results, tag=tag, title=page_title("Search for tag"))
+    return render_template("wiki/search_tag.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results, tag=tag, title=page_title("Search for tag '%s'" % tag))
 
 @bp.route("/recent", methods=["GET"])
 @login_required
@@ -224,7 +224,7 @@ def settings():
     elif request.method == "GET":
         form.default_visible.data = settings.default_visible
 
-    return render_template("wiki/settings.html", settings=settings, form=form, move_form=move_form, title=page_title("Wiki settings"))
+    return render_template("wiki/settings.html", settings=settings, form=form, move_form=move_form, title=page_title("Wiki Settings"))
 
 @bp.route("/sidebar", methods=["GET"])
 @login_required

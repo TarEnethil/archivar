@@ -118,7 +118,7 @@ def settings():
         form.welcome_page.data = settings.welcome_page
         form.quicklinks.data = settings.quicklinks
 
-    return render_template("settings.html", settings=settings, form=form, title=page_title("General settings"))
+    return render_template("settings.html", settings=settings, form=form, title=page_title("General Settings"))
 
 @app.route("/__install__", methods=["GET", "POST"])
 def install():
@@ -209,7 +209,7 @@ def install():
 
             return redirect(url_for("index"))
 
-        return render_template("install.html", form=form, title="Install")
+        return render_template("install.html", form=form, title="Installation")
     else:
         flash("Setup was already executed.", "danger")
         return redirect(url_for("index"))

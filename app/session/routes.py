@@ -104,7 +104,7 @@ def edit(id):
 
             form.participants.data = participants
 
-    return render_template("session/edit.html", form=form, codes=codes, title=page_title("Edit session"))
+    return render_template("session/edit.html", form=form, codes=codes, title=page_title("Edit session '%s'" % session.title))
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
@@ -115,7 +115,7 @@ def view(id):
 
     session.participants.sort(key=lambda x: x.name)
 
-    return render_template("session/view.html", session=session, prev=prev_session_id, next=next_session_id, title=page_title("View session"))
+    return render_template("session/view.html", session=session, prev=prev_session_id, next=next_session_id, title=page_title("View session '%s'" % session.title))
 
 @bp.route("/delete/<int:id>")
 @login_required

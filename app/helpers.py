@@ -73,7 +73,7 @@ def page_title(dynamic_part=None):
         static_part = gset.title
 
     if dynamic_part != None:
-        return static_part + " - " + dynamic_part
+        return dynamic_part + " :: " + static_part
     else:
         return static_part
 

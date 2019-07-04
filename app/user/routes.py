@@ -16,7 +16,7 @@ no_perm_url = "index"
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
 
-    return render_template("user/profile.html", user=user, title=page_title("User profile"))
+    return render_template("user/profile.html", user=user, title=page_title("User profile for '%s'" % user.username))
 
 @bp.route("/<username>/edit", methods=["GET", "POST"])
 @login_required
@@ -73,7 +73,7 @@ def edit(username):
 
                 form.roles.data = user_roles
 
-        return render_template("user/edit.html", form=form, user=user, title=page_title("Edit profile"))
+        return render_template("user/edit.html", form=form, user=user, title=page_title("Edit user '%s'" % user.username))
     else:
         flash("You dont have the neccessary role to perform this action.", "danger")
         return redirect(url_for(no_perm_url))
@@ -154,4 +154,4 @@ def settings():
         form.markdown_phb_style.data = current_user.markdown_phb_style
         form.quicklinks.data = current_user.quicklinks
 
-    return render_template("user/settings.html", form=form, title=page_title("User settings"))
+    return render_template("user/settings.html", form=form, title=page_title("User Settings"))

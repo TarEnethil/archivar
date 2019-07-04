@@ -31,7 +31,7 @@ def create():
 def view(id):
     char = Character.query.filter_by(id=id).first_or_404()
 
-    return render_template("character/view.html", char=char, title=page_title("View character"))
+    return render_template("character/view.html", char=char, title=page_title("View character '%s'" % char.name))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -71,7 +71,7 @@ def edit(id):
         if current_user.has_admin_role():
             form.dm_notes.data = char.dm_notes
 
-        return render_template("character/edit.html", form=form, title=page_title("Edit character"))
+        return render_template("character/edit.html", form=form, title=page_title("Edit character '%s'" % char.name))
 
 @bp.route("/list", methods=["GET"])
 @login_required
@@ -112,7 +112,7 @@ def journal_list(c_id):
 
     journals = Journal.query.filter_by(character_id = c_id)
 
-    return render_template("character/journal_list.html", char=char, journals=journals, title=page_title("Journals"))
+    return render_template("character/journal_list.html", char=char, journals=journals, title=page_title("Journals for '%s'" % char.name))
 
 @bp.route("/journal/<int:c_id>/create", methods=["GET", "POST"])
 @login_required
@@ -151,7 +151,7 @@ def journal_create(c_id):
             except:
                 pass
 
-        return render_template("character/journal_form.html", heading=heading, form=form, title=page_title("Create new journal entry"))
+        return render_template("character/journal_form.html", heading=heading, form=form, title=page_title("Create new journal entry for '%s'" % char.name))
 
 @bp.route("/journal/<int:c_id>/edit/<int:j_id>", methods=["GET", "POST"])
 @login_required
@@ -194,7 +194,7 @@ def journal_edit(c_id, j_id):
         form.content.data = journal.content
         form.session.data = journal.session_id
 
-        return render_template("character/journal_form.html", heading=heading, form=form, title=page_title("Edit journal entry"))
+        return render_template("character/journal_form.html", heading=heading, form=form, title=page_title("Edit journal entry '%s'" % journal.title))
 
 @bp.route("/journal/<int:c_id>/view/<int:j_id>", methods=["GET"])
 @login_required
@@ -212,7 +212,7 @@ def journal_view(c_id, j_id):
         flash("Journal does not belong to this character.", "danger")
         return redirect(url_for(no_perm))
 
-    return render_template("character/journal_view.html", char=char, journal=journal, title=page_title("View journal entry"))
+    return render_template("character/journal_view.html", char=char, journal=journal, title=page_title("View journal entry '%s'" % journal.title))
 
 @bp.route("/journal/<int:c_id>/delete/<int:j_id>", methods=["GET"])
 @login_required

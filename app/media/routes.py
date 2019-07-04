@@ -42,7 +42,7 @@ def list_by_cat(c_id):
     m = MediaCategory.query.filter_by(id=c_id).first_or_404()
     files = get_media(c_id)
 
-    return render_template("media/list.html", media=files, cat=m, title=page_title("View files in category"))
+    return render_template("media/list.html", media=files, cat=m, title=page_title("View files in category '%s'" % m.name))
 
 @bp.route("/upload", methods=["GET", "POST"])
 @login_required
@@ -139,7 +139,7 @@ def edit(id):
         if current_user.is_media_admin():
             form.is_visible.data = item.is_visible
 
-    return render_template("media/edit.html", form=form, title=page_title("Edit file"))
+    return render_template("media/edit.html", form=form, title=page_title("Edit file '%s'" % item.name))
 
 @bp.route("/delete/<int:id>", methods=["GET"])
 @login_required
@@ -184,11 +184,11 @@ def category_create():
 @login_required
 @media_admin_required
 def category_edit(id):
-    heading = "Edit media category"
     form = CategoryForm()
     form.submit.label.text = "Save category"
 
     category = MediaCategory.query.filter_by(id=id).first_or_404()
+    heading = "Edit media category '%s'" % category.name
 
     if form.validate_on_submit():
         category.name = form.name.data
@@ -220,7 +220,7 @@ def settings():
 
     categories = MediaCategory.query.all()
 
-    return render_template("media/settings.html", settings=settings, categories=categories, form=form, title=page_title("Media settings"))
+    return render_template("media/settings.html", settings=settings, categories=categories, form=form, title=page_title("Media Settings"))
 
 @bp.route("/sidebar/<int:c_id>", methods=["GET"])
 @login_required

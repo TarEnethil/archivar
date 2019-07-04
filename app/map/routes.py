@@ -36,7 +36,7 @@ def index():
         flash("This map is not visible.", "danger")
         return redirect(url_for("index"))
 
-    return render_template("map/index.html", settings=mapsettings, map_=indexmap, title=page_title(indexmap.name))
+    return render_template("map/index.html", settings=mapsettings, map_=indexmap, title=page_title("Map of %s" % indexmap.name))
 
 @bp.route("/<int:id>")
 @login_required
@@ -48,7 +48,7 @@ def view(id):
         flash("This map is not visible.", "danger")
         return redirect(url_for("index"))
 
-    return render_template("map/index.html", settings=settings, map_=map_, title=page_title(map_.name))
+    return render_template("map/index.html", settings=settings, map_=map_, title=page_title("Map of %s" % map_.name))
 
 @bp.route("<int:id>/node/<int:n_id>")
 @login_required
@@ -63,7 +63,7 @@ def view_with_node(id, n_id):
 
     if node.on_map != map_.id:
         flash("Map node {0} could not be found on this map".format(node.id), "danger")
-        return render_template("map/index.html", settings=mapsettings, map_=map_, title=page_title(map_.name))
+        return render_template("map/index.html", settings=mapsettings, map_=map_, title=page_title("Map of %s" % map_.name))
 
     return render_template("map/index.html", settings=mapsettings, map_=map_, jump_to_node=node.id, title=page_title(map_.name))
 
@@ -125,7 +125,7 @@ def map_settings(id):
         form.default_zoom.data = map_.default_zoom
         form.is_visible.data = map_.is_visible
 
-        return render_template("map/edit.html", map=map_, form=form, title=page_title("Edit map"))
+        return render_template("map/edit.html", map=map_, form=form, title=page_title("Edit map '%s'" % map_.name))
 
 # global map settings
 @bp.route("/settings", methods=["GET", "POST"])
@@ -162,7 +162,7 @@ def settings():
 
     node_types = MapNodeType.query.all()
 
-    return render_template("map/settings.html", form=form, settings=settings, node_types=node_types, title=page_title("Map settings"))
+    return render_template("map/settings.html", form=form, settings=settings, node_types=node_types, title=page_title("Map Settings"))
 
 @bp.route("/list")
 @login_required
@@ -397,7 +397,7 @@ def node_type_edit(id):
         form.name.data = node.name
         form.description.data = node.description
 
-    return render_template("map/node_type_edit.html", form=form, node_type=node, title=page_title("Edit map node type"))
+    return render_template("map/node_type_edit.html", form=form, node_type=node, title=page_title("Edit map node type '%s'" % node.name))
 
 @bp.route("/node_type/json")
 @login_required

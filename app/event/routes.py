@@ -26,7 +26,7 @@ def view(id):
         flash_no_permission()
         return redirect(url_for(no_perm_url))
 
-    return render_template("event/view.html", event=event, moons=moons, title=page_title("View event"))
+    return render_template("event/view.html", event=event, moons=moons, title=page_title("View event '%s'" % event.name))
 
 @bp.route("/list", methods=["GET"])
 @login_required
@@ -43,7 +43,7 @@ def list_epoch(e_id):
     events = get_events(e_id)
     title = "All events for " + e.name
 
-    return render_template("event/list.html", events=events, epoch_flag=True, heading=title, title=page_title("View events in epoch"))
+    return render_template("event/list.html", events=events, epoch_flag=True, heading=title, title=page_title("View events in epoch '%s'" % e.name))
 
 @bp.route("/list/epoch-<int:e_id>/year-<int:year>", methods=["GET"])
 @login_required
@@ -52,7 +52,7 @@ def list_epoch_year(e_id, year):
     events = get_events(e_id, year)
     title = "All events for year " + str(year) + ", " + e.name
 
-    return render_template("event/list.html", events=events, epoch_year_flag=True, heading=title, title=page_title("View events in epoch"))
+    return render_template("event/list.html", events=events, epoch_year_flag=True, heading=title, title=page_title("View events in year %s, epoch '%s" % (year, e.name)))
 
 @bp.route("/list/category-<int:c_id>", methods=["GET"])
 @login_required
@@ -61,7 +61,7 @@ def list_category(c_id):
     events = get_events_by_category(c_id)
     title = "All events in category " + c.name
 
-    return render_template("event/list.html", events=events, category_flag=True, heading=title, title=page_title("View events in category"))
+    return render_template("event/list.html", events=events, category_flag=True, heading=title, title=page_title("View events in category '%s'" % c.name))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
@@ -196,7 +196,7 @@ def edit(id):
             form.is_visible.data = event.is_visible
 
     calendar_helper = gen_calendar_stats()
-    return render_template("event/edit.html", form=form, calendar=calendar_helper, title=page_title("Edit event"))
+    return render_template("event/edit.html", form=form, calendar=calendar_helper, title=page_title("Edit event '%s'" % event.name))
 
 @bp.route("/delete/<int:id>")
 @login_required
@@ -241,11 +241,11 @@ def category_create():
 @login_required
 @event_admin_required
 def category_edit(id):
-    heading = "Edit event category"
     form = CategoryForm()
     form.submit.label.text = "Edit category"
 
     category = EventCategory.query.filter_by(id=id).first_or_404()
+    heading = "Edit event category '%s'" % category.name
 
     if form.validate_on_submit():
         category.name = form.name.data
@@ -287,7 +287,7 @@ def settings():
 
     categories = EventCategory.query.all()
 
-    return render_template("event/settings.html", settings=settings, categories=categories, form=form, title=page_title("Event settings"))
+    return render_template("event/settings.html", settings=settings, categories=categories, form=form, title=page_title("Event Settings"))
 
 @bp.route("/sidebar", methods=["GET"])
 @login_required
