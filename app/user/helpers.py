@@ -15,6 +15,8 @@ def gen_date_string_choices():
     choices = []
 
     choices.append(("Do MMMM YYYY, HH:mm", "Sane"))
+    choices.append(("ddd, Do MMMM YYYY, HH:mm", "Sane with weekdays"))
+    choices.append(("dddd, Do MMMM YYYY, HH:mm", "Sane with weekdays long"))
     choices.append(("YYYY-MM-DD HH:mm", "ISO-Style"))
     choices.append(("LLL", "LLL"))
     choices.append(("DD.MM.YYYY, HH:mm", "European with time"))
