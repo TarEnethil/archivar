@@ -33,6 +33,29 @@ def create():
     form.participants.choices = gen_participant_choices()
     codes = gen_codes()
 
+
+    # pre-fill some fields if GET['base'] is set
+    base_id = request.args.get("base")
+
+    # will do nothing if base_id not an int or not in choices
+    if base_id:
+        try:
+            base = Session.query.filter_by(id=int(base_id)).first_or_404()
+
+            form.code.data = base.code
+
+            participants = []
+
+            for p in base.participants:
+                participants.append(p.id)
+
+            form.participants.data = participants
+
+            if base.title.startswith("#"):
+                form.add_session_no.data = True
+        except:
+            pass
+
     if form.validate_on_submit():
         participants = Character.query.filter(Character.id.in_(form.participants.data)).all()
 

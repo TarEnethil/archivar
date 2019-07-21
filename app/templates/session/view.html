@@ -48,6 +48,13 @@
             <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
         </a>
     </li>
+{% else %}
+    <li>
+        <a href="{{ url_for('session.create', base=session.id) }}">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            Add follow-up session
+        </a>
+    </li>
 {% endif %}
 
 {% if current_user.is_event_admin() %}
