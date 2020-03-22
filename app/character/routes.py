@@ -31,7 +31,7 @@ def create():
 def view(id):
     char = Character.query.filter_by(id=id).first_or_404()
 
-    return render_template("character/view.html", char=char, title=page_title("View character '%s'" % char.name))
+    return render_template("character/view.html", char=char, title=page_title("Character '%s'" % char.name))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required

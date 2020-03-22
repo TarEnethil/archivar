@@ -43,7 +43,7 @@ def list_epoch(e_id):
     events = get_events(e_id)
     title = "All events for " + e.name
 
-    return render_template("event/list.html", events=events, epoch_flag=True, heading=title, title=page_title("View events in epoch '%s'" % e.name))
+    return render_template("event/list.html", events=events, epoch_flag=True, heading=title, title=page_title("Events in epoch '%s'" % e.name))
 
 @bp.route("/list/epoch-<int:e_id>/year-<int:year>", methods=["GET"])
 @login_required
@@ -52,7 +52,7 @@ def list_epoch_year(e_id, year):
     events = get_events(e_id, year)
     title = "All events for year " + str(year) + ", " + e.name
 
-    return render_template("event/list.html", events=events, epoch_year_flag=True, heading=title, title=page_title("View events in year %s, epoch '%s" % (year, e.name)))
+    return render_template("event/list.html", events=events, epoch_year_flag=True, heading=title, title=page_title("Events in year %s, epoch '%s'" % (year, e.name)))
 
 @bp.route("/list/category-<int:c_id>", methods=["GET"])
 @login_required
@@ -61,7 +61,7 @@ def list_category(c_id):
     events = get_events_by_category(c_id)
     title = "All events in category " + c.name
 
-    return render_template("event/list.html", events=events, category_flag=True, heading=title, title=page_title("View events in category '%s'" % c.name))
+    return render_template("event/list.html", events=events, category_flag=True, heading=title, title=page_title("Events in category '%s'" % c.name))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required

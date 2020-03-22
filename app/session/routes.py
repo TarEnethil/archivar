@@ -33,7 +33,6 @@ def create():
     form.participants.choices = gen_participant_choices()
     codes = gen_codes()
 
-
     # pre-fill some fields if GET['base'] is set
     base_id = request.args.get("base")
 
@@ -138,7 +137,7 @@ def view(id):
 
     session.participants.sort(key=lambda x: x.name)
 
-    return render_template("session/view.html", session=session, prev=prev_session_id, next=next_session_id, title=page_title("View session '%s'" % session.title))
+    return render_template("session/view.html", session=session, prev=prev_session_id, next=next_session_id, title=page_title("Session '%s'" % session.title))
 
 @bp.route("/delete/<int:id>")
 @login_required
