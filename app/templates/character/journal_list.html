@@ -3,7 +3,11 @@
 
 {% block app_content %}
 
-<h1>Journals for {{ char.name }}</h1>
+<h1>Journals for {{ char.name }}
+{% if journals %}
+({{ journals|length }})
+{% endif %}
+</h1>
 
 <ul class="nav nav-tabs">
     <li>

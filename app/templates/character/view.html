@@ -76,9 +76,14 @@
         {% endif %}
     </dl>
 
-    {% if char.parties %}
-    <h3>Parties</h3>
+    <h2>Parties
 
+    {% if char.parties %}
+    ({{ char.parties|length }})
+    {% endif %}
+    </h2>
+
+    {% if char.parties %}
     <ul>
         {% for party in char.parties %}
         <li>
@@ -102,7 +107,10 @@
 
     {% if char.journals %}
     <hr>
-    <h2>Journals</h2>
+    <h2>Journals
+
+    ({{ char.journals|length }})
+    </h2>
 
     <table class="table table-hover table-striped" id="journals-table">
         <thead>

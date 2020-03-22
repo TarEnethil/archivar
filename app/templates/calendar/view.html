@@ -33,7 +33,7 @@ $("#phase-button").click(function(e) {
     </dl>
 
     {% if settings.finalized == True %}
-    <h2>Epochs</h2>
+    <h2>Epochs ({{ stats["epochs"]|length }})</h2>
     <p>
     An epoch is an era or an age that defined a long period of time in the world.
     It can be hundreds of years of even millenia long.
@@ -85,7 +85,7 @@ $("#phase-button").click(function(e) {
         </tbody>
     </table>
 
-    <h2>Months</h2>
+    <h2>Months ({{ stats["months"]|length }})</h2>
     <p>
     Months divide the year in roughly equal parts (most of the time).
     In most worlds, seasons are strongly coincided with some months.
@@ -127,7 +127,7 @@ $("#phase-button").click(function(e) {
         </tbody>
     </table>
 
-    <h2>Days</h2>
+    <h2>Days ({{ stats["days"]|length }})</h2>
     <p>The days of the week may have their names based on deities, events or they may have their very own origin story.</p>
 
     <table class="table table-striped">
@@ -165,7 +165,13 @@ $("#phase-button").click(function(e) {
         </tbody>
     </table>
 
-    <h2>Moons</h2>
+    <h2>Moons
+
+    {% if stats["moons"] %}
+    ({{ stats["moons"]|length }})
+    {% endif %}
+
+    </h2>
     <p>The world can be orbited by one or multiple moons, illuminating the dark night.</p>
 
     {% if stats["moons"] %}

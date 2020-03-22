@@ -26,7 +26,12 @@ makeDatatable("parties-table");
     This page lists all parties and characters.
 </p>
 
-<h2>Parties</h2>
+<h2>Parties
+
+{% if parties %}
+({{ parties|length }})
+{% endif %}
+</h2>
 {% if current_user.has_admin_role() %}
 <ul class="nav nav-tabs">
     <li>
@@ -75,7 +80,12 @@ makeDatatable("parties-table");
 
 <hr>
 
-<h2>Characters</h2>
+<h2>Characters
+
+{% if chars %}
+({{ chars|length }})
+{% endif %}
+</h2>
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('character.create') }}">

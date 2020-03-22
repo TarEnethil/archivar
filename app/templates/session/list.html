@@ -34,8 +34,10 @@ makeDatatable("past-sessions-table");
         This page shows the upcoming and finished play sessions along with their participants.
     </p>
 
-    <h2>Upcoming sessions</h2>
+    <h2>Upcoming sessions
     {% if sessions_future %}
+    ({{ sessions_future|length }})
+    </h2>
     <table class="table table-hover table-striped">
         <thead>
             <tr>
@@ -86,8 +88,10 @@ makeDatatable("past-sessions-table");
     <p>No upcoming sessions.</p>
     {% endif %}
 
-    <h2>Past sessions</h2>
+    <h2>Past sessions
     {% if sessions_past %}
+    ({{ sessions_past|length }})
+    </h2>
     <table class="table table-hover table-striped" id="past-sessions-table">
         <thead>
             <tr>

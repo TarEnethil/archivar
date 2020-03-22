@@ -41,7 +41,12 @@
 
     <hr>
 
-    <h2>Node types</h2>
+    <h2>Node types
+
+    {% if node_types %}
+    ({{ node_types|length }})
+    {% endif %}
+    </h2>
     <ul class="nav nav-tabs">
         <li>
             <a href="{{ url_for('map.node_type_create')}}">

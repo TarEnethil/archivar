@@ -15,7 +15,12 @@ makeDatatable("media-table", 25);
 {% endblock %}
 
 {% block app_content %}
-    <h1>Media</h1>
+    <h1>Media
+
+    {% if media %}
+    ({{ media|length }})
+    {% endif %}
+    </h1>
 
     <ul class="nav nav-tabs">
         <li>

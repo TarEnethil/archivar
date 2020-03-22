@@ -34,11 +34,10 @@ makeDatatable("event-table");
         </li>
     </ul>
 
-    <p>
-        The following events match the search criteria:
-    </p>
-
     {% if events %}
+     <p>
+        The following <strong>{{ events|length }}</strong> events match the search criteria:
+    </p>
     <table class="table table-hover table-striped" id="event-table" style="border-collapse:collapse !important;">
         <thead>
             <tr>

@@ -45,7 +45,12 @@ Events can only be created after the calendar is finalized.
 </p>
 {% endif %}
 
-<h2>Epochs</h2>
+<h2>Epochs
+
+{% if epochs %}
+({{ epochs|length }})
+{% endif %}
+</h2>
 
 {% if settings.finalized == False %}
 <ul class="nav nav-tabs">
@@ -126,7 +131,12 @@ For a valid calendar, only the bottom-most epoch can have a duration of 0.
 <p>No epochs yet.</p>
 {% endif %}
 
-<h2>Months</h2>
+<h2>Months
+{% if months %}
+({{ months | length }})
+{% endif %}
+</h2>
+
 {% if settings.finalized == False %}
 <ul class="nav nav-tabs">
     <li>
@@ -196,7 +206,14 @@ For a valid calendar, at least one month must be defined and each month must hav
 <p>No months yet.</p>
 {% endif %}
 
-<h2>Days of the week</h2>
+<h2>Days of the week
+
+{% if days %}
+({{ days|length }})
+{% endif %}
+</h2>
+
+
 {% if settings.finalized == False %}
 <ul class="nav nav-tabs">
     <li>
@@ -261,7 +278,13 @@ For a valid calendar, at least one day must be defined.
 <p>No days yet.</p>
 {% endif %}
 
-<h2>Moons</h2>
+<h2>Moons
+
+{% if moons %}
+({{ moons|length }})
+{% endif %}
+</h2>
+
 {% if settings.finalized == False %}
 <ul class="nav nav-tabs">
     <li>

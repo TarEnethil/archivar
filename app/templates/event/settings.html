@@ -19,7 +19,12 @@
 </p>
 {{ wtf.quick_form(form) }}
 
-<h2>Categories</h2>
+<h2>Categories
+
+{% if categories %}
+({{ categories|length }})
+{% endif %}
+</h2>
 <p>
     Create or edit event categories, used to sort events by type of occurence.
 </p>

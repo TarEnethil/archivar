@@ -17,7 +17,12 @@ makeDatatable("map-table");
 {% endblock %}
 
 {% block app_content %}
-<h1>Maps</h1>
+<h1>Maps
+
+{% if maps %}
+({{ maps|length }})
+{% endif %}
+</h1>
 
 <ul class="nav nav-tabs">
     <li>
