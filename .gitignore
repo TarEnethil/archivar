@@ -1,6 +1,7 @@
 *.pyc
 app/*.pyc
 *.db
+app.db*
 *.sh
 venv/
 data/map/*
