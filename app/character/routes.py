@@ -110,7 +110,7 @@ def sidebar():
 def journal_list(c_id):
     char = Character.query.filter_by(id=c_id).first_or_404()
 
-    journals = Journal.query.filter_by(character_id = c_id)
+    journals = Journal.query.filter_by(character_id = c_id).all()
 
     return render_template("character/journal_list.html", char=char, journals=journals, title=page_title("Journals for '%s'" % char.name))
 
