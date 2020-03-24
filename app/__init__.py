@@ -63,6 +63,9 @@ app.register_blueprint(event_bp, url_prefix="/event")
 from app.media import bp as media_bp
 app.register_blueprint(media_bp, url_prefix="/media")
 
+from app.campaign import bp as campaign_bp
+app.register_blueprint(campaign_bp, url_prefix="/campaign")
+
 from app.models import GeneralSetting
 
 @app.context_processor
