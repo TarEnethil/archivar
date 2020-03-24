@@ -20,6 +20,10 @@ session_character_assoc = db.Table("session_character_assoc",
                     db.Column("session_id", db.Integer, db.ForeignKey("sessions.id")),
                     db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
 
+campaign_character_assoc = db.Table("campaign_character_assoc",
+                    db.Column("campaign_id", db.Integer, db.ForeignKey("campaigns.id")),
+                    db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
+
 def current_user_id():
     try:
         return current_user.id
@@ -149,6 +153,7 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    # TODO: could be more efficient with a query
     def has_char_in_party(self, party):
         for char in self.characters:
             if char in party.members:
@@ -156,12 +161,16 @@ class User(UserMixin, db.Model):
 
         return False
 
+    # TODO: could be more efficient with a query
     def has_char_in_session(self, session):
         for char in self.characters:
             if session in char.sessions:
                 return True
 
         return False
+
+    def is_dm_of(self, campaign):
+        return campaign.dm.id == self.id
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -681,6 +690,20 @@ class Journal(db.Model, SimpleAuditMixin):
 
     session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
     session = db.relationship("Session", backref="journals", foreign_keys=[session_id])
+
+class Campaign(db.Model, SimpleAuditMixin):
+    __tablename__ = "campaigns"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+    color = db.Column(db.String(10))
+
+    dm_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    dm = db.relationship("User", backref="campaigns", foreign_keys=[dm_id])
+    dm_notes = db.Column(db.Text)
+
+    default_participants = db.relationship("Character", secondary=campaign_character_assoc, backref="default_participants")
 
 @login.user_loader
 def load_user(id):

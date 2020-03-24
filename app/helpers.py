@@ -1,7 +1,7 @@
 from flask import flash, redirect, url_for
 from functools import wraps
 from app import db
-from app.models import GeneralSetting, Epoch, Month, Party, Session
+from app.models import GeneralSetting, Epoch, Month, Party, Session, Campaign
 from flask_login import current_user
 from sqlalchemy import func
 from wtforms.validators import ValidationError
@@ -58,6 +58,25 @@ def admin_or_session_required(url="index"):
 
             if not current_user.has_admin_role() and not current_user.has_char_in_session(session):
                 flash("You need to be admin or have a character in this session to perform this action.", "danger")
+                return redirect(url_for(url))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+# @admin_or_dm_required decorator, use AFTER login_required
+# url must contain 'id'-param which is assumed to be a campaign id
+def admin_or_dm_required(url="index"):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not 'id' in kwargs:
+                flash("@admin_or_dm_required was used incorrectly, contact the administrator", "danger")
+                return redirect(url_for(url))
+
+            campaign = Campaign.query.filter_by(id=kwargs['id']).first_or_404()
+
+            if not current_user.has_admin_role() and not current_user.is_dm_of(campaign):
+                flash("You need to be admin or hdm for this campaign to perform this action.", "danger")
                 return redirect(url_for(url))
             return f(*args, **kwargs)
         return decorated_function
