@@ -5,6 +5,7 @@ from flask_login import UserMixin
 from flask_login import current_user
 from flask_misaka import markdown
 from jinja2 import Markup, Template, contextfunction
+from sqlalchemy import and_
 from sqlalchemy.ext.declarative import declared_attr
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -172,6 +173,9 @@ class User(UserMixin, db.Model):
     def is_dm_of(self, campaign):
         return campaign.dm.id == self.id
 
+    def is_dm_of_anything(self):
+        return len(self.campaigns) > 0
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
@@ -312,10 +316,14 @@ class Session(db.Model, SimpleAuditMixin):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     summary = db.Column(db.Text)
-    code = db.Column(db.String(3))
     dm_notes = db.Column(db.Text)
     date = db.Column(db.DateTime)
     participants = db.relationship("Character", secondary=session_character_assoc, backref="sessions")
+    campaign_id = db.Column(db.Integer, db.ForeignKey("campaigns.id"))
+    campaign = db.relationship("Campaign", backref="sessions")
+
+    def get_session_number(self):
+        return Session.query.filter(and_(Session.campaign_id == self.campaign_id, Session.date < self.date)).count() + 1
 
 class WikiSetting(db.Model, SimpleAuditMixin):
     __tablename__ = "wiki_settings"
