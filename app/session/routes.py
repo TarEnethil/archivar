@@ -1,9 +1,10 @@
 from app import db
-from app.helpers import page_title, admin_required, admin_or_session_required
-from app.models import Character, Session
+from app.helpers import page_title, admin_required, admin_dm_or_session_required, admin_or_dm_required
+from app.models import Character, Session, Campaign
 from app.session import bp
-from app.session.forms import SessionForm
+from app.session.forms import SessionForm, CampaignSelectForm
 from app.session.helpers import gen_participant_choices, get_session_number, get_previous_session_id, get_next_session_id, gen_codes
+from app.campaign.helpers import gen_campaign_choices_dm, gen_campaign_choices_admin
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
@@ -26,86 +27,99 @@ def index():
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
-@admin_required(no_perm_url)
 def create():
+    if not current_user.has_admin_role() and not current_user.is_dm_of_anything():
+        flash("You are now allowed to perform this action.", "danger")
+        return redirect(request.referrer)
+
+    if not current_user.has_admin_role() and len(current_user.campaigns) == 1:
+        return redirect(url_for("session.create_with_campaign", id=current_user.campaigns[0].id))
+
+    form = CampaignSelectForm()
+
+    if current_user.has_admin_role():
+        form.campaigns.choices = gen_campaign_choices_admin()
+    else:
+        form.campaigns.choices = gen_campaign_choices_dm()
+
+    if form.validate_on_submit():
+        return redirect(url_for("session.create_with_campaign", id=form.campaigns.data))
+
+    return render_template("session/choose_campaign.html", form=form, title=page_title("Choose a campaign"))
+
+@bp.route("/create/for-campaign/<int:id>", methods=["GET", "POST"])
+@login_required
+@admin_or_dm_required(no_perm_url)
+def create_with_campaign(id):
     form = SessionForm()
     form.submit.label.text = "Create session"
     form.participants.choices = gen_participant_choices()
-    codes = gen_codes()
 
-    # pre-fill some fields if GET['base'] is set
-    base_id = request.args.get("base")
+    campaign = Campaign.query.filter_by(id=id).first_or_404()
 
-    # will do nothing if base_id not an int or not in choices
-    if base_id:
-        try:
-            base = Session.query.filter_by(id=int(base_id)).first_or_404()
-
-            form.code.data = base.code
-
-            participants = []
-
-            for p in base.participants:
-                participants.append(p.id)
-
-            form.participants.data = participants
-
-            if base.title.startswith("#"):
-                form.add_session_no.data = True
-        except:
-            pass
+    if not current_user.is_dm_of(campaign):
+        del form.dm_notes
 
     if form.validate_on_submit():
         participants = Character.query.filter(Character.id.in_(form.participants.data)).all()
 
-        if form.add_session_no.data:
-            session_no = get_session_number(form.code.data)
-            new_title = "#" + str(session_no + 1) + ": " + form.title.data
-        else:
-            new_title = form.title.data
+        dm_notes = None
+        if current_user.is_dm_of(campaign):
+            dm_notes = form.dm_notes.data
 
-        new_session = Session(title=new_title, code=form.code.data, summary=form.summary.data, dm_notes=form.dm_notes.data, date=form.date.data, participants=participants)
+        new_session = Session(title=form.title.data, campaign_id=form.campaign.data, summary=form.summary.data, dm_notes=dm_notes, date=form.date.data, participants=participants)
 
         db.session.add(new_session)
         db.session.commit()
 
         flash("Session was created.", "success")
         return redirect(url_for("session.view", id=new_session.id))
+    elif request.method == "GET":
+        participants = []
 
-    return render_template("session/create.html", form=form, codes=codes, title=page_title("Create session"))
+        for p in campaign.default_participants:
+            participants.append(p.id)
+
+        form.participants.data = participants
+
+        form.campaign.data = id
+
+    return render_template("session/create.html", form=form, campaign=campaign, title=page_title("Create session"))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
-@admin_or_session_required(no_perm_url)
+@admin_dm_or_session_required(no_perm_url)
 def edit(id):
     session = Session.query.filter_by(id=id).first_or_404()
     is_admin = current_user.has_admin_role()
+    is_dm = current_user.is_dm_of(session.campaign)
 
     form = SessionForm()
     form.submit.label.text = "Save session"
-    codes = gen_codes()
 
-    if is_admin:
+    if is_admin or is_dm:
         form.participants.choices = gen_participant_choices()
     else:
         del form.participants
-        del form.code
-        del form.dm_notes
         del form.date
 
-    del form.add_session_no
+    if not is_dm:
+        del form.dm_notes
+
+    del form.campaign
 
     if form.validate_on_submit():
         session.title = form.title.data
         session.summary = form.summary.data
 
-        if is_admin:
-            session.code = form.code.data
-            session.dm_notes = form.dm_notes.data
+        if is_admin or is_dm:
             session.date = form.date.data
 
             participants = Character.query.filter(Character.id.in_(form.participants.data)).all()
             session.participants = participants
+
+        if is_dm:
+            session.dm_notes = form.dm_notes.data
 
         db.session.commit()
         flash("Session was changed.", "success")
@@ -114,9 +128,7 @@ def edit(id):
         form.title.data = session.title
         form.summary.data = session.summary
 
-        if is_admin:
-            form.code.data = session.code
-            form.dm_notes.data = session.dm_notes
+        if is_admin or is_dm:
             form.date.data = session.date
 
             participants = []
@@ -126,14 +138,17 @@ def edit(id):
 
             form.participants.data = participants
 
-    return render_template("session/edit.html", form=form, codes=codes, title=page_title("Edit session '%s'" % session.title))
+        if is_dm:
+            form.dm_notes.data = session.dm_notes
+
+    return render_template("session/edit.html", form=form, title=page_title("Edit session '%s'" % session.title))
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
 def view(id):
     session = Session.query.filter_by(id=id).first_or_404()
-    prev_session_id = get_previous_session_id(session.date, session.code)
-    next_session_id = get_next_session_id(session.date, session.code)
+    prev_session_id = get_previous_session_id(session)
+    next_session_id = get_next_session_id(session)
 
     session.participants.sort(key=lambda x: x.name)
 

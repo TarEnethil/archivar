@@ -20,4 +20,4 @@ class CampaignEditForm(FlaskForm):
     dm_notes = TextAreaField("DM notes", render_kw={"rows": 15})
     default_participants = SelectMultipleField("Default participants for sessions",coerce=int)
 
-    submit = SubmitField("Create Campaign")
+    submit = SubmitField("Save Campaign")

@@ -37,22 +37,22 @@ def get_session_number(code):
     return q.count()
 
 # get the id of the previous session for a specified campaign code (if applicable)
-def get_previous_session_id(date, code):
-    q = Session.query.filter(and_(Session.code == code, Session.date < date)).order_by(Session.date.desc()).first()
+def get_previous_session_id(session):
+    q = Session.query.filter(and_(Session.campaign_id == session.campaign_id, Session.date < session.date)).order_by(Session.date.desc()).first()
 
     if q:
         return q.id
     else:
-        return
+        return None
 
 # get the id of the next session for a specified campaign code (if applicable)
-def get_next_session_id(date, code):
-    q = Session.query.filter(and_(Session.code == code, Session.date > date)).order_by(Session.date.asc()).first()
+def get_next_session_id(session):
+    q = Session.query.filter(and_(Session.campaign_id == session.campaign_id, Session.date > session.date)).order_by(Session.date.asc()).first()
 
     if q:
         return q.id
     else:
-        return
+        return None
 
 # generate a list of used campaign codes (excluding '')
 def gen_codes():

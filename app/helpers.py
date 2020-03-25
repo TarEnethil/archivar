@@ -44,9 +44,9 @@ def admin_or_party_required(url="index"):
         return decorated_function
     return decorator
 
-# @admin_or_session_required decorator, use AFTER login_required
+# @admin_dm_or_session_required decorator, use AFTER login_required
 # url must contain 'id'-param which is assumed to be a session id
-def admin_or_session_required(url="index"):
+def admin_dm_or_session_required(url="index"):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -56,7 +56,7 @@ def admin_or_session_required(url="index"):
 
             session = Session.query.filter_by(id=kwargs['id']).first_or_404()
 
-            if not current_user.has_admin_role() and not current_user.has_char_in_session(session):
+            if not current_user.has_admin_role() and not current_user.is_dm_of(session.campaign) and not current_user.has_char_in_session(session):
                 flash("You need to be admin or have a character in this session to perform this action.", "danger")
                 return redirect(url_for(url))
             return f(*args, **kwargs)
@@ -76,7 +76,7 @@ def admin_or_dm_required(url="index"):
             campaign = Campaign.query.filter_by(id=kwargs['id']).first_or_404()
 
             if not current_user.has_admin_role() and not current_user.is_dm_of(campaign):
-                flash("You need to be admin or hdm for this campaign to perform this action.", "danger")
+                flash("You need to be admin or dm for this campaign to perform this action.", "danger")
                 return redirect(url_for(url))
             return f(*args, **kwargs)
         return decorated_function
@@ -173,3 +173,19 @@ class DayPerMonthValidator(object):
 
         if field.data < 1 or field.data > mo.days:
             raise ValidationError("Day " + field.data + " is invalid for this month.")
+
+# validate that a user is a DM of the campaign he wants to create a session for
+class IsDMValidator(object):
+    def __init__(self, campaign_field_name):
+        self.campaign_field = campaign_field_name
+
+    def __call__(self, form, field):
+        campaign_id = form._fields.get(self.campaign_field).data
+
+        campaign = Campaign.query.filter_by(id=campaign_id).first()
+
+        if campaign == None:
+            raise ValidationError("Unknown campaign.")
+
+        if not current_user.is_dm_of(campaign) and not current_user.has_admin_role():
+            raise ValidationError("You are not the DM of the selected campaign.")

@@ -19,7 +19,7 @@ makeDatatable("past-sessions-table");
 {% block app_content %}
     <h1>Sessions</h1>
 
-    {% if current_user.has_admin_role() %}
+    {% if current_user.has_admin_role() or current_user.is_dm_of_anything() %}
     <ul class="nav nav-tabs">
         <li>
             <a href="{{ url_for('session.create') }}">
@@ -37,7 +37,9 @@ makeDatatable("past-sessions-table");
     <h2>Upcoming sessions
     {% if sessions_future %}
     ({{ sessions_future|length }})
+    {% endif %}
     </h2>
+    {% if sessions_future %}
     <table class="table table-hover table-striped">
         <thead>
             <tr>
@@ -50,7 +52,11 @@ makeDatatable("past-sessions-table");
 
         <tbody>
         {% for session in sessions_future %}
+            {% if session.campaign.color %}
+            <tr style="border-left:7px solid {{ session.campaign.color }}">
+            {% else %}
             <tr>
+            {% endif %}
                 <td>{{ session.title }}</td>
                 <td>{{ moment(session.date).format(current_user.dateformat) }} ({{ moment(session.date).fromNow() }})</td>
                 <td>
@@ -104,7 +110,11 @@ makeDatatable("past-sessions-table");
 
         <tbody>
         {% for session in sessions_past %}
+            {% if session.campaign.color %}
+            <tr style="border-left:7px solid {{ session.campaign.color }}">
+            {% else %}
             <tr>
+            {% endif %}
                 <td>{{ session.title }}</td>
                 <td>{{ moment(session.date).format(current_user.dateformat) }}</td>
                 <td>
