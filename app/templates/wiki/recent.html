@@ -9,9 +9,9 @@
 {% block app_content %}
     {{ super() }}
 
-    <h1>Recent changes</h1>
+    <h1>Recent Changes</h1>
 
-    <h2>Recently created pages</h2>
+    <h2>Recently Created Pages</h2>
     {% if created %}
     <ul class="list-unstyled">
         {% for entry in created %}
@@ -22,7 +22,7 @@
     <p>No recently created pages.</p>
     {% endif %}
 
-    <h2>Recently edited pages</h2>
+    <h2>Recently Edited Pages</h2>
     {% if edited %}
     <ul class="list-unstyled">
         {% for entry in edited %}

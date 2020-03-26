@@ -27,7 +27,7 @@ $("#phase-button").click(function(e) {
 {% endblock %}
 
 {% block app_content %}
-    <h1>Calendar preview</h1>
+    <h1>Calendar Preview</h1>
     <ul class="nav nav-tabs">
         <li>
             <a href="{{ url_for('calendar.settings') }}">
@@ -50,7 +50,7 @@ $("#phase-button").click(function(e) {
         After finalization, you won't be able to change any number-data or their order, only the names will be editable.
     </p>
 
-    <h2>General info</h2>
+    <h2>General Info</h2>
     <dl class="dl-horizontal">
         <dt>Days per week</dt>
         <dd>{{ calendar["days_per_week"] }}</dd>

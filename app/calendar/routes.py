@@ -140,7 +140,7 @@ def epoch_create():
         flash("The calendar is finalized. You can't add new epochs.", "danger")
         return redirect(url_for('calendar.settings'))
 
-    heading = "Create new epoch"
+    heading = "Create New Epoch"
     form = EpochForm()
     form.submit.label.text = "Create epoch"
 
@@ -161,7 +161,7 @@ def epoch_create():
 @login_required
 @admin_required(no_perm_url)
 def epoch_edit(id):
-    heading = "Edit epoch"
+    heading = "Edit Epoch"
     form = EpochForm()
     form.submit.label.text = "Save epoch"
 
@@ -277,7 +277,7 @@ def month_create():
         flash("The calendar is finalized. You can't add new months.", "danger")
         return redirect(url_for('calendar.settings'))
 
-    heading = "Create new month"
+    heading = "Create New Month"
     form = MonthForm()
     form.submit.label.text = "Create month"
 
@@ -298,7 +298,7 @@ def month_create():
 @login_required
 @admin_required(no_perm_url)
 def month_edit(id):
-    heading = "Edit month"
+    heading = "Edit Month"
     form = MonthForm()
     form.submit.label.text = "Save month"
 
@@ -411,7 +411,7 @@ def day_create():
         flash("The calendar is finalized. You can't add new days.", "danger")
         return redirect(url_for('calendar.settings'))
 
-    heading = "Create new day"
+    heading = "Create New Day"
     form = DayForm()
     form.submit.label.text = "Create day"
 
@@ -432,7 +432,7 @@ def day_create():
 @login_required
 @admin_required(no_perm_url)
 def day_edit(id):
-    heading = "Edit day"
+    heading = "Edit Day"
     form = DayForm()
     form.submit.label.text = "Save day"
 
@@ -535,7 +535,7 @@ def moon_create():
         flash("The calendar is finalized. You can't add new moons.", "danger")
         return redirect(url_for('calendar.settings'))
 
-    heading = "Create new moon"
+    heading = "Create New Moon"
     form = MoonForm()
     form.submit.label.text = "Create moon"
 
@@ -554,7 +554,7 @@ def moon_create():
 @login_required
 @admin_required(no_perm_url)
 def moon_edit(id):
-    heading = "Edit moon"
+    heading = "Edit Moon"
     form = MoonForm()
     form.submit.label.text = "Save moon"
 

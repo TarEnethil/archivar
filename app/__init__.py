@@ -29,7 +29,7 @@ bootstrap = Bootstrap(app)
 markdown = Misaka(app, tables=True, fenced_code=True, escape=True)
 moment = Moment(app)
 
-# override ContitionalCDN with StaticCDN if local serve is wanted
+# override ConditionalCDN with StaticCDN if local serve is wanted
 # reason: using the usual local cdn results in a 404 for bootstrap.min.css.map on every page
 # TODO how to do this correctly?
 if app.config["BOOTSTRAP_SERVE_LOCAL"]:

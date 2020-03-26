@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block app_content %}
-    <h1>User profile for {{ user.username }}</h1>
+    <h1>User Profile for {{ user.username }}</h1>
     {% if user == current_user or current_user.has_admin_role() %}
     <ul class="nav nav-tabs">
         <li>

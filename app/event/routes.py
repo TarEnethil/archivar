@@ -31,7 +31,7 @@ def view(id):
 @bp.route("/list", methods=["GET"])
 @login_required
 def list():
-    title = "All events"
+    title = "All Events"
     events = get_events()
 
     return render_template("event/list.html", events=events, heading=title, title=page_title("View all events"))
@@ -41,7 +41,7 @@ def list():
 def list_epoch(e_id):
     e = Epoch.query.filter_by(id=e_id).first_or_404()
     events = get_events(e_id)
-    title = "All events for " + e.name
+    title = "All Events for " + e.name
 
     return render_template("event/list.html", events=events, epoch_flag=True, heading=title, title=page_title("Events in epoch '%s'" % e.name))
 
@@ -59,7 +59,7 @@ def list_epoch_year(e_id, year):
 def list_category(c_id):
     c = EventCategory.query.filter_by(id=c_id).first_or_404()
     events = get_events_by_category(c_id)
-    title = "All events in category " + c.name
+    title = "All Events in Category " + c.name
 
     return render_template("event/list.html", events=events, category_flag=True, heading=title, title=page_title("Events in category '%s'" % c.name))
 
@@ -222,7 +222,7 @@ def delete(id):
 @login_required
 @event_admin_required
 def category_create():
-    heading = "Create new event category"
+    heading = "Create New Event Category"
     form = CategoryForm()
     form.submit.label.text = "Create category"
 
@@ -245,7 +245,7 @@ def category_edit(id):
     form.submit.label.text = "Edit category"
 
     category = EventCategory.query.filter_by(id=id).first_or_404()
-    heading = "Edit event category '%s'" % category.name
+    heading = "Edit Event Category '%s'" % category.name
 
     if form.validate_on_submit():
         category.name = form.name.data

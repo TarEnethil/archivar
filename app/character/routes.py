@@ -123,7 +123,7 @@ def journal_create(c_id):
         flash_no_permission()
         return redirect(url_for(no_perm))
 
-    heading = "Create journal entry for " + char.name
+    heading = "Create Journal Entry for " + char.name
 
     form = JournalForm()
     form.session.choices = gen_session_choices(char)
@@ -169,7 +169,7 @@ def journal_edit(c_id, j_id):
         flash("Journal does not belong to this character.", "danger")
         return redirect(url_for(no_perm))
 
-    heading = "Edit journal entry for " + char.name
+    heading = "Edit Journal Entry for " + char.name
 
     form = JournalForm()
     form.session.choices = gen_session_choices(char)

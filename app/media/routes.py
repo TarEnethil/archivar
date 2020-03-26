@@ -165,7 +165,7 @@ def delete(id):
 @login_required
 @media_admin_required
 def category_create():
-    heading = "Create new media category"
+    heading = "Create New Media Category"
     form = CategoryForm()
     form.submit.label.text = "Create category"
 
@@ -188,7 +188,7 @@ def category_edit(id):
     form.submit.label.text = "Save category"
 
     category = MediaCategory.query.filter_by(id=id).first_or_404()
-    heading = "Edit media category '%s'" % category.name
+    heading = "Edit Media Category '%s'" % category.name
 
     if form.validate_on_submit():
         category.name = form.name.data

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-<h1>Calendar and events</h1>
+<h1>Calendar and Events</h1>
 
 {% if settings.finalized == False %}
 <p class="alert alert-warning">
@@ -45,7 +45,7 @@ The calendar has not been finalized by the admin yet.
     View <a href="{{ url_for('event.list') }}">all events</a>.
 </p>
 
-<h2>Events by year and epoch</h2>
+<h2>Events by Year and Epoch</h2>
 <p>
     The following is a list of all eventful years in the calendar, sorted by epoch.
 </p>
@@ -66,7 +66,7 @@ The calendar has not been finalized by the admin yet.
     {% endif %}
 {% endfor %}
 
-<h2>Events by category</h2>
+<h2>Events by Category</h2>
 <p>
     Filter events by category.
 </p>
