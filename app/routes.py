@@ -1,7 +1,7 @@
 from app import app, db
 from app.forms import LoginForm, SettingsForm, InstallForm
 from app.helpers import page_title, count_rows, admin_required
-from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting, EventSetting, EventCategory, MediaSetting, MediaCategory, Journal
+from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting, EventSetting, EventCategory, MediaSetting, MediaCategory, Journal, Campaign
 from app.models import Character, Party, Session, Map, MapNode, Event, MediaItem
 from collections import OrderedDict
 from datetime import datetime
@@ -50,6 +50,7 @@ def statistics():
     stats["Characters"] = count_rows(Character)
     stats["Journals"] = count_rows(Journal)
     stats["Parties"] = count_rows(Party)
+    stats["Campaigns"] = count_rows(Campaign)
     stats["Sessions"] = count_rows(Session)
     stats["Maps"] = count_rows(Map)
     stats["Map nodes"] = count_rows(MapNode)
