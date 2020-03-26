@@ -52,7 +52,7 @@ def create():
 @admin_or_dm_required(no_perm_url)
 def create_with_campaign(id):
     form = SessionForm()
-    form.submit.label.text = "Create session"
+    form.submit.label.text = "Create Session"
     form.participants.choices = gen_participant_choices()
 
     campaign = Campaign.query.filter_by(id=id).first_or_404()
@@ -95,7 +95,7 @@ def edit(id):
     is_dm = current_user.is_dm_of(session.campaign)
 
     form = SessionForm()
-    form.submit.label.text = "Save session"
+    form.submit.label.text = "Save Session"
 
     if is_admin or is_dm:
         form.participants.choices = gen_participant_choices()

@@ -127,7 +127,7 @@ def journal_create(c_id):
 
     form = JournalForm()
     form.session.choices = gen_session_choices(char)
-    form.submit.label.text = "Create journal entry"
+    form.submit.label.text = "Create Journal Entry"
 
     if form.validate_on_submit():
         journal_entry = Journal(title=form.title.data, content=form.content.data, is_visible=form.is_visible.data, character_id=c_id)
@@ -173,7 +173,7 @@ def journal_edit(c_id, j_id):
 
     form = JournalForm()
     form.session.choices = gen_session_choices(char)
-    form.submit.label.text = "Save journal entry"
+    form.submit.label.text = "Save Journal Entry"
 
     if form.validate_on_submit():
         journal.title = form.title.data

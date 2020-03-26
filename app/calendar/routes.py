@@ -142,7 +142,7 @@ def epoch_create():
 
     heading = "Create New Epoch"
     form = EpochForm()
-    form.submit.label.text = "Create epoch"
+    form.submit.label.text = "Create Epoch"
 
     if form.validate_on_submit():
         order_num = get_next_epoch_order()
@@ -163,7 +163,7 @@ def epoch_create():
 def epoch_edit(id):
     heading = "Edit Epoch"
     form = EpochForm()
-    form.submit.label.text = "Save epoch"
+    form.submit.label.text = "Save Epoch"
 
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
@@ -279,7 +279,7 @@ def month_create():
 
     heading = "Create New Month"
     form = MonthForm()
-    form.submit.label.text = "Create month"
+    form.submit.label.text = "Create Month"
 
     if form.validate_on_submit():
         order_num = get_next_month_order()
@@ -300,7 +300,7 @@ def month_create():
 def month_edit(id):
     heading = "Edit Month"
     form = MonthForm()
-    form.submit.label.text = "Save month"
+    form.submit.label.text = "Save Month"
 
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
@@ -413,7 +413,7 @@ def day_create():
 
     heading = "Create New Day"
     form = DayForm()
-    form.submit.label.text = "Create day"
+    form.submit.label.text = "Create Day"
 
     if form.validate_on_submit():
         order_num = get_next_day_order()
@@ -434,7 +434,7 @@ def day_create():
 def day_edit(id):
     heading = "Edit Day"
     form = DayForm()
-    form.submit.label.text = "Save day"
+    form.submit.label.text = "Save Day"
 
     day = Day.query.filter_by(id=id).first_or_404()
 
@@ -537,7 +537,7 @@ def moon_create():
 
     heading = "Create New Moon"
     form = MoonForm()
-    form.submit.label.text = "Create moon"
+    form.submit.label.text = "Create Moon"
 
     if form.validate_on_submit():
         new_moon = Moon(name=form.name.data, description=form.description.data, phase_length=form.phase_length.data, phase_offset=form.phase_offset.data, waxing_color=stretch_color(form.waxing_color.data.hex), waning_color=stretch_color(form.waning_color.data.hex))
@@ -556,7 +556,7 @@ def moon_create():
 def moon_edit(id):
     heading = "Edit Moon"
     form = MoonForm()
-    form.submit.label.text = "Save moon"
+    form.submit.label.text = "Save Moon"
 
     moon = Moon.query.filter_by(id=id).first_or_404()
 

@@ -28,4 +28,4 @@ class WikiMoveCategoryForm(FlaskForm):
     new_category = StringField("New name", validators=[Length(min=0, max=100)])
 
     # different name because we have two forms on the same page
-    submit_move = SubmitField("Move category")
+    submit_move = SubmitField("Move Category")

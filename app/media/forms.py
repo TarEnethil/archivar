@@ -18,7 +18,7 @@ class MediaItemCreateForm(FlaskForm):
         if not "." in file.data.filename:
             raise ValidationError("No file extension found.")
 
-    submit = SubmitField("Upload file")
+    submit = SubmitField("Upload File")
 
 class MediaItemEditForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])
@@ -30,7 +30,7 @@ class MediaItemEditForm(FlaskForm):
         if file.data and not "." in file.data.filename:
             raise ValidationError("No file extension found.")
 
-    submit = SubmitField("Save item")
+    submit = SubmitField("Save Item")
 
 class CategoryForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])

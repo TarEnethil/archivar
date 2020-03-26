@@ -9,7 +9,7 @@ class CreateCharacterForm(FlaskForm):
     description = TextAreaField("Description", render_kw={"rows": 15})
     private_notes = TextAreaField("Private Notes (hidden)", render_kw={"rows": 15})
 
-    submit = SubmitField("Create character")
+    submit = SubmitField("Create Character")
 
 class EditCharacterForm(FlaskForm):
     name = StringField("Name", validators=[Length(min=0, max=100),InputRequired()])
@@ -19,7 +19,7 @@ class EditCharacterForm(FlaskForm):
     private_notes = TextAreaField("Private Notes (hidden)", render_kw={"rows": 15})
     dm_notes = TextAreaField("DM Notes (hidden)", render_kw={"rows": 15})
 
-    submit = SubmitField("Save character")
+    submit = SubmitField("Save Character")
 
 class JournalForm(FlaskForm):
     title = StringField("Name", validators=[Length(min=0, max=100),InputRequired()])

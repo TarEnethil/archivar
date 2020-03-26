@@ -13,7 +13,7 @@ class SettingsForm(FlaskForm):
     world_name = StringField("Worldname", validators=[Length(max=64)])
     welcome_page = TextAreaField("Text for welcome page", render_kw={"rows": 20})
     quicklinks = TextAreaField("Quicklinks", render_kw={"rows": 7})
-    submit = SubmitField("Save settings")
+    submit = SubmitField("Save Settings")
 
 class InstallForm(FlaskForm):
     admin_name = StringField("Admin username", validators=[DataRequired()])

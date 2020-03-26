@@ -14,7 +14,7 @@ no_perm_url = "character.list"
 @admin_required(no_perm_url)
 def create():
     form = PartyForm()
-    form.submit.label.text = "Create party"
+    form.submit.label.text = "Create Party"
     form.members.choices = gen_party_members_choices()
 
     if form.validate_on_submit():
@@ -38,7 +38,7 @@ def edit(id):
     is_admin = current_user.has_admin_role()
 
     form = PartyForm()
-    form.submit.label.text = "Save party"
+    form.submit.label.text = "Save Party"
 
     if is_admin:
         form.members.choices = gen_party_members_choices()

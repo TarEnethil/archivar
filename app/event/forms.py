@@ -10,7 +10,7 @@ class SettingsForm(FlaskForm):
     default_epoch = SelectField("Default epoch", coerce=int)
     default_year = IntegerField("Default year")
 
-    submit = SubmitField("Save settings")
+    submit = SubmitField("Save Settings")
 
 class EventForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])

@@ -20,7 +20,7 @@ def index():
 @login_required
 def create():
     form = WikiEntryForm()
-    form.submit.label.text = "Create article"
+    form.submit.label.text = "Create Article"
     cats = gen_category_strings()
 
     if not current_user.is_wiki_admin():
@@ -61,7 +61,7 @@ def edit(id):
     wikientry = WikiEntry.query.filter_by(id=id).first_or_404()
 
     form = WikiEntryForm()
-    form.submit.label.text = "Save article"
+    form.submit.label.text = "Save Article"
     cats = gen_category_strings()
 
     # TODO: write custom decorators for this?

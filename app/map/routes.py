@@ -72,7 +72,7 @@ def view_with_node(id, n_id):
 @admin_required(no_perm_url)
 def create():
     form = MapForm()
-    form.submit.label.text = "Create map"
+    form.submit.label.text = "Create Map"
 
     if form.validate_on_submit():
         maps = Map.query.all()
@@ -100,7 +100,7 @@ def create():
 def map_settings(id):
     map_ = Map.query.filter_by(id=id).first_or_404()
     form = MapForm()
-    form.submit.label.text = "Save map"
+    form.submit.label.text = "Save Map"
 
     if form.validate_on_submit():
         map_.name = form.name.data
@@ -178,7 +178,7 @@ def node_create(map_id, x, y):
     Map.query.filter_by(id=map_id).first_or_404()
 
     form = MapNodeForm()
-    form.submit.label.text = "Create node"
+    form.submit.label.text = "Create Node"
 
     if not current_user.is_map_admin():
         del form.is_visible
@@ -235,7 +235,7 @@ def node_create(map_id, x, y):
 @login_required
 def node_edit(id):
     form = MapNodeForm()
-    form.submit.label.text = "Save node"
+    form.submit.label.text = "Save Node"
 
     if not current_user.is_map_admin():
         del form.is_visible

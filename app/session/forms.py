@@ -17,4 +17,4 @@ class SessionForm(FlaskForm):
 class CampaignSelectForm(FlaskForm):
     campaigns = SelectField("Campaign", validators=[InputRequired(), IsDMValidator("campaigns")], coerce=int)
 
-    submit = SubmitField("Create session")
+    submit = SubmitField("Create Session")
