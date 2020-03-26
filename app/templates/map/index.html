@@ -39,13 +39,13 @@
 
   <a id="btn-loc-sidebar" class="btn btn-default btn-left">
     <span class="glyphicon glyphicon-list"></span>
-    Location list
+    Location List
   </a>
 
   <div id="bottom-right-buttons">
     <a id="btn-add-node" class="btn btn-default">
       <span class="glyphicon glyphicon-plus"></span>
-      New location
+      Add Location
     </a>
 
     <a id="btn-cancel-add-node" class="btn btn-warning">
@@ -55,7 +55,7 @@
   {% if current_user.has_admin_role() %}
     <a id="btn-add-node" class="btn btn-default" href="{{ url_for('map.create') }}">
       <span class="glyphicon glyphicon-plus"></span>
-      New map
+      Add Map
     </a>
     <a id="btn-settings" class="btn btn-default" href="{{ url_for('map.list') }}">
       <span class="glyphicon glyphicon-list"></span>

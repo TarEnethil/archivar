@@ -52,11 +52,5 @@ $("form").submit(function(e) {
 {% block app_content %}
     <h1>Edit Session</h1>
 
-    <datalist id="code-list">
-    {% for code in codes %}
-    <option value="{{ code }}">
-    {% endfor %}
-    </datalist>
-
     {{ wtf.quick_form(form) }}
 {% endblock %}

@@ -28,7 +28,7 @@ makeDatatable("campaigns-table");
         <li>
             <a href="{{ url_for('campaign.create') }}">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                New campaign
+                Add Campaign
             </a>
         </li>
     </ul>
@@ -68,7 +68,7 @@ makeDatatable("campaigns-table");
                     </a>
                     <a href="{{ url_for('session.create_with_campaign', id=campaign.id) }}" class="btn btn-default">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                        New session
+                        Add Session
                     </a>
                     {% endif %}
                 </td>
