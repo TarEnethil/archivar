@@ -45,7 +45,7 @@ def create():
     if form.validate_on_submit():
         return redirect(url_for("session.create_with_campaign", id=form.campaigns.data))
 
-    return render_template("session/choose_campaign.html", form=form, title=page_title("Choose a campaign"))
+    return render_template("session/choose_campaign.html", form=form, title=page_title("Choose a Campaign"))
 
 @bp.route("/create/for-campaign/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -84,7 +84,7 @@ def create_with_campaign(id):
 
         form.campaign.data = id
 
-    return render_template("session/create.html", form=form, campaign=campaign, title=page_title("Create session"))
+    return render_template("session/create.html", form=form, campaign=campaign, title=page_title("Add Session"))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -141,7 +141,7 @@ def edit(id):
         if is_dm:
             form.dm_notes.data = session.dm_notes
 
-    return render_template("session/edit.html", form=form, title=page_title("Edit session '%s'" % session.title))
+    return render_template("session/edit.html", form=form, title=page_title("Edit Session '%s'" % session.title))
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
@@ -152,7 +152,7 @@ def view(id):
 
     session.participants.sort(key=lambda x: x.name)
 
-    return render_template("session/view.html", session=session, prev=prev_session_id, next=next_session_id, title=page_title("Session '%s'" % session.title))
+    return render_template("session/view.html", session=session, prev=prev_session_id, next=next_session_id, title=page_title("View Session '%s'" % session.title))
 
 @bp.route("/delete/<int:id>")
 @login_required

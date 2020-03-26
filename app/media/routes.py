@@ -34,7 +34,7 @@ def view(id):
         flash_no_permission()
         return redirect(url_for(no_perm_url))
 
-    return render_template("media/view.html", item=item, title=page_title("View file"))
+    return render_template("media/view.html", item=item, title=page_title("View File"))
 
 @bp.route("/list/category-<int:c_id>", methods=["GET"])
 @login_required
@@ -42,7 +42,7 @@ def list_by_cat(c_id):
     m = MediaCategory.query.filter_by(id=c_id).first_or_404()
     files = get_media(c_id)
 
-    return render_template("media/list.html", media=files, cat=m, title=page_title("View files in category '%s'" % m.name))
+    return render_template("media/list.html", media=files, cat=m, title=page_title("View Files in Category '%s'" % m.name))
 
 @bp.route("/upload", methods=["GET", "POST"])
 @login_required
@@ -88,7 +88,7 @@ def upload():
             except:
                 pass
 
-    return render_template("media/upload.html", form=form, max_filesize=app.config["MAX_CONTENT_LENGTH"], title=page_title("Upload file"))
+    return render_template("media/upload.html", form=form, max_filesize=app.config["MAX_CONTENT_LENGTH"], title=page_title("Upload File"))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -139,7 +139,7 @@ def edit(id):
         if current_user.is_media_admin():
             form.is_visible.data = item.is_visible
 
-    return render_template("media/edit.html", form=form, title=page_title("Edit file '%s'" % item.name))
+    return render_template("media/edit.html", form=form, title=page_title("Edit File '%s'" % item.name))
 
 @bp.route("/delete/<int:id>", methods=["GET"])
 @login_required
@@ -165,7 +165,7 @@ def delete(id):
 @login_required
 @media_admin_required
 def category_create():
-    heading = "Create New Media Category"
+    heading = "Add Media Category"
     form = CategoryForm()
     form.submit.label.text = "Create Category"
 

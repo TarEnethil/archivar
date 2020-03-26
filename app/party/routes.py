@@ -28,7 +28,7 @@ def create():
         flash("Party was created.", "success")
         return redirect(url_for("party.view", id=new_party.id))
 
-    return render_template("party/create.html", form=form, title=page_title("Create party"))
+    return render_template("party/create.html", form=form, title=page_title("Add Party"))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -73,14 +73,14 @@ def edit(id):
 
             form.members.data = members
 
-    return render_template("party/edit.html", form=form, title=page_title("Edit party '%s'" % party.name))
+    return render_template("party/edit.html", form=form, title=page_title("Edit Party '%s'" % party.name))
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
 def view(id):
     party = Party.query.filter_by(id=id).first_or_404()
 
-    return render_template("party/view.html", party=party, title=page_title("View party '%s'" % party.name))
+    return render_template("party/view.html", party=party, title=page_title("View Party '%s'" % party.name))
 
 @bp.route("/delete/<int:id>", methods=["GET", "POST"])
 @login_required

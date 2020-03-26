@@ -55,7 +55,7 @@ def view():
     if cset.finalized == True:
         stats = gen_calendar_stats()
 
-    return render_template("calendar/view.html", settings=cset, stats=stats, title=page_title("View calendar"))
+    return render_template("calendar/view.html", settings=cset, stats=stats, title=page_title("View Calendar"))
 
 @bp.route("/check", methods=["GET"])
 @login_required
@@ -106,7 +106,7 @@ def preview():
     preview_form.month.choices = gen_month_choices()
     preview_form.day.choices = gen_day_choices(1)
 
-    return render_template("calendar/preview.html", calendar=stats, form=preview_form, title=page_title("Preview calendar"))
+    return render_template("calendar/preview.html", calendar=stats, form=preview_form, title=page_title("Preview Calendar"))
 
 @bp.route("/finalize", methods=["GET"])
 @login_required
@@ -155,7 +155,7 @@ def epoch_create():
         flash("Epoch added.", "success")
         return redirect(url_for("calendar.settings"))
 
-    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Create new epoch"))
+    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Add Epoch"))
 
 @bp.route("/epoch/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -194,7 +194,7 @@ def epoch_edit(id):
             form.years.data = epoch.years
             form.circa.data = epoch.circa
 
-    return render_template("calendar/form.html", item=epoch, form=form, heading=heading, title=page_title("Edit epoch '%s'" % epoch.name))
+    return render_template("calendar/form.html", item=epoch, form=form, heading=heading, title=page_title("Edit Epoch '%s'" % epoch.name))
 
 @bp.route("/epoch/delete/<int:id>", methods=["GET"])
 @login_required
@@ -292,7 +292,7 @@ def month_create():
         flash("Month added.", "success")
         return redirect(url_for("calendar.settings"))
 
-    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Create new month"))
+    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Add Month"))
 
 @bp.route("/month/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -328,7 +328,7 @@ def month_edit(id):
         if cset.finalized == False:
             form.days.data = month.days
 
-    return render_template("calendar/form.html", item=month, form=form, heading=heading, title=page_title("Edit month '%s'" % month.name))
+    return render_template("calendar/form.html", item=month, form=form, heading=heading, title=page_title("Edit Month '%s'" % month.name))
 
 @bp.route("/month/delete/<int:id>", methods=["GET"])
 @login_required
@@ -426,7 +426,7 @@ def day_create():
         flash("Day added.", "success")
         return redirect(url_for("calendar.settings"))
 
-    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Create new day"))
+    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Add Day"))
 
 @bp.route("/day/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -452,7 +452,7 @@ def day_edit(id):
         form.abbreviation.data = day.abbreviation
         form.description.data = day.description
 
-    return render_template("calendar/form.html", item=day, form=form, heading=heading, title=page_title("Edit day '%s'" % day.name))
+    return render_template("calendar/form.html", item=day, form=form, heading=heading, title=page_title("Edit Day '%s'" % day.name))
 
 @bp.route("/day/delete/<int:id>", methods=["GET"])
 @login_required
@@ -548,7 +548,7 @@ def moon_create():
         flash("Moon added.", "success")
         return redirect(url_for("calendar.settings"))
 
-    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Create new moon"))
+    return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Add Moon"))
 
 @bp.route("/moon/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -579,7 +579,7 @@ def moon_edit(id):
         form.waxing_color.data = moon.waxing_color
         form.waning_color.data = moon.waning_color
 
-    return render_template("calendar/form.html", item=moon, form=form, heading=heading, title=page_title("Edit moon '%s'" % moon.name))
+    return render_template("calendar/form.html", item=moon, form=form, heading=heading, title=page_title("Edit Moon '%s'" % moon.name))
 
 @bp.route("/moon/delete/<int:id>", methods=["GET"])
 @login_required

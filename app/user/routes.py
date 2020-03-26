@@ -16,7 +16,7 @@ no_perm_url = "index"
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
 
-    return render_template("user/profile.html", user=user, title=page_title("User profile for '%s'" % user.username))
+    return render_template("user/profile.html", user=user, title=page_title("View User '%s'" % user.username))
 
 @bp.route("/<username>/edit", methods=["GET", "POST"])
 @login_required
@@ -73,7 +73,7 @@ def edit(username):
 
                 form.roles.data = user_roles
 
-        return render_template("user/edit.html", form=form, user=user, title=page_title("Edit user '%s'" % user.username))
+        return render_template("user/edit.html", form=form, user=user, title=page_title("Edit User '%s'" % user.username))
     else:
         flash("You dont have the neccessary role to perform this action.", "danger")
         return redirect(url_for(no_perm_url))
@@ -101,7 +101,7 @@ def create():
         flash("New user " + new_user.username + " created.", "success")
         return redirect(url_for('user.profile', username=new_user.username))
     else:
-        return render_template("user/create.html", form=form, title=page_title("Create new user"))
+        return render_template("user/create.html", form=form, title=page_title("Add User"))
 
 @bp.route("/password", methods=["GET", "POST"])
 @login_required
@@ -120,7 +120,7 @@ def password():
 
         return redirect(url_for('index'))
 
-    return render_template("user/password.html", form=form, title=page_title("Change password"))
+    return render_template("user/password.html", form=form, title=page_title("Change Password"))
 
 @bp.route("/list")
 @login_required
@@ -128,7 +128,7 @@ def password():
 def list():
     users = User.query.all()
 
-    return render_template("user/list.html", users=users, title=page_title("User list"))
+    return render_template("user/list.html", users=users, title=page_title("User List"))
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required

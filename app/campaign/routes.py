@@ -37,7 +37,7 @@ def create():
         #return redirect(url_for("campaign.view", id=new_campaign.id))
         return redirect(url_for("campaign.index"))
 
-    return render_template("campaign/create.html", form=form, title=page_title("Create campaign"))
+    return render_template("campaign/create.html", form=form, title=page_title("Add Campaign"))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -89,14 +89,14 @@ def edit(id):
         if is_dm:
             form.dm_notes.data = campaign.dm_notes
 
-    return render_template("campaign/edit.html", form=form, campaign=campaign, title=page_title("Edit campaign '%s'" % campaign.name))
+    return render_template("campaign/edit.html", form=form, campaign=campaign, title=page_title("Edit Campaign '%s'" % campaign.name))
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
 def view(id):
     campaign = Campaign.query.filter_by(id=id).first_or_404()
 
-    return render_template("campaign/view.html", campaign=campaign, title=page_title("View campaign '%s'" % campaign.name))
+    return render_template("campaign/view.html", campaign=campaign, title=page_title("View Campaign '%s'" % campaign.name))
 
 # @bp.route("/delete/<int:id>", methods=["GET", "POST"])
 # @login_required

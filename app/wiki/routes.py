@@ -53,7 +53,7 @@ def create():
             wsettings = WikiSetting.query.get(1)
             form.is_visible.data = wsettings.default_visible
 
-    return render_template("wiki/create.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), cats=cats, title=page_title("Create wiki entry"))
+    return render_template("wiki/create.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), cats=cats, title=page_title("Add Wiki Article"))
 
 @bp.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -107,7 +107,7 @@ def edit(id):
         if current_user.has_admin_role():
             form.dm_content.data = wikientry.dm_content
 
-    return render_template("wiki/edit.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), cats=cats, entry=wikientry, title=page_title("Edit wiki entry '%s'" % wikientry.title))
+    return render_template("wiki/edit.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), cats=cats, entry=wikientry, title=page_title("Edit Wiki Article '%s'" % wikientry.title))
 
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
@@ -125,7 +125,7 @@ def view(id):
 
     map_nodes = get_nodes_by_wiki_id(id)
 
-    return render_template("wiki/view.html", entry=wikientry, nav=(prepare_wiki_nav(), WikiSearchForm()), map_nodes=map_nodes, title=page_title("View wiki entry '%s'" % wikientry.title))
+    return render_template("wiki/view.html", entry=wikientry, nav=(prepare_wiki_nav(), WikiSearchForm()), map_nodes=map_nodes, title=page_title("View Wiki Article '%s'" % wikientry.title))
 
 @bp.route("/delete/<int:id>", methods=["GET"])
 @login_required
@@ -185,7 +185,7 @@ def search_text(text):
 def search_tag(tag):
     results = search_wiki_tag(tag)
 
-    return render_template("wiki/search_tag.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results, tag=tag, title=page_title("Search for tag '%s'" % tag))
+    return render_template("wiki/search_tag.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results, tag=tag, title=page_title("Search for Tag '%s'" % tag))
 
 @bp.route("/recent", methods=["GET"])
 @login_required

@@ -91,7 +91,7 @@ def create():
         flash("Map created.", "success")
         return redirect(url_for("map.view", id=new_map.id))
 
-    return render_template("map/create.html", form=form, title=page_title("Create new map"))
+    return render_template("map/create.html", form=form, title=page_title("Add Map"))
 
 # map specific settings
 @bp.route("/<int:id>/settings", methods=["GET", "POST"])
@@ -125,7 +125,7 @@ def map_settings(id):
         form.default_zoom.data = map_.default_zoom
         form.is_visible.data = map_.is_visible
 
-        return render_template("map/edit.html", map=map_, form=form, title=page_title("Edit map '%s'" % map_.name))
+        return render_template("map/edit.html", map=map_, form=form, title=page_title("Edit Map '%s'" % map_.name))
 
 # global map settings
 @bp.route("/settings", methods=["GET", "POST"])
@@ -170,7 +170,7 @@ def settings():
 def list():
     maps = Map.query.all()
 
-    return render_template("map/list.html", maps=maps, title=page_title("List of maps"))
+    return render_template("map/list.html", maps=maps, title=page_title("List of Maps"))
 
 @bp.route("/node/create/<int:map_id>/<x>/<y>", methods=["GET", "POST"])
 @login_required
