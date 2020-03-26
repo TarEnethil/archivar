@@ -93,6 +93,18 @@
     </table>
     {% endif %}
 
+    {% if user.campaigns %}
+    <h2>Campaigns ({{ user.campaigns|length }})</h2>
+    <p>
+        {{ user.username }} is DM of the following campaigns:
+    </p>
+    <ul class="list-unstyled">
+        {% for campaign in user.campaigns %}
+        <li><a href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
     {% if current_user.has_admin_role() or current_user.id == user.id %}
     <h2>Roles</h2>
 
