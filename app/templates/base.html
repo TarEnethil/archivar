@@ -49,7 +49,7 @@ $(document).ready(function() {
                 </a></li>
 
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('campaign.index') }}"><span class="glyphicon"></span> Campaigns</a></li>
+                <li><a href="{{ url_for('campaign.index') }}"><span class="glyphicon glyphicon-book"></span> Campaigns</a></li>
                 <li><a href="{{ url_for('session.index') }}"><span class="glyphicon glyphicon-pencil"></span> Sessions</a></li>
                 <li><a href="{{ url_for('map.index') }}"><span class="glyphicon glyphicon-map-marker"></span> Map</a></li>
                 <li><a href="{{ url_for('wiki.index') }}"><span class="glyphicon glyphicon-education"></span> Wiki</a></li>
