@@ -53,13 +53,13 @@ def statistics():
     stats["Campaigns"] = count_rows(Campaign)
     stats["Sessions"] = count_rows(Session)
     stats["Maps"] = count_rows(Map)
-    stats["Map nodes"] = count_rows(MapNode)
-    stats["Map node types"] = count_rows(MapNodeType)
+    stats["Map Nodes"] = count_rows(MapNode)
+    stats["Location Tpes"] = count_rows(MapNodeType)
     stats["Wiki articles"] = count_rows(WikiEntry)
     stats["Events"] = count_rows(Event)
-    stats["Event categories"] = count_rows(EventCategory)
-    stats["Media files"] = count_rows(MediaItem)
-    stats["Media categories"] = count_rows(MediaCategory)
+    stats["Event Eategories"] = count_rows(EventCategory)
+    stats["Media Files"] = count_rows(MediaItem)
+    stats["Media Categories"] = count_rows(MediaCategory)
 
     return render_template("statistics.html", stats=stats, title=page_title("Statistics"))
 
@@ -187,7 +187,7 @@ def install():
                 db.session.add(ruins)
                 db.session.add(note)
 
-                flash("8 default map nodes were added.", "info")
+                flash("8 default location types were added.", "info")
 
             db.session.commit()
 

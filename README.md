@@ -105,7 +105,7 @@ If the page was created by an admin (see Roles-section), wiki admins can't view/
 ## Map
 The original inspiration for building this collaboration tool and the second of the big three.
 Every user can add locations and descriptions to the world, with icons defined by (map) admins.
-If configured, newly created nodes are hidden until accepted by a (map) admin.
+If configured, newly created locations are hidden until accepted by a (map) admin.
 Hidden notes created by an admin are invisible to map admins as well.
 
 ### Map provider
@@ -125,15 +125,15 @@ Upload and categorize additional media like images (for wiki / character pages e
 # Roles
 ## Admin / DM
 Admin is the highest role available and has all privileges.
-Use with caution, as anyone with this role has insight into every hidden map nodes, hidden wiki articles and all DM notes.
+Use with caution, as anyone with this role has insight into every hidden map location, hidden wiki articles and all DM notes.
 Admins can also create users and manage their roles.
 The admin account created by the install process can't have the admin role taken from him, even from other admins.
 The terms admin and Dungeon Master (DM) may be used interchangeably.
 
 ## Map admin
-Map admins can change the map settings and add new map node types.
-They can also see hidden nodes created by normal users or other map admins.
-Hidden nodes created by an admin can't be seen by map admins.
+Map admins can change the map settings and add new location types.
+They can also see hidden locations created by normal users or other map admins.
+Hidden locations created by an admin can't be seen by map admins.
 This role was introduced to have some trusted people help with the world building aspect without giving away all GM secrets.
 
 ## Wiki admin

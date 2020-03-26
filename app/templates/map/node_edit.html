@@ -1,7 +1,7 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 <div class="panel-heading">
-    <h2>Edit Node</h2>
+    <h2>Edit Location</h2>
 </div>
 
 <div class="panel-body edit_node_form">
@@ -9,6 +9,6 @@
     {{ wtf.quick_form(form) }}
     <a class="btn btn-default" id="btn-move-node" data="{{ node.id }}" style="float:right;">
         <span class="glyphicon glyphicon-move"></span>
-        move node
+        Move Location
     </a>
 </div>

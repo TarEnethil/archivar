@@ -11,7 +11,7 @@ The following is a list of things you can / should do before you let the users l
 * Check the general settings for things like the page title and this welcome message
 * Set up the map (see below)
 * Set up the calendar (see below)
-* Check the default settings for the modules such as default visibility for new wiki articles, events, map nodes and media
+* Check the default settings for the modules such as default visibility for new wiki articles, events, locations and media
 * Create users (they will be forced to change their password after the first login) with their respective roles
 
 ### Map setup
@@ -20,7 +20,7 @@ The map must be provided in the XYZ-Tile format.
 There are several tiling programs out there which will cut up a large map image into multiple chunks and zoom levels.
 These need to be placed into the data/map/ directory (or a subdirectory) and the tiling-format-string must be provided in the map settings.
 You can also use an external provider (such as an apache server), as I am not sure if the performance of a flask is sufficient.
-If you didn't install the basic map node types, then you will need to add some manually before the first map node can be created.
+If you didn't install the basic location types, then you will need to add some manually before the first location can be created.
 
 ### Calendar setup
 
@@ -40,9 +40,9 @@ The admin account created at setup is an exception to this, as this account can'
 Admins are the only one who can see the fields denoted with "DM notes" or similar annotations.
 
 ### Map admin
-Map admins can change the map settings and add new map node types.
-They can also see hidden nodes created by normal users or other map admins.
-Hidden nodes created by an admin can't be seen by map admins.
+Map admins can change the map settings and add new location types.
+They can also see hidden locations created by normal users or other map admins.
+Hidden locations created by an admin can't be seen by map admins.
 This role was introduced to have some trusted people help with the world building aspect without giving away all GM secrets.
 
 ### Wiki admin
@@ -88,7 +88,7 @@ Characters or parties can be assigned to be part of the session.
 
 ### Map
 
-Users can place map nodes on the map with a small description and a link to a wiki page (for more info).
+Users can place locations on the map with a small description and a link to a wiki page (for more info).
 The map also has a filterable list of all visible locations.
 
 ### Wiki

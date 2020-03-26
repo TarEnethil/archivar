@@ -20,7 +20,7 @@ class InstallForm(FlaskForm):
     admin_password = PasswordField("Password", validators=[DataRequired(), EqualTo("admin_password2")])
     admin_password2 = PasswordField("Password again", validators=[DataRequired()])
 
-    default_mapnodes = BooleanField("Install default map node types (city, village,...)")
+    default_mapnodes = BooleanField("Install default lccation types (city, village,...)")
 
     submit = SubmitField("Install Archivar")
 

@@ -178,7 +178,7 @@ def node_create(map_id, x, y):
     Map.query.filter_by(id=map_id).first_or_404()
 
     form = MapNodeForm()
-    form.submit.label.text = "Create Node"
+    form.submit.label.text = "Create Location"
 
     if not current_user.is_map_admin():
         del form.is_visible
@@ -201,17 +201,17 @@ def node_create(map_id, x, y):
             new_node.is_visible = form.is_visible.data
 
             if new_node.is_visible:
-                message = "Node was created."
+                message = "Location was created."
             else:
-                message = "Node was created, it is only visible to map admins."
+                message = "Location was created, it is only visible to map admins."
         else:
             msetting = MapSetting.query.get(1)
             new_node.is_visible = msetting.default_visible
 
             if new_node.is_visible:
-                message = "Node was created."
+                message = "Location was created."
             else:
-                message = "Node was created. Until approved, it is only visible to map admins and you."
+                message = "Location was created. Until approved, it is only visible to map admins and you."
 
         if current_user.has_admin_role():
             new_node.submap = form.submap.data
@@ -235,7 +235,7 @@ def node_create(map_id, x, y):
 @login_required
 def node_edit(id):
     form = MapNodeForm()
-    form.submit.label.text = "Save Node"
+    form.submit.label.text = "Save Location"
 
     if not current_user.is_map_admin():
         del form.is_visible
@@ -299,7 +299,7 @@ def node_edit(id):
         db.session.commit()
         map_changed(node.on_map)
 
-        return jsonify(data={'success' : True, 'message': "Node was edited."})
+        return jsonify(data={'success' : True, 'message': "Location was edited."})
     elif request.method == "POST":
         return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors})
 
@@ -339,7 +339,7 @@ def node_delete(id):
 
     map_changed(map_id)
 
-    return jsonify(data={"success": True, 'message': "Node was deleted."})
+    return jsonify(data={"success": True, 'message': "Location was deleted."})
 
 @bp.route("/node_type/create", methods=["GET", "POST"])
 @login_required
@@ -363,7 +363,7 @@ def node_type_create():
         flash('"' + form.name.data + '" was successfully created.', "success")
         return redirect(url_for('map.settings'))
 
-    return render_template("map/node_type_create.html", form=form, title=page_title("Create map node type"))
+    return render_template("map/node_type_create.html", form=form, title=page_title("Create location type"))
 
 @bp.route("/node_type/edit/<id>", methods=["GET", "POST"])
 @login_required
@@ -397,7 +397,7 @@ def node_type_edit(id):
         form.name.data = node.name
         form.description.data = node.description
 
-    return render_template("map/node_type_edit.html", form=form, node_type=node, title=("Edit map node type '%s'" % node.name))
+    return render_template("map/node_type_edit.html", form=form, node_type=node, title=("Edit location type '%s'" % node.name))
 
 @bp.route("/node_type/json")
 @login_required

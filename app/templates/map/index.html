@@ -45,7 +45,7 @@
   <div id="bottom-right-buttons">
     <a id="btn-add-node" class="btn btn-default">
       <span class="glyphicon glyphicon-plus"></span>
-      New node
+      New location
     </a>
 
     <a id="btn-cancel-add-node" class="btn btn-warning">
@@ -103,7 +103,7 @@
                 if(map_last_change != undefined && map_last_change != new_date) {
                   map_changed = true;
                   global_message({
-                    msg : "The map nodes were changed by another user. Please refresh the page to ensure consitency!",
+                    msg : "The locations were changed by another user. Please refresh the page to ensure consitency!",
                     msgtype : "warning",
                     mode : "fadeIn"
                   });
@@ -627,7 +627,7 @@
         fadeout_global_message("move-node-info");
 
         global_message({
-          msg : "click on where you want to create the node.",
+          msg : "click on where you want to create the location.",
           msgtype : "info new-node-info",
           mode : "fadeIn"
         });

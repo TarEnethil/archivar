@@ -41,7 +41,7 @@
 
     <hr>
 
-    <h2>Node Types
+    <h2>Location Types
 
     {% if node_types %}
     ({{ node_types|length }})
@@ -51,13 +51,13 @@
         <li>
             <a href="{{ url_for('map.node_type_create')}}">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                New node type
+                New Location Type
             </a>
         </li>
     </ul>
 
     <p>
-        Node types consist of an image, a name and a short description if needed.
+        Location types consist of an image, a name and a short description if needed.
         It is recommended that you use the same "type" of image concerning the image anchor of the options above, as mixing them might lead to some confusion for the user ("The node is not where I clicked!").
     </p>
 
@@ -92,7 +92,7 @@
         </tbody>
     </table>
     {% else %}
-    <p>No node types found. You need to create node types before you can place something on a map.</p>
+    <p>No location types found. You need to create Location Types before you can place something on a map.</p>
     {% endif %}
 
     {{ settings.print_info(create=False) }}

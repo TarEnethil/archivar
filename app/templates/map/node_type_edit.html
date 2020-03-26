@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block app_content %}
-    <h1>Edit Node <img src="{{ url_for('map.node_type_icon', filename=node_type.icon_file) }}" alt="{{ node_type.name }}"> {{ node_type.name }}</h1>
+    <h1>Edit Location Type <img src="{{ url_for('map.node_type_icon', filename=node_type.icon_file) }}" alt="{{ node_type.name }}"> {{ node_type.name }}</h1>
 
     {{ wtf.quick_form(form) }}
 

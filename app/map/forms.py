@@ -16,7 +16,7 @@ def icon_is_valid(filename):
 class MapSettingsForm(FlaskForm):
     check_interval = IntegerField("Map change check interval (seconds, 0 = disabled)", validators=[InputRequired(), NumberRange(min=0)])
     icon_anchor = SelectField("Icon Anchor", choices=[(0, "bottom"), (1, "center")],coerce=int)
-    default_visible = BooleanField("New nodes are visible by default")
+    default_visible = BooleanField("New locations are visible by default")
     default_map = SelectField("Default map",validators=[Optional()],coerce=int)
 
     submit = SubmitField("Save Settings")
@@ -34,11 +34,11 @@ class MapForm(FlaskForm):
     submit = SubmitField("submit")
 
 class MapNodeForm(FlaskForm):
-    name = StringField("node name", validators=[Length(max=64),InputRequired()])
-    description = TextAreaField("description", validators=[Length(min=0, max=10000)], render_kw={"rows": 10})
-    node_type = SelectField("node type", validators=[InputRequired(),NumberRange(min=1,message="Choose a valid node type")],coerce=int)
-    wiki_entry = BetterSelectField("wiki article",validators=[Optional()],coerce=int)
-    submap = SelectField("sub map",validators=[Optional()],coerce=int)
+    name = StringField("Location Name", validators=[Length(max=64),InputRequired()])
+    description = TextAreaField("Description", validators=[Length(min=0, max=10000)], render_kw={"rows": 10})
+    node_type = SelectField("Location Type", validators=[InputRequired(),NumberRange(min=1,message="Choose a valid location type")],coerce=int)
+    wiki_entry = BetterSelectField("Wiki Article",validators=[Optional()],coerce=int)
+    submap = SelectField("Sub Map",validators=[Optional()],coerce=int)
 
     is_visible = BooleanField("Is approved / visible (to anyone)")
 
@@ -48,21 +48,21 @@ class MapNodeForm(FlaskForm):
     submit = SubmitField("submit")
 
 class MapNodeTypeCreateForm(FlaskForm):
-    name = StringField("node type name", validators=[InputRequired(), Length(max=64)])
-    description = StringField("node type description", validators=[Length(max=256)])
-    icon = FileField("icon (x by x pixels recommended)", validators=[FileRequired()])
+    name = StringField("Name", validators=[InputRequired(), Length(max=64)])
+    description = StringField("Description", validators=[Length(max=256)])
+    icon = FileField("Icon (x by x pixels recommended)", validators=[FileRequired()])
 
-    submit = SubmitField("Create Node Type")
+    submit = SubmitField("Create Location Type")
 
     def validate_icon(self, icon):
         icon_is_valid(icon.data.filename)
 
 class MapNodeTypeEditForm(FlaskForm):
-    name = StringField("node type name", validators=[InputRequired(), Length(max=64)])
-    description = StringField("node type description", validators=[Length(max=256)])
-    icon = FileField("icon (x by x pixels recommended)")
+    name = StringField("Name", validators=[InputRequired(), Length(max=64)])
+    description = StringField("Description", validators=[Length(max=256)])
+    icon = FileField("Icon (x by x pixels recommended)")
 
-    submit = SubmitField("Save Node Type")
+    submit = SubmitField("Save Location Type")
 
     def validate_icon(self, icon):
         if icon.data:
