@@ -317,7 +317,8 @@ function generateSMDEConfig(id, withHeading=true) {
         element: document.getElementById(id),
         toolbar: toolb,
         spellChecker: false,
-        status: false
+        status: false,
+        autoDownloadFontAwesome: false
     }
 }
 
