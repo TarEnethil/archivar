@@ -51,13 +51,13 @@ The calendar has not been finalized by the admin yet.
 </p>
 
 {% for epoch in epochs %}
-<h3><a href="{{ url_for('event.list_epoch', e_id=epoch.id) }}">{{ epoch.name }}</a></h3>
+<h3><a href="{{ url_for('event.list_epoch', e_id=epoch.id, e_name=epoch.name|urlfriendly) }}">{{ epoch.name }}</a></h3>
 
     {% for year in years[epoch.id] %}
         {% if loop.index == 1 %}
-        <a href="{{ url_for('event.list_epoch_year', e_id=epoch.id, year=year[0]) }}">{{ year[0] }}</a>
+        <a href="{{ url_for('event.list_epoch_year', e_id=epoch.id, year=year[0], e_name=epoch.name|urlfriendly) }}">{{ year[0] }}</a>
         {% else %}
-        &bullet; <a href="{{ url_for('event.list_epoch_year', e_id=epoch.id, year=year[0]) }}">{{ year[0] }}</a>
+        &bullet; <a href="{{ url_for('event.list_epoch_year', e_id=epoch.id, year=year[0], e_name=epoch.name|urlfriendly) }}">{{ year[0] }}</a>
         {% endif %}
     {% endfor %}
 
@@ -73,7 +73,7 @@ The calendar has not been finalized by the admin yet.
 
 <ul class="list-unstyled">
 {% for cat in categories %}
-<li style="border-left:7px solid {{ cat.color }};padding-left:10px;"><a href="{{ url_for('event.list_category', c_id=cat.id) }}">{{ cat.name }}</a></li>
+<li style="border-left:7px solid {{ cat.color }};padding-left:10px;"><a href="{{ url_for('event.list_category', c_id=cat.id, c_name=cat.name|urlfriendly) }}">{{ cat.name }}</a></li>
 {% endfor %}
 </ul>
 
