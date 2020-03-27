@@ -214,4 +214,10 @@ def utility_processor():
 def hash(text):
     return hashlib.md5(text.encode('utf-8')).hexdigest()[:10]
 
+@app.template_filter()
+def urlfriendly(text):
+    from app.helpers import urlfriendly as ufriend
+
+    return ufriend(text)
+
 from app import routes, models
