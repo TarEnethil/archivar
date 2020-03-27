@@ -100,7 +100,7 @@
     </p>
     <ul class="list-unstyled">
         {% for campaign in user.campaigns %}
-        <li><a href="{{ url_for('campaign.view', id=campaign.id) }}">{{ campaign.name }}</a></li>
+        <li><a href="{{ url_for('campaign.view', id=campaign.id, name=campaign.name|urlfriendly) }}">{{ campaign.name }}</a></li>
         {% endfor %}
     </ul>
     {% endif %}
