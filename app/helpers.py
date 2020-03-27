@@ -189,3 +189,22 @@ class IsDMValidator(object):
 
         if not current_user.is_dm_of(campaign) and not current_user.has_admin_role():
             raise ValidationError("You are not the DM of the selected campaign.")
+
+def urlfriendly(text):
+    import unicodedata
+    import re
+
+    max_len = 20
+
+    text = str(text)
+    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
+    text = re.sub('[^\w\s-]', '', text).strip().lower()
+    text = re.sub('[-\s]+', '-', text)
+
+    if len(text) > max_len:
+        idx = text.find("-", max_len, len(text))
+
+        if idx >= max_len:
+            text = text[:idx]
+
+    return text
