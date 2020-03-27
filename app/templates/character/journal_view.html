@@ -39,7 +39,7 @@ $(document).ready(function() {
 {% endif %}
 
 <ul class="list-unstyled">
-    <li>Written by: <a href="{{ url_for('character.view', id=char.id) }}">{{ char.name }}</a></li>
+    <li>Written by: <a href="{{ url_for('character.view', id=char.id, name=char.name|urlfriendly) }}">{{ char.name }}</a></li>
 
     {% if journal.session %}
     <li>Belongs to session <a href="{{ url_for('session.view', id=journal.session_id) }}">{{ journal.session.title }}</a></li>

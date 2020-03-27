@@ -11,7 +11,7 @@
 
 <ul class="nav nav-tabs">
     <li>
-        <a href="{{ url_for('character.view', id=char.id) }}">
+        <a href="{{ url_for('character.view', id=char.id, name=char.name|urlfriendly) }}">
             <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
             Back to Char
         </a>

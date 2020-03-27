@@ -134,7 +134,7 @@
         {% if journal.character in session.participants %}
         {{ journal.character.name }}
         {% else %}
-        <a href="{{ url_for('character.view', id=journal.character_id) }}">{{ journal.character.name }}</a>
+        <a href="{{ url_for('character.view', id=journal.character_id, name=journal.character.name|urlfriendly) }}">{{ journal.character.name }}</a>
         {% endif %}
 
         {% if journal.character.player == current_user or current_user.has_admin_role() %}

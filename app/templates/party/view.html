@@ -59,7 +59,7 @@
 <ul class="list-unstyled">
     {% for member in party.members %}
     <li>
-        <a href="{{ url_for('character.view', id=member.id) }}">{{ member.name }}</a>
+        <a href="{{ url_for('character.view', id=member.id, name=member.name|urlfriendly) }}">{{ member.name }}</a>
     </li>
     {% endfor %}
 </ul>
