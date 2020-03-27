@@ -575,15 +575,16 @@ class Event(db.Model, SimpleAuditMixin):
     duration = db.Column(db.Integer)
 
     def format_date(self, epoch, year, month, day, timestamp, use_abbr, with_link=False, use_epoch=True, use_year=True, with_weekday=False):
+        from app.helpers import urlfriendly
         day_str = str(day)
 
         if with_weekday:
             day_str = self.day_of_the_week(timestamp) + ", " + day_str
 
         month_str = month.abbreviation if use_abbr and month.abbreviation else month.name
-        year_str = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch_year', e_id=epoch.id, year=year), year) if with_link else str(year)
+        year_str = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch_year', e_id=epoch.id, year=year, e_name=urlfriendly(epoch.name)), year) if with_link else str(year)
         epoch_str = epoch.abbreviation if use_abbr and epoch.abbreviation else epoch.name
-        epoch_str = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch', e_id=epoch.id), epoch_str) if with_link else epoch_str
+        epoch_str = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch', e_id=epoch.id, e_name=urlfriendly(epoch.name)), epoch_str) if with_link else epoch_str
 
         if use_epoch and use_year:
             return '{0}. {1} {2}, {3}'.format(day_str, month_str, year_str, epoch_str)

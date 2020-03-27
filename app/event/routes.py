@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, flash_no_permission, stretch_color
+from app.helpers import page_title, flash_no_permission, stretch_color, urlfriendly
 from app.models import EventSetting, Event, EventCategory, Epoch, User, Role, Moon
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
@@ -11,9 +11,10 @@ from sqlalchemy import not_, and_, or_
 
 no_perm_url = "calendar.index"
 
+@bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
-def view(id):
+def view(id, name=None):
     event = Event.query.filter_by(id=id).first_or_404()
     moons = Moon.query.all()
 
@@ -36,27 +37,27 @@ def list():
 
     return render_template("event/list.html", events=events, heading=title, title=page_title("View All Events"))
 
-@bp.route("/list/epoch-<int:e_id>", methods=["GET"])
+@bp.route("/list/epoch-<int:e_id>/<string:e_name>", methods=["GET"])
 @login_required
-def list_epoch(e_id):
+def list_epoch(e_id, e_name=None):
     e = Epoch.query.filter_by(id=e_id).first_or_404()
     events = get_events(e_id)
     title = "All Events for " + e.name
 
     return render_template("event/list.html", events=events, epoch_flag=True, heading=title, title=page_title("View Events in Epoch '%s'" % e.name))
 
-@bp.route("/list/epoch-<int:e_id>/year-<int:year>", methods=["GET"])
+@bp.route("/list/epoch-<int:e_id>/<string:e_name>/year-<int:year>", methods=["GET"])
 @login_required
-def list_epoch_year(e_id, year):
+def list_epoch_year(e_id, year, e_name=None):
     e = Epoch.query.filter_by(id=e_id).first_or_404()
     events = get_events(e_id, year)
     title = "All events for year " + str(year) + ", " + e.name
 
     return render_template("event/list.html", events=events, epoch_year_flag=True, heading=title, title=page_title("View Events in Year %s, epoch '%s'" % (year, e.name)))
 
-@bp.route("/list/category-<int:c_id>", methods=["GET"])
+@bp.route("/list/category-<int:c_id>/<string:c_name>", methods=["GET"])
 @login_required
-def list_category(c_id):
+def list_category(c_id, c_name=None):
     c = EventCategory.query.filter_by(id=c_id).first_or_404()
     events = get_events_by_category(c_id)
     title = "All Events in Category " + c.name
@@ -103,7 +104,7 @@ def create():
         update_timestamp(new_event.id)
 
         flash("Event was created.", "success")
-        return redirect(url_for("event.view", id=new_event.id))
+        return redirect(url_for("event.view", id=new_event.id, name=urlfriendly(new_event.name)))
     elif request.method == "GET":
         # pre-select fields if get-params were passed
         epoch_id = request.args.get("epoch")
@@ -134,9 +135,9 @@ def create():
     calendar_helper = gen_calendar_stats()
     return render_template("event/create.html", form=form, calendar=calendar_helper, title=page_title("Add Event"))
 
-@bp.route("/edit/<int:id>", methods=["GET", "POST"])
+@bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-def edit(id):
+def edit(id, name=None):
     event = Event.query.filter_by(id=id).first_or_404()
 
     form = EventForm()
@@ -181,7 +182,7 @@ def edit(id):
 
         flash("Event was edited.", "success")
 
-        return redirect(url_for("event.view", id=id))
+        return redirect(url_for("event.view", id=id, name=urlfriendly(event.name)))
     elif request.method == "GET":
         form.name.data = event.name
         form.category.data = event.category_id
@@ -198,9 +199,9 @@ def edit(id):
     calendar_helper = gen_calendar_stats()
     return render_template("event/edit.html", form=form, calendar=calendar_helper, title=page_title("Edit Event '%s'" % event.name))
 
-@bp.route("/delete/<int:id>")
+@bp.route("/delete/<int:id>/<string:name>")
 @login_required
-def delete(id):
+def delete(id, name=None):
     event = Event.query.filter_by(id=id).first_or_404()
 
     # TODO: write custom decorator for this?
@@ -237,10 +238,10 @@ def category_create():
 
     return render_template("event/category.html", form=form, heading=heading, title=page_title(heading))
 
-@bp.route("/category/edit/<int:id>", methods=["GET", "POST"])
+@bp.route("/category/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
 @event_admin_required
-def category_edit(id):
+def category_edit(id, name=None):
     form = CategoryForm()
     form.submit.label.text = "Edit Category"
 
