@@ -69,7 +69,7 @@
 
 {% if session.campaign %}
 <p>
-    This is session #{{ session.get_session_number() }} in <a href="{{ url_for('campaign.view', id=session.campaign_id) }}">{{ session.campaign.name }}</a>.
+    This is session #{{ session.get_session_number() }} in <a href="{{ url_for('campaign.view', id=session.campaign_id, name=session.campaign.name|urlfriendly) }}">{{ session.campaign.name }}</a>.
 </p>
 {% endif %}
 

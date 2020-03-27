@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, admin_required, stretch_color, admin_or_dm_required
+from app.helpers import page_title, admin_required, stretch_color, admin_or_dm_required, urlfriendly
 from app.models import Campaign, Character
 from app.campaign import bp
 from app.campaign.forms import CampaignCreateForm, CampaignEditForm
@@ -34,15 +34,14 @@ def create():
         db.session.commit()
 
         flash("Campaign was created.", "success")
-        #return redirect(url_for("campaign.view", id=new_campaign.id))
         return redirect(url_for("campaign.index"))
 
     return render_template("campaign/create.html", form=form, title=page_title("Add Campaign"))
 
-@bp.route("/edit/<int:id>", methods=["GET", "POST"])
+@bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
 @admin_or_dm_required(no_perm_url)
-def edit(id):
+def edit(id, name=None):
     campaign = Campaign.query.filter_by(id=id).first_or_404()
     is_admin = current_user.has_admin_role()
     is_dm = current_user.is_dm_of(campaign)
@@ -71,7 +70,7 @@ def edit(id):
 
         db.session.commit()
         flash("Campaign was changed.", "success")
-        return redirect(url_for("campaign.view", id=id))
+        return redirect(url_for("campaign.view", id=id, name=urlfriendly(campaign.name)))
 
     elif request.method == "GET":
         form.name.data = campaign.name
@@ -91,9 +90,9 @@ def edit(id):
 
     return render_template("campaign/edit.html", form=form, campaign=campaign, title=page_title("Edit Campaign '%s'" % campaign.name))
 
-@bp.route("/view/<int:id>", methods=["GET"])
+@bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @login_required
-def view(id):
+def view(id, name=None):
     campaign = Campaign.query.filter_by(id=id).first_or_404()
 
     return render_template("campaign/view.html", campaign=campaign, title=page_title("View Campaign '%s'" % campaign.name))
