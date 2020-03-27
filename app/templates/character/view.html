@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+{{ include_css(['datatables']) }}
+{% endblock %}
+
 {% block scripts %}
 {{ super() }}
 {{ include_js(['moment', 'datatables']) }}
