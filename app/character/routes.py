@@ -2,7 +2,7 @@ from app import db
 from app.character import bp
 from app.character.forms import CreateCharacterForm, EditCharacterForm, JournalForm
 from app.character.helpers import gen_session_choices
-from app.helpers import page_title, flash_no_permission
+from app.helpers import page_title, flash_no_permission, urlfriendly
 from app.models import Character, Party, Journal
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, jsonify, request
@@ -22,20 +22,21 @@ def create():
         db.session.commit()
         flash("Character was created.", "success")
 
-        return redirect(url_for("character.view", id=char.id))
+        return redirect(url_for("character.view", id=char.id, name=urlfriendly(char.name)))
     else:
         return render_template("character/create.html", form=form, title=page_title("Add Character"))
 
+@bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
-def view(id):
+def view(id, name=None):
     char = Character.query.filter_by(id=id).first_or_404()
 
     return render_template("character/view.html", char=char, title=page_title("View Character '%s'" % char.name))
 
-@bp.route("/edit/<int:id>", methods=["GET", "POST"])
+@bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-def edit(id):
+def edit(id, name=None):
     char = Character.query.filter_by(id=id).first_or_404()
 
     if current_user.id != char.user_id and current_user.has_admin_role() == False:
@@ -60,7 +61,7 @@ def edit(id):
 
         db.session.commit()
         flash("Character changes have been saved.", "success")
-        return redirect(url_for("character.view", id=id))
+        return redirect(url_for("character.view", id=id, name=urlfriendly(char.name)))
     else:
         form.name.data = char.name
         form.race.data = char.race
@@ -81,9 +82,9 @@ def list():
 
     return render_template("character/list.html", chars=chars, parties=parties, title=page_title("Characters and Parties"))
 
-@bp.route("/delete/<int:id>")
+@bp.route("/delete/<int:id>/<string:name>")
 @login_required
-def delete(id):
+def delete(id, name=None):
     char = Character.query.filter_by(id=id).first_or_404()
 
     if current_user.id != char.user_id and current_user.has_admin_role() == False:
@@ -234,4 +235,4 @@ def journal_delete(c_id, j_id):
     db.session.commit()
 
     flash("Journal entry was deleted.", "success")
-    return redirect(url_for('character.view', id=char.id))
+    return redirect(url_for('character.view', id=char.id, name=urlfriendly(char.name)))
