@@ -1,5 +1,5 @@
 from app import app, db
-from app.helpers import page_title, flash_no_permission
+from app.helpers import page_title, flash_no_permission, urlfriendly
 from app.models import MediaSetting, MediaItem, MediaCategory, User, Role
 from app.media import bp
 from app.media.forms import SettingsForm, MediaItemCreateForm, MediaItemEditForm, CategoryForm
@@ -20,9 +20,10 @@ def index():
 
     return render_template("media/index.html", media=media, title=page_title("Media"))
 
+@bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
-def view(id):
+def view(id, name=None):
     item = MediaItem.query.filter_by(id=id).first_or_404()
 
     # TODO: write custom decorator for this?
@@ -36,9 +37,9 @@ def view(id):
 
     return render_template("media/view.html", item=item, title=page_title("View File"))
 
-@bp.route("/list/category-<int:c_id>", methods=["GET"])
+@bp.route("/list/category-<int:c_id>/<string:c_name>", methods=["GET"])
 @login_required
-def list_by_cat(c_id):
+def list_by_cat(c_id, c_name=None):
     m = MediaCategory.query.filter_by(id=c_id).first_or_404()
     files = get_media(c_id)
 
@@ -73,7 +74,7 @@ def upload():
         db.session.commit()
 
         flash("Upload successful.", "success")
-        return redirect(url_for("media.view", id=new_media.id))
+        return redirect(url_for("media.view", id=new_media.id, name=urlfriendly(new_media.name)))
     elif request.method == "GET":
         if current_user.is_media_admin() and settings.default_visible:
             form.is_visible.data = True
@@ -90,9 +91,9 @@ def upload():
 
     return render_template("media/upload.html", form=form, max_filesize=app.config["MAX_CONTENT_LENGTH"], title=page_title("Upload File"))
 
-@bp.route("/edit/<int:id>", methods=["GET", "POST"])
+@bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-def edit(id):
+def edit(id, name=None):
     item = MediaItem.query.filter_by(id=id).first_or_404()
 
     form = MediaItemEditForm()
@@ -131,7 +132,7 @@ def edit(id):
 
         flash("File was edited.", "success")
 
-        return redirect(url_for("media.view", id=id))
+        return redirect(url_for("media.view", id=id, name=urlfriendly(item.name)))
     elif request.method == "GET":
         form.name.data = item.name
         form.category.data = item.category_id
@@ -141,9 +142,9 @@ def edit(id):
 
     return render_template("media/edit.html", form=form, title=page_title("Edit File '%s'" % item.name))
 
-@bp.route("/delete/<int:id>", methods=["GET"])
+@bp.route("/delete/<int:id>/<string:name>", methods=["GET"])
 @login_required
-def delete(id):
+def delete(id, name=None):
     item = MediaItem.query.filter_by(id=id).first_or_404()
 
     if not current_user.is_event_admin() and item.is_visible == False and not item.created_by == current_user:
@@ -180,10 +181,10 @@ def category_create():
 
     return render_template("media/category.html", form=form, heading=heading, title=page_title(heading))
 
-@bp.route("/category/edit/<int:id>", methods=["GET", "POST"])
+@bp.route("/category/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
 @media_admin_required
-def category_edit(id):
+def category_edit(id, name=None):
     form = CategoryForm()
     form.submit.label.text = "Save Category"
 
