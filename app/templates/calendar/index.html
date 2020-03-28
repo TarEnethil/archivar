@@ -73,7 +73,7 @@ The calendar has not been finalized by the admin yet.
 
 <ul class="list-unstyled">
 {% for cat in categories %}
-<li style="border-left:7px solid {{ cat.color }};padding-left:10px;"><a href="{{ url_for('event.list_category', c_id=cat.id, c_name=cat.name|urlfriendly) }}">{{ cat.name }}</a></li>
+<li style="border-left:7px solid {{ cat.color }};padding-left:10px;"><a href="{{ url_for('event.list_category', c_id=cat.id, c_name=cat.name|urlfriendly) }}">{{ cat.name }} ({{ cat.events|length }})</a></li>
 {% endfor %}
 </ul>
 
