@@ -106,18 +106,18 @@ def sidebar():
 
     return jsonify(chars)
 
-@bp.route("/journal/<int:c_id>", methods=["GET"])
+@bp.route("<int:c_id>/<string:c_name>/journal/", methods=["GET"])
 @login_required
-def journal_list(c_id):
+def journal_list(c_id, c_name=None):
     char = Character.query.filter_by(id=c_id).first_or_404()
 
     journals = Journal.query.filter_by(character_id = c_id).all()
 
     return render_template("character/journal_list.html", char=char, journals=journals, title=page_title("Journals for '%s'" % char.name))
 
-@bp.route("/journal/<int:c_id>/create", methods=["GET", "POST"])
+@bp.route("<int:c_id>/<string:c_name>/journal/create", methods=["GET", "POST"])
 @login_required
-def journal_create(c_id):
+def journal_create(c_id, c_name=None):
     char = Character.query.filter_by(id=c_id).first_or_404()
 
     if current_user.id != char.user_id:
@@ -140,7 +140,7 @@ def journal_create(c_id):
         db.session.commit()
         flash("Journal entry was created.", "success")
 
-        return redirect(url_for("character.journal_view", c_id=c_id, j_id=journal_entry.id))
+        return redirect(url_for("character.journal_view", c_id=c_id, j_id=journal_entry.id, c_name=urlfriendly(char.name), j_name=urlfriendly(journal_entry.title)))
     else:
         # pre-select session if get-param was passed
         session_id = request.args.get("session")
@@ -154,9 +154,9 @@ def journal_create(c_id):
 
         return render_template("character/journal_form.html", heading=heading, form=form, title=page_title("Add Journal Entry for '%s'" % char.name))
 
-@bp.route("/journal/<int:c_id>/edit/<int:j_id>", methods=["GET", "POST"])
+@bp.route("<int:c_id>/<string:c_name>/journal/edit/<int:j_id>/<string:j_name>", methods=["GET", "POST"])
 @login_required
-def journal_edit(c_id, j_id):
+def journal_edit(c_id, j_id, c_name=None, j_name=None):
     char = Character.query.filter_by(id=c_id).first_or_404()
     journal = Journal.query.filter_by(id=j_id).first_or_404()
 
@@ -188,7 +188,7 @@ def journal_edit(c_id, j_id):
 
         db.session.commit()
         flash("Journal entry was changed.", "success")
-        return redirect(url_for("character.journal_view", c_id=c_id, j_id=journal.id))
+        return redirect(url_for("character.journal_view", c_id=c_id, j_id=journal.id, c_name=urlfriendly(char.name), j_name=urlfriendly(journal.title)))
     else:
         form.title.data = journal.title
         form.is_visible.data = journal.is_visible
@@ -197,9 +197,9 @@ def journal_edit(c_id, j_id):
 
         return render_template("character/journal_form.html", heading=heading, form=form, title=page_title("Edit Journal Entry '%s'" % journal.title))
 
-@bp.route("/journal/<int:c_id>/view/<int:j_id>", methods=["GET"])
+@bp.route("<int:c_id>/<string:c_name>/journal/view/<int:j_id>/<string:j_name>", methods=["GET"])
 @login_required
-def journal_view(c_id, j_id):
+def journal_view(c_id, j_id, c_name=None, j_name=None):
     char = Character.query.filter_by(id=c_id).first_or_404()
     journal = Journal.query.filter_by(id=j_id).first_or_404()
 
@@ -215,9 +215,9 @@ def journal_view(c_id, j_id):
 
     return render_template("character/journal_view.html", char=char, journal=journal, title=page_title("View Journal Entry '%s'" % journal.title))
 
-@bp.route("/journal/<int:c_id>/delete/<int:j_id>", methods=["GET"])
+@bp.route("<int:c_id>/<string:c_name>/journal/delete/<int:j_id>/<string:j_name>", methods=["GET"])
 @login_required
-def journal_delete(c_id, j_id):
+def journal_delete(c_id, j_id, c_name=None, j_name=None):
     char = Character.query.filter_by(id=c_id).first_or_404()
     journal = Journal.query.filter_by(id=j_id).first_or_404()
 

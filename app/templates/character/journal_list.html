@@ -19,7 +19,7 @@
 
 {% if current_user == char.player %}
     <li>
-        <a href="{{ url_for('character.journal_create', c_id=char.id) }}">
+        <a href="{{ url_for('character.journal_create', c_id=char.id, c_name=char.name|urlfriendly) }}">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             Add Entry
         </a>
@@ -44,9 +44,9 @@
     {% else %}
     <h2 class="invisible_item">{{ journal.title }}</h2>
     {% endif %}
-    <a href="{{ url_for('character.journal_view', c_id=char.id, j_id=journal.id) }}">View</a>
+    <a href="{{ url_for('character.journal_view', c_id=char.id, j_id=journal.id, c_name=char.name|urlfriendly, j_name=journal.title|urlfriendly) }}">View</a>
     {% if current_user == char.player or current_user.has_admin_role() %}
-    &bullet; <a href="{{ url_for('character.journal_edit', c_id=char.id, j_id=journal.id) }}">Edit</a>
+    &bullet; <a href="{{ url_for('character.journal_edit', c_id=char.id, j_id=journal.id, c_name=char.name|urlfriendly, j_name=journal.title|urlfriendly) }}">Edit</a>
     {% endif %}
 
     {% if journal.content %}
