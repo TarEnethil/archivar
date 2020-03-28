@@ -61,7 +61,7 @@
       <span class="glyphicon glyphicon-list"></span>
       Ĺist
     </a>
-    <a id="btn-settings" class="btn btn-default" href="{{ url_for('map.map_settings', id=map_.id) }}">
+    <a id="btn-settings" class="btn btn-default" href="{{ url_for('map.map_settings', id=map_.id, name=map_.name|urlfriendly) }}">
       <span class="glyphicon glyphicon-cog"></span>
       Settings
     </a>

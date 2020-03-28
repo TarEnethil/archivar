@@ -1,5 +1,5 @@
 from app import app, db
-from app.helpers import page_title, flash_no_permission, admin_required
+from app.helpers import page_title, flash_no_permission, admin_required, urlfriendly
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
 from app.map.helpers import map_admin_required, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed, gen_submap_choices
@@ -38,9 +38,10 @@ def index():
 
     return render_template("map/index.html", settings=mapsettings, map_=indexmap, title=page_title(indexmap.name))
 
+@bp.route("/<int:id>/<string:name>")
 @bp.route("/<int:id>")
 @login_required
-def view(id):
+def view(id, name=None):
     map_ = Map.query.filter_by(id=id).first_or_404()
     settings = MapSetting.query.filter_by(id=1).first_or_404()
 
@@ -50,9 +51,10 @@ def view(id):
 
     return render_template("map/index.html", settings=settings, map_=map_, title=page_title(map_.name))
 
+@bp.route("<int:id>/<string:m_name>/node/<int:n_id>/<string:n_name>")
 @bp.route("<int:id>/node/<int:n_id>")
 @login_required
-def view_with_node(id, n_id):
+def view_with_node(id, n_id, m_name=None, n_name=None):
     mapsettings = MapSetting.query.get(1)
     map_ = Map.query.filter_by(id=id).first_or_404()
     node = MapNode.query.filter_by(id=n_id).first_or_404()
@@ -89,15 +91,15 @@ def create():
         db.session.commit()
 
         flash("Map created.", "success")
-        return redirect(url_for("map.view", id=new_map.id))
+        return redirect(url_for("map.view", id=new_map.id, name=urlfriendly(new_map.name)))
 
     return render_template("map/create.html", form=form, title=page_title("Add Map"))
 
 # map specific settings
-@bp.route("/<int:id>/settings", methods=["GET", "POST"])
+@bp.route("/<int:id>/<string:name>/settings", methods=["GET", "POST"])
 @login_required
 @admin_required(no_perm_url)
-def map_settings(id):
+def map_settings(id, name=None):
     map_ = Map.query.filter_by(id=id).first_or_404()
     form = MapForm()
     form.submit.label.text = "Save Map"
@@ -114,7 +116,7 @@ def map_settings(id):
 
         db.session.commit()
         flash("Map settings have been changed.", "success")
-        return redirect(url_for("map.view", id=map_.id))
+        return redirect(url_for("map.view", id=map_.id, name=urlfriendly(map_.name)))
     else:
         form.name.data = map_.name
         form.no_wrap.data = map_.no_wrap
