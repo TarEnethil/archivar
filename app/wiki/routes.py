@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, flash_no_permission
+from app.helpers import page_title, flash_no_permission, urlfriendly
 from app.models import WikiEntry, WikiSetting, User, Role
 from app.map.helpers import get_nodes_by_wiki_id
 from app.wiki import bp
@@ -14,7 +14,7 @@ no_perm_url = "wiki.index"
 @bp.route("/", methods=["GET"])
 @login_required
 def index():
-    return redirect(url_for("wiki.view", id=1))
+    return redirect(url_for("wiki.view", id=1, name=urlfriendly("Main Page")))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
@@ -47,7 +47,7 @@ def create():
         db.session.commit()
 
         flash("Wiki entry was added.", "success")
-        return redirect(url_for("wiki.view", id=entry.id))
+        return redirect(url_for("wiki.view", id=entry.id, name=urlfriendly(entry.title)))
     elif request.method == "GET":
         if current_user.is_wiki_admin():
             wsettings = WikiSetting.query.get(1)
@@ -55,9 +55,9 @@ def create():
 
     return render_template("wiki/create.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), cats=cats, title=page_title("Add Wiki Article"))
 
-@bp.route("/edit/<int:id>", methods=["GET", "POST"])
+@bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-def edit(id):
+def edit(id, name=None):
     wikientry = WikiEntry.query.filter_by(id=id).first_or_404()
 
     form = WikiEntryForm()
@@ -94,7 +94,7 @@ def edit(id):
         db.session.commit()
         flash("Wiki entry was edited.", "success")
 
-        return redirect(url_for("wiki.view", id=id))
+        return redirect(url_for("wiki.view", id=id, name=urlfriendly(wikientry.title)))
     elif request.method == "GET":
         form.title.data = wikientry.title
         form.content.data = wikientry.content
@@ -109,9 +109,10 @@ def edit(id):
 
     return render_template("wiki/edit.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), cats=cats, entry=wikientry, title=page_title("Edit Wiki Article '%s'" % wikientry.title))
 
+@bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
-def view(id):
+def view(id, name=None):
     wikientry = WikiEntry.query.filter_by(id=id).first_or_404()
 
     # TODO: write custom decorator / function for this?
@@ -127,9 +128,9 @@ def view(id):
 
     return render_template("wiki/view.html", entry=wikientry, nav=(prepare_wiki_nav(), WikiSearchForm()), map_nodes=map_nodes, title=page_title("View Wiki Article '%s'" % wikientry.title))
 
-@bp.route("/delete/<int:id>", methods=["GET"])
+@bp.route("/delete/<int:id>/<string:name>", methods=["GET"])
 @login_required
-def delete(id):
+def delete(id, name=None):
     if id == 1:
         flash("The wiki main page can't be deleted", "danger")
         return redirect(url_for('wiki.index'))
@@ -151,10 +152,10 @@ def delete(id):
     flash("Wiki article was deleted.", "success")
     return redirect(url_for('wiki.index'))
 
-@bp.route("/vis/<int:id>", methods=["GET"])
+@bp.route("/vis/<int:id>/<string:name>", methods=["GET"])
 @login_required
 @wiki_admin_required
-def toggle_vis(id):
+def toggle_vis(id, name=None):
     wikientry = WikiEntry.query.filter_by(id=id).first_or_404()
 
     # TODO: write custom decorator / function for this ?
@@ -170,7 +171,7 @@ def toggle_vis(id):
         flash("Article is now visible to anyone.", "success")
 
     db.session.commit()
-    return redirect(url_for('wiki.view', id=id))
+    return redirect(url_for('wiki.view', id=id, name=urlfriendly(wikientry.title)))
 
 @bp.route("/search/<string:text>", methods=["GET"])
 @login_required

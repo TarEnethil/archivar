@@ -56,9 +56,9 @@ $(document).ready(function() {
             <h2>Articles</h2>
             <ul class="nav nav-pills nav-stacked" id="stacked-menu">
                 {% if entry and entry.id == 1 %}
-                <li class="active"><a href="{{ url_for('wiki.view', id=1) }}">Main Page</a></li>
+                <li class="active"><a href="{{ url_for('wiki.view', id=1, name='Main Page'|urlfriendly) }}">Main Page</a></li>
                 {% else %}
-                <li><a href="{{ url_for('wiki.view', id=1) }}">Main Page</a></li>
+                <li><a href="{{ url_for('wiki.view', id=1, name='Main Page'|urlfriendly) }}">Main Page</a></li>
                 {% endif %}
 
                 {% if nav[0] %}
@@ -74,13 +74,13 @@ $(document).ready(function() {
 
                             {% for link in nav[0][cat] %}
                                 {% if entry and entry.id == link[0] and link[2] == False %}
-                                <li class="active invis"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                                <li class="active invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                                 {% elif entry and entry.id == link[0] %}
-                                <li class="active"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                                <li class="active"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                                 {% elif link[2] == False %}
-                                <li class="invis"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                                <li class="invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                                 {% else %}
-                                <li><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                                <li><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                                 {% endif %}
                             {% endfor %}
                             </ul>
@@ -90,13 +90,13 @@ $(document).ready(function() {
 
                     {% for link in nav[0][""] %}
                         {% if entry and entry.id == link[0] and link[2] == False %}
-                        <li class="active invis"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                        <li class="active invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                         {% elif entry and entry.id == link[0] %}
-                        <li class="active"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                        <li class="active"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                         {% elif link[2] == False %}
-                        <li class="invis"><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                        <li class="invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                         {% else %}
-                        <li><a href="{{ url_for('wiki.view', id=link[0]) }}">{{ link[1] }}</a></li>
+                        <li><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                         {% endif %}
                     {% endfor %}
                 {% endif %}

@@ -15,7 +15,7 @@
     {% if created %}
     <ul class="list-unstyled">
         {% for entry in created %}
-        <li><a href="{{ url_for('wiki.view', id=entry[0]) }}">{{ entry[1] }}</a> ({{ moment(entry[2]).format(current_user.dateformat) }} by <a href="{{ url_for('user.profile', username=entry[3]) }}">{{ entry[3] }}</a>)</li>
+        <li><a href="{{ url_for('wiki.view', id=entry[0], name=entry[1]|urlfriendly) }}">{{ entry[1] }}</a> ({{ moment(entry[2]).format(current_user.dateformat) }} by <a href="{{ url_for('user.profile', username=entry[3]) }}">{{ entry[3] }}</a>)</li>
         {% endfor %}
     </ul>
     {% else %}
@@ -26,7 +26,7 @@
     {% if edited %}
     <ul class="list-unstyled">
         {% for entry in edited %}
-        <li><a href="{{ url_for('wiki.view', id=entry[0]) }}">{{ entry[1] }}</a> ({{ moment(entry[2]).format(current_user.dateformat) }} by <a href="{{ url_for('user.profile', username=entry[3]) }}">{{ entry[3] }}</a>)</li>
+        <li><a href="{{ url_for('wiki.view', id=entry[0], name=entry[1]|urlfriendly) }}">{{ entry[1] }}</a> ({{ moment(entry[2]).format(current_user.dateformat) }} by <a href="{{ url_for('user.profile', username=entry[3]) }}">{{ entry[3] }}</a>)</li>
         {% endfor %}
     </ul>
     {% else %}
