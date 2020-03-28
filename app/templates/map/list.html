@@ -51,11 +51,11 @@ makeDatatable("map-table");
         <tr>
             <td> {{ map.name }}</td>
             <td>
-                <a href="{{ url_for('map.view', id=map.id) }}" class="btn btn-default">
+                <a href="{{ url_for('map.view', id=map.id, name=map.name|urlfriendly) }}" class="btn btn-default">
                     <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                     View
                 </a>
-                <a href="{{ url_for('map.map_settings', id=map.id) }}" class="btn btn-default">
+                <a href="{{ url_for('map.map_settings', id=map.id, name=map.name|urlfriendly) }}" class="btn btn-default">
                     <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                     Settings
                 </a>

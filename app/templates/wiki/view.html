@@ -88,7 +88,7 @@ No content.
 <h2>Associated Map Nodes</h2>
 <ul class="list-unstyled">
 {% for node in map_nodes %}
-<li><a href="{{ url_for('map.view_with_node', id=node.on_map, n_id=node.id) }}">{{ node.name }}</a></li>
+<li><a href="{{ url_for('map.view_with_node', id=node.on_map, n_id=node.id, m_name=node.parent_map.name|urlfriendly, n_name=node.name|urlfriendly) }}">{{ node.name }}</a></li>
 {% endfor %}
 </ul>
 {% endif %}

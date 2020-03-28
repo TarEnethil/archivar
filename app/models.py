@@ -254,6 +254,7 @@ class MapNode(db.Model, SimpleAuditMixin):
     is_visible = db.Column(db.Boolean, default=False)
     wiki_entry_id = db.Column(db.Integer, db.ForeignKey("wiki_entries.id"), default=0)
     on_map = db.Column(db.Integer, db.ForeignKey("maps.id"))
+    parent_map = db.relationship("Map", foreign_keys=[on_map])
     submap = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
 
     def to_dict(self):
