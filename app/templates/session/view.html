@@ -106,7 +106,7 @@
     {% for member in session.participants %}
     <li>
         {% if member.player.id == current_user.id %}
-        <a href="{{ url_for('character.view', id=member.id) }}"><b>{{ member.name }}</b></a> (<a href="{{ url_for('character.journal_create', c_id=member.id, session=session.id) }}">write Journal</a>)
+        <a href="{{ url_for('character.view', id=member.id) }}"><b>{{ member.name }}</b></a> (<a href="{{ url_for('character.journal_create', c_id=member.id, c_name=member.name|urlfriendly, session=session.id) }}">write Journal</a>)
         {% else %}
         <a href="{{ url_for('character.view', id=member.id) }}">{{ member.name }}</a>
         {% endif %}
@@ -124,9 +124,9 @@
     {% if journal.is_visible or journal.character.player == current_user or current_user.has_admin_role() %}
     <li>
         {% if journal.is_visible %}
-        "<a href="{{ url_for('character.journal_view', c_id=journal.character_id, j_id=journal.id) }}">{{ journal.title }}</a>"
+        "<a href="{{ url_for('character.journal_view', c_id=journal.character_id, j_id=journal.id, c_name=journal.character.name|urlfriendly, j_name=journal.title|urlfriendly) }}">{{ journal.title }}</a>"
         {% else %}
-        "<a class="invisible_item" href="{{ url_for('character.journal_view', c_id=journal.character_id, j_id=journal.id) }}">{{ journal.title }}</a>"
+        "<a class="invisible_item" href="{{ url_for('character.journal_view', c_id=journal.character_id, j_id=journal.id, c_name=journal.character.name|urlfriendly, j_name=journal.title|urlfriendly) }}">{{ journal.title }}</a>"
         {% endif %}
 
         by
@@ -138,7 +138,7 @@
         {% endif %}
 
         {% if journal.character.player == current_user or current_user.has_admin_role() %}
-        (<a href="{{ url_for('character.journal_edit', c_id=journal.character_id, j_id=journal.id) }}">edit Journal</a>)
+        (<a href="{{ url_for('character.journal_edit', c_id=journal.character_id, j_id=journal.id, c_name=journal.character.name|urlfriendly, j_name=journal.title|urlfriendly) }}">edit Journal</a>)
         {% endif %}
     </li>
     {% endif %}
