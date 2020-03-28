@@ -40,7 +40,7 @@ makeDatatable("past-sessions-table");
     {% endif %}
     </h2>
     {% if sessions_future %}
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped" id="future-sessions-table" style="border-collapse:collapse !important;">
         <thead>
             <tr>
                 <th>Title</th>
@@ -98,7 +98,7 @@ makeDatatable("past-sessions-table");
     {% if sessions_past %}
     ({{ sessions_past|length }})
     </h2>
-    <table class="table table-hover table-striped" id="past-sessions-table">
+    <table class="table table-hover table-striped" id="past-sessions-table" style="border-collapse:collapse !important;">
         <thead>
             <tr>
                 <th>Title</th>
