@@ -164,7 +164,7 @@
                 <td>{{ journal.title }}</td>
                 <td>
                     {% if journal.session %}
-                    <a href="{{ url_for('session.view', id=journal.session_id) }}">{{ journal.session.title }}</a>
+                    <a href="{{ url_for('session.view', id=journal.session_id, name=journal.session.title|urlfriendly) }}">{{ journal.session.title }}</a>
                     {% endif %}
                 </td>
                 <td>

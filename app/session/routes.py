@@ -1,9 +1,9 @@
 from app import db
-from app.helpers import page_title, admin_required, admin_dm_or_session_required, admin_or_dm_required
+from app.helpers import page_title, admin_required, admin_dm_or_session_required, admin_or_dm_required, urlfriendly
 from app.models import Character, Session, Campaign
 from app.session import bp
 from app.session.forms import SessionForm, CampaignSelectForm
-from app.session.helpers import gen_participant_choices, get_session_number, get_previous_session_id, get_next_session_id, gen_codes
+from app.session.helpers import gen_participant_choices, get_session_number, get_previous_session, get_next_session
 from app.campaign.helpers import gen_campaign_choices_dm, gen_campaign_choices_admin
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify
@@ -73,7 +73,7 @@ def create_with_campaign(id):
         db.session.commit()
 
         flash("Session was created.", "success")
-        return redirect(url_for("session.view", id=new_session.id))
+        return redirect(url_for("session.view", id=new_session.id, name=urlfriendly(new_session.title)))
     elif request.method == "GET":
         participants = []
 
@@ -86,10 +86,10 @@ def create_with_campaign(id):
 
     return render_template("session/create.html", form=form, campaign=campaign, title=page_title("Add Session"))
 
-@bp.route("/edit/<int:id>", methods=["GET", "POST"])
+@bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
 @admin_dm_or_session_required(no_perm_url)
-def edit(id):
+def edit(id, name=None):
     session = Session.query.filter_by(id=id).first_or_404()
     is_admin = current_user.has_admin_role()
     is_dm = current_user.is_dm_of(session.campaign)
@@ -123,7 +123,7 @@ def edit(id):
 
         db.session.commit()
         flash("Session was changed.", "success")
-        return redirect(url_for("session.view", id=id))
+        return redirect(url_for("session.view", id=id, name=urlfriendly(session.title)))
     elif request.method == "GET":
         form.title.data = session.title
         form.summary.data = session.summary
@@ -143,21 +143,22 @@ def edit(id):
 
     return render_template("session/edit.html", form=form, title=page_title("Edit Session '%s'" % session.title))
 
+@bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
-def view(id):
+def view(id, name=None):
     session = Session.query.filter_by(id=id).first_or_404()
-    prev_session_id = get_previous_session_id(session)
-    next_session_id = get_next_session_id(session)
+    prev_session = get_previous_session(session)
+    next_session = get_next_session(session)
 
     session.participants.sort(key=lambda x: x.name)
 
-    return render_template("session/view.html", session=session, prev=prev_session_id, next=next_session_id, title=page_title("View Session '%s'" % session.title))
+    return render_template("session/view.html", session=session, prev=prev_session, next=next_session, title=page_title("View Session '%s'" % session.title))
 
-@bp.route("/delete/<int:id>")
+@bp.route("/delete/<int:id>/<string:name>")
 @login_required
 @admin_required(no_perm_url)
-def delete(id):
+def delete(id, name=None):
     session = Session.query.filter_by(id=id).first_or_404()
 
     db.session.delete(session)
