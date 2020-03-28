@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, admin_required, admin_or_party_required
+from app.helpers import page_title, admin_required, admin_or_party_required, urlfriendly
 from app.models import Character, Party
 from app.party import bp
 from app.party.forms import PartyForm
@@ -26,14 +26,14 @@ def create():
         db.session.commit()
 
         flash("Party was created.", "success")
-        return redirect(url_for("party.view", id=new_party.id))
+        return redirect(url_for("party.view", id=new_party.id, name=urlfriendly(new_party.name)))
 
     return render_template("party/create.html", form=form, title=page_title("Add Party"))
 
-@bp.route("/edit/<int:id>", methods=["GET", "POST"])
+@bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
 @admin_or_party_required(no_perm_url)
-def edit(id):
+def edit(id, name=None):
     party = Party.query.filter_by(id=id).first_or_404()
     is_admin = current_user.has_admin_role()
 
@@ -57,7 +57,7 @@ def edit(id):
 
         db.session.commit()
         flash("Party was changed.", "success")
-        return redirect(url_for("party.view", id=id))
+        return redirect(url_for("party.view", id=id, name=urlfriendly(party.name)))
 
     elif request.method == "GET":
         form.name.data = party.name
@@ -75,17 +75,18 @@ def edit(id):
 
     return render_template("party/edit.html", form=form, title=page_title("Edit Party '%s'" % party.name))
 
+@bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
 @login_required
-def view(id):
+def view(id, name=None):
     party = Party.query.filter_by(id=id).first_or_404()
 
     return render_template("party/view.html", party=party, title=page_title("View Party '%s'" % party.name))
 
-@bp.route("/delete/<int:id>", methods=["GET", "POST"])
+@bp.route("/delete/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
 @admin_required(no_perm_url)
-def delete(id):
+def delete(id, name=None):
     party = Party.query.filter_by(id=id).first_or_404()
 
     db.session.delete(party)
