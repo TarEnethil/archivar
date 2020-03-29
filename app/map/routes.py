@@ -36,7 +36,7 @@ def index():
         flash("This map is not visible.", "danger")
         return redirect(url_for("index"))
 
-    return render_template("map/index.html", settings=mapsettings, map_=indexmap, title=page_title(indexmap.name))
+    return redirect(url_for('map.view', id=indexmap.id, name=urlfriendly(indexmap.name)))
 
 @bp.route("/<int:id>/<string:name>")
 @bp.route("/<int:id>")
