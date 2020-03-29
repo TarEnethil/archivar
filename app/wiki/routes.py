@@ -64,6 +64,9 @@ def edit(id, name=None):
     form.submit.label.text = "Save Article"
     cats = gen_category_strings()
 
+    if wikientry.id == 1:
+        del form.title
+
     # TODO: write custom decorators for this?
     if not current_user.has_admin_role() and current_user.has_wiki_role() and wikientry.is_visible == False and wikientry.created_by.has_admin_role():
         flash_no_permission()
@@ -80,7 +83,9 @@ def edit(id, name=None):
         del form.dm_content
 
     if form.validate_on_submit():
-        wikientry.title = form.title.data
+        if wikientry.id != 1:
+            wikientry.title = form.title.data
+
         wikientry.content = form.content.data
         wikientry.category = form.category.data
         wikientry.tags = form.tags.data
@@ -96,7 +101,9 @@ def edit(id, name=None):
 
         return redirect(url_for("wiki.view", id=id, name=urlfriendly(wikientry.title)))
     elif request.method == "GET":
-        form.title.data = wikientry.title
+        if wikientry.id != 1:
+            form.title.data = wikientry.title
+
         form.content.data = wikientry.content
         form.category.data = wikientry.category
         form.tags.data = wikientry.tags
