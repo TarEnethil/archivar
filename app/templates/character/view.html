@@ -22,11 +22,11 @@
     });
     {% endif %}
 
-    {% if char.parties and char.parties|length > 8 %}
-    makeDatatable("parties-table");
+    {% if char.parties %}
+    makeDatatable("parties-table", 5);
     {% endif %}
 
-    {% if char.journals and (char.journals)|length > 8 %}
+    {% if char.journals %}
     makeDatatable("journals-table");
     {% endif %}
 </script>
