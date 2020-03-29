@@ -10,6 +10,10 @@
 {{ include_js(['datatables', 'moment']) }}
 
 <script>
+{% if sessions_future %}
+makeDatatable("future-sessions-table")
+{% endif %}
+
 {% if sessions_past %}
 makeDatatable("past-sessions-table");
 {% endif %}

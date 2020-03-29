@@ -10,7 +10,7 @@
 {{ include_js(['moment', 'datatables']) }}
 
 <script type="text/javascript">
-{% if user.characters and (user.characters)|length > 8 %}
+{% if user.characters %}
     makeDatatable("char-table");
 {% endif %}
 </script>

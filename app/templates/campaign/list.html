@@ -10,7 +10,7 @@
 {{ include_js(['datatables', 'moment']) }}
 
 <script>
-{% if campaigns and campaigns|length > 8 %}
+{% if campaigns %}
 makeDatatable("campaigns-table");
 {% endif %}
 </script>
