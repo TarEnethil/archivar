@@ -353,3 +353,10 @@ tr.invisible_item,
 .user-quicklinks {
     margin-right:30px;
 }
+
+#add-session-form {
+    display:none;
+    padding:20px;
+    background:#fafafa;
+    margin:10px;
+}

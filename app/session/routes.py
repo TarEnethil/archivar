@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, admin_required, admin_dm_or_session_required, admin_or_dm_required, urlfriendly
+from app.helpers import page_title, admin_required, admin_dm_or_session_required, admin_or_dm_required, urlfriendly, count_rows
 from app.models import Character, Session, Campaign
 from app.session import bp
 from app.session.forms import SessionForm, CampaignSelectForm
@@ -23,8 +23,25 @@ def index():
     for session in sessions_past:
         session.participants.sort(key=lambda x: x.name)
 
-    return render_template("session/list.html", sessions_past=sessions_past, sessions_future=sessions_future, title=page_title("Sessions"))
+    num_campaigns = count_rows(Campaign)
+    url = None
+    form = None
 
+    if current_user.has_admin_role() and num_campaigns > 1:
+        form = CampaignSelectForm()
+        form.campaigns.choices = gen_campaign_choices_admin()
+    elif current_user.is_dm_of_anything() and len(current_user.campaigns) > 1:
+        form = CampaignSelectForm()
+        form.campaigns.choices = gen_campaign_choices_dm()
+    elif current_user.has_admin_role() and num_campaigns == 1:
+        campaign = Campaign.query.first()
+        url = url_for('session.create_with_campaign', id=campaign.id)
+    elif current_user.is_dm_of_anything() and len(current_user.campaigns) == 1:
+        url = url_for('session.create_with_campaign', id=current_user.campaigns[0].id)
+
+    return render_template("session/list.html", sessions_past=sessions_past, sessions_future=sessions_future, form=form, url=url, title=page_title("Sessions"))
+
+# currently just a backup, actual handling is done via in-page form (session.list)
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
@@ -34,6 +51,10 @@ def create():
 
     if not current_user.has_admin_role() and len(current_user.campaigns) == 1:
         return redirect(url_for("session.create_with_campaign", id=current_user.campaigns[0].id))
+
+    if current_user.has_admin_role() and count_rows(Campaign) == 1:
+        campaign = Campaign.query.first()
+        return redirect(url_for("session.create_with_campaign", id=campaign.id))
 
     form = CampaignSelectForm()
 
