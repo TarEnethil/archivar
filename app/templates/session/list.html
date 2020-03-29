@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+    {% extends "base.html" %}
 
 {% block styles %}
 {{ super() }}
@@ -17,6 +17,23 @@ makeDatatable("future-sessions-table")
 {% if sessions_past %}
 makeDatatable("past-sessions-table");
 {% endif %}
+
+{% if form %}
+$(document).ready(function() {
+    $("#add-session-button").click(function(e) {
+        $("#add-session-form").toggle(100);
+        e.preventDefault();
+    });
+
+    $("#add-session-form form").submit(function(e) {
+        url = "{{ url_for('session.create_with_campaign', id='-1') }}";
+        $(location).attr('href', url.replace("-1", $("#campaigns").val()));
+
+        e.preventDefault();
+        return false;
+    });
+});
+{% endif %}
 </script>
 {% endblock %}
 
@@ -26,12 +43,28 @@ makeDatatable("past-sessions-table");
     {% if current_user.has_admin_role() or current_user.is_dm_of_anything() %}
     <ul class="nav nav-tabs">
         <li>
-            <a href="{{ url_for('session.create') }}">
+            {% if url %}
+            <a href="{{ url }}" id="add-session-button">
+            {% else %}
+            <a href="{{ url_for('session.create') }}" id="add-session-button">
+            {% endif %}
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 Add Session
             </a>
         </li>
     </ul>
+    {% endif %}
+
+    {% if form %}
+        {% import 'bootstrap/wtf.html' as wtf %}
+    <div id="add-session-form">
+        <p class="alert alert-info">
+            You are a DM of multiple campaigns.
+            Please choose the campaign for which you want to create a new session.
+        </p>
+
+        {{ wtf.quick_form(form) }}
+    </div>
     {% endif %}
 
     <p>
