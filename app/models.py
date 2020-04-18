@@ -682,13 +682,25 @@ class EventSetting(db.Model, SimpleAuditMixin):
     default_epoch = db.Column(db.Integer, db.ForeignKey("epochs.id"))
     default_year = db.Column(db.Integer)
 
-class EventCategory(db.Model, SimpleAuditMixin):
+class EventCategory(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "event_categories"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     color = db.Column(db.String(10))
 
-class Event(db.Model, SimpleAuditMixin):
+    #####
+    # LinkGenerator functions
+    #####
+    def view_text(self):
+        return Markup('<span style="color:{};">█</span> {}'.format(self.color, self.name))
+
+    def view_url(self):
+        return url_for('event.list_category', c_id=self.id, c_name=urlfriendly(self.name))
+
+    def edit_url(self):
+        return url_for('event.category_edit', id=self.id, name=urlfriendly(self.name))
+
+class Event(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "events"
     id = db.Column(db.Integer, primary_key=True)
     is_visible = db.Column(db.Boolean)
@@ -772,6 +784,21 @@ class Event(db.Model, SimpleAuditMixin):
             return wd[(self.timestamp % len(wd)) - 1].name
         else:
             return wd[(timestamp % len(wd)) -1].name
+
+    #####
+    # LinkGenerator functions
+    #####
+    def view_text(self):
+        return self.name
+
+    def view_url(self):
+        return url_for('event.view', id=self.id, name=urlfriendly(self.name))
+
+    def edit_url(self):
+        return url_for('event.edit', id=self.id, name=urlfriendly(self.name))
+
+    def delete_url(self):
+        return url_for('event.delete', id=self.id, name=urlfriendly(self.name))
 
 class MediaSetting(db.Model, SimpleAuditMixin):
     __tablename__ = "media_settings"
