@@ -39,10 +39,10 @@ $(document).ready(function() {
 {% endif %}
 
 <ul class="list-unstyled">
-    <li>Written by: <a href="{{ url_for('character.view', id=char.id, name=char.name|urlfriendly) }}">{{ char.name }}</a></li>
+    <li>Written by: {{ char.view_link() }}</li>
 
     {% if journal.session %}
-    <li>Belongs to session <a href="{{ url_for('session.view', id=journal.session_id, name=journal.session.title|urlfriendly) }}">{{ journal.session.title }}</a></li>
+    <li>Belongs to Session <a href="{{ url_for('session.view', id=journal.session_id, name=journal.session.title|urlfriendly) }}">{{ journal.session.title }}</a></li>
     {% endif %}
 
     {% if current_user == char.player or current_user.has_admin_role() %}

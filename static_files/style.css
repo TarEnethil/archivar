@@ -355,3 +355,7 @@ tr.invisible_item,
     background:#fafafa;
     margin:10px;
 }
+
+.own-char {
+    font-weight:bold;
+}
