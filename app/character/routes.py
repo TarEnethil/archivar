@@ -22,7 +22,7 @@ def create():
         db.session.commit()
         flash("Character was created.", "success")
 
-        return redirect(url_for("character.view", id=char.id, name=urlfriendly(char.name)))
+        return redirect(char.view_url())
     else:
         return render_template("character/create.html", form=form, title=page_title("Add Character"))
 
@@ -61,7 +61,7 @@ def edit(id, name=None):
 
         db.session.commit()
         flash("Character changes have been saved.", "success")
-        return redirect(url_for("character.view", id=id, name=urlfriendly(char.name)))
+        return redirect(char.view_url())
     else:
         form.name.data = char.name
         form.race.data = char.race
@@ -235,4 +235,4 @@ def journal_delete(c_id, j_id, c_name=None, j_name=None):
     db.session.commit()
 
     flash("Journal entry was deleted.", "success")
-    return redirect(url_for('character.view', id=char.id, name=urlfriendly(char.name)))
+    return redirect(char.view_url())

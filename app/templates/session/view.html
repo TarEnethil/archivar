@@ -106,9 +106,9 @@
     {% for member in session.participants %}
     <li>
         {% if member.player.id == current_user.id %}
-        <a href="{{ url_for('character.view', id=member.id) }}"><b>{{ member.name }}</b></a> (<a href="{{ url_for('character.journal_create', c_id=member.id, c_name=member.name|urlfriendly, session=session.id) }}">write Journal</a>)
+        {{ member.view_link(classes="own-char") }} (<a href="{{ url_for('character.journal_create', c_id=member.id, c_name=member.name|urlfriendly, session=session.id) }}">write Journal</a>)
         {% else %}
-        <a href="{{ url_for('character.view', id=member.id) }}">{{ member.name }}</a>
+        {{ member.view_link() }}
         {% endif %}
     </li>
     {% endfor %}
@@ -131,11 +131,7 @@
 
         by
 
-        {% if journal.character in session.participants %}
         {{ journal.character.name }}
-        {% else %}
-        <a href="{{ url_for('character.view', id=journal.character_id, name=journal.character.name|urlfriendly) }}">{{ journal.character.name }}</a>
-        {% endif %}
 
         {% if journal.character.player == current_user or current_user.has_admin_role() %}
         (<a href="{{ url_for('character.journal_edit', c_id=journal.character_id, j_id=journal.id, c_name=journal.character.name|urlfriendly, j_name=journal.title|urlfriendly) }}">edit Journal</a>)
