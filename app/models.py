@@ -831,7 +831,7 @@ class Journal(db.Model, SimpleAuditMixin):
     session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
     session = db.relationship("Session", backref="journals", foreign_keys=[session_id])
 
-class Campaign(db.Model, SimpleAuditMixin):
+class Campaign(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "campaigns"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -844,6 +844,18 @@ class Campaign(db.Model, SimpleAuditMixin):
     dm_notes = db.Column(db.Text)
 
     default_participants = db.relationship("Character", secondary=campaign_character_assoc, backref="default_participants")
+
+    #####
+    # LinkGenerator functions
+    #####
+    def view_text(self):
+        return Markup('<span style="color:{};">█</span> {}'.format(self.color, self.name))
+
+    def view_url(self):
+        return url_for('campaign.view', id=self.id, name=urlfriendly(self.name))
+
+    def edit_url(self):
+        return url_for('campaign.edit', id=self.id, name=urlfriendly(self.name))
 
 @login.user_loader
 def load_user(id):
