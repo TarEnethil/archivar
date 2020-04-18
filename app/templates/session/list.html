@@ -104,9 +104,9 @@ $(document).ready(function() {
                             {% endif %}
 
                             {% if p.player.id == current_user.id %}
-                    <a href="{{ url_for('character.view', id=p.id, name=p.name|urlfriendly) }}"><b>{{ p.name }}</b></a>
+                                {{ p.view_link(classes="own-char") }}
                             {% else %}
-                    <a href="{{ url_for('character.view', id=p.id, name=p.name|urlfriendly) }}">{{ p.name }}</a>
+                                {{ p.view_link() }}
                             {% endif %}
                         {% endfor %}
                     {% endif %}
@@ -162,9 +162,9 @@ $(document).ready(function() {
                             {% endif %}
 
                             {% if p.player.id == current_user.id %}
-                    <a href="{{ url_for('character.view', id=p.id) }}"><b>{{ p.name }}</b></a>
+                                {{ p.view_link(classes="own-char") }}
                             {% else %}
-                    <a href="{{ url_for('character.view', id=p.id) }}">{{ p.name }}</a>
+                                {{ p.view_link() }}
                             {% endif %}
                         {% endfor %}
                     {% endif %}

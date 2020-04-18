@@ -11,10 +11,7 @@
 
 <ul class="nav nav-tabs">
     <li>
-        <a href="{{ url_for('character.view', id=char.id, name=char.name|urlfriendly) }}">
-            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
-            Back to Char
-        </a>
+        {{ char.view_button_nav(text="Back to Char", icon="arrow-left") }}
     </li>
 
 {% if current_user == char.player %}

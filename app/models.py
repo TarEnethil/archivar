@@ -369,7 +369,7 @@ class MapNode(db.Model, SimpleAuditMixin):
 
         return dic
 
-class Character(db.Model, SimpleAuditMixin):
+class Character(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "characters"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -383,6 +383,18 @@ class Character(db.Model, SimpleAuditMixin):
     description = db.Column(db.Text)
     dm_notes = db.Column(db.Text)
     private_notes = db.Column(db.Text)
+
+    def view_text(self):
+        return self.name
+
+    def view_url(self):
+        return url_for('character.view', id=self.id, name=urlfriendly(self.name))
+
+    def edit_url(self):
+        return url_for('character.edit', id=self.id, name=urlfriendly(self.name))
+
+    def delete_url(self):
+        return url_for('character.delete', id=self.id, name=urlfriendly(self.name))
 
 class Party(db.Model, SimpleAuditMixin):
     __tablename__ = "parties"
