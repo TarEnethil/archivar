@@ -104,7 +104,7 @@ def create():
         update_timestamp(new_event.id)
 
         flash("Event was created.", "success")
-        return redirect(url_for("event.view", id=new_event.id, name=urlfriendly(new_event.name)))
+        return redirect(new_event.view_url())
     elif request.method == "GET":
         # pre-select fields if get-params were passed
         epoch_id = request.args.get("epoch")
@@ -182,7 +182,7 @@ def edit(id, name=None):
 
         flash("Event was edited.", "success")
 
-        return redirect(url_for("event.view", id=id, name=urlfriendly(event.name)))
+        return redirect(event.view_url())
     elif request.method == "GET":
         form.name.data = event.name
         form.category.data = event.category_id
