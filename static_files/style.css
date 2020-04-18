@@ -162,7 +162,7 @@ body {
     margin-bottom:10px;
 }
 
-ul.nav-tabs li span.glyphicon {
+ul.nav-tabs li:not(.delete-li) span.glyphicon {
     color: #000 !important;
 }
 
@@ -255,12 +255,7 @@ ul.nav-tabs li span.glyphicon {
     color:#ab0000 !important;
 }
 
-a.nav-danger {
-    background-color:#c9302c;
-    color:#000;
-}
-
-a.nav-danger:hover {
+li.delete-li a:hover {
     background-color:#c90000 !important;
 }
 

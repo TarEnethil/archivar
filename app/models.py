@@ -1,4 +1,5 @@
 from app import app, db, login
+from app.helpers import urlfriendly
 from datetime import datetime
 from flask import url_for
 from flask_login import UserMixin
@@ -87,6 +88,84 @@ class SimpleAuditMixin(object):
             return ""
 
         return Markup(Template(out).render(context))
+
+class LinkGenerator(object):
+    def link(self, url, text, classes=None, ids=None):
+        attrs = ""
+
+        if classes != None:
+            attrs += 'class="{}"'.format(classes)
+
+        if ids != None:
+            attrs += 'id="{}"'.format(ids)
+
+        return Markup('<a href="{}" {}>{}</a>'.format(url, attrs, text))
+
+    def button(self, url, text, icon=None, classes=None, ids=None):
+        if icon != None:
+            icon = '<span class="glyphicon glyphicon-{}" aria-hidden="true"></span>'.format(icon)
+
+        text = "{}\n{}".format(icon, text)
+        link = self.link(url, text, classes, ids)
+
+        return Markup(link)
+
+    def view_link(self, text=None, classes=None, ids=None):
+        if text == None:
+            text = self.view_text()
+
+        return self.link(self.view_url(), text, classes, ids)
+
+    def edit_link(self, text="Edit", css_classes=None, css_ids=None):
+        if text == None:
+            text = self.edit_text()
+
+        return self.link(self.edit_url(), text, classes, ids)
+
+    def delete_link(self, text="Delete", css_classes=None, css_ids=None):
+        if text == None:
+            text = self.delete_text()
+
+        return self.link(self.delete_url(), text, classes, ids)
+
+    def view_button(self, text="View", icon="eye-open", classes="btn btn-default", ids=None):
+        return self.button(self.view_url(), text, icon, classes, ids)
+
+    def edit_button(self, text="Edit", icon="pencil", classes="btn btn-default", ids=None):
+        return self.button(self.edit_url(), text, icon, classes, ids)
+
+    def delete_button(self, text="Delete", icon="remove-circle", classes="btn btn-danger", ids="delete-link"):
+        return self.button(self.delete_url(), text, icon, classes, ids)
+
+    def view_button_nav(self, text="View", icon="eye-open", classes=None, ids=None):
+        return self.button(self.view_url(), text, icon, classes, ids)
+
+    def edit_button_nav(self, text="Edit", icon="pencil", classes=None, ids=None):
+        return self.button(self.edit_url(), text, icon, classes, ids)
+
+    def delete_button_nav(self, text="Delete", icon="remove-circle", classes="btn btn-danger", ids="delete-link"):
+        return self.button(self.delete_url(), text, icon, classes, ids)
+
+    def view_text(self):
+        return "View"
+
+    def edit_text(self):
+        return "Edit"
+
+    def delete_text(self):
+        return "Delete"
+
+    # needs to be overridden by base class
+    def view_url(self):
+        raise NotImplementedError
+
+    # needs to be overridden by base class
+    def edit_url(self):
+        raise NotImplementedError
+
+    # needs to be overridden by base class
+    def delete_url(self):
+        raise NotImplementedError
 
 
 class User(UserMixin, db.Model):
