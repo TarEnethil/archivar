@@ -70,7 +70,7 @@ def edit(id, name=None):
 
         db.session.commit()
         flash("Campaign was changed.", "success")
-        return redirect(url_for("campaign.view", id=id, name=urlfriendly(campaign.name)))
+        return redirect(campaign.view_url())
 
     elif request.method == "GET":
         form.name.data = campaign.name
