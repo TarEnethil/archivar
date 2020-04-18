@@ -1,7 +1,6 @@
 from flask import flash, redirect, url_for
 from functools import wraps
 from app import db
-from app.models import GeneralSetting, Epoch, Month, Party, Session, Campaign
 from flask_login import current_user
 from sqlalchemy import func
 from wtforms.validators import ValidationError
@@ -31,6 +30,8 @@ def admin_or_party_required(url="index"):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
+            from app.models import Party
+
             if not 'id' in kwargs:
                 flash("@admin_or_party_required was used incorrectly, contact the administrator", "danger")
                 return redirect(url_for(url))
@@ -50,6 +51,8 @@ def admin_dm_or_session_required(url="index"):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
+            from app.models import Session
+
             if not 'id' in kwargs:
                 flash("@admin_or_session_required was used incorrectly, contact the administrator", "danger")
                 return redirect(url_for(url))
@@ -69,6 +72,8 @@ def admin_or_dm_required(url="index"):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
+            from app.models import Campaign
+
             if not 'id' in kwargs:
                 flash("@admin_or_dm_required was used incorrectly, contact the administrator", "danger")
                 return redirect(url_for(url))
@@ -84,6 +89,7 @@ def admin_or_dm_required(url="index"):
 
 # generate the page <title>
 def page_title(dynamic_part=None):
+    from app.models import GeneralSetting
     gset = GeneralSetting.query.get(1)
 
     if not gset:
@@ -148,6 +154,8 @@ class YearPerEpochValidator(object):
         self.epoch_field = epoch_id_field_name
 
     def __call__(self, form, field):
+        from app.models import Epoch
+
         epoch_id = form._fields.get(self.epoch_field).data
 
         ep = Epoch.query.filter_by(id=epoch_id).first()
@@ -164,6 +172,7 @@ class DayPerMonthValidator(object):
         self.month_field = month_id_field_name
 
     def __call__(self, form, field):
+        from app.models import Month
         month_id = form._fields.get(self.month_field).data
 
         mo = Month.query.filter_by(id=month_id).first()
@@ -180,6 +189,7 @@ class IsDMValidator(object):
         self.campaign_field = campaign_field_name
 
     def __call__(self, form, field):
+        from app.models import Campaign
         campaign_id = form._fields.get(self.campaign_field).data
 
         campaign = Campaign.query.filter_by(id=campaign_id).first()
