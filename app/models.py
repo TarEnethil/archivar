@@ -384,6 +384,9 @@ class Character(db.Model, SimpleAuditMixin, LinkGenerator):
     dm_notes = db.Column(db.Text)
     private_notes = db.Column(db.Text)
 
+    #####
+    # LinkGenerator functions
+    #####
     def view_text(self):
         return self.name
 
@@ -441,7 +444,7 @@ class CalendarSetting(db.Model, SimpleAuditMixin):
     id = db.Column(db.Integer, primary_key=True)
     finalized = db.Column(db.Boolean, default=False)
 
-class Epoch(db.Model, SimpleAuditMixin):
+class Epoch(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "epochs"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -469,7 +472,16 @@ class Epoch(db.Model, SimpleAuditMixin):
     def __repr__(self):
         return str(self.to_dict())
 
-class Month(db.Model, SimpleAuditMixin):
+    #####
+    # LinkGenerator functions
+    #####
+    def edit_url(self):
+        return url_for('calendar.epoch_edit', id=self.id, name=urlfriendly(self.name))
+
+    def delete_url(self):
+        return url_for('calendar.epoch_delete', id=self.id, name=urlfriendly(self.name))
+
+class Month(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "months"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -495,7 +507,16 @@ class Month(db.Model, SimpleAuditMixin):
     def __repr__(self):
         return str(self.to_dict())
 
-class Day(db.Model, SimpleAuditMixin):
+    #####
+    # LinkGenerator functions
+    #####
+    def edit_url(self):
+        return url_for('calendar.month_edit', id=self.id, name=urlfriendly(self.name))
+
+    def delete_url(self):
+        return url_for('calendar.month_delete', id=self.id, name=urlfriendly(self.name))
+
+class Day(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "days"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -515,7 +536,16 @@ class Day(db.Model, SimpleAuditMixin):
     def __repr__(self):
         return str(self.to_dict())
 
-class Moon(db.Model, SimpleAuditMixin):
+    #####
+    # LinkGenerator functions
+    #####
+    def edit_url(self):
+        return url_for('calendar.day_edit', id=self.id, name=urlfriendly(self.name))
+
+    def delete_url(self):
+        return url_for('calendar.day_delete', id=self.id, name=urlfriendly(self.name))
+
+class Moon(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "moons"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -634,6 +664,15 @@ class Moon(db.Model, SimpleAuditMixin):
             out += self.print_phase(x + 1, moon_size, print_name, print_phase) + "\n"
 
         return out
+
+    #####
+    # LinkGenerator functions
+    #####
+    def edit_url(self):
+        return url_for('calendar.moon_edit', id=self.id, name=urlfriendly(self.name))
+
+    def delete_url(self):
+        return url_for('calendar.moon_delete', id=self.id, name=urlfriendly(self.name))
 
 class EventSetting(db.Model, SimpleAuditMixin):
     __tablename__ = "event_settings"
