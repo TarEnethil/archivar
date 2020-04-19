@@ -106,7 +106,7 @@ makeDatatable("parties-table", 5);
             <td> {{ char.name }} </td>
             <td> {{ char.race }}</td>
             <td> {{ char.class_ }}</td>
-            <td> <a href="{{ url_for('user.profile', username=char.player.username) }}">{{ char.player.username }}</a></td>
+            <td> {{ char.player.view_link() }}</td>
             <td>
                 {{ char.view_button() }}
                 {% if current_user.has_admin_role() or char.player.id == current_user.id %}

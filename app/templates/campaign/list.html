@@ -53,7 +53,7 @@ makeDatatable("campaigns-table");
         {% for campaign in campaigns %}
             <tr style="border-left:7px solid {{ campaign.color }}">
                 <td>{{ campaign.name }}</td>
-                <td><a href="{{ url_for('user.profile', username=campaign.dm.username) }}">{{ campaign.dm.username }}</a></td>
+                <td>{{ campaign.dm.view_link() }}</td>
                 {# <td>{{ moment(session.date).format(current_user.dateformat) }} ({{ moment(session.date).fromNow() }})</td>#}
                 <td>{{ campaign.sessions|length }}</td>
                 <td>
