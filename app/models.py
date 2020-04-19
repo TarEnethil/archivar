@@ -805,7 +805,7 @@ class MediaSetting(db.Model, SimpleAuditMixin):
     id = db.Column(db.Integer, primary_key=True)
     default_visible = db.Column(db.Boolean)
 
-class MediaCategory(db.Model, SimpleAuditMixin):
+class MediaCategory(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "media_categories"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -818,7 +818,19 @@ class MediaCategory(db.Model, SimpleAuditMixin):
 
         return dic
 
-class MediaItem(db.Model, SimpleAuditMixin):
+    #####
+    # LinkGenerator functions
+    #####
+    def view_text(self):
+        return self.name
+
+    def view_url(self):
+        return url_for('media.list_by_cat', c_id=self.id, c_name=urlfriendly(self.name))
+
+    def edit_url(self):
+        return url_for('media.category_edit', id=self.id, name=urlfriendly(self.name))
+
+class MediaItem(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "media"
     id = db.Column(db.Integer, primary_key=True)
     is_visible = db.Column(db.Boolean)
@@ -843,6 +855,27 @@ class MediaItem(db.Model, SimpleAuditMixin):
         }
 
         return dic
+
+    #####
+    # LinkGenerator functions
+    #####
+    def view_text(self):
+        return self.name
+
+    def view_url(self):
+        return url_for('media.view', id=self.id, name=urlfriendly(self.name))
+
+    def edit_url(self):
+        return url_for('media.edit', id=self.id, name=urlfriendly(self.name))
+
+    def delete_url(self):
+        return url_for('media.delete', id=self.id, name=urlfriendly(self.name))
+
+    def serve_url(self):
+        return url_for('media.serve_file', filename=self.filename)
+
+    def serve_link(self):
+        return self.link(self.serve_url(), self.filename)
 
 class Journal(db.Model, SimpleAuditMixin):
     __tablename__ = "journal"
