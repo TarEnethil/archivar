@@ -21,4 +21,7 @@ class Config(object):
 
     # True: Use local js and css files, False: use CDNs
     # used for ALL external css/js, not just boostrap
-    BOOTSTRAP_SERVE_LOCAL = True
+    SERVE_LOCAL = True
+
+    BOOTSTRAP_SERVE_LOCAL = SERVE_LOCAL
+    FONTAWESOME_SERVE_LOCAL = SERVE_LOCAL
