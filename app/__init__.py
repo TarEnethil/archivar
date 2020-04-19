@@ -208,7 +208,17 @@ def utility_processor():
     def get_archivar_version():
         return version()
 
-    return dict(load_global_quicklinks=load_global_quicklinks, load_user_quicklinks=load_user_quicklinks, include_css=include_css, include_js=include_js, get_archivar_version=get_archivar_version)
+    def icon(name):
+        from app.helpers import icon as icon_fkt
+
+        return icon_fkt(name)
+
+    return dict(load_global_quicklinks=load_global_quicklinks,
+                load_user_quicklinks=load_user_quicklinks,
+                include_css=include_css,
+                include_js=include_js,
+                get_archivar_version=get_archivar_version,
+                icon=icon)
 
 @app.template_filter()
 def hash(text):

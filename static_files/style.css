@@ -150,14 +150,6 @@ body {
     border-top:2px solid #c9ad6a;
 }
 
-#users-glyph {
-    border:2px solid #777;
-    border-radius:10px;
-    padding:0px 3px;
-    border-top:none;
-    border-bottom:none;
-}
-
 .container ul.nav-tabs {
     margin-bottom:10px;
 }

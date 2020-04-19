@@ -39,7 +39,7 @@
         {% if current_user == char.player %}
         <li>
             <a href="{{ url_for('character.journal_create', c_id=char.id, c_name=char.name|urlfriendly) }}">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                {{ icon("plus") }}
                 Add Journal Entry
             </a>
         </li>
@@ -47,7 +47,7 @@
         {% if char.journals %}
         <li>
             <a href="{{ url_for('character.journal_list', c_id=char.id, c_name=char.name|urlfriendly) }}">
-                <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+                {{ icon("book") }}
                 View Full Journal
             </a>
         </li>

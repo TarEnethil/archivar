@@ -36,7 +36,7 @@ makeDatatable("parties-table", 5);
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('party.create') }}">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ icon("plus") }}
             Add Party
         </a>
     </li>
@@ -83,7 +83,7 @@ makeDatatable("parties-table", 5);
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('character.create') }}">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ icon("plus") }}
             Add Character
         </a>
     </li>
