@@ -72,7 +72,7 @@
         <dt>Class</dt>
         <dd>{{ char.class_ }}</dd>
         <dt>Player</dt>
-        <dd><a href="{{ url_for('user.profile', username=char.player.username) }}">{{ char.player.username }}</a></dd>
+        <dd>{{ char.player.view_link() }}</dd>
         {% if char.sessions %}
             <dt>Sessions</dt>
             <dd>{{ char.sessions|length }}</dd>

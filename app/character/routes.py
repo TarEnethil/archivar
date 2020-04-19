@@ -91,13 +91,13 @@ def delete(id, name=None):
         flash_no_permission()
         return redirect(url_for(no_perm))
 
-    player = char.player.username
+    player = char.player
 
     db.session.delete(char)
     db.session.commit()
 
     flash("Character was deleted.", "success")
-    return redirect(url_for('user.profile', username=player))
+    return redirect(player.view_url())
 
 @bp.route("/sidebar", methods=["GET"])
 @login_required
