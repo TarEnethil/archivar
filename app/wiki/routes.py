@@ -15,6 +15,7 @@ no_perm_url = "wiki.index"
 @login_required
 def index():
     return redirect(url_for("wiki.view", id=1, name=urlfriendly("Main Page")))
+    return redirect(url_for("wiki.view", id=1, name=urlfriendly("Main Page")))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
@@ -47,7 +48,7 @@ def create():
         db.session.commit()
 
         flash("Wiki entry was added.", "success")
-        return redirect(url_for("wiki.view", id=entry.id, name=urlfriendly(entry.title)))
+        return redirect(entry.view_url())
     elif request.method == "GET":
         if current_user.is_wiki_admin():
             wsettings = WikiSetting.query.get(1)
@@ -99,7 +100,7 @@ def edit(id, name=None):
         db.session.commit()
         flash("Wiki entry was edited.", "success")
 
-        return redirect(url_for("wiki.view", id=id, name=urlfriendly(wikientry.title)))
+        return redirect(wikientry.view_url())
     elif request.method == "GET":
         if wikientry.id != 1:
             form.title.data = wikientry.title
@@ -178,7 +179,7 @@ def toggle_vis(id, name=None):
         flash("Article is now visible to anyone.", "success")
 
     db.session.commit()
-    return redirect(url_for('wiki.view', id=id, name=urlfriendly(wikientry.title)))
+    return redirect(wikientry.view_url())
 
 @bp.route("/search/<string:text>", methods=["GET"])
 @login_required
