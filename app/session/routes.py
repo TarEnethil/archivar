@@ -94,7 +94,7 @@ def create_with_campaign(id):
         db.session.commit()
 
         flash("Session was created.", "success")
-        return redirect(url_for("session.view", id=new_session.id, name=urlfriendly(new_session.title)))
+        return redirect(new_session.view_url())
     elif request.method == "GET":
         participants = []
 
@@ -144,7 +144,7 @@ def edit(id, name=None):
 
         db.session.commit()
         flash("Session was changed.", "success")
-        return redirect(url_for("session.view", id=id, name=urlfriendly(session.title)))
+        return redirect(session.view_url())
     elif request.method == "GET":
         form.title.data = session.title
         form.summary.data = session.summary
