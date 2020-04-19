@@ -25,7 +25,7 @@ makeDatatable("media-table", 25, 25);
     <ul class="nav nav-tabs">
         <li>
             <a href="{{ url_for('media.upload', category=cat.id) }}">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                {{ icon("plus") }}
                 New Media here
             </a>
         </li>

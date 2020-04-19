@@ -7,7 +7,7 @@
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('calendar.view') }}">
-            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+            {{ icon("calendar") }}
             Public calendar info
         </a>
     </li>
@@ -20,13 +20,13 @@ The calendar was finalized, which means no alterations can be made, except for t
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('calendar.check') }}">
-            <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+            {{ icon("check") }}
             Check Constraints
         </a>
     </li>
     <li>
         <a href="{{ url_for('calendar.preview') }}">
-            <span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span>
+            {{ icon("sunglasses") }}
             Preview Calendar
         </a>
     </li>
@@ -56,7 +56,7 @@ Events can only be created after the calendar is finalized.
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('calendar.epoch_create') }}">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ icon("plus") }}
             Add Epoch
         </a>
     </li>
@@ -107,11 +107,11 @@ For a valid calendar, only the bottom-most epoch can have a duration of 0.
 
                 {% if settings.finalized == False %}
                 <a href="{{ url_for('calendar.epoch_up', id=epoch.id, name=epoch.name|urlfriendly) }}" class="btn btn-default">
-                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    {{ icon("arrow-up") }}
                 </a>
 
                 <a href="{{ url_for('calendar.epoch_down', id=epoch.id, name=epoch.name|urlfriendly) }}" class="btn btn-default">
-                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                    {{ icon("arrow-down") }}
                 </a>
 
                 {{ epoch.delete_button() }}
@@ -135,7 +135,7 @@ For a valid calendar, only the bottom-most epoch can have a duration of 0.
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('calendar.month_create') }}">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ icon("plus") }}
             Add Month
         </a>
     </li>
@@ -176,11 +176,11 @@ For a valid calendar, at least one month must be defined and each month must hav
 
                 {% if settings.finalized == False %}
                 <a href="{{ url_for('calendar.month_up', id=month.id, name=month.name|urlfriendly) }}" class="btn btn-default">
-                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    {{ icon("arrow-up") }}
                 </a>
 
                 <a href="{{ url_for('calendar.month_down', id=month.id, name=month.name|urlfriendly) }}" class="btn btn-default">
-                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                    {{ icon("arrow-down") }}
                 </a>
 
                 {{ month.delete_button() }}
@@ -206,7 +206,7 @@ For a valid calendar, at least one month must be defined and each month must hav
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('calendar.day_create') }}">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ icon("plus") }}
             Add Day
         </a>
     </li>
@@ -242,11 +242,11 @@ For a valid calendar, at least one day must be defined.
 
                 {% if settings.finalized == False %}
                 <a href="{{ url_for('calendar.day_up', id=day.id, name=day.name|urlfriendly) }}" class="btn btn-default">
-                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    {{ icon("arrow-up") }}
                 </a>
 
                 <a href="{{ url_for('calendar.day_down', id=day.id, name=day.name|urlfriendly) }}" class="btn btn-default">
-                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                    {{ icon("arrow-down") }}
                 </a>
 
                 {{ day.delete_button() }}
@@ -271,7 +271,7 @@ For a valid calendar, at least one day must be defined.
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('calendar.moon_create') }}">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ icon("plus") }}
             Add Moon
         </a>
     </li>

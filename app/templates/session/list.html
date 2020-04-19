@@ -48,7 +48,7 @@ $(document).ready(function() {
             {% else %}
             <a href="{{ url_for('session.create') }}" id="add-session-button">
             {% endif %}
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                {{ icon("plus") }}
                 Add Session
             </a>
         </li>

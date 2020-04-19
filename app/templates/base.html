@@ -46,15 +46,15 @@ $(document).ready(function() {
         <div class="navbar-collapse collapse" id="topnav-navbar">
             <ul class="nav navbar-nav navbar-left" id="leftnav">
                 <li><a href="{{ url_for('index') }}">
-                    <span class="glyphicon glyphicon-home"></span>
+                    {{ icon("home") }}
                 </a></li>
 
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('campaign.index') }}"><span class="glyphicon glyphicon-book"></span> Campaigns</a></li>
-                <li><a href="{{ url_for('session.index') }}"><span class="glyphicon glyphicon-pencil"></span> Sessions</a></li>
-                <li><a href="{{ url_for('map.index') }}"><span class="glyphicon glyphicon-map-marker"></span> Map</a></li>
-                <li><a href="{{ url_for('wiki.index') }}"><span class="glyphicon glyphicon-education"></span> Wiki</a></li>
-                <li><a href="{{ url_for('calendar.index') }}"><span class="glyphicon glyphicon-calendar"></span> Calendar</a></li>
+                <li><a href="{{ url_for('campaign.index') }}">{{ icon("book") }} Campaigns</a></li>
+                <li><a href="{{ url_for('session.index') }}">{{ icon("pencil") }} Sessions</a></li>
+                <li><a href="{{ url_for('map.index') }}">{{ icon("map-marker") }} Map</a></li>
+                <li><a href="{{ url_for('wiki.index') }}">{{ icon("education") }} Wiki</a></li>
+                <li><a href="{{ url_for('calendar.index') }}">{{ icon("calendar") }} Calendar</a></li>
                 {% endif %}
 
             </ul>
@@ -70,7 +70,7 @@ $(document).ready(function() {
                     {% elif user_ql|length > 1 %}
                 <li class="dropdown user-quicklinks">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <span class="glyphicon glyphicon-flash"></span> Quicklinks <span class="caret"></span>
+                    {{ icon("flash") }} Quicklinks <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         {% for link in user_ql %}
@@ -78,7 +78,7 @@ $(document).ready(function() {
                         {% endfor %}
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ url_for('user.settings') }}">
-                            <span class="glyphicon glyphicon-cog"></span>
+                            {{ icon("cog") }}
                             Edit quicklinks
                             </a>
                         </li>
@@ -95,17 +95,17 @@ $(document).ready(function() {
 
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('media.index') }}"><span class="glyphicon glyphicon-picture"></span> Media</a></li>
+                <li><a href="{{ url_for('media.index') }}">{{ icon("picture") }} Media</a></li>
                 {% endif %}
 
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('character.list') }}"><span class="glyphicon glyphicon-list"></span> Parties & Chars</a></li>
+                <li><a href="{{ url_for('character.list') }}">{{ icon("list") }} Parties & Chars</a></li>
                 {% endif %}
 
                 {% if current_user.is_authenticated and current_user.has_admin_role() %}
                 <li class="dropdown">
                     <a href="{{ url_for('user.list') }}">
-                    <span class="glyphicon glyphicon-user" id="users-glyph"></span> Users
+                    {{ icon("user") }} Users
                     </a>
                 </li>
                 {% endif %}
@@ -113,7 +113,7 @@ $(document).ready(function() {
                 {% if current_user.is_authenticated and current_user.has_access_to_some_settings() %}
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <span class="glyphicon glyphicon-cog"></span> Settings <span class="caret"></span>
+                    {{ icon("cog") }} Settings <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         {% if current_user.has_admin_role() %}
@@ -151,7 +151,7 @@ $(document).ready(function() {
                 {% else %}
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <span class="glyphicon glyphicon-user"></span> {{ current_user.username }} <span class="caret"></span>
+                    {{ icon("user") }} {{ current_user.username }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li>{{ current_user.view_link() }}</li>

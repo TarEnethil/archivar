@@ -27,7 +27,7 @@ makeDatatable("campaigns-table");
     <ul class="nav nav-tabs">
         <li>
             <a href="{{ url_for('campaign.create') }}">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                {{ icon("plus") }}
                 Add Campaign
             </a>
         </li>
@@ -62,7 +62,7 @@ makeDatatable("campaigns-table");
                     {{ campaign.edit_button() }}
 
                     <a href="{{ url_for('session.create_with_campaign', id=campaign.id) }}" class="btn btn-default">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        {{ icon("plus") }}
                         Add Session
                     </a>
                     {% endif %}

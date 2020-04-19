@@ -17,7 +17,7 @@
 {% if current_user == char.player %}
     <li>
         <a href="{{ url_for('character.journal_create', c_id=char.id, c_name=char.name|urlfriendly) }}">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ icon("plus") }}
             Add Entry
         </a>
     </li>

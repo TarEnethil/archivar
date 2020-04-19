@@ -20,14 +20,14 @@
   <div id="messagebox"></div>
   <div id="nodeform" class="panel">
     <a class="close-link">
-      <span class="glyphicon glyphicon-remove"></span>
+      {{ icon("remove") }}
     </a>
     <div id="nodeform_content"></div>
   </div>
 
   <div id="location-list">
     <a class="close-link-sidebar">
-      <span class="glyphicon glyphicon-remove"></span>
+      {{ icon("remove") }}
     </a>
     <input type="text" id="filter_locations" placeholder="filter" />
     <ul id="locations"></ul>
@@ -38,27 +38,27 @@
   </span>
 
   <a id="btn-loc-sidebar" class="btn btn-default btn-left">
-    <span class="glyphicon glyphicon-list"></span>
+    {{ icon("list") }}
     Location List
   </a>
 
   <div id="bottom-right-buttons">
     <a id="btn-add-node" class="btn btn-default">
-      <span class="glyphicon glyphicon-plus"></span>
+      {{ icon("plus") }}
       Add Location
     </a>
 
     <a id="btn-cancel-add-node" class="btn btn-warning">
-      <span class="glyphicon glyphicon-remove"></span>
+      {{ icon("remove") }}
       Cancel
     </a>
   {% if current_user.has_admin_role() %}
     <a id="btn-add-node" class="btn btn-default" href="{{ url_for('map.create') }}">
-      <span class="glyphicon glyphicon-plus"></span>
+      {{ icon("plus") }}
       Add Map
     </a>
     <a id="btn-settings" class="btn btn-default" href="{{ url_for('map.list') }}">
-      <span class="glyphicon glyphicon-list"></span>
+      {{ icon("list") }}
       Ĺist
     </a>
     {{ map_.settings_button(ids="btn-settings") }}
@@ -521,22 +521,22 @@
 
       if (wiki_id != 0 && wiki_id != null) {
         var fake_url = "{{ url_for('wiki.view', id=-1) }}"
-        pop.append('<a href="' + fake_url.replace("-1", wiki_id) + '" class="btn btn-default"><span class="glyphicon glyphicon-education"></span> Wiki article</a> ');
+        pop.append('<a href="' + fake_url.replace("-1", wiki_id) + '" class="btn btn-default">{{ icon("education") }} Wiki article</a> ');
       }
 
       if (submap_id != 0 && submap_id != null) {
         var fake_url = "{{ url_for('map.view', id=-1) }}"
-        pop.append('<a href="' + fake_url.replace("-1", submap_id) + '" class="btn btn-default"><span class="glyphicon glyphicon-map-marker"></span> View map</a>');
+        pop.append('<a href="' + fake_url.replace("-1", submap_id) + '" class="btn btn-default">{{ icon("map-marker") }} View map</a>');
       }
 
       pop.append($('<div />').addClass("popup-markdown").append(description));
 
       var edit_btn = $("<a />").addClass("btn btn-default node-edit-btn").attr("data", id);
-      edit_btn.append('<span class="glyphicon glyphicon-pencil"></span>');
+      edit_btn.append('{{ icon("pencil") }}');
       edit_btn.append(' edit');
 
       var delete_btn = $("<a />").addClass("btn btn-danger node-delete-btn").attr("data", id).css("float", "right");
-      delete_btn.append('<span class="glyphicon glyphicon-remove-circle"></span>');
+      delete_btn.append('{{ icon("remove-circle") }}');
       delete_btn.append(' delete');
 
       var btns = $("<nav />").append(edit_btn);

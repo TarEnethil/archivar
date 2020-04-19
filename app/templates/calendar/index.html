@@ -11,13 +11,13 @@ The calendar has not been finalized by the admin yet.
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('calendar.view') }}">
-            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+            {{ icon("calendar") }}
             View Info
         </a>
     </li>
     <li>
         <a href="{{ url_for('event.create') }}">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ icon("plus") }}
             Add Event
         </a>
     </li>
@@ -25,7 +25,7 @@ The calendar has not been finalized by the admin yet.
     {% if current_user.has_admin_role() %}
     <li>
         <a href="{{ url_for('calendar.settings') }}">
-            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            {{ icon("cog") }}
             Calendar Settings
         </a>
     </li>
@@ -34,7 +34,7 @@ The calendar has not been finalized by the admin yet.
     {% if current_user.is_event_admin() %}
      <li>
         <a href="{{ url_for('event.settings') }}">
-            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            {{ icon("cog") }}
             Event Settings
         </a>
     </li>

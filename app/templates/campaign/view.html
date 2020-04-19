@@ -23,7 +23,7 @@ makeDatatable("sessions-table");
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('session.create', base=campaign.id) }}">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ icon("plus") }}
             Add Session
         </a>
     </li>
