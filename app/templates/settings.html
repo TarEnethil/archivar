@@ -3,16 +3,16 @@
 
 {% block styles %}
 {{ super() }}
-{{ include_css(['simplemde']) }}
+{{ include_css(['markdown-editor']) }}
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['simplemde', 'moment']) }}
+{{ include_js(['markdown-editor', 'moment']) }}
 
 <script>
 {% include "sidebars.js" %}
-makeSMDE("welcome_page");
+makeMarkdownEditor("welcome_page");
 
 $("#quicklinks").attr("placeholder", "one link per line; format: url|title");
 </script>

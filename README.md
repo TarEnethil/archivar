@@ -157,5 +157,5 @@ _Reserved. No function as of yet._
 * Frontend with [Bootstrap 3.3](https://getbootstrap.com/docs/3.3/)
 * JavaScript framework is [jQuery](https://jquery.com/) (used by bootstrap), additional scripts: [multiselect](http://loudev.com/) (select characters for session), [bootstrap-select](https://developer.snapappointments.com/bootstrap-select/), [quicksearch](https://deuxhuithuit.github.io/quicksearch/)
 * Map built with [leaflet.js](https://leafletjs.com/)
-* Markdown done with [SimpleMDE](https://simplemde.com/) (WYSIWYG editor) and Flask-Misaka (on-server rendering)
+* Markdown done with [easyMDE](https://easymde.tk/) (WYSIWYG editor) and Flask-Misaka (on-server rendering)
 * Thanks to the [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) by Miguel Grinberg for getting me started with Flask

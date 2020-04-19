@@ -3,16 +3,16 @@
 
 {% block styles %}
 {{ super() }}
-{{ include_css(['simplemde', 'bootstrap-select']) }}
+{{ include_css(['markdown-editor', 'bootstrap-select']) }}
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['simplemde', 'bootstrap-select']) }}
+{{ include_js(['markdown-editor', 'bootstrap-select']) }}
 <script>
 {% include "datepicker.js" %}
 {% include "sidebars.js" %}
-makeSMDE("description");
+makeMarkdownEditor("description");
 </script>
 {% endblock %}
 

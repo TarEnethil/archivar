@@ -289,24 +289,24 @@ var reference = {
     name: "insertReference",
     action: toggleIntRefSidebar,
     className: "fas fa-star fa-red",
-    title: "Insert internal reference",
+    title: "Insert Reference",
 }
 
 var media = {
     name: "insertMedia",
     action: toggleMediaSidebar,
-    className: "fas fa-image fa-red",
-    title: "Insert media"
+    className: "fas fa-images fa-red",
+    title: "Insert Media File"
 }
 
 var maps = {
     name: "insertMapNode",
     action: toggleMapSidebar,
     className: "fas fa-map-marker-alt fa-red",
-    title: "Insert map node"
+    title: "Insert Location"
 }
 
-function generateSMDEConfig(id, withHeading=true) {
+function generateMarkdownConfig(id, withHeading=true) {
     var toolb = ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps];
 
     if (withHeading == false) {
@@ -318,10 +318,11 @@ function generateSMDEConfig(id, withHeading=true) {
         toolbar: toolb,
         spellChecker: false,
         status: false,
-        autoDownloadFontAwesome: false
+        autoDownloadFontAwesome: false,
+        minHeight: '{{ current_user.editor_height }}px'
     }
 }
 
-function makeSMDE(id, withHeading=true) {
-    new SimpleMDE(generateSMDEConfig(id, withHeading))
+function makeMarkdownEditor(id, withHeading=true) {
+    new EasyMDE(generateMarkdownConfig(id, withHeading))
 }

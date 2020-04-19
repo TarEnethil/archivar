@@ -3,19 +3,19 @@
 
 {% block styles %}
 {{ super() }}
-{{ include_css(['simplemde', 'multi-select']) }}
+{{ include_css(['markdown-editor', 'multi-select']) }}
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['simplemde', 'multi-select', 'quicksearch']) }}
+{{ include_js(['markdown-editor', 'multi-select', 'quicksearch']) }}
 
 <script>
 {% include "sidebars.js" %}
-makeSMDE("description");
+makeMarkdownEditor("description");
 
 {% if current_user.has_admin_role() %}
-makeSMDE("dm_notes");
+makeMarkdownEditor("dm_notes");
 {% endif %}
 
 makeMultiSelect("members", "Non-party character", "Party members", "partymember-select");
