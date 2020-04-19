@@ -37,10 +37,10 @@
     <li>
         <a href="{{ url_for('wiki.toggle_vis', id=entry.id, name=entry.title|urlfriendly) }}">
             {% if entry.is_visible %}
-            {{ icon("eye-close") }}
+            {{ icon("eye-slash") }}
             Hide Article
             {% else %}
-            {{ icon("eye-open") }}
+            {{ icon("eye") }}
             Make Public
             {% endif %}
         </a>

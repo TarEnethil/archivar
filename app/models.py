@@ -132,22 +132,22 @@ class LinkGenerator(object):
 
         return self.link(self.delete_url(), text, classes, ids)
 
-    def view_button(self, text="View", icon="eye-open", classes="btn btn-default", ids=None, swap=False):
+    def view_button(self, text="View", icon="eye", classes="btn btn-default", ids=None, swap=False):
         return self.button(self.view_url(), text, icon, classes, ids, swap)
 
-    def edit_button(self, text="Edit", icon="pencil", classes="btn btn-default", ids=None, swap=False):
+    def edit_button(self, text="Edit", icon="edit", classes="btn btn-default", ids=None, swap=False):
         return self.button(self.edit_url(), text, icon, classes, ids, swap)
 
-    def delete_button(self, text="Delete", icon="remove-circle", classes="btn btn-danger", ids="delete-link", swap=False):
+    def delete_button(self, text="Delete", icon="trash-alt", classes="btn btn-danger", ids="delete-link", swap=False):
         return self.button(self.delete_url(), text, icon, classes, ids, swap)
 
-    def view_button_nav(self, text="View", icon="eye-open", classes=None, ids=None, swap=False):
+    def view_button_nav(self, text="View", icon="eye", classes=None, ids=None, swap=False):
         return self.button(self.view_url(), text, icon, classes, ids, swap)
 
-    def edit_button_nav(self, text="Edit", icon="pencil", classes=None, ids=None, swap=False):
+    def edit_button_nav(self, text="Edit", icon="edit", classes=None, ids=None, swap=False):
         return self.button(self.edit_url(), text, icon, classes, ids, swap)
 
-    def delete_button_nav(self, text="Delete", icon="remove-circle", classes="btn btn-danger", ids="delete-link", swap=False):
+    def delete_button_nav(self, text="Delete", icon="trash-alt", classes="btn btn-danger", ids="delete-link", swap=False):
         return self.button(self.delete_url(), text, icon, classes, ids, swap)
 
     def view_text(self):
