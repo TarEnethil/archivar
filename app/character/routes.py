@@ -140,7 +140,7 @@ def journal_create(c_id, c_name=None):
         db.session.commit()
         flash("Journal entry was created.", "success")
 
-        return redirect(url_for("character.journal_view", c_id=c_id, j_id=journal_entry.id, c_name=urlfriendly(char.name), j_name=urlfriendly(journal_entry.title)))
+        return redirect(journal_entry.view_url())
     else:
         # pre-select session if get-param was passed
         session_id = request.args.get("session")
@@ -188,7 +188,7 @@ def journal_edit(c_id, j_id, c_name=None, j_name=None):
 
         db.session.commit()
         flash("Journal entry was changed.", "success")
-        return redirect(url_for("character.journal_view", c_id=c_id, j_id=journal.id, c_name=urlfriendly(char.name), j_name=urlfriendly(journal.title)))
+        return redirect(journal.view_url())
     else:
         form.title.data = journal.title
         form.is_visible.data = journal.is_visible

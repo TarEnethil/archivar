@@ -957,7 +957,7 @@ class MediaItem(db.Model, SimpleAuditMixin, LinkGenerator):
     def serve_link(self):
         return self.link(self.serve_url(), self.filename)
 
-class Journal(db.Model, SimpleAuditMixin):
+class Journal(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "journal"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -970,6 +970,20 @@ class Journal(db.Model, SimpleAuditMixin):
 
     session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
     session = db.relationship("Session", backref="journals", foreign_keys=[session_id])
+
+    # LinkGenerator functions
+    #####
+    def view_text(self):
+        return self.title
+
+    def view_url(self):
+        return url_for('character.journal_view', c_id=self.character.id, c_name=urlfriendly(self.character.name), j_id=self.id, j_name=urlfriendly(self.title))
+
+    def edit_url(self):
+        return url_for('character.journal_edit', c_id=self.character.id, c_name=urlfriendly(self.character.name), j_id=self.id, j_name=urlfriendly(self.title))
+
+    def delete_url(self):
+        return url_for('character.journal_delete', c_id=self.character.id, c_name=urlfriendly(self.character.name), j_id=self.id, j_name=urlfriendly(self.title))
 
 class Campaign(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "campaigns"
