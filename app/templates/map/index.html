@@ -20,14 +20,14 @@
   <div id="messagebox"></div>
   <div id="nodeform" class="panel">
     <a class="close-link">
-      {{ icon("remove") }}
+      {{ icon("times") }}
     </a>
     <div id="nodeform_content"></div>
   </div>
 
   <div id="location-list">
     <a class="close-link-sidebar">
-      {{ icon("remove") }}
+      {{ icon("times") }}
     </a>
     <input type="text" id="filter_locations" placeholder="filter" />
     <ul id="locations"></ul>
@@ -49,7 +49,7 @@
     </a>
 
     <a id="btn-cancel-add-node" class="btn btn-warning">
-      {{ icon("remove") }}
+      {{ icon("times") }}
       Cancel
     </a>
   {% if current_user.has_admin_role() %}
