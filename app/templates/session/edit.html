@@ -3,19 +3,19 @@
 
 {% block styles %}
 {{ super() }}
-{{ include_css(['simplemde', 'multi-select', 'bootstrap-datetimepicker']) }}
+{{ include_css(['markdown-editor', 'multi-select', 'bootstrap-datetimepicker']) }}
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['simplemde', 'multi-select', 'bootstrap-datetimepicker', 'moment', 'quicksearch']) }}
+{{ include_js(['markdown-editor', 'multi-select', 'bootstrap-datetimepicker', 'moment', 'quicksearch']) }}
 
 <script>
 {% include "sidebars.js" %}
-makeSMDE("summary");
+makeMarkdownEditor("summary");
 
 {% if current_user.has_admin_role() %}
-makeSMDE("dm_notes");
+makeMarkdownEditor("dm_notes");
 {% endif %}
 
 makeMultiSelect("participants", "Available", "Participants", "partymember-select");

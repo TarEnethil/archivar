@@ -3,20 +3,20 @@
 
 {% block styles %}
 {{ super() }}
-{{ include_css(['simplemde']) }}
+{{ include_css(['markdown-editor']) }}
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['simplemde']) }}
+{{ include_js(['markdown-editor']) }}
 
 <script>
 {% include "sidebars.js" %}
-makeSMDE("description");
-makeSMDE("private_notes");
+makeMarkdownEditor("description");
+makeMarkdownEditor("private_notes");
 
 {% if current_user.has_admin_role() %}
-makeSMDE("dm_notes");
+makeMarkdownEditor("dm_notes");
 {% endif %}
 </script>
 {% endblock %}

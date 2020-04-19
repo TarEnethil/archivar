@@ -111,10 +111,9 @@ def utility_processor():
         local_url = url_for('static_files', filename="")
 
         s = {
-            # we prevent simplemde from automatically downloading font-awesome from CDN, so we need to add URLs here
-            "simplemde" : {
-                "cdn" : ["https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css", "https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css"],
-                "local" : [local_url + "css/simplemde.min.css", local_url + "css/font-awesome.min.css"]
+            "markdown-editor" : {
+                "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.css"],
+                "local" : [local_url + "css/easymde.min.css"]
             },
             "bootstrap-select" : {
                 "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css"],
@@ -155,9 +154,9 @@ def utility_processor():
         local_url = url_for('static_files', filename="")
 
         s = {
-            "simplemde" : {
-                "cdn" : ["https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"],
-                "local" : [local_url + "js/simplemde.min.js"]
+            "markdown-editor" : {
+                "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.js"],
+                "local" : [local_url + "js/easymde.min.js"]
             },
             "bootstrap-select" : {
                 "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"],

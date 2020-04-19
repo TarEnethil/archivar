@@ -158,7 +158,7 @@ ul.nav-tabs li:not(.delete-li) span.fas {
     color: #000 !important;
 }
 
-.editor-toolbar a.fa-red {
+.editor-toolbar i.fa-red {
     color:#ab0000 !important;
 }
 

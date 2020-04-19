@@ -15,11 +15,6 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static_files', filename='style.css') }}">
 {{ fontawesome_css() }}
 
-<style type="text/css">
-.CodeMirror {
-    height: {{ current_user.editor_height }}px !important;
-}
-</style>
 {% endblock %}
 
 {% block scripts %}
@@ -169,7 +164,7 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-{% include "simplemde_sidebar.html" %}
+{% include "markdown_editor_sidebar.html" %}
 
 <div class="big-wrapper">
     <div class="container">
