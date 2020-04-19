@@ -36,7 +36,7 @@ def index():
         flash("This map is not visible.", "danger")
         return redirect(url_for("index"))
 
-    return redirect(url_for('map.view', id=indexmap.id, name=urlfriendly(indexmap.name)))
+    return redirect(indexmap.view_url())
 
 @bp.route("/<int:id>/<string:name>")
 @bp.route("/<int:id>")
@@ -91,7 +91,7 @@ def create():
         db.session.commit()
 
         flash("Map created.", "success")
-        return redirect(url_for("map.view", id=new_map.id, name=urlfriendly(new_map.name)))
+        return redirect(new_map.view_url())
 
     return render_template("map/create.html", form=form, title=page_title("Add Map"))
 
@@ -116,7 +116,7 @@ def map_settings(id, name=None):
 
         db.session.commit()
         flash("Map settings have been changed.", "success")
-        return redirect(url_for("map.view", id=map_.id, name=urlfriendly(map_.name)))
+        return redirect(map_.view_url())
     else:
         form.name.data = map_.name
         form.no_wrap.data = map_.no_wrap
