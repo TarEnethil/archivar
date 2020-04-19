@@ -1,5 +1,5 @@
 from app import app, db
-from app.helpers import page_title, flash_no_permission, admin_required, urlfriendly
+from app.helpers import page_title, flash_no_permission, admin_required
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
 from app.map.helpers import map_admin_required, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed, gen_submap_choices

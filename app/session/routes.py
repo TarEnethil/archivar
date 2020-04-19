@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, admin_required, admin_dm_or_session_required, admin_or_dm_required, urlfriendly, count_rows
+from app.helpers import page_title, admin_required, admin_dm_or_session_required, admin_or_dm_required, count_rows
 from app.models import Character, Session, Campaign
 from app.session import bp
 from app.session.forms import SessionForm, CampaignSelectForm

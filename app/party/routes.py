@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, admin_required, admin_or_party_required, urlfriendly
+from app.helpers import page_title, admin_required, admin_or_party_required
 from app.models import Character, Party
 from app.party import bp
 from app.party.forms import PartyForm
