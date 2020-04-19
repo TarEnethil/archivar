@@ -65,10 +65,10 @@ class SimpleAuditMixin(object):
             out += "<li>Created"
 
             if self.created_by:
-                out += ' by <a href="%s">%s</a>' % (url_for('user.profile', username=self.created_by.username), self.created_by.username)
+                out += ' by {}'.format(self.created_by.view_link())
 
             if self.created:
-                out += " on %s" % app.extensions["moment"](self.created).format(current_user.dateformat)
+                out += " on {}".format(app.extensions["moment"](self.created).format(current_user.dateformat))
 
             out += "</li>"
 
@@ -77,10 +77,10 @@ class SimpleAuditMixin(object):
             out += "<li>Edited"
 
             if self.edited_by:
-                out += ' by <a href="%s">%s</a>' % (url_for('user.profile', username=self.edited_by.username), self.edited_by.username)
+                out += ' by {}'.format(self.edited_by.view_link())
 
             if self.edited:
-                out += " on %s" % app.extensions["moment"](self.edited).format(current_user.dateformat)
+                out += " on {}".format(app.extensions["moment"](self.edited).format(current_user.dateformat))
 
             out += "</li>"
 
@@ -172,7 +172,7 @@ class LinkGenerator(object):
         raise NotImplementedError
 
 
-class User(UserMixin, db.Model):
+class User(UserMixin, db.Model, LinkGenerator):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -261,6 +261,18 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+    #####
+    # LinkGenerator functions
+    #####
+    def view_text(self):
+        return self.username
+
+    def view_url(self):
+        return url_for('user.profile', username=self.username)
+
+    def edit_url(self):
+        return url_for('user.edit', username=self.username)
 
 class Role(db.Model):
     __tablename__ = "roles"

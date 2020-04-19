@@ -36,7 +36,7 @@ makeDatatable("sessions-table");
 <h2>Info</h2>
 <dl class="dl-horizontal">
     <dt>DM</dt>
-    <dd><a href="{{ url_for('user.profile', username=campaign.dm.username) }}">{{ campaign.dm.username }}</a></dd>
+    <dd>{{ campaign.dm.view_link() }}</dd>
     <dt>Sessions</dt>
     <dd>{{ campaign.sessions|length }}</dd>
     <dt>Color</dt>

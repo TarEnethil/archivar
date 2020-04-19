@@ -62,7 +62,7 @@ def edit(username):
             db.session.commit()
             flash("Your changes have been saved.", "success")
 
-            return redirect(url_for("user.profile", username=username))
+            return redirect(user.view_url())
         elif request.method == "GET":
             form.about.data = user.about
 
@@ -99,7 +99,7 @@ def create():
         db.session.commit()
 
         flash("New user " + new_user.username + " created.", "success")
-        return redirect(url_for('user.profile', username=new_user.username))
+        return redirect(new_user.view_url())
     else:
         return render_template("user/create.html", form=form, title=page_title("Add User"))
 
