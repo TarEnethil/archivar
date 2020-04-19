@@ -112,9 +112,9 @@
     {% if journal.is_visible or journal.character.player == current_user or current_user.has_admin_role() %}
     <li>
         {% if journal.is_visible %}
-        "<a href="{{ url_for('character.journal_view', c_id=journal.character_id, j_id=journal.id, c_name=journal.character.name|urlfriendly, j_name=journal.title|urlfriendly) }}">{{ journal.title }}</a>"
+        "{{ journal.view_link() }}"
         {% else %}
-        "<a class="invisible_item" href="{{ url_for('character.journal_view', c_id=journal.character_id, j_id=journal.id, c_name=journal.character.name|urlfriendly, j_name=journal.title|urlfriendly) }}">{{ journal.title }}</a>"
+        "{{ journal.view_link(classes="invisible_item") }}"
         {% endif %}
 
         by
@@ -122,7 +122,7 @@
         {{ journal.character.name }}
 
         {% if journal.character.player == current_user or current_user.has_admin_role() %}
-        (<a href="{{ url_for('character.journal_edit', c_id=journal.character_id, j_id=journal.id, c_name=journal.character.name|urlfriendly, j_name=journal.title|urlfriendly) }}">edit Journal</a>)
+        ({{ journal.edit_link(text="edit") }})
         {% endif %}
     </li>
     {% endif %}

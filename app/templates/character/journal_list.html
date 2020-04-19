@@ -41,9 +41,9 @@
     {% else %}
     <h2 class="invisible_item">{{ journal.title }}</h2>
     {% endif %}
-    <a href="{{ url_for('character.journal_view', c_id=char.id, j_id=journal.id, c_name=char.name|urlfriendly, j_name=journal.title|urlfriendly) }}">View</a>
+    {{ journal.view_link(text="View") }}
     {% if current_user == char.player or current_user.has_admin_role() %}
-    &bullet; <a href="{{ url_for('character.journal_edit', c_id=char.id, j_id=journal.id, c_name=char.name|urlfriendly, j_name=journal.title|urlfriendly) }}">Edit</a>
+    &bullet; {{ journal.edit_link() }}
     {% endif %}
 
     {% if journal.content %}
