@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, flash_no_permission, stretch_color, urlfriendly
+from app.helpers import page_title, flash_no_permission, stretch_color
 from app.models import EventSetting, Event, EventCategory, Epoch, User, Role, Moon
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
