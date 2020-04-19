@@ -42,7 +42,7 @@
 {% elif current_user.has_admin_role() or current_user.is_dm_of(session.campaign) %}
     <li>
         <a href="{{ url_for('session.create_with_campaign', id=session.campaign_id) }}">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ icon("plus") }}
             Add Follow-Up Session
         </a>
     </li>

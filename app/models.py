@@ -1,5 +1,5 @@
 from app import app, db, login
-from app.helpers import urlfriendly
+from app.helpers import urlfriendly, icon as icon_fkt
 from datetime import datetime
 from flask import url_for
 from flask_login import UserMixin
@@ -103,7 +103,7 @@ class LinkGenerator(object):
 
     def button(self, url, text, icon=None, classes=None, ids=None, swap=False):
         if icon != None:
-            icon = '<span class="glyphicon glyphicon-{}" aria-hidden="true"></span>'.format(icon)
+            icon = icon_fkt(icon)
 
         if swap == False:
             text = "{}\n{}".format(icon, text)

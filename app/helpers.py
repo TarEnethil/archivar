@@ -2,6 +2,7 @@ from flask import flash, redirect, url_for
 from functools import wraps
 from app import db
 from flask_login import current_user
+from jinja2 import Markup
 from sqlalchemy import func
 from wtforms.validators import ValidationError
 
@@ -218,3 +219,6 @@ def urlfriendly(text):
             text = text[:idx]
 
     return text
+
+def icon(name):
+    return Markup('<span class="glyphicon glyphicon-{}" aria-hidden="true"></span>'.format(name))

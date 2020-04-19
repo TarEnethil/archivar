@@ -28,7 +28,7 @@ makeDatatable("event-table");
         {% elif category_flag %}
             <a href="{{ url_for('event.create', category=request.view_args['c_id']) }}">
         {% endif %}
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                {{ icon("plus") }}
                 Add Event here
             </a>
         </li>

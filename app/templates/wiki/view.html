@@ -25,7 +25,7 @@
 <ul class="nav nav-tabs">
     <li>
         <a href="{{ url_for('wiki.create') }}">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ icon("plus") }}
             Add Article
         </a>
     </li>
@@ -37,10 +37,10 @@
     <li>
         <a href="{{ url_for('wiki.toggle_vis', id=entry.id, name=entry.title|urlfriendly) }}">
             {% if entry.is_visible %}
-            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+            {{ icon("eye-close") }}
             Hide Article
             {% else %}
-            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+            {{ icon("eye-open") }}
             Make Public
             {% endif %}
         </a>

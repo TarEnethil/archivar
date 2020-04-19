@@ -25,7 +25,7 @@ makeDatatable("media-table", 25, 25);
     <ul class="nav nav-tabs">
         <li>
             <a href="{{ url_for('media.upload') }}">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                {{ icon("plus") }}
                 Add File
             </a>
         </li>
@@ -33,7 +33,7 @@ makeDatatable("media-table", 25, 25);
         {% if current_user.is_media_admin() %}
         <li>
             <a href="{{ url_for('media.settings') }}">
-                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                {{ icon("cog") }}
                 Media Settings
             </a>
         </li>
