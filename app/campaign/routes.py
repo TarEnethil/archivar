@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, admin_required, stretch_color, admin_or_dm_required, urlfriendly
+from app.helpers import page_title, admin_required, stretch_color, admin_or_dm_required
 from app.models import Campaign, Character
 from app.campaign import bp
 from app.campaign.forms import CampaignCreateForm, CampaignEditForm

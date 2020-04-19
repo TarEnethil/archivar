@@ -2,7 +2,7 @@ from app import db
 from app.character import bp
 from app.character.forms import CreateCharacterForm, EditCharacterForm, JournalForm
 from app.character.helpers import gen_session_choices
-from app.helpers import page_title, flash_no_permission, urlfriendly
+from app.helpers import page_title, flash_no_permission
 from app.models import Character, Party, Journal
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, jsonify, request

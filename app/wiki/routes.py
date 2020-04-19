@@ -15,7 +15,6 @@ no_perm_url = "wiki.index"
 @login_required
 def index():
     return redirect(url_for("wiki.view", id=1, name=urlfriendly("Main Page")))
-    return redirect(url_for("wiki.view", id=1, name=urlfriendly("Main Page")))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required

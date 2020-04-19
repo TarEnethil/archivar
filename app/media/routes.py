@@ -1,5 +1,5 @@
 from app import app, db
-from app.helpers import page_title, flash_no_permission, urlfriendly
+from app.helpers import page_title, flash_no_permission
 from app.models import MediaSetting, MediaItem, MediaCategory, User, Role
 from app.media import bp
 from app.media.forms import SettingsForm, MediaItemCreateForm, MediaItemEditForm, CategoryForm
