@@ -26,7 +26,7 @@ def create():
         db.session.commit()
 
         flash("Party was created.", "success")
-        return redirect(url_for("party.view", id=new_party.id, name=urlfriendly(new_party.name)))
+        return redirect(new_party.view_url())
 
     return render_template("party/create.html", form=form, title=page_title("Add Party"))
 
@@ -57,7 +57,7 @@ def edit(id, name=None):
 
         db.session.commit()
         flash("Party was changed.", "success")
-        return redirect(url_for("party.view", id=id, name=urlfriendly(party.name)))
+        return redirect(party.view_url())
 
     elif request.method == "GET":
         form.name.data = party.name
