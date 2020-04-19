@@ -4,7 +4,7 @@
 {% block styles %}
 {{ super() }}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static_files', filename='map.css') }}">
-{{ include_css(['leaflet', 'bootstrap-select', 'simplemde']) }}
+{{ include_css(['leaflet', 'bootstrap-select', 'markdown-editor']) }}
 {% endblock %}
 
 {% block content %}
@@ -15,7 +15,7 @@
   <div id="map" class="map">
   </div>
 
-  {% include "simplemde_sidebar.html" %}
+  {% include "markdown_editor_sidebar.html" %}
 
   <div id="messagebox"></div>
   <div id="nodeform" class="panel">
@@ -68,7 +68,7 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['leaflet', 'simplemde', 'bootstrap-select', 'moment']) }}
+{{ include_js(['leaflet', 'markdown-editor', 'bootstrap-select', 'moment']) }}
 
 <script type="module">
 {% include "sidebars.js" %}
@@ -272,7 +272,7 @@
       console.log("loaded new form functions");
 
       // needs to be bound before submit trigger, otherwise value doesnt get copied to original textarea
-      makeSMDE("description", false);
+      makeMarkdownEditor("description", false);
 
       // ajax on submit button
       $('form').submit(function (e) {
@@ -324,7 +324,7 @@
       });
 
       // needs to be bound before submit trigger, otherwise value doesnt get copied to original textarea
-      makeSMDE("description", false);
+      makeMarkdownEditor("description", false);
 
       // ajax on submit button
       $('form').submit(function (e) {

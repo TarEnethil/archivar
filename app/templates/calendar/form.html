@@ -3,13 +3,13 @@
 
 {% block styles %}
 {{ super() }}
-{{ include_css(['simplemde']) }}
+{{ include_css(['markdown-editor']) }}
 
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['simplemde', 'moment']) }}
+{{ include_js(['markdown-editor', 'moment']) }}
 
 <script>
 SimpleMDE("description");

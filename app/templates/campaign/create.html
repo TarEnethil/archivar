@@ -3,16 +3,16 @@
 
 {% block styles %}
 {{ super() }}
-{{ include_css(['simplemde', 'multi-select']) }}
+{{ include_css(['markdown-editor', 'multi-select']) }}
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['simplemde', 'multi-select', 'quicksearch']) }}
+{{ include_js(['markdown-editor', 'multi-select', 'quicksearch']) }}
 
 <script>
 {% include "sidebars.js" %}
-makeSMDE("description");
+makeMarkdownEditor("description");
 
 makeMultiSelect("default_participants", "Available", "Participants", "partymember-select");
 </script>
