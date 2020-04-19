@@ -101,11 +101,15 @@ class LinkGenerator(object):
 
         return Markup('<a href="{}" {}>{}</a>'.format(url, attrs, text))
 
-    def button(self, url, text, icon=None, classes=None, ids=None):
+    def button(self, url, text, icon=None, classes=None, ids=None, swap=False):
         if icon != None:
             icon = '<span class="glyphicon glyphicon-{}" aria-hidden="true"></span>'.format(icon)
 
-        text = "{}\n{}".format(icon, text)
+        if swap == False:
+            text = "{}\n{}".format(icon, text)
+        else:
+            text = "{}\n{}".format(text, icon)
+
         link = self.link(url, text, classes, ids)
 
         return Markup(link)
@@ -128,23 +132,23 @@ class LinkGenerator(object):
 
         return self.link(self.delete_url(), text, classes, ids)
 
-    def view_button(self, text="View", icon="eye-open", classes="btn btn-default", ids=None):
-        return self.button(self.view_url(), text, icon, classes, ids)
+    def view_button(self, text="View", icon="eye-open", classes="btn btn-default", ids=None, swap=False):
+        return self.button(self.view_url(), text, icon, classes, ids, swap)
 
-    def edit_button(self, text="Edit", icon="pencil", classes="btn btn-default", ids=None):
-        return self.button(self.edit_url(), text, icon, classes, ids)
+    def edit_button(self, text="Edit", icon="pencil", classes="btn btn-default", ids=None, swap=False):
+        return self.button(self.edit_url(), text, icon, classes, ids, swap)
 
-    def delete_button(self, text="Delete", icon="remove-circle", classes="btn btn-danger", ids="delete-link"):
-        return self.button(self.delete_url(), text, icon, classes, ids)
+    def delete_button(self, text="Delete", icon="remove-circle", classes="btn btn-danger", ids="delete-link", swap=False):
+        return self.button(self.delete_url(), text, icon, classes, ids, swap)
 
-    def view_button_nav(self, text="View", icon="eye-open", classes=None, ids=None):
-        return self.button(self.view_url(), text, icon, classes, ids)
+    def view_button_nav(self, text="View", icon="eye-open", classes=None, ids=None, swap=False):
+        return self.button(self.view_url(), text, icon, classes, ids, swap)
 
-    def edit_button_nav(self, text="Edit", icon="pencil", classes=None, ids=None):
-        return self.button(self.edit_url(), text, icon, classes, ids)
+    def edit_button_nav(self, text="Edit", icon="pencil", classes=None, ids=None, swap=False):
+        return self.button(self.edit_url(), text, icon, classes, ids, swap)
 
-    def delete_button_nav(self, text="Delete", icon="remove-circle", classes="btn btn-danger", ids="delete-link"):
-        return self.button(self.delete_url(), text, icon, classes, ids)
+    def delete_button_nav(self, text="Delete", icon="remove-circle", classes="btn btn-danger", ids="delete-link", swap=False):
+        return self.button(self.delete_url(), text, icon, classes, ids, swap)
 
     def view_text(self):
         return "View"
@@ -421,7 +425,7 @@ class Party(db.Model, SimpleAuditMixin, LinkGenerator):
     def delete_url(self):
         return url_for('party.delete', id=self.id, name=urlfriendly(self.name))
 
-class Session(db.Model, SimpleAuditMixin):
+class Session(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "sessions"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
@@ -434,6 +438,21 @@ class Session(db.Model, SimpleAuditMixin):
 
     def get_session_number(self):
         return Session.query.filter(and_(Session.campaign_id == self.campaign_id, Session.date < self.date)).count() + 1
+
+    #####
+    # LinkGenerator functions
+    #####
+    def view_text(self):
+        return self.title
+
+    def view_url(self):
+        return url_for('session.view', id=self.id, name=urlfriendly(self.title))
+
+    def edit_url(self):
+        return url_for('session.edit', id=self.id, name=urlfriendly(self.title))
+
+    def delete_url(self):
+        return url_for('session.delete', id=self.id, name=urlfriendly(self.title))
 
 class WikiSetting(db.Model, SimpleAuditMixin):
     __tablename__ = "wiki_settings"

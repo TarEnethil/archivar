@@ -42,7 +42,7 @@ $(document).ready(function() {
     <li>Written by: {{ char.view_link() }}</li>
 
     {% if journal.session %}
-    <li>Belongs to Session <a href="{{ url_for('session.view', id=journal.session_id, name=journal.session.title|urlfriendly) }}">{{ journal.session.title }}</a></li>
+    <li>Belongs to Session {{ journal.session.view_link() }} of {{ journal.session.campaign.view_link() }}</li>
     {% endif %}
 
     {% if current_user == char.player or current_user.has_admin_role() %}
