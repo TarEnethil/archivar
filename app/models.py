@@ -296,7 +296,7 @@ class MapSetting(db.Model, SimpleAuditMixin):
     check_interval = db.Column(db.Integer, default=30)
     default_map = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
 
-class Map(db.Model, SimpleAuditMixin):
+class Map(db.Model, SimpleAuditMixin, LinkGenerator):
     __tablename__ = "maps"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -316,6 +316,25 @@ class Map(db.Model, SimpleAuditMixin):
         }
 
         return dic
+
+    #####
+    # LinkGenerator functions
+    #####
+    def view_text(self):
+        return self.name
+
+    def view_url(self):
+        return url_for('map.view', id=self.id, name=urlfriendly(self.name))
+
+    def edit_url(self):
+        return url_for('map.edit', id=self.id, name=urlfriendly(self.name))
+
+    def settings_url(self):
+        return url_for("map.map_settings", id=self.id, name=urlfriendly(self.name))
+
+    def settings_button(self, ids=None):
+        url = self.settings_url()
+        return self.button(url=url, text="Settings", icon="cog", ids=None, classes="btn btn-default")
 
 class MapNodeType(db.Model, SimpleAuditMixin):
     __tablename__ = "map_node_types"
