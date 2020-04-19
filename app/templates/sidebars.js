@@ -288,21 +288,21 @@ function insertMedia(editor, name, id, filename, file_ext) {
 var reference = {
     name: "insertReference",
     action: toggleIntRefSidebar,
-    className: "fa fa-star fa-red",
+    className: "fas fa-star fa-red",
     title: "Insert internal reference",
 }
 
 var media = {
     name: "insertMedia",
     action: toggleMediaSidebar,
-    className: "fa fa-image fa-red",
+    className: "fas fa-image fa-red",
     title: "Insert media"
 }
 
 var maps = {
     name: "insertMapNode",
     action: toggleMapSidebar,
-    className: "fa fa-map-marker fa-red",
+    className: "fas fa-map-marker-alt fa-red",
     title: "Insert map node"
 }
 

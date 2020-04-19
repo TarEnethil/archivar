@@ -13,6 +13,7 @@
 {{ super() }}
 <link rel="icon" href="{{ url_for('static_files', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static_files', filename='style.css') }}">
+{{ fontawesome_css() }}
 
 <style type="text/css">
 .CodeMirror {
@@ -23,6 +24,8 @@
 
 {% block scripts %}
 {{ super() }}
+
+{{ fontawesome_js() }}
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -51,10 +54,10 @@ $(document).ready(function() {
 
                 {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('campaign.index') }}">{{ icon("book") }} Campaigns</a></li>
-                <li><a href="{{ url_for('session.index') }}">{{ icon("pencil") }} Sessions</a></li>
-                <li><a href="{{ url_for('map.index') }}">{{ icon("map-marker") }} Map</a></li>
-                <li><a href="{{ url_for('wiki.index') }}">{{ icon("education") }} Wiki</a></li>
-                <li><a href="{{ url_for('calendar.index') }}">{{ icon("calendar") }} Calendar</a></li>
+                <li><a href="{{ url_for('session.index') }}">{{ icon("file") }} Sessions</a></li>
+                <li><a href="{{ url_for('map.index') }}">{{ icon("map-marker-alt") }} Map</a></li>
+                <li><a href="{{ url_for('wiki.index') }}">{{ icon("graduation-cap") }} Wiki</a></li>
+                <li><a href="{{ url_for('calendar.index') }}">{{ icon("calendar-alt") }} Calendar</a></li>
                 {% endif %}
 
             </ul>
@@ -70,7 +73,7 @@ $(document).ready(function() {
                     {% elif user_ql|length > 1 %}
                 <li class="dropdown user-quicklinks">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    {{ icon("flash") }} Quicklinks <span class="caret"></span>
+                    {{ icon("bolt") }} Quicklinks <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         {% for link in user_ql %}
@@ -95,7 +98,7 @@ $(document).ready(function() {
 
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('media.index') }}">{{ icon("picture") }} Media</a></li>
+                <li><a href="{{ url_for('media.index') }}">{{ icon("images") }} Media</a></li>
                 {% endif %}
 
                 {% if current_user.is_authenticated %}
@@ -105,7 +108,7 @@ $(document).ready(function() {
                 {% if current_user.is_authenticated and current_user.has_admin_role() %}
                 <li class="dropdown">
                     <a href="{{ url_for('user.list') }}">
-                    {{ icon("user") }} Users
+                    {{ icon("users") }} Users
                     </a>
                 </li>
                 {% endif %}

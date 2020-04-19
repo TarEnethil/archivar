@@ -221,4 +221,4 @@ def urlfriendly(text):
     return text
 
 def icon(name):
-    return Markup('<span class="glyphicon glyphicon-{}" aria-hidden="true"></span>'.format(name))
+    return Markup('<span class="fas fa-{}" aria-hidden="true"></span>'.format(name))

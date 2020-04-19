@@ -6,6 +6,7 @@ from flask_login import LoginManager, current_user
 from flask_bootstrap import Bootstrap, StaticCDN
 from flask_moment import Moment
 from flask_misaka import Misaka
+from flask_fontawesome import FontAwesome
 from jinja2 import Markup
 from sqlalchemy import MetaData
 from app.version import version
@@ -28,6 +29,7 @@ login.login_view = 'login'
 bootstrap = Bootstrap(app)
 markdown = Misaka(app, tables=True, fenced_code=True, escape=True)
 moment = Moment(app)
+fontawesome = FontAwesome(app)
 
 # override ConditionalCDN with StaticCDN if local serve is wanted
 # reason: using the usual local cdn results in a 404 for bootstrap.min.css.map on every page
