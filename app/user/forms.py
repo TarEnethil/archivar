@@ -1,5 +1,5 @@
-from app.models import User
 from app.user.helpers import gen_date_string_choices
+from app.user.models import User
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, PasswordField, SubmitField, SelectMultipleField, SelectField, BooleanField, IntegerField
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
