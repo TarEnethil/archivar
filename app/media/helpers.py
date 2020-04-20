@@ -1,4 +1,5 @@
-from app.models import Role, User, MediaItem, MediaCategory
+from app.models import MediaItem, MediaCategory
+from app.user.models import Role, User
 from flask import redirect, url_for, flash, current_app
 from functools import wraps
 from flask_login import current_user

@@ -1,6 +1,7 @@
 from app import db
 from app.helpers import page_title, flash_no_permission, stretch_color
-from app.models import EventSetting, Event, EventCategory, Epoch, User, Role, Moon
+from app.models import EventSetting, Event, EventCategory, Epoch, Moon
+from app.user.models import User, Role
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
 from app.event.helpers import event_admin_required, update_timestamp, get_events, gen_event_category_choices, get_events_by_category

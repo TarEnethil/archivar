@@ -1,6 +1,7 @@
 from app import db
-from app.models import Map, MapNodeType, MapNode, User, Role
 from flask import flash, redirect, url_for, current_app
+from app.models import Map, MapNodeType, MapNode
+from app.user.models import User, Role
 from functools import wraps
 from datetime import datetime
 from flask_login import current_user
