@@ -1,6 +1,7 @@
 from app import db
 from app.helpers import page_title, flash_no_permission, urlfriendly
-from app.models import WikiEntry, WikiSetting, User, Role
+from app.models import WikiEntry, WikiSetting
+from app.user.models import User, Role
 from app.map.helpers import get_nodes_by_wiki_id
 from app.wiki import bp
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm, WikiMoveCategoryForm

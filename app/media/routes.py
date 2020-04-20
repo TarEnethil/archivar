@@ -1,6 +1,7 @@
 from app import db
 from app.helpers import page_title, flash_no_permission
-from app.models import MediaSetting, MediaItem, MediaCategory, User, Role
+from app.models import MediaSetting, MediaItem, MediaCategory
+from app.user.models import User, Role
 from app.media import bp
 from app.media.forms import SettingsForm, MediaItemCreateForm, MediaItemEditForm, CategoryForm
 from app.media.helpers import media_admin_required, get_media, gen_media_category_choices, media_filename

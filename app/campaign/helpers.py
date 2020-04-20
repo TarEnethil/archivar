@@ -1,5 +1,6 @@
 from flask_login import current_user
-from app.models import User, Campaign
+from app.models import Campaign
+from app.user.models import User
 
 # generate choices for dungeon masters (=users)
 def gen_dm_choices():

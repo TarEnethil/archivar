@@ -2,7 +2,8 @@ from app import db
 from app.main import bp
 from app.main.forms import LoginForm, SettingsForm, InstallForm
 from app.helpers import page_title, count_rows, admin_required
-from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting, EventSetting, EventCategory, MediaSetting, MediaCategory, Journal, Campaign
+from app.models import GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting, EventSetting, EventCategory, MediaSetting, MediaCategory, Journal, Campaign
+from app.user.models import User, Role
 from app.models import Character, Party, Session, Map, MapNode, Event, MediaItem
 from collections import OrderedDict
 from datetime import datetime

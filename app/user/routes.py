@@ -1,9 +1,9 @@
 from app import db
 from app.helpers import page_title, admin_required
-from app.models import User, Role
 from app.user import bp
 from app.user.forms import CreateUserForm, EditProfileForm, SettingsForm, PasswordOnlyForm
 from app.user.helpers import gen_role_choices
+from app.user.models import User, Role
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required

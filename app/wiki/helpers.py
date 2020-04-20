@@ -1,4 +1,5 @@
-from app.models import Role, User, WikiEntry
+from app.models import WikiEntry
+from app.user.models import Role, User
 from flask import redirect, flash, url_for
 from functools import wraps
 from collections import OrderedDict

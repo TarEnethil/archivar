@@ -1,4 +1,4 @@
-from app.models import Role
+from app.user.models import Role
 
 # generate choices for the role SelectField
 def gen_role_choices():
