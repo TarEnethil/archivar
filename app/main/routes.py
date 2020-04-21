@@ -1,22 +1,23 @@
-from app import app, db
-from app.forms import LoginForm, SettingsForm, InstallForm
+from app import db
+from app.main import bp
+from app.main.forms import LoginForm, SettingsForm, InstallForm
 from app.helpers import page_title, count_rows, admin_required
 from app.models import User, Role, GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting, EventSetting, EventCategory, MediaSetting, MediaCategory, Journal, Campaign
 from app.models import Character, Party, Session, Map, MapNode, Event, MediaItem
 from collections import OrderedDict
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request, send_from_directory
+from flask import render_template, flash, redirect, url_for, request, send_from_directory, current_app
 from flask_login import current_user, login_user, login_required, logout_user
 from app.version import version
 from werkzeug.urls import url_parse
 
-@app.before_request
+@bp.before_app_request
 def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
 
-        logout_url = url_for("logout")
+        logout_url = url_for("main.logout")
         password_url = url_for('user.password')
 
         allowed_urls = [logout_url, password_url]
@@ -24,24 +25,24 @@ def before_request():
             flash("You must change your password before proceeding.", "warning")
             return redirect(password_url)
 
-@app.route("/index")
-@app.route("/")
+@bp.route("/index")
+@bp.route("/")
 def index():
     if not current_user.is_authenticated:
-        return redirect(url_for('login'))
+        return redirect(url_for('main.login'))
 
     settings = GeneralSetting.query.get(1)
     return render_template("index.html", settings=settings, version=version(), title=page_title("Home"))
 
-@app.route("/about")
+@bp.route("/about")
 def about():
     return render_template("about.html", title=page_title("About Archivar"))
 
-@app.route("/changelog")
+@bp.route("/changelog")
 def changelog():
     return render_template("changelog.html", title=page_title("Changelog"))
 
-@app.route("/statistics")
+@bp.route("/statistics")
 @login_required
 def statistics():
     stats = OrderedDict()
@@ -63,15 +64,15 @@ def statistics():
 
     return render_template("statistics.html", stats=stats, title=page_title("Statistics"))
 
-@app.route("/login", methods=["GET", "POST"])
+@bp.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("index"))
+        return redirect(url_for("main.index"))
 
     gset = GeneralSetting.query.get(1)
     if not gset:
         flash("You were redirected to the setup.", "info")
-        return redirect(url_for("install"))
+        return redirect(url_for("main.install"))
 
     form = LoginForm()
 
@@ -86,18 +87,18 @@ def login():
             next_page = request.args.get('next')
 
             if not next_page or url_parse(next_page).netloc != '':
-                next_page = url_for("index")
+                next_page = url_for("main.index")
 
             return redirect(next_page)
 
     return render_template("login.html", title=page_title("Login"), form=form)
 
-@app.route("/logout")
+@bp.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for("index"))
+    return redirect(url_for("main.index"))
 
-@app.route("/settings", methods=["GET", "POST"])
+@bp.route("/settings", methods=["GET", "POST"])
 @login_required
 @admin_required("index")
 def settings():
@@ -121,7 +122,7 @@ def settings():
 
     return render_template("settings.html", settings=settings, form=form, title=page_title("General Settings"))
 
-@app.route("/__install__", methods=["GET", "POST"])
+@bp.route("/__install__", methods=["GET", "POST"])
 def install():
     if not GeneralSetting.query.get(1):
         form = InstallForm()
@@ -129,7 +130,7 @@ def install():
         if form.validate_on_submit():
             welcome_msg = ""
 
-            with open(app.config["WELCOME_MD"], "r") as markdown_file:
+            with open(current_app.config["WELCOME_MD"], "r") as markdown_file:
                 for line in markdown_file:
                     welcome_msg += line
 
@@ -208,27 +209,23 @@ def install():
 
             flash("Install successful. You can now log in and check the settings.", "success")
 
-            return redirect(url_for("index"))
+            return redirect(url_for("main.index"))
 
         return render_template("install.html", form=form, title="Installation")
     else:
         flash("Setup was already executed.", "danger")
-        return redirect(url_for("index"))
+        return redirect(url_for("main.index"))
 
-@app.route("/static_files/<path:filename>")
-def static_files(filename):
-    return send_from_directory(app.config["STATIC_DIR"], filename)
-
-@app.errorhandler(404)
+@bp.errorhandler(404)
 def not_found_error(error):
     return render_template("404.html", info=request.path, title="404"), 404
 
-@app.errorhandler(500)
+@bp.errorhandler(500)
 def internal_error(error):
     return render_template("500.html", info=request.path, title="500"), 500
 
-@app.errorhandler(413)
+@bp.errorhandler(413)
 def request_entity_too_large(error):
-    size_bytes = app.config["MAX_CONTENT_LENGTH"]
+    size_bytes = current_app.config["MAX_CONTENT_LENGTH"]
 
     return render_template("413.html", size_bytes=size_bytes, title="413"), 413

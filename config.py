@@ -5,7 +5,6 @@ class Config(object):
     ##### static configuration, editing is NOT recommended
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or 'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    STATIC_DIR = os.path.join(basedir, 'static_files/')
     MAPNODES_DIR = os.path.join(basedir, 'data/mapnodes/')
     MAPNODES_FILE_EXT = ["jpg", "png", "gif"]
     MAPTILES_DIR = os.path.join(basedir, 'data/map/')

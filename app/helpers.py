@@ -1,10 +1,12 @@
-from flask import flash, redirect, url_for
+from flask import flash, redirect, url_for, current_app
 from functools import wraps
 from app import db
 from flask_login import current_user
 from jinja2 import Markup
 from sqlalchemy import func
 from wtforms.validators import ValidationError
+from app.version import version
+from hashlib import md5
 
 # flash generic error message
 def flash_no_permission(msg=None):
@@ -201,6 +203,144 @@ class IsDMValidator(object):
         if not current_user.is_dm_of(campaign) and not current_user.has_admin_role():
             raise ValidationError("You are not the DM of the selected campaign.")
 
+def load_global_quicklinks():
+    from app.models import GeneralSetting
+    gset = GeneralSetting.query.get(1)
+    quicklinks = []
+
+    if not gset or not gset.quicklinks:
+        return quicklinks
+
+    for line in gset.quicklinks.splitlines():
+        parts = line.split("|")
+
+        if len(parts) == 2 and len(parts[0]) > 0 and len(parts[1]) > 0:
+            quicklinks.append(parts)
+
+    return quicklinks
+
+def load_user_quicklinks():
+    quicklinks = []
+
+    if not current_user.quicklinks:
+        return quicklinks
+
+    for line in current_user.quicklinks.splitlines():
+        parts = line.split("|")
+
+        if len(parts) == 2 and len(parts[0]) > 0 and len(parts[1]) > 0:
+            quicklinks.append(parts)
+
+    return quicklinks
+
+def include_css(styles):
+    source = "cdn"
+    out = ""
+
+    if current_app.config["SERVE_LOCAL"] == True:
+        source = "local"
+
+    local_url = url_for('static', filename="")
+
+    s = {
+        "markdown-editor" : {
+            "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.css"],
+            "local" : [local_url + "css/easymde.min.css"]
+        },
+        "bootstrap-select" : {
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css"],
+            "local" : [local_url + "css/bootstrap-select.min.css"]
+        },
+        "multi-select" : {
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.min.css"],
+            "local" : [local_url + "css/multi-select.min.css"]
+        },
+        "leaflet" : {
+            "cdn" : ["https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"],
+            "local" : [local_url + "css/leaflet.css"]
+        },
+        "bootstrap-datetimepicker" : {
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"],
+            "local" : [local_url + "css/bootstrap-datetimepicker.min.css"]
+        },
+        "datatables" : {
+            "cdn" : ["https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css"],
+            "local" : [local_url + "css/dataTables.bootstrap.min.css"]
+        }
+    }
+
+    for style in styles:
+        if style in s:
+            for url in s[style][source]:
+                out += '<link rel="stylesheet" href="' + url + '">\n'
+
+    return Markup(out)
+
+def include_js(scripts):
+    source = "cdn"
+    out = ""
+
+    if current_app.config["SERVE_LOCAL"] == True:
+        source = "local"
+
+    local_url = url_for('static', filename="")
+
+    s = {
+        "markdown-editor" : {
+            "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.js"],
+            "local" : [local_url + "js/easymde.min.js"]
+        },
+        "bootstrap-select" : {
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"],
+            "local" : [local_url + "js/bootstrap-select.min.js"]
+        },
+        "multi-select" : {
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js"],
+            "local" : [local_url + "js/jquery.multi-select.min.js"],
+            "helper" : [local_url + "js/helpers/multi-select.js"]
+        },
+        "leaflet" : {
+            "cdn" : ["https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"],
+            "local" : [local_url + "js/leaflet.js"]
+        },
+        "bootstrap-datetimepicker" : {
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"],
+            "local" : [local_url + "js/bootstrap-datetimepicker.min.js"]
+        },
+        "datatables" : {
+            "cdn" : ["https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js", "https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"],
+            "local" : [local_url + "js/jquery.dataTables.min.js", local_url + "js/dataTables.bootstrap.min.js"],
+            "helper" : [local_url + "js/helpers/datatables.js"]
+        },
+        "quicksearch" : {
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/jquery.quicksearch/2.4.0/jquery.quicksearch.min.js"],
+            "local" : [local_url + "js/jquery.quicksearch.min.js"]
+        }
+    }
+
+    for script in scripts:
+        if script in s:
+            for url in s[script][source]:
+                out += '<script src="' + url + '"></script>\n'
+
+            if "helper" in s[script]:
+                for url in s[script]["helper"]:
+                    out += '<script src="' + url + '"></script>\n'
+
+    out = Markup(out)
+
+    # special rules for moment.js, include first because it must be before datetimepicker
+    if "moment" in scripts:
+        if source == "cdn":
+            out = current_app.extensions['moment'].include_moment() + "\n" + out
+        elif source == "local":
+            out = current_app.extensions['moment'].include_moment(local_js=local_url + "js/moment-with-locales.min.js") + "\n" + out
+
+    return out
+
+def get_archivar_version():
+    return version()
+
 def urlfriendly(text):
     import unicodedata
     import re
@@ -222,3 +362,23 @@ def urlfriendly(text):
 
 def icon(name):
     return Markup('<span class="fas fa-{}" aria-hidden="true"></span>'.format(name))
+
+def register_processors_and_filters(app):
+    @app.context_processor
+    def utility_processor():
+        return dict(load_global_quicklinks=load_global_quicklinks,
+                    load_user_quicklinks=load_user_quicklinks,
+                    include_css=include_css,
+                    include_js=include_js,
+                    get_archivar_version=get_archivar_version,
+                    icon=icon)
+
+    @app.template_filter()
+    def hash(text):
+        return md5(text.encode('utf-8')).hexdigest()[:10]
+
+    @app.template_filter()
+    def urlfriendly(text):
+        from app.helpers import urlfriendly as ufriend
+
+        return ufriend(text)

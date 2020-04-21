@@ -1,6 +1,5 @@
-from app import app
 from app.models import Role, User, MediaItem, MediaCategory
-from flask import redirect, url_for, flash
+from flask import redirect, url_for, flash, current_app
 from functools import wraps
 from flask_login import current_user
 from sqlalchemy import and_, or_, not_
@@ -33,7 +32,7 @@ def media_filename(initial_filename):
     filename = secure_filename(initial_filename)
 
     counter = 1
-    while os.path.isfile(os.path.join(app.config["MEDIA_DIR"], filename)):
+    while os.path.isfile(os.path.join(current_app.config["MEDIA_DIR"], filename)):
         split = filename.rsplit(".", 1)
 
         # fancy duplication avoidance (tm)

@@ -1,7 +1,7 @@
-from app import app, db, login
+from app import db, login
 from app.helpers import urlfriendly, icon as icon_fkt
 from datetime import datetime
-from flask import url_for
+from flask import url_for, current_app
 from flask_login import UserMixin
 from flask_login import current_user
 from flask_misaka import markdown
@@ -68,7 +68,7 @@ class SimpleAuditMixin(object):
                 out += ' by {}'.format(self.created_by.view_link())
 
             if self.created:
-                out += " on {}".format(app.extensions["moment"](self.created).format(current_user.dateformat))
+                out += " on {}".format(current_app.extensions["moment"](self.created).format(current_user.dateformat))
 
             out += "</li>"
 
@@ -80,7 +80,7 @@ class SimpleAuditMixin(object):
                 out += ' by {}'.format(self.edited_by.view_link())
 
             if self.edited:
-                out += " on {}".format(app.extensions["moment"](self.edited).format(current_user.dateformat))
+                out += " on {}".format(current_app.extensions["moment"](self.edited).format(current_user.dateformat))
 
             out += "</li>"
 
