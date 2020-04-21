@@ -1,6 +1,6 @@
-from app import app, db
+from app import db
 from app.models import Map, MapNodeType, MapNode, User, Role
-from flask import flash, redirect, url_for
+from flask import flash, redirect, url_for, current_app
 from functools import wraps
 from datetime import datetime
 from flask_login import current_user
@@ -23,7 +23,7 @@ def map_node_filename(filename_from_form):
     filename = secure_filename(filename_from_form)
 
     counter = 1
-    while os.path.isfile(os.path.join(app.config["MAPNODES_DIR"], filename)):
+    while os.path.isfile(os.path.join(current_app.config["MAPNODES_DIR"], filename)):
         split = filename.rsplit(".", 1)
 
         # fancy duplication avoidance (tm)

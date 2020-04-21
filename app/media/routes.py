@@ -1,10 +1,10 @@
-from app import app, db
+from app import db
 from app.helpers import page_title, flash_no_permission
 from app.models import MediaSetting, MediaItem, MediaCategory, User, Role
 from app.media import bp
 from app.media.forms import SettingsForm, MediaItemCreateForm, MediaItemEditForm, CategoryForm
 from app.media.helpers import media_admin_required, get_media, gen_media_category_choices, media_filename
-from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
+from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory, current_app
 from flask_login import login_required, current_user
 from sqlalchemy import not_, and_, or_
 from os import path, remove, stat
@@ -58,7 +58,7 @@ def upload():
     if form.validate_on_submit():
         filename = media_filename(form.file.data.filename)
 
-        filepath = path.join(app.config["MEDIA_DIR"], filename)
+        filepath = path.join(current_app.config["MEDIA_DIR"], filename)
         form.file.data.save(filepath)
 
         size = stat(filepath).st_size
@@ -89,7 +89,7 @@ def upload():
             except:
                 pass
 
-    return render_template("media/upload.html", form=form, max_filesize=app.config["MAX_CONTENT_LENGTH"], title=page_title("Upload File"))
+    return render_template("media/upload.html", form=form, max_filesize=current_app.config["MAX_CONTENT_LENGTH"], title=page_title("Upload File"))
 
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
@@ -121,9 +121,9 @@ def edit(id, name=None):
             item.is_visible = form.is_visible.data
 
         if form.file.data:
-            remove(path.join(app.config["MEDIA_DIR"], item.filename))
+            remove(path.join(current_app.config["MEDIA_DIR"], item.filename))
 
-            filepath = path.join(app.config["MEDIA_DIR"], item.filename)
+            filepath = path.join(current_app.config["MEDIA_DIR"], item.filename)
             form.file.data.save(filepath)
 
             item.filesize = stat(filepath).st_size
@@ -155,7 +155,7 @@ def delete(id, name=None):
         flash_no_permission()
         return redirect(url_for(no_perm_url))
 
-    remove(path.join(app.config["MEDIA_DIR"], item.filename))
+    remove(path.join(current_app.config["MEDIA_DIR"], item.filename))
     db.session.delete(item)
     db.session.commit()
 
@@ -258,4 +258,4 @@ def sidebar_categories():
 @bp.route("/serve/<filename>")
 @login_required
 def serve_file(filename):
-    return send_from_directory(app.config["MEDIA_DIR"], filename)
+    return send_from_directory(current_app.config["MEDIA_DIR"], filename)

@@ -11,8 +11,8 @@
 
 {% block styles %}
 {{ super() }}
-<link rel="icon" href="{{ url_for('static_files', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="stylesheet" type="text/css" href="{{ url_for('static_files', filename='style.css') }}">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 {{ fontawesome_css() }}
 
 {% endblock %}
@@ -43,7 +43,7 @@ $(document).ready(function() {
         </button>
         <div class="navbar-collapse collapse" id="topnav-navbar">
             <ul class="nav navbar-nav navbar-left" id="leftnav">
-                <li><a href="{{ url_for('index') }}">
+                <li><a href="{{ url_for('main.index') }}">
                     {{ icon("home") }}
                 </a></li>
 
@@ -116,7 +116,7 @@ $(document).ready(function() {
                     <ul class="dropdown-menu">
                         {% if current_user.has_admin_role() %}
                         <li>
-                            <a href="{{ url_for('settings') }}">General</a>
+                            <a href="{{ url_for('main.settings') }}">General</a>
                             <a href="{{ url_for('calendar.settings') }}">Calendar</a>
                         </li>
                         {% endif %}
@@ -145,7 +145,7 @@ $(document).ready(function() {
                 {% endif %}
 
                 {% if current_user.is_anonymous %}
-                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('main.login') }}">Login</a></li>
                 {% else %}
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -154,7 +154,7 @@ $(document).ready(function() {
                     <ul class="dropdown-menu">
                         <li>{{ current_user.view_link() }}</li>
                         <li><a href="{{ url_for('user.settings') }}">Settings</a></li>
-                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                        <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
                     </ul>
                 </li>
                 {% endif %}

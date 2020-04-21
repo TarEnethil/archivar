@@ -1,6 +1,5 @@
-from app import app, db
-from app.models import User, Role, MapNode, MapNodeType, WikiEntry
+from app import create_app
+from app.helpers import register_processors_and_filters
 
-@app.shell_context_processor
-def make_shell_context():
-    return { 'db': db, 'User': User, 'Role': Role, 'MapNode': MapNode, 'WikiEntry': WikiEntry }
+app = create_app()
+register_processors_and_filters(app)

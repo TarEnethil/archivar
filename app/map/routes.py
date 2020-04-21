@@ -1,4 +1,4 @@
-from app import app, db
+from app import db
 from app.helpers import page_title, flash_no_permission, admin_required
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
@@ -6,7 +6,7 @@ from app.map.helpers import map_admin_required, map_node_filename, gen_node_type
 from app.models import Map, MapNodeType, MapSetting, MapNode, WikiEntry
 from app.wiki.helpers import gen_wiki_entry_choices
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
+from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory, current_app
 from flask_login import current_user, login_required
 from os import path, remove
 from PIL import Image
@@ -351,7 +351,7 @@ def node_type_create():
 
     if form.validate_on_submit():
         filename = map_node_filename(form.icon.data.filename)
-        filepath = path.join(app.config["MAPNODES_DIR"], filename)
+        filepath = path.join(current_app.config["MAPNODES_DIR"], filename)
         form.icon.data.save(filepath)
 
         icon = Image.open(filepath)
@@ -380,13 +380,13 @@ def node_type_edit(id):
 
         if form.icon.data:
             new_filename = map_node_filename(form.icon.data.filename)
-            filepath = path.join(app.config["MAPNODES_DIR"], new_filename)
+            filepath = path.join(current_app.config["MAPNODES_DIR"], new_filename)
             form.icon.data.save(filepath)
 
             icon = Image.open(filepath)
             width, height = icon.size
 
-            remove(path.join(app.config["MAPNODES_DIR"], node.icon_file))
+            remove(path.join(current_app.config["MAPNODES_DIR"], node.icon_file))
 
             node.icon_file = new_filename
             node.icon_width = width
@@ -428,7 +428,7 @@ def node_json(id):
 @bp.route("/node_type/icon/<filename>")
 @login_required
 def node_type_icon(filename):
-    return send_from_directory(app.config["MAPNODES_DIR"], filename)
+    return send_from_directory(current_app.config["MAPNODES_DIR"], filename)
 
 @bp.route("/<int:id>/last_change")
 @login_required
@@ -440,7 +440,7 @@ def last_change(id):
 @bp.route("/tile/<path:filename>")
 @login_required
 def tile(filename):
-    return send_from_directory(app.config["MAPTILES_DIR"], filename)
+    return send_from_directory(current_app.config["MAPTILES_DIR"], filename)
 
 @bp.route("/sidebar/<int:m_id>", methods=["GET"])
 @login_required
