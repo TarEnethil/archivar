@@ -1,5 +1,5 @@
-from app import app
 from app.helpers import LessThanOrEqual, GreaterThanOrEqual, XYZ_Validator
+from flask import current_app
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
 from wtforms import StringField, TextAreaField, SubmitField, SelectField, IntegerField, HiddenField, BooleanField
@@ -10,8 +10,8 @@ def icon_is_valid(filename):
     if not "." in filename:
         raise ValidationError("No file extension found.")
 
-    if not filename.rsplit(".", 1)[1].lower() in app.config["MAPNODES_FILE_EXT"]:
-        raise ValidationError("Invalid file extension. File must be one of the following types: " + str(app.config["MAPNODES_FILE_EXT"]))
+    if not filename.rsplit(".", 1)[1].lower() in current_app.config["MAPNODES_FILE_EXT"]:
+        raise ValidationError("Invalid file extension. File must be one of the following types: " + str(current_app.config["MAPNODES_FILE_EXT"]))
 
 class MapSettingsForm(FlaskForm):
     check_interval = IntegerField("Map change check interval (seconds, 0 = disabled)", validators=[InputRequired(), NumberRange(min=0)])
