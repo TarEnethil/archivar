@@ -1,10 +1,18 @@
 from app import db
+from app.calendar.models import CalendarSetting
+from app.campaign.models import Campaign
+from app.character.models import Character, Journal
+from app.event.models import Event, EventSetting, EventCategory
+from app.helpers import page_title, count_rows, admin_required
 from app.main import bp
 from app.main.forms import LoginForm, SettingsForm, InstallForm
-from app.helpers import page_title, count_rows, admin_required
-from app.models import GeneralSetting, MapSetting, MapNodeType, WikiSetting, WikiEntry, CalendarSetting, EventSetting, EventCategory, MediaSetting, MediaCategory, Journal, Campaign
+from app.main.models import GeneralSetting
+from app.map.models import  Map, MapNode, MapSetting, MapNodeType
+from app.media.models import MediaItem, MediaSetting, MediaCategory
+from app.party.models import  Party
+from app.session.models import Session
 from app.user.models import User, Role
-from app.models import Character, Party, Session, Map, MapNode, Event, MediaItem
+from app.wiki.models import WikiSetting, WikiEntry
 from collections import OrderedDict
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, send_from_directory, current_app

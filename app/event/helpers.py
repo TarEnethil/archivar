@@ -1,5 +1,5 @@
 from app import db
-from app.models import Event, EventCategory
+from app.event.models import Event, EventCategory
 from app.user.models import Role, User
 from app.calendar.helpers import gen_calendar_stats
 from flask import redirect, url_for, flash

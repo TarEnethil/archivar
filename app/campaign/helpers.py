@@ -1,5 +1,5 @@
 from flask_login import current_user
-from app.models import Campaign
+from app.campaign.models import Campaign
 from app.user.models import User
 
 # generate choices for dungeon masters (=users)

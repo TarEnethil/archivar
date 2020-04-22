@@ -1,11 +1,11 @@
-from app.models import MediaItem, MediaCategory
+from app.media.models import MediaItem, MediaCategory
 from app.user.models import Role, User
 from flask import redirect, url_for, flash, current_app
-from functools import wraps
 from flask_login import current_user
+from functools import wraps
 from sqlalchemy import and_, or_, not_
 from werkzeug import secure_filename
-import os
+from os import path
 
 # @media_admin_required decorater, use AFTER login_required
 def media_admin_required(f):
@@ -33,7 +33,7 @@ def media_filename(initial_filename):
     filename = secure_filename(initial_filename)
 
     counter = 1
-    while os.path.isfile(os.path.join(current_app.config["MEDIA_DIR"], filename)):
+    while path.isfile(path.join(current_app.config["MEDIA_DIR"], filename)):
         split = filename.rsplit(".", 1)
 
         # fancy duplication avoidance (tm)

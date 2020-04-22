@@ -1,5 +1,5 @@
 from app import db
-from app.models import CalendarSetting, Day, Epoch, Event, EventCategory, Month, Moon
+from app.calendar.models import CalendarSetting, Day, Epoch, Month, Moon
 from flask import flash
 
 # get highest order num for newly created epoch
@@ -78,6 +78,8 @@ def calendar_sanity_check():
 # generate dict containing all info for the calendar preview
 # can be used to commit to database
 def gen_calendar_preview_data(commit=False):
+    from app.event.models import Event, EventCategory
+
     epochs = Epoch.query.order_by(Epoch.order.asc()).all()
     months = Month.query.order_by(Month.order.asc()).all()
     days = Day.query.order_by(Day.order.asc()).all()
@@ -110,6 +112,8 @@ def gen_calendar_preview_data(commit=False):
 
 # generate dict containing all info for the calendar
 def gen_calendar_stats():
+    from app.event.models import Event, EventCategory
+
     epochs = Epoch.query.order_by(Epoch.order.asc()).all()
     months = Month.query.order_by(Month.order.asc()).all()
     days = Day.query.order_by(Day.order.asc()).all()
@@ -156,6 +160,8 @@ def get_epochs():
 
 # get all years in an epoch that have events
 def get_years_in_epoch(e_id):
+    from app.event.models import Event
+
     q = Event.query.with_entities(Event.year).filter_by(epoch_id=e_id).group_by(Event.year).order_by(Event.year.asc()).all()
 
     return q
