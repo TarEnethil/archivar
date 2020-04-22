@@ -1,13 +1,13 @@
 from app import db
-from flask import flash, redirect, url_for, current_app
-from app.models import Map, MapNodeType, MapNode
+from app.map.models import Map, MapNodeType, MapNode
 from app.user.models import User, Role
-from functools import wraps
 from datetime import datetime
+from flask import flash, redirect, url_for, current_app
 from flask_login import current_user
+from functools import wraps
+from os import path
 from sqlalchemy import and_, not_, or_
 from werkzeug import secure_filename
-import os
 
 # @map_admin_required decorater, use AFTER login_required
 def map_admin_required(f):
@@ -24,7 +24,7 @@ def map_node_filename(filename_from_form):
     filename = secure_filename(filename_from_form)
 
     counter = 1
-    while os.path.isfile(os.path.join(current_app.config["MAPNODES_DIR"], filename)):
+    while path.isfile(path.join(current_app.config["MAPNODES_DIR"], filename)):
         split = filename.rsplit(".", 1)
 
         # fancy duplication avoidance (tm)

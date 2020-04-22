@@ -1,9 +1,9 @@
-from app.models import WikiEntry
 from app.user.models import Role, User
-from flask import redirect, flash, url_for
-from functools import wraps
+from app.wiki.models import WikiEntry
 from collections import OrderedDict
+from flask import redirect, flash, url_for
 from flask_login import current_user
+from functools import wraps
 from sqlalchemy import and_, or_, not_
 
 # @wiki_admin_required decorater, use AFTER login_required

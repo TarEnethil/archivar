@@ -1,4 +1,6 @@
-from app.models import Character, Party, Session
+from app.character.models import Character
+from app.party.models import Party
+from app.session.models import Session
 from sqlalchemy import and_
 
 # generate choices for session participant SelectField (multi-select)

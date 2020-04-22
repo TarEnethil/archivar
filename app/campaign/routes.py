@@ -1,9 +1,10 @@
 from app import db
-from app.helpers import page_title, admin_required, stretch_color, admin_or_dm_required
-from app.models import Campaign, Character
+from app.character.models import Character
 from app.campaign import bp
+from app.campaign.models import Campaign
 from app.campaign.forms import CampaignCreateForm, CampaignEditForm
 from app.campaign.helpers import gen_dm_choices
+from app.helpers import page_title, admin_required, stretch_color, admin_or_dm_required
 from app.session.helpers import gen_participant_choices
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
