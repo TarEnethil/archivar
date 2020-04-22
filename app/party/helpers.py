@@ -1,4 +1,4 @@
-from app.models import Character
+from app.character.models import Character
 
 # generate choices for party member SelectField (multi-select)
 def gen_party_members_choices():

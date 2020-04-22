@@ -1,9 +1,10 @@
 from app import db
+from app.character.models import Character
 from app.helpers import page_title, admin_required, admin_or_party_required
-from app.models import Character, Party
 from app.party import bp
 from app.party.forms import PartyForm
 from app.party.helpers import gen_party_members_choices
+from app.party.models import Party
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 

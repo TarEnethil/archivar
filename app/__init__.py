@@ -1,12 +1,12 @@
-from flask import Flask, url_for
 from config import Config
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager, current_user
+from flask import Flask, url_for
 from flask_bootstrap import Bootstrap, StaticCDN
-from flask_moment import Moment
-from flask_misaka import Misaka
 from flask_fontawesome import FontAwesome
+from flask_login import LoginManager, current_user
+from flask_migrate import Migrate
+from flask_misaka import Misaka
+from flask_moment import Moment
+from flask_sqlalchemy import SQLAlchemy
 from jinja2 import Markup
 from sqlalchemy import MetaData
 
@@ -81,4 +81,14 @@ def create_app(config=Config):
 
     return app
 
-from app import models
+from app.calendar import models
+from app.campaign import models
+from app.character import models
+from app.event import models
+from app.main import models
+from app.map import models
+from app.media import models
+from app.party import models
+from app.session import models
+from app.user import models
+from app.wiki import models
