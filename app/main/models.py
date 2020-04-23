@@ -1,5 +1,5 @@
 from app import db
-from app.user.models import SimpleAuditMixin
+from app.mixins import SimpleAuditMixin
 
 class GeneralSetting(db.Model, SimpleAuditMixin):
     __tablename__ = "general_settings"
