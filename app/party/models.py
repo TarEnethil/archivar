@@ -1,9 +1,9 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleAuditMixin
+from app.mixins import LinkGenerator, SimpleChangeTracker
 from flask import url_for
 
-class Party(db.Model, SimpleAuditMixin, LinkGenerator):
+class Party(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "parties"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))

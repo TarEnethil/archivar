@@ -1,6 +1,6 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleAuditMixin
+from app.mixins import LinkGenerator, SimpleChangeTracker
 from flask import url_for
 from jinja2 import Markup
 
@@ -8,7 +8,7 @@ campaign_character_assoc = db.Table("campaign_character_assoc",
                     db.Column("campaign_id", db.Integer, db.ForeignKey("campaigns.id")),
                     db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
 
-class Campaign(db.Model, SimpleAuditMixin, LinkGenerator):
+class Campaign(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "campaigns"
 
     id = db.Column(db.Integer, primary_key=True)

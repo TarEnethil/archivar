@@ -1,14 +1,14 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleAuditMixin
+from app.mixins import LinkGenerator, SimpleChangeTracker
 from flask import url_for
 
-class MediaSetting(db.Model, SimpleAuditMixin):
+class MediaSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "media_settings"
     id = db.Column(db.Integer, primary_key=True)
     default_visible = db.Column(db.Boolean)
 
-class MediaCategory(db.Model, SimpleAuditMixin, LinkGenerator):
+class MediaCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "media_categories"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -33,7 +33,7 @@ class MediaCategory(db.Model, SimpleAuditMixin, LinkGenerator):
     def edit_url(self):
         return url_for('media.category_edit', id=self.id, name=urlfriendly(self.name))
 
-class MediaItem(db.Model, SimpleAuditMixin, LinkGenerator):
+class MediaItem(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "media"
     id = db.Column(db.Integer, primary_key=True)
     is_visible = db.Column(db.Boolean)
