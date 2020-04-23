@@ -12,7 +12,7 @@ def current_user_id():
     except:
         None
 
-class SimpleAuditMixin(object):
+class SimpleChangeTracker(object):
     created = db.Column(db.DateTime, default=datetime.utcnow)
     edited = db.Column(db.DateTime, default=None, onupdate=datetime.utcnow)
 

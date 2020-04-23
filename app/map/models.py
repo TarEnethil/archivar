@@ -1,11 +1,11 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleAuditMixin
+from app.mixins import LinkGenerator, SimpleChangeTracker
 from datetime import datetime
 from flask import url_for
 from flask_misaka import markdown
 
-class MapSetting(db.Model, SimpleAuditMixin):
+class MapSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "map_settings"
     id = db.Column(db.Integer, primary_key=True)
     icon_anchor = db.Column(db.Integer)
@@ -13,7 +13,7 @@ class MapSetting(db.Model, SimpleAuditMixin):
     check_interval = db.Column(db.Integer, default=30)
     default_map = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
 
-class Map(db.Model, SimpleAuditMixin, LinkGenerator):
+class Map(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "maps"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -53,7 +53,7 @@ class Map(db.Model, SimpleAuditMixin, LinkGenerator):
         url = self.settings_url()
         return self.button(url=url, text="Settings", icon="cog", ids=None, classes="btn btn-default")
 
-class MapNodeType(db.Model, SimpleAuditMixin):
+class MapNodeType(db.Model, SimpleChangeTracker):
     __tablename__ = "map_node_types"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
@@ -74,7 +74,7 @@ class MapNodeType(db.Model, SimpleAuditMixin):
 
         return dic
 
-class MapNode(db.Model, SimpleAuditMixin):
+class MapNode(db.Model, SimpleChangeTracker):
     __tablename__ = "map_nodes"
     id = db.Column(db.Integer, primary_key=True)
     coord_x = db.Column(db.Float)

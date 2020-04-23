@@ -1,11 +1,11 @@
 from app import db
 from app.helpers import urlfriendly
 from app.calendar.models import Day, Month, Epoch
-from app.mixins import LinkGenerator, SimpleAuditMixin
+from app.mixins import LinkGenerator, SimpleChangeTracker
 from flask import url_for
 from jinja2 import Markup
 
-class EventSetting(db.Model, SimpleAuditMixin):
+class EventSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "event_settings"
     id = db.Column(db.Integer, primary_key=True)
     default_visible = db.Column(db.Boolean)
@@ -13,7 +13,7 @@ class EventSetting(db.Model, SimpleAuditMixin):
     default_epoch = db.Column(db.Integer, db.ForeignKey("epochs.id"))
     default_year = db.Column(db.Integer)
 
-class EventCategory(db.Model, SimpleAuditMixin, LinkGenerator):
+class EventCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "event_categories"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -31,7 +31,7 @@ class EventCategory(db.Model, SimpleAuditMixin, LinkGenerator):
     def edit_url(self):
         return url_for('event.category_edit', id=self.id, name=urlfriendly(self.name))
 
-class Event(db.Model, SimpleAuditMixin, LinkGenerator):
+class Event(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "events"
     id = db.Column(db.Integer, primary_key=True)
     is_visible = db.Column(db.Boolean)
