@@ -1,7 +1,7 @@
 from app import db
 from app.helpers import urlfriendly
 from app.calendar.models import Day, Month, Epoch
-from app.user.models import LinkGenerator, SimpleAuditMixin
+from app.mixins import LinkGenerator, SimpleAuditMixin
 from flask import url_for
 from jinja2 import Markup
 
