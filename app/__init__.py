@@ -34,6 +34,7 @@ def create_app(config=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app)
+    login.login_view = "main.login"
     bootstrap.init_app(app)
     markdown.init_app(app)
     moment.init_app(app)
