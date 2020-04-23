@@ -40,13 +40,6 @@ def create_app(config=Config):
     moment.init_app(app)
     fontawesome.init_app(app)
 
-    # override ConditionalCDN with StaticCDN if local serve is wanted
-    # reason: using the usual local cdn results in a 404 for bootstrap.min.css.map on every page
-    # TODO how to do this correctly?
-    if app.config["BOOTSTRAP_SERVE_LOCAL"]:
-        app.extensions['bootstrap']['cdns']['bootstrap'] = StaticCDN(static_endpoint='static')
-        app.extensions['bootstrap']['cdns']['jquery'] = StaticCDN(static_endpoint='static')
-
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
