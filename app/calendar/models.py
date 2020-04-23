@@ -1,14 +1,14 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleAuditMixin
+from app.mixins import LinkGenerator, SimpleChangeTracker
 from flask import url_for
 
-class CalendarSetting(db.Model, SimpleAuditMixin):
+class CalendarSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "calendar_settings"
     id = db.Column(db.Integer, primary_key=True)
     finalized = db.Column(db.Boolean, default=False)
 
-class Epoch(db.Model, SimpleAuditMixin, LinkGenerator):
+class Epoch(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "epochs"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -45,7 +45,7 @@ class Epoch(db.Model, SimpleAuditMixin, LinkGenerator):
     def delete_url(self):
         return url_for('calendar.epoch_delete', id=self.id, name=urlfriendly(self.name))
 
-class Month(db.Model, SimpleAuditMixin, LinkGenerator):
+class Month(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "months"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -80,7 +80,7 @@ class Month(db.Model, SimpleAuditMixin, LinkGenerator):
     def delete_url(self):
         return url_for('calendar.month_delete', id=self.id, name=urlfriendly(self.name))
 
-class Day(db.Model, SimpleAuditMixin, LinkGenerator):
+class Day(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "days"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -109,7 +109,7 @@ class Day(db.Model, SimpleAuditMixin, LinkGenerator):
     def delete_url(self):
         return url_for('calendar.day_delete', id=self.id, name=urlfriendly(self.name))
 
-class Moon(db.Model, SimpleAuditMixin, LinkGenerator):
+class Moon(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "moons"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))

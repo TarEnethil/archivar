@@ -1,14 +1,14 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleAuditMixin
+from app.mixins import LinkGenerator, SimpleChangeTracker
 from flask import url_for
 
-class WikiSetting(db.Model, SimpleAuditMixin):
+class WikiSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "wiki_settings"
     id = db.Column(db.Integer, primary_key=True)
     default_visible = db.Column(db.Boolean, default=False)
 
-class WikiEntry(db.Model, SimpleAuditMixin, LinkGenerator):
+class WikiEntry(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "wiki_entries"
     id = db.Column(db.Integer, primary_key=True)
 

@@ -1,6 +1,6 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleAuditMixin
+from app.mixins import LinkGenerator, SimpleChangeTracker
 from flask import url_for
 from sqlalchemy import and_
 
@@ -8,7 +8,7 @@ session_character_assoc = db.Table("session_character_assoc",
                     db.Column("session_id", db.Integer, db.ForeignKey("sessions.id")),
                     db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
 
-class Session(db.Model, SimpleAuditMixin, LinkGenerator):
+class Session(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "sessions"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
