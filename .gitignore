@@ -17,5 +17,4 @@ data/mapnodes/*
 !data/mapnodes/quest.png
 !data/mapnodes/note.png
 !data/mapnodes/ruins.png
-migrations/*
-!migrations/versions
+__pycache__
