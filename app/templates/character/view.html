@@ -26,6 +26,10 @@
     makeDatatable("parties-table", 5);
     {% endif %}
 
+    {% if char.sessions %}
+    makeDatatable("sessions-table")
+    {% endif %}
+
     {% if char.journals %}
     makeDatatable("journals-table");
     {% endif %}
@@ -73,20 +77,21 @@
         <dd>{{ char.class_ }}</dd>
         <dt>Player</dt>
         <dd>{{ char.player.view_link() }}</dd>
-        {% if char.sessions %}
-            <dt>Sessions</dt>
-            <dd>{{ char.sessions|length }}</dd>
-        {% endif %}
     </dl>
 
-    <h2>Parties
-
-    {% if char.parties %}
-    ({{ char.parties|length }})
+    {% if char.description %}
+    {% if current_user.markdown_phb_style %}
+        <div class="custom-markdown phb-style">
+    {% else %}
+        <div class="custom-markdown">
     {% endif %}
-    </h2>
+{{ char.description|markdown }}
+    </div>
+    {% endif %}
 
     {% if char.parties %}
+    <h2>Parties ({{ char.parties|length }})</h2>
+
     <table class="table table-hover table-striped" id="parties-table">
         <thead>
             <tr>
@@ -99,8 +104,8 @@
         <tbody>
         {% for party in char.parties %}
             <tr>
-                <td> {{ party.name }}</td>
-                <td> {{ party.members|length }}</td>
+                <td>{{ party.name }}</td>
+                <td>{{ party.members|length }}</td>
                 <td>
                     {{ party.view_button() }}
                     {% if current_user.has_char_in_party(party) or current_user.has_admin_role() %}
@@ -112,17 +117,40 @@
         </tbody>
     </table>
     {% else %}
-    <p>Character is in no parties.</p>
+    <p>{{ char.name }} is in no parties.</p>
     {% endif %}
 
-    {% if char.description %}
-    {% if current_user.markdown_phb_style %}
-        <div class="custom-markdown phb-style">
+    {% if char.sessions %}
+    <h2>Sessions ({{ char.sessions|length }})</h2>
+
+    <table class="table table-hover table-striped" id="sessions-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Campaign</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for session in char.sessions %}
+            <tr>
+                <td>{{ session.title }}</td>
+                <td>{{ moment(session.date).format(current_user.dateformat) }}</td>
+                <td>{{ session.campaign.view_link() }}</td>
+                <td>
+                    {{ session.view_button() }}
+                    {% if current_user.has_char_in_session(session) or current_user.has_admin_role() %}
+                    {{ session.edit_button() }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
     {% else %}
-        <div class="custom-markdown">
-    {% endif %}
-{{ char.description|markdown }}
-    </div>
+    <p>{{ char.name }} has not participated in any sessions.</p>
     {% endif %}
 
     {% if char.journals %}
