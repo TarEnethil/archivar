@@ -1,6 +1,75 @@
 # Changelog
 
 
+## Version 0.5.1 (released 2020-04-25)
+
+This release was mainly internal restructuring to make further development a little easier. Notable changes for users include:
+
+* Switch markdown editor from SMDE to EMDE (active fork)
+* Most URLs are now "pretty" (i.e. character-name is in the URL, still some TODOs for map & sidebars)
+* List all sessions of a character
+* Readd session numbering
+
+Detailed list of changes:
+
+* Devtools: add make_release.sh
+* Convert changelog to Markdown
+* Session: forgot to add migration file
+* Session: add session number as db field
+* Helpers: Fix imports
+* Database: use render_as_batch for migrations
+* Session: remove useless helper
+* Base: fix db install step
+* Template: close h2 if there are no past sessions
+* Journal: use bootstrap-select for sessions
+* Mixins: Fix param name
+* Character: add Sessions table
+* Init: cleanup code
+* Base: Fix login_view url
+* Models: rename SimpleAuditMixin -> SimpleChangeTracker
+* Models: Port Mixins to own file
+* Multi: split models into multiple files
+* Test: split User from models.py
+* Meta: overhaul application structure
+* Template: fix some icons
+* Replace simpleMDE by easyMDE
+* Template: switch from glyphicon to fontawesome
+* Template: add icon generator function
+* Update Pillow
+* Multi: remove unneeded imports
+* Journal: add and use LinkGenerator
+* Wiki: add and use LinkGenerator
+* Map: add and use LinkGenerator
+* User: add and use LinkGenerator
+* Session: add and use LinkGenerator
+* Party: add and use LinkGenerator
+* Media: add and use LinkGenerator
+* Event: add and use LinkGenerator
+* Campaign: add and use LinkGenerator
+* Calendar: add and use LinkGenerator
+* Character: add and use LinkGenerator
+* Add LinkGenerator class
+* Requirements: fix python 3.8 install
+* Session: improve session creation for multi campaign dms
+* Wiki: Prevent Main Page from being renamed
+* Map: redirect .index to .view for pretty URL
+* Template: add configuratble dataTable threshold
+* Calendar: add number of events to category list
+* Campaign: fix button label
+* Map: implement pretty URLs
+* Journal: implement pretty URLs
+* Wiki: implement pretty URLs
+* Session: implement pretty URLs
+* Party: implement pretty URLs
+* Media: implement pretty URLs
+* Event: implement pretty URLs
+* Campaign: implement pretty URLs
+* Calendar: implement pretty URLs
+* Character: implement pretty URLs
+* Base: add urlfriendly filter
+* Session: Fix missing border-color
+
+
 ## 0.5.0
 
 * Character: Add missing css include
