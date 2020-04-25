@@ -75,7 +75,7 @@ def admin_or_dm_required(url="index"):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            from app.Campaign.models import Campaign
+            from app.campaign.models import Campaign
 
             if not 'id' in kwargs:
                 flash("@admin_or_dm_required was used incorrectly, contact the administrator", "danger")
@@ -192,7 +192,7 @@ class IsDMValidator(object):
         self.campaign_field = campaign_field_name
 
     def __call__(self, form, field):
-        from app.calendar.models import Campaign
+        from app.campaign.models import Campaign
         campaign_id = form._fields.get(self.campaign_field).data
 
         campaign = Campaign.query.filter_by(id=campaign_id).first()
