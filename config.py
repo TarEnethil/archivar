@@ -10,6 +10,7 @@ class Config(object):
     MAPTILES_DIR = os.path.join(basedir, 'data/map/')
     MEDIA_DIR = os.path.join(basedir, 'data/media/')
     WELCOME_MD = os.path.join(basedir, "Welcome.md")
+    CHANGELOG = os.path.join(basedir, "CHANGELOG")
 
     ##### app configuration, can be edited
     # Key used for several cryptographic operations

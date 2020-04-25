@@ -1,0 +1,227 @@
+# Changelog
+
+
+## 0.5.0
+
+* Character: Add missing css include
+* Template: prevent SMDE from after-loading from CDN
+* Template: Add missing file for multi-select
+* Session: (Forms) Add player name to participant lists
+* Multi: Unify page_title Capitalization
+* Multi: Unify Button Capitalization
+* Multi: rename Map Node (Types) to Location (types)
+* Multi: unify submit button label Capitalization
+* Template: unify Heading Capitalization
+* Template: render flash() with bootstrap utils
+* User: add campaigns to user.profile
+* Base: add campaigns to statistics
+* Campaign: add icon, add info to .view
+* Sessions: Link sessions and campaigns
+* Meta: add campaigns (first steps)
+* Merge pull request #2 from TarEnethil/dependabot/pip/validators-0.12.6
+* Merge pull request #1 from TarEnethil/dependabot/pip/pillow-6.2.0
+* Multi: update more page titles
+* Character: add proper party table
+* Multi: add quantifiers to table headings
+* Map: show no table if there are no node types
+* Character: fix journal query
+* dependabot[bot] Bump validators from 0.12.4 to 0.12.6 (origin/dependabot/pip/validators-0.12.6)
+* dependabot[bot] Bump pillow from 3.3.2 to 6.2.0 (origin/dependabot/pip/pillow-6.2.0)
+* update requirements.txt (CVE-2019-14806)
+* Session: add follow-up session creation
+* User: add date formats with weekdays
+* Dev: add style for dev environment
+* General: Improve &lt;title&gt;
+
+
+## 0.4.5
+
+* Template: hide empty quicklink menu
+* install: fix installation with new db-init script
+* Wiki: add datalist for categories
+* Session: add datalist for campaign codes
+* Sessions: sort session participants by name
+* Sidebar: fix use_embedded_images option
+* User: add quicklink option
+* Template: improve global quicklink handling
+* Template: remove width of login page
+* Character: Fix journal creation
+* Template: Add h5/h6 style for markdown
+* Event: add create link on event.list (context sensitive)
+* Media: add create link on media.list (cat sensitive)
+* Template: add quicklinks for some settings
+* Template: add subheading padding for markdown
+* Editor: add map node sidebar
+* Template: Fix SMDE-JS error for non-admins
+* Sidebar: don't show empty categories on media sidebar
+* User: consolidate phb-style options
+* Session: add quicklinks for journal create/edit
+
+
+## 0.4.4
+
+* Statistics: make dict ordered, add missing statistics
+* Forms: customize submit button label per form
+* Session: add relevant journals to session.view
+* Character: add character journals
+* Wiki: add category renaming in settings
+* Forms: add better redirects after create/edit
+* User: add options for default media sidebar checkboxes
+* Session: change next session button arrow location
+* Requirements: Update SQLAlchemy due to 2 CVEs
+* Template: reduce footer width
+* Template: add new footer-func of auditMixin to pages
+* db: add auditMixin to general settings
+* Database: add SimpleAuditMixin
+* Template: Fix markdown rendering in some templates
+
+
+## 0.4.3
+
+* Hotfix2 (added later):
+    * Requirements: Fix jinja version (was reverted erroneously)
+* Hotfix (added later):
+    * Requirements: Update Pillow due to CVE-2016-9189
+    * Requirements: add requirements for Flask-Misaka
+* (Experimental): Switch to on-server markdown rendering
+* Template: show footer on all pages*
+* All: add @decorators for access control
+* Base: change priority of base url
+* Session: allow session members to edit sessions
+* Party: allow party members to edit party
+* Template: add new-char link to character table
+* requirements: increase Jinja2 version due to CVE-2019-10906
+* Template: move delete buttons to the right
+* User: add editor_height option
+* Map: fix editor height for map forms
+* Map: add node permalinks to popups
+* Char/Party: Reverse order of tables
+* Char/Party: Fix inpage navigation
+* (hotfixed earlier) Base: fix editor sidebars
+
+
+## 0.4.2
+
+* Readme: add installation info
+* Template: simplify admin nav bar
+* Template: Clean up js helpers
+* Template: harmonize js helper includes
+* Character: add character deletion
+* Party: add party deletion
+* Session: add session deletion
+* Wiki: add article deletion
+* Event: add event deletion
+* Event: Fix event edit page
+* Char: change redirect after character edit
+* Calendar: redirect admin on non-finalized calendar
+* Template: Set height for markdown editor
+
+
+## 0.4.1
+
+* Base: add changelog and statistics pages
+* User: Fix conditional data table on profile
+
+
+## 0.4.0 'M-M-M-Multi-Map'
+
+* Merge multi-map into master: add multi map support
+* Map: remove unused import
+* Map: Rename endpoints for clarity
+* User: add conditional data table for characters
+* Calendar: Format moon title attrs
+* Map: add default_map setting
+* Map: display map name in topright corner
+* Map: improve wiki and submap links
+* Map: implement submap linking for map nodes (admin)
+* Map: implement map visibility option
+* Map: implement multiple map operations
+* Map: make nodes belong to one map only
+* Map: add view endpoint for multi maps
+* Map: add settings editing for multiple maps
+* Map: add map.create for first map
+* Map: Split MapSettings table
+* Party/Session: refactor multi-select filtering
+* Multi: add comments to helpers
+* Doc: update readme and welcome message
+
+
+## 0.3.4
+
+* Template: add quicksearch feature for multi-select
+* Map: make map check interval configurable
+* Map: add warning if map was edited by someone else
+* Character: make character and party list public
+* Template: Fix two js include paths
+* Media: Fix typo in settings
+* Characters: Add datatables to char/party list
+* Calendar/Event: improve moon title
+
+
+## 0.3.3 'Luna'
+
+* Models: replace xrange with range
+* Calendar/Event: add moon colors
+* Calendar/Event: even better moon display
+* Base: Fix flask_bootstrap local CDN serve (weird)
+* Calendar: add moon phase naming
+* Calendar: improved moon display formula
+* Calendar/Event: Add moon phase calculation
+* Event: Fix css import
+* Config: sort and add comments
+* Templates: Fix various javascript errors
+* Template: Fix editor sidebar with multiple editors
+* Character: add private_notes field
+* Template: Change CDN-usage settings handling
+* DB: Fix migrations
+* User: make roles visible on profile (to anyone)
+* Calendar: add moons
+* Settings: Add option to use CDN for scripts
+
+
+## 0.3.2
+
+* Wiki: fix str encoding error
+* Event: add datatable for events
+* Style: Restrict image width in markdown renderings
+* Readme: add Media endpoint description
+* Media: add media deletion
+* Multi: add dataTables where necessary
+* Media: add max filesize to upload page
+* Wiki: Fix wiki dropdown, remove not needed helper
+
+
+## 0.3.1
+
+* Media: Fix visibility checkbox on media form
+* Wiki: Fix sidebars
+* Media: add custom 413 page
+* Base: Fix setup
+
+
+## 0.3.0
+
+* Event: Fix event.view user links
+* Map: Fix dropdown heights in map forms
+* Event: Fix event.view permissions
+* Media: Add Media blueprint
+* Media: Add Media sidebar
+
+
+## 0.2.2
+
+* Admin: add last-seen to userlist
+* Base: new password must differ from old password if force_pw is active
+* Base: hide quicklinks for non-authed users
+* Base: make topnav sticky
+* Base: fix editor-sidebar and location-list height
+* Base: add collapsible topnav for mobile users
+* Base: clicking the red star icon again closes editor-sidebar
+* Wiki: add article heading to markdown window (h1)
+* Event: Fix event category dropdown height on Windows
+
+
+## 0.2.1
+
+* Event: Fix HTTP500 at event creation
+* Base: Use dedicated password-change form for forced password 
