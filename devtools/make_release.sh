@@ -1,10 +1,20 @@
 #!/bin/bash
 
+# bash script to make the release-process more consistent
+# it attempts to do the following things:
+#   1. update what version() returns
+#   2. add every commit-title since the last tag to CHANGELOG
+#   3. commit both those changes
+#   4. tag the release-commit with the release-tag
+# should an error occur, some of the changes will be rolled back automatically
+
+# print to stderr
 # $1 = error message
 function err() {
     echo "ERROR: $1" >&2
 }
 
+# roll back some potential changes in case of an error
 # $1 = relative path to project root
 function reset() {
     echo "rolling back changes"
@@ -14,6 +24,7 @@ function reset() {
     git checkout $1/app/version.py
 }
 
+# change what version() returns
 # $1 = relative path to project root
 # $2 = new version
 function change_version() {
@@ -28,11 +39,13 @@ function change_version() {
     fi
 }
 
+# add all commits since last tag to changelog
 # $1 = relative path to project root
 # $2 = new version / tag
 function make_changelog() {
     echo "adding entries to changelog"
 
+    # get last tag on this branch
     last_tag=$(git describe --abbrev=0 --tags)
 
     if [[ $? -ne 0 ]]; then
@@ -51,6 +64,7 @@ function make_changelog() {
 
     echo "    found $CLOG"
 
+    # prepend new changelog to a new temporary changelog file (omit first line)
     (echo -e "# Changelog\n\n" && echo -e "## Version $2 (released $(date +%F))\n" && echo "$(git log --pretty=format:'%s' $last_tag..HEAD | sed 's/^/* /')" && sed '1d' $CLOG) > $CLOG.tmp
 
     if [[ $? -ne 0 ]]; then
@@ -61,6 +75,7 @@ function make_changelog() {
 
     echo "    added git log to $CLOG.tmp"
 
+    # replace old changelog with new changelog file
     mv $CLOG.tmp $CLOG
 
     if [[ $? -ne 0 ]]; then
@@ -72,12 +87,15 @@ function make_changelog() {
     echo "    replaced $CLOG"
 }
 
+# make a release commit
 # $1 = relative Path to project root
 # $2 = new version
 function make_commit() {
     echo "making commit for $2"
     msg="Increase Version to $2, add Changelog"
-    git commit -asm "$msg"
+    git add $1/app/version.py
+    git add $1/CHANGELOG
+    git commit -sm "$msg"
 
     if [[ $? -ne 0 ]]; then
         err "git commit returned an error"
@@ -86,6 +104,7 @@ function make_commit() {
     fi
 }
 
+# tag the release commit
 # $1 = new version/tag
 function make_tag() {
     git tag $1
@@ -96,6 +115,7 @@ function make_tag() {
     fi
 }
 
+### MAIN ###
 # check that new version tag was $1
 if [[ "$#" -ne 1 ]]; then
     err "not enough parameters"
@@ -103,6 +123,8 @@ if [[ "$#" -ne 1 ]]; then
     exit 1
 fi
 
+# check runpath by trying to find CHANGELOG
+# only running this tool from the project root or ./devtools works
 if [[ ! -f CHANGELOG ]]; then
     if [[ -f ../CHANGELOG ]]; then
         P=..
