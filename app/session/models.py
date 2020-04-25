@@ -18,15 +18,13 @@ class Session(db.Model, SimpleChangeTracker, LinkGenerator):
     participants = db.relationship("Character", secondary=session_character_assoc, backref="sessions")
     campaign_id = db.Column(db.Integer, db.ForeignKey("campaigns.id"))
     campaign = db.relationship("Campaign", backref="sessions")
-
-    def get_session_number(self):
-        return Session.query.filter(and_(Session.campaign_id == self.campaign_id, Session.date < self.date)).count() + 1
+    session_number = db.Column(db.Integer)
 
     #####
     # LinkGenerator functions
     #####
     def view_text(self):
-        return self.title
+        return "#{} {}".format(self.session_number, self.title)
 
     def view_url(self):
         return url_for('session.view', id=self.id, name=urlfriendly(self.title))

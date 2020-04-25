@@ -6,7 +6,7 @@ from app.helpers import page_title, admin_required, admin_dm_or_session_required
 from app.party.models import Party
 from app.session import bp
 from app.session.forms import SessionForm, CampaignSelectForm
-from app.session.helpers import gen_participant_choices, get_previous_session, get_next_session
+from app.session.helpers import gen_participant_choices, get_previous_session, get_next_session, recalc_session_numbers
 from app.session.models import Session
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify
@@ -96,6 +96,8 @@ def create_with_campaign(id):
         db.session.add(new_session)
         db.session.commit()
 
+        recalc_session_numbers(new_session.campaign, db)
+
         flash("Session was created.", "success")
         return redirect(new_session.view_url())
     elif request.method == "GET":
@@ -146,6 +148,9 @@ def edit(id, name=None):
             session.dm_notes = form.dm_notes.data
 
         db.session.commit()
+
+        recalc_session_numbers(session.campaign, db)
+
         flash("Session was changed.", "success")
         return redirect(session.view_url())
     elif request.method == "GET":
@@ -185,7 +190,12 @@ def view(id, name=None):
 def delete(id, name=None):
     session = Session.query.filter_by(id=id).first_or_404()
 
+    campaign = session.campaign
+
     db.session.delete(session)
+
+    recalc_session_numbers(campaign, db)
+
     db.session.commit()
 
     flash("Session was deleted.", "success")
@@ -194,6 +204,10 @@ def delete(id, name=None):
 @bp.route("/sidebar", methods=["GET"])
 @login_required
 def sidebar():
-    sessions = Session.query.with_entities(Session.id, Session.title).order_by(Session.date.asc()).all()
+    sessions_db = Session.query.all()
+    sessions = []
+
+    for session in sessions_db:
+        sessions.append({ 0: session.id, 1: session.view_text() })
 
     return jsonify(sessions)

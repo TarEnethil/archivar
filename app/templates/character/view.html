@@ -136,7 +136,7 @@
         <tbody>
         {% for session in char.sessions %}
             <tr>
-                <td>{{ session.title }}</td>
+                <td>{{ session.view_text() }}</td>
                 <td>{{ moment(session.date).format(current_user.dateformat) }}</td>
                 <td>{{ session.campaign.view_link() }}</td>
                 <td>
