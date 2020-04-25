@@ -3,6 +3,7 @@ app/*.pyc
 *.db
 app.db*
 *.sh
+!devtools/*.sh
 venv/
 data/map/*
 !data/map/.gitkeep
