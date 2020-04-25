@@ -34,12 +34,8 @@ pip install -r requirements.txt
 If the installation of Pillow gives you troubles, you might need to install the packages libjpeg8-dev, zlib1g-dev and python-dev (or python3-dev).
 
 ## Initial configuration and database init
-First, edit config.py for some basic settings (like max upload file size or CDN usage)
-
 ```bash
-python db-init.py
-    or
-python3 db-init.py
+flask db upgrade
 ```
 
 The script will run flask db init and flask db upgrade, while providing the migration-files from this repository (allowing for incremental database structure changes).
