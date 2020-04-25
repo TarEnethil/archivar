@@ -3,17 +3,23 @@
 
 {% block styles %}
 {{ super() }}
-{{ include_css(['markdown-editor']) }}
+{{ include_css(['markdown-editor', 'bootstrap-select']) }}
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['markdown-editor']) }}
+{{ include_js(['markdown-editor', 'bootstrap-select']) }}
 
 <script>
 {% include "sidebars.js" %}
-makeMarkdownEditor("content");
+
+$(document).ready(function() {
+    makeMarkdownEditor("content");
+    $.fn.selectpicker.Constructor.BootstrapVersion = '3';
+    $('#session').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
+});
 </script>
+
 {% endblock %}
 
 {% block app_content %}

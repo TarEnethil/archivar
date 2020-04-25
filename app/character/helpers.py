@@ -5,12 +5,22 @@ from app.user.models import Role, User
 from flask import redirect, url_for, flash
 from flask_login import current_user
 from functools import wraps
+from jinja2 import Markup
 from sqlalchemy import and_, or_, not_
 
 def gen_session_choices(char):
+    choices_dict = {}
+
+    for sess in char.sessions:
+        campaign = sess.campaign.name
+        if not campaign in choices_dict.keys():
+            choices_dict[campaign] = []
+
+        choices_dict[campaign].append((sess.id, sess.title))
+
     choices = [(0, "None")]
 
-    for s in char.sessions:
-        choices.append((s.id, s.title))
+    for campaign in choices_dict.keys():
+        choices.append((Markup(campaign), choices_dict[campaign]))
 
     return choices
