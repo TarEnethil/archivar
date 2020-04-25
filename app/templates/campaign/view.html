@@ -88,7 +88,7 @@ makeDatatable("sessions-table");
 </h2>
 
 {% if campaign.sessions %}
-<table class="table table-hover table-striped" id="session-table">
+<table class="table table-hover table-striped" id="sessions-table">
     <thead>
         <tr>
             <th>Title</th>
@@ -101,7 +101,7 @@ makeDatatable("sessions-table");
     <tbody>
     {% for session in campaign.sessions %}
         <tr>
-            <td>{{ session.title }}</td>
+            <td>{{ session.view_text() }}</td>
             <td>{{ moment(session.date).format(current_user.dateformat) }} ({{ moment(session.date).fromNow() }})</td>
             <td>
                 {% if session.participants %}

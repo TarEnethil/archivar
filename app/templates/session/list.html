@@ -94,7 +94,7 @@ $(document).ready(function() {
             {% else %}
             <tr>
             {% endif %}
-                <td>{{ session.title }}</td>
+                <td>{{ session.view_text() }}</td>
                 <td>{{ moment(session.date).format(current_user.dateformat) }} ({{ moment(session.date).fromNow() }})</td>
                 <td>
                     {% if session.participants %}
@@ -149,7 +149,7 @@ $(document).ready(function() {
             {% else %}
             <tr>
             {% endif %}
-                <td>{{ session.title }}</td>
+                <td>{{ session.view_text() }}</td>
                 <td>{{ moment(session.date).format(current_user.dateformat) }}</td>
                 <td>
                     {% if session.participants %}

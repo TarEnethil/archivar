@@ -1,3 +1,4 @@
+from app import db
 from app.character.models import Character
 from app.party.models import Party
 from app.session.models import Session
@@ -42,3 +43,14 @@ def get_previous_session(session):
 def get_next_session(session):
     q = Session.query.filter(and_(Session.campaign_id == session.campaign_id, Session.date > session.date)).order_by(Session.date.asc()).first()
     return q
+
+def recalc_session_numbers(campaign, db):
+    print("recalc called")
+    sessions = Session.query.filter(Session.campaign_id == campaign.id).order_by(Session.date.asc()).all()
+    count = 1
+
+    for session in sessions:
+        session.session_number = count
+        count += 1
+
+    db.session.commit()
