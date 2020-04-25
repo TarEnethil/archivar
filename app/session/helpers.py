@@ -33,11 +33,6 @@ def gen_participant_choices():
 
     return choices
 
-# get the amount of sessions for the specified campaign code
-def get_session_number(code):
-    q = Session.query.filter(Session.code == code)
-    return q.count()
-
 # get the previous session for a specified campaign code (if applicable)
 def get_previous_session(session):
     q = Session.query.filter(and_(Session.campaign_id == session.campaign_id, Session.date < session.date)).order_by(Session.date.desc()).first()
