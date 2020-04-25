@@ -49,7 +49,10 @@ def about():
 
 @bp.route("/changelog")
 def changelog():
-    return render_template("changelog.html", title=page_title("Changelog"))
+    with open(current_app.config["CHANGELOG"], "r") as markdown_file:
+        changelog = markdown_file.read()
+
+    return render_template("changelog.html", changelog=changelog, title=page_title("Changelog"))
 
 @bp.route("/statistics")
 @login_required
