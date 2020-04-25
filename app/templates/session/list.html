@@ -128,7 +128,10 @@ $(document).ready(function() {
     <h2>Past Sessions
     {% if sessions_past %}
     ({{ sessions_past|length }})
+    {% endif %}
     </h2>
+
+    {% if sessions_past %}
     <table class="table table-hover table-striped" id="past-sessions-table" style="border-collapse:collapse !important;">
         <thead>
             <tr>
