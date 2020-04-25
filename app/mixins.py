@@ -102,13 +102,13 @@ class LinkGenerator(object):
 
         return self.link(self.view_url(), text, classes, ids)
 
-    def edit_link(self, text="Edit", css_classes=None, css_ids=None):
+    def edit_link(self, text="Edit", classes=None, ids=None):
         if text == None:
             text = self.edit_text()
 
         return self.link(self.edit_url(), text, classes, ids)
 
-    def delete_link(self, text="Delete", css_classes=None, css_ids=None):
+    def delete_link(self, text="Delete", classes=None, ids=None):
         if text == None:
             text = self.delete_text()
 
