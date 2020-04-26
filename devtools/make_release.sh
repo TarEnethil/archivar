@@ -4,8 +4,9 @@
 # it attempts to do the following things:
 #   1. update what version() returns
 #   2. add every commit-title since the last tag to CHANGELOG
-#   3. commit both those changes
-#   4. tag the release-commit with the release-tag
+#   3. update requirements.txt
+#   4. commit both those changes
+#   5. tag the release-commit with the release-tag
 # should an error occur, some of the changes will be rolled back automatically
 
 # print to stderr
@@ -22,6 +23,7 @@ function reset() {
     rm $1/CHANGELOG.tmp
     git checkout $1/CHANGELOG
     git checkout $1/app/version.py
+    git checkout $1/requirements.txt
 }
 
 # change what version() returns
@@ -87,6 +89,20 @@ function make_changelog() {
     echo "    replaced $CLOG"
 }
 
+# update requirements.txt
+# $1 = relative Path to project root
+function update_requirements() {
+    echo "updating requirements"
+    # grep out pkg-resources=0.0.0 which is a bug on certain systems
+    pip freeze | grep -v "pkg-resources" > requirements.txt
+
+    if [[ $? -ne 0 ]]; then
+        err "updating requirements failed"
+        reset $1
+        exit 1
+    fi
+}
+
 # make a release commit
 # $1 = relative Path to project root
 # $2 = new version
@@ -95,6 +111,7 @@ function make_commit() {
     msg="Increase Version to $2, add Changelog"
     git add $1/app/version.py
     git add $1/CHANGELOG
+    git add $1/requirements.txt
     git commit -sm "$msg"
 
     if [[ $? -ne 0 ]]; then
@@ -142,6 +159,7 @@ echo "making new release for version $V..."
 
 change_version $P $V
 make_changelog $P $V
+update_requirements $P
 make_commit $P $V
 make_tag $V
 
