@@ -134,7 +134,7 @@
         </thead>
 
         <tbody>
-        {% for session in char.sessions %}
+        {% for session in char.sessions|sort(attribute='date') %}
             <tr>
                 <td>{{ session.view_text() }}</td>
                 <td>{{ moment(session.date).format(current_user.dateformat) }}</td>
