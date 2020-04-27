@@ -133,6 +133,13 @@ function make_tag() {
 }
 
 ### MAIN ###
+
+# check that we are run inside virtualenv
+if [[ -z $VIRTUAL_ENV ]]; then
+    err "not running inside virtual env"
+    exit 1
+fi
+
 # check that new version tag was $1
 if [[ "$#" -ne 1 ]]; then
     err "not enough parameters"
