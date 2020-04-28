@@ -10,7 +10,7 @@
 {{ super() }}
 {{ include_js(['bootstrap-select']) }}
 <script>
-$("#finalize-btn a").click(function(e) {
+$(".finalize-btn").click(function(e) {
     var sure = confirm("Are you sure you want to finalize the calendar? After doing so, you can only change the names, abbreviations and descriptions of epochs, months and days.");
 
     if (sure == false) {
@@ -28,20 +28,11 @@ $("#phase-button").click(function(e) {
 
 {% block app_content %}
     <h1>Calendar Preview</h1>
-    <ul class="nav nav-tabs">
-        <li>
-            <a href="{{ url_for('calendar.settings') }}">
-                {{ icon("arrow-left") }}
-                Back to Settings
-            </a>
-        </li>
-         <li id="finalize-btn">
-            <a href="{{ url_for('calendar.finalize') }}">
-                {{ icon("exclamation-sign") }}
-                Finalize
-            </a>
-        </li>
-    </ul>
+
+    {{ navbar_start() }}
+        {{ button_nav(url=url_for('calendar.settings'), text="Back to Settings", icon="arrow-left") }}
+        {{ button_nav(url=url_for('calendar.finalize'), text="Finalize", icon="exclamation-circle", classes="bg-warning text-dark") }}
+    {{ navbar_end() }}
 
     <p>
         This page is a preview of what the calendar would look like if it was finalized.
@@ -156,14 +147,11 @@ $("#phase-button").click(function(e) {
 
     <h2>Moons</h2>
     {% if calendar["moons"] %}
-    <ul class="nav nav-tabs">
-        <li>
-            <a href="" id="phase-button">
-                {{ icon("adjust") }}
-                Toggle moon phases
-            </a>
-        </li>
-    </ul>
+
+    {{ navbar_start() }}
+        {{ button_nav(url="", text="Toggle moon phases", icon="adjust", ids="phase-button") }}
+    {{ navbar_end() }}
+
     <table class="table table-striped table-hover">
         <thead>
             <tr>

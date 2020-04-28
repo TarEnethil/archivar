@@ -264,7 +264,7 @@ def include_css(styles):
             "local" : [local_url + "css/bootstrap-datetimepicker.min.css"]
         },
         "datatables" : {
-            "cdn" : ["https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css"],
+            "cdn" : ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"],
             "local" : [local_url + "css/dataTables.bootstrap.min.css"]
         }
     }
@@ -308,8 +308,8 @@ def include_js(scripts):
             "local" : [local_url + "js/bootstrap-datetimepicker.min.js"]
         },
         "datatables" : {
-            "cdn" : ["https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js", "https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"],
-            "local" : [local_url + "js/jquery.dataTables.min.js", local_url + "js/dataTables.bootstrap.min.js"],
+            "cdn" : ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"],
+            "local" : [local_url + "js/dataTables.bootstrap.min.js"],
             "helper" : [local_url + "js/helpers/datatables.js"]
         },
         "quicksearch" : {
@@ -360,8 +360,47 @@ def urlfriendly(text):
 
     return text
 
-def icon(name):
-    return Markup('<span class="fas fa-{}" aria-hidden="true"></span>'.format(name))
+def icon_fkt(name, text_class=""):
+    return Markup('<span class="fas fa-{} {}" aria-hidden="true"></span>'.format(name, text_class))
+
+def navbar_start(no_margin=False):
+    if no_margin:
+        return Markup('<ul class="nav nav-tabs mb-4">')
+
+    return Markup('<ul class="nav nav-tabs">')
+
+def navbar_end():
+    return Markup("</ul>")
+
+def link(url, text, classes=None, ids=None):
+    attrs = ""
+
+    if classes != None:
+        attrs += 'class="{}"'.format(classes)
+
+    if ids != None:
+        attrs += 'id="{}"'.format(ids)
+
+    return Markup('<a href="{}" {}>{}</a>'.format(url, attrs, text))
+
+def button_internal(url, text, icon=None, classes=None, ids=None, swap=False, icon_text_class=""):
+    if icon != None:
+        icon = icon_fkt(icon, text_class=icon_text_class)
+
+    if swap == False:
+        text = "{}\n{}".format(icon, text)
+    else:
+        text = "{}\n{}".format(text, icon)
+
+    return link(url, text, classes, ids)
+
+def button(url, text, icon=None, classes="btn-secondary", ids=None, swap=False, icon_text_class=""):
+    return button_internal(url, text, icon, "btn {}".format(classes), ids, swap, icon_text_class=icon_text_class)
+
+def button_nav(url, text, icon=None, classes="", ids=None, swap=False, icon_text_class="", li_classes=""):
+    btn = '<li class="nav-item {}">{}</li>'.format(li_classes, button_internal(url, text, icon, "nav-link {}".format(classes), ids, swap, icon_text_class))
+
+    return Markup(btn)
 
 def register_processors_and_filters(app):
     @app.context_processor
@@ -371,7 +410,12 @@ def register_processors_and_filters(app):
                     include_css=include_css,
                     include_js=include_js,
                     get_archivar_version=get_archivar_version,
-                    icon=icon)
+                    icon=icon_fkt,
+                    navbar_start=navbar_start,
+                    navbar_end=navbar_end,
+                    link=link,
+                    button=button,
+                    button_nav=button_nav)
 
     @app.template_filter()
     def hash(text):

@@ -175,14 +175,10 @@ $("#phase-button").click(function(e) {
     <p>The world can be orbited by one or multiple moons, illuminating the dark night.</p>
 
     {% if stats["moons"] %}
-    <ul class="nav nav-tabs">
-        <li>
-            <a href="" id="phase-button">
-                {{ icon("adjust") }}
-                Toggle Moon Phases
-            </a>
-        </li>
-    </ul>
+    {{ navbar_start() }}
+        {{ button_nav(url="", text="Toggle moon phases", icon="adjust", ids="phase-button") }}
+    {{ navbar_end() }}
+
     <table class="table table-striped">
         <thead>
             <tr>

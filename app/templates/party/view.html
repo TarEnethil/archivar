@@ -24,16 +24,13 @@
 <h1>{{ party.name }}</h1>
 
 {% if current_user.has_char_in_party(party) or current_user.has_admin_role() %}
-<ul class="nav nav-tabs">
-    <li>
-        {{ party.edit_button_nav() }}
-    </li>
+{{ navbar_start() }}
+    {{ party.edit_button_nav() }}
+
     {% if current_user.has_admin_role() %}
-    <li class="delete-li">
         {{ party.delete_button_nav() }}
-    </li>
-{% endif %}
-</ul>
+    {% endif %}
+{{ navbar_end() }}
 {% endif %}
 
 {% if party.description %}

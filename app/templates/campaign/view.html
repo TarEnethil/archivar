@@ -20,17 +20,10 @@ makeDatatable("sessions-table");
 <h1>{{ campaign.name }}</h1>
 
 {% if current_user.is_dm_of(campaign) or current_user.has_admin_role() %}
-<ul class="nav nav-tabs">
-    <li>
-        <a href="{{ url_for('session.create', base=campaign.id) }}">
-            {{ icon("plus") }}
-            Add Session
-        </a>
-    </li>
-    <li>
-        {{ campaign.edit_button_nav(text="Edit Campaign") }}
-    </li>
-</ul>
+{{ navbar_start() }}
+    {{ button_nav(url=url_for('session.create', base=campaign.id), text="Add Session", icon="plus") }}
+    {{ campaign.edit_button_nav(text="Edit Campaign") }}
+{{ navbar_end() }}
 {% endif %}
 
 <h2>Info</h2>

@@ -28,14 +28,10 @@
 <p>
     Create or edit media categories.
 </p>
-<ul class="nav nav-tabs">
-    <li>
-        <a href="{{ url_for('media.category_create') }}">
-            {{ icon("plus") }}
-            New Category
-        </a>
-    </li>
-</ul>
+
+{{ navbar_start() }}
+    {{ button_nav(url=url_for('media.category_create'), text="New Category", icon="plus") }}
+{{ navbar_end() }}
 
 {% if categories %}
 <table class="table table-hover table-striped">

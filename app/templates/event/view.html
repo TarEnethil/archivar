@@ -22,16 +22,13 @@
 {% block app_content %}
     <h1>{{ event.name }}</h1>
 
-    <ul class="nav nav-tabs">
-        <li>
-            {{ event.edit_button_nav() }}
-        </li>
+    {{ navbar_start() }}
+        {{ event.edit_button_nav() }}
+
         {% if current_user.is_event_admin() %}
-        <li class="delete-li">
             {{ event.delete_button_nav() }}
-        </li>
         {% endif %}
-    </ul>
+    {{ navbar_end() }}
 
     <dl class="dl-horizontal">
         <dt>Category</dt>

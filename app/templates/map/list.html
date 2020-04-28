@@ -24,14 +24,9 @@ makeDatatable("map-table");
 {% endif %}
 </h1>
 
-<ul class="nav nav-tabs">
-    <li>
-        <a href="{{ url_for('map.create') }}">
-            {{ icon("plus") }}
-            Add Map
-        </a>
-    </li>
-</ul>
+{{ navbar_start() }}
+    {{ button_nav(url=url_for('map.create'), text="Add Map", icon="plus") }}
+{{ navbar_end() }}
 
 <p>
     This page lists all maps.

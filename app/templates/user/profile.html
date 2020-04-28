@@ -19,26 +19,14 @@
 {% block app_content %}
     <h1>User Profile for {{ user.username }}</h1>
     {% if user == current_user or current_user.has_admin_role() %}
-    <ul class="nav nav-tabs">
-        <li>
-            {{ user.edit_button_nav() }}
-        </li>
+    {{ navbar_start() }}
+        {{ user.edit_button_nav() }}
 
         {% if user == current_user  %}
-        <li>
-            <a href="{{ url_for('user.settings') }}">
-                {{ icon("cog") }}
-                Settings
-            </a>
-        </li>
-        <li>
-            <a href="{{ url_for('character.create') }}">
-                {{ icon("plus") }}
-                Add Character
-            </a>
-        </li>
+            {{ button_nav(url=url_for('user.settings'), text="Settings", icon="cog") }}
+            {{ button_nav(url=url_for('character.create'), text="Add Character", icon="plus") }}
         {% endif %}
-    </ul>
+    {{ navbar_end() }}
     {% endif %}
 
     {% if user.about %}

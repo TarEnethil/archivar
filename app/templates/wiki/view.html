@@ -22,36 +22,22 @@
 {% block app_content %}
 {{ super() }}
 
-<ul class="nav nav-tabs">
-    <li>
-        <a href="{{ url_for('wiki.create') }}">
-            {{ icon("plus") }}
-            Add Article
-        </a>
-    </li>
-    <li>
-        {{ entry.edit_button_nav() }}
-    </li>
+{{ navbar_start() }}
+    {{ button_nav(url=url_for('wiki.create'), text="Add Article", icon="plus") }}
+    {{ entry.edit_button_nav() }}
 
     {% if current_user.is_wiki_admin() %}
-    <li>
-        <a href="{{ url_for('wiki.toggle_vis', id=entry.id, name=entry.title|urlfriendly) }}">
-            {% if entry.is_visible %}
-            {{ icon("eye-slash") }}
-            Hide Article
-            {% else %}
-            {{ icon("eye") }}
-            Make Public
-            {% endif %}
-        </a>
-    </li>
-    {% if entry.id != 1 %}
-    <li class="delete-li">
-        {{ entry.delete_button_nav() }}
-    </li>
+        {% if entry.is_visible %}
+            {{ button_nav(url=url_for('wiki.toggle_vis', id=entry.id, name=entry.title|urlfriendly), text="Hide Article", icon="eye-slash") }}
+        {% else %}
+            {{ button_nav(url=url_for('wiki.toggle_vis', id=entry.id, name=entry.title|urlfriendly), text="Make Public", icon="eye") }}
+        {% endif %}
+
+        {% if entry.id != 1 %}
+            {{ entry.delete_button_nav() }}
+        {% endif %}
     {% endif %}
-    {% endif %}
-</ul>
+{{ navbar_end() }}
 
 {% if not entry.is_visible %}
 <p class="alert alert-warning invis-warn">

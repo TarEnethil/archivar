@@ -22,23 +22,13 @@ makeDatatable("media-table", 25, 25);
     {% endif %}
     </h1>
 
-    <ul class="nav nav-tabs">
-        <li>
-            <a href="{{ url_for('media.upload') }}">
-                {{ icon("plus") }}
-                Add File
-            </a>
-        </li>
+    {{ navbar_start() }}
+        {{ button_nav(url=url_for('media.upload'), text="Add File", icon="plus") }}
 
         {% if current_user.is_media_admin() %}
-        <li>
-            <a href="{{ url_for('media.settings') }}">
-                {{ icon("cog") }}
-                Media Settings
-            </a>
-        </li>
+        {{ button_nav(url=url_for('media.settings'), text="Media Settings", icon="cog") }}
         {% endif %}
-    </ul>
+    {{ navbar_end() }}
 
     {% if media %}
     <table class="table table-hover table-striped" id="media-table">

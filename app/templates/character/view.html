@@ -39,32 +39,20 @@
 {% block app_content %}
 
     <h1>{{ char.name }}</h1>
-    <ul class="nav nav-tabs">
+    {{ navbar_start() }}
         {% if current_user == char.player %}
-        <li>
-            <a href="{{ url_for('character.journal_create', c_id=char.id, c_name=char.name|urlfriendly) }}">
-                {{ icon("plus") }}
-                Add Journal Entry
-            </a>
-        </li>
+            {{ button_nav(url=url_for('character.journal_create', c_id=char.id, c_name=char.name|urlfriendly), text="Add Journal Entry", icon="plus") }}
         {% endif %}
+
         {% if char.journals %}
-        <li>
-            <a href="{{ url_for('character.journal_list', c_id=char.id, c_name=char.name|urlfriendly) }}">
-                {{ icon("book") }}
-                View Full Journal
-            </a>
-        </li>
+            {{ button_nav(url=url_for('character.journal_list', c_id=char.id, c_name=char.name|urlfriendly), text="View Full Journal", icon="book") }}
         {% endif %}
-    {% if char.player == current_user or current_user.has_admin_role() %}
-        <li>
+
+        {% if char.player == current_user or current_user.has_admin_role() %}
             {{ char.edit_button_nav(text="Edit Character") }}
-        </li>
-        <li class="delete-li">
             {{ char.delete_button_nav() }}
-        </li>
-    {% endif %}
-    </ul>
+        {% endif %}
+    {{ navbar_end() }}
 
     <h2>Info</h2>
 
