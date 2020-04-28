@@ -71,11 +71,6 @@
     margin-top:10px;
 }
 
-.leaflet-popup-content .btn {
-    padding:3px 6px;
-    color:#000;
-}
-
 .leaflet-popup-content .popup_info {
     font-size:.8em;
 }
