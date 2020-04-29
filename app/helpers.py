@@ -243,6 +243,10 @@ def include_css(styles):
     local_url = url_for('static', filename="")
 
     s = {
+        "bootstrap": {
+            "cdn": ["https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"],
+            "local": [local_url + "css/bootstrap.min.css"]
+        },
         "markdown-editor" : {
             "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.css"],
             "local" : [local_url + "css/easymde.min.css"]
@@ -286,6 +290,14 @@ def include_js(scripts):
     local_url = url_for('static', filename="")
 
     s = {
+        "bootstrap": {
+            "cdn": ["https://code.jquery.com/jquery-3.4.1.slim.min.js",
+                    "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js",
+                    "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"],
+            "local": [  local_url + "js/jquery.min.js",
+                        local_url + "js/popper.min.js",
+                        local_url + "js/bootstrap.min.js"]
+        },
         "markdown-editor" : {
             "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.js"],
             "local" : [local_url + "js/easymde.min.js"]
@@ -386,6 +398,8 @@ def link(url, text, classes=None, ids=None):
 def button_internal(url, text, icon=None, classes=None, ids=None, swap=False, icon_text_class=""):
     if icon != None:
         icon = icon_fkt(icon, text_class=icon_text_class)
+    else:
+        icon = ""
 
     if swap == False:
         text = "{}\n{}".format(icon, text)

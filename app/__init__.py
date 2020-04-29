@@ -1,6 +1,6 @@
 from config import Config
 from flask import Flask, url_for
-from flask_bootstrap import Bootstrap, StaticCDN
+from flask_bootstrap import Bootstrap
 from flask_fontawesome import FontAwesome
 from flask_login import LoginManager, current_user
 from flask_migrate import Migrate

@@ -8,7 +8,7 @@
     width:100%;
 }
 
-#nodeform {
+/*#nodeform {
     width:35%;
     top:10%;
     left:50%;
@@ -16,7 +16,7 @@
     position:absolute;
     z-index:5000;
     display:none;
-}
+}*/
 
 #messagebox {
     z-index:500000;
@@ -231,6 +231,13 @@
     border-width:1px !important;
 }
 
-#nodeform .CodeMirror {
-    height:320px !important;
+/* TODO: this hides the "real" submit buttons, as they are not placed in the modal-footer yet */
+.create_node_form input[type=submit],
+.edit_node_form input[type=submit] {
+    display:none;
+}
+
+.sidebar {
+    z-index:2000 !important;
+    padding:10px !important;
 }

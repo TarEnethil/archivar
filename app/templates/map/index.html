@@ -18,11 +18,13 @@
   {% include "markdown_editor_sidebar.html" %}
 
   <div id="messagebox"></div>
-  <div id="nodeform" class="card">
-    <a class="close-link">
-      {{ icon("times") }}
-    </a>
-    <div id="nodeform_content" class="p-5"></div>
+
+  <div class="modal" data-backdrop="static" id="nodeform">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content" id="nodeform_content">
+          test
+        </div>
+    </div>
   </div>
 
   <div id="location-list">
@@ -240,12 +242,12 @@
     // show the node form
     function show_nodeform() {
       $("#nodeform input[type=submit]").removeClass("btn-default").addClass("btn-success");
-      $("#nodeform").show();
+      $("#nodeform").modal('show');
     }
 
     // hide the node form
     function hide_nodeform() {
-      $("#nodeform").hide();
+      $("#nodeform").modal('hide');
     }
 
     // evaluate ajax error (reachability, loading, timeout, ...)
@@ -297,6 +299,10 @@
       {% if current_user.has_admin_role() %}
       $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
       {% endif %}
+
+      $('.modal-footer #fake-submit').click(function() {
+        $(".create_node_form #submit").click();
+      });
     }
 
     // attach listeners for a edit-node form
@@ -338,11 +344,6 @@
           }
       });
 
-      // close 'x'
-      $(".close-link").click(function() {
-        hide_nodeform();
-      });
-
       // filterable dropdown of wiki articles
       var wiki = $("#wiki_entry")
       if (wiki.attr("disabled") != "disabled") {
@@ -352,6 +353,10 @@
       {% if current_user.has_admin_role() %}
       $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
       {% endif %}
+
+      $('.modal-footer #fake-submit').click(function() {
+        $(".edit_node_form #submit").click();
+      });
     }
 
     // insert the icons into the dropdown for the node type
@@ -471,9 +476,9 @@
       loading();
       var url = "{{ url_for('map.node_edit', id='-42') }}"
       $("#nodeform_content").load(url.replace("-42", id), function() {
+          // $(".edit_node_form #submit").detach().appendTo(".edit_node_form + .modal-footer");
           attach_edit_form_listener(id);
           prep_node_type_select();
-          $("#btn-move-node").detach().appendTo(".edit_node_form form");
           $("button[data-id=node_type]").css("height", "34px");
           $("button[data-id=wiki_entry]").css("height", "34px");
           show_nodeform();
@@ -517,7 +522,7 @@
 
       pop.append($('<div />').addClass("popup-markdown").append(description));
 
-      var edit_btn = $("<a />").addClass("btn btn-primary node-edit-btn").attr("data", id);
+      var edit_btn = $("<a />").addClass("btn btn-primary node-edit-btn text-light").attr("data", id);
       edit_btn.append('{{ icon("edit") }}');
       edit_btn.append(' edit');
 
