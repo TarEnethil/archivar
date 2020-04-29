@@ -294,7 +294,7 @@ def include_js(scripts):
             "cdn": ["https://code.jquery.com/jquery-3.4.1.slim.min.js",
                     "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js",
                     "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"],
-            "local": [  local_url + "js/jquery.min.js",
+            "local": [  local_url + "js/jquery-3.4.1.min.js",
                         local_url + "js/popper.min.js",
                         local_url + "js/bootstrap.min.js"]
         },

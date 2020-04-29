@@ -44,43 +44,43 @@ $(document).ready(function() {
             {% endif %}
 
             <h2>Static Links</h2>
-            <ul class="nav nav-pills nav-stacked">
-                <li><a href="{{ url_for('wiki.create') }}">New Page</a></li>
-                <li><a href="{{ url_for('wiki.recent') }}">Recent Changes</a></li>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('wiki.create') }}">New Page</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('wiki.recent') }}">Recent Changes</a></li>
 
                 {% if current_user.is_wiki_admin() %}
-                <li><a href="{{ url_for('wiki.settings') }}">Settings</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('wiki.settings') }}">Settings</a></li>
                 {% endif %}
             </ul>
 
             <h2>Articles</h2>
-            <ul class="nav nav-pills nav-stacked" id="stacked-menu">
+            <ul class="nav nav-pills flex-column" id="stacked-menu">
                 {% if entry and entry.id == 1 %}
-                <li class="active"><a href="{{ url_for('wiki.view', id=1, name='Main Page'|urlfriendly) }}">Main Page</a></li>
+                <li class="nav-item active"><a class="nav-link" href="{{ url_for('wiki.view', id=1, name='Main Page'|urlfriendly) }}">Main Page</a></li>
                 {% else %}
-                <li><a href="{{ url_for('wiki.view', id=1, name='Main Page'|urlfriendly) }}">Main Page</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('wiki.view', id=1, name='Main Page'|urlfriendly) }}">Main Page</a></li>
                 {% endif %}
 
                 {% if nav[0] %}
                     {% for cat in nav[0] %}
                         {% if cat != "" %}
-                        <li>
-                            <a data-toggle="collapse" data-parent="#stacked-menu" href="#{{cat|hash}}">{{ cat }} <span class="caret arrow"></span></a>
+                        <li class="nav-item">
+                            <a class="dropdown-toggle" data-toggle="collapse" data-parent="#stacked-menu" href="#a{{cat|hash}}">{{ cat }}</a>
                             {% if entry and entry.category == cat %}
-                            <ul class="nav nav-pills nav-stacked collapse in" id="{{cat|hash}}">
+                            <ul class="nav nav-pills collapse show" id="a{{cat|hash}}">
                             {% else %}
-                            <ul class="nav nav-pills nav-stacked collapse" id="{{cat|hash}}">
+                            <ul class="nav nav-pills collapse" id="a{{cat|hash}}">
                             {% endif %}
 
                             {% for link in nav[0][cat] %}
                                 {% if entry and entry.id == link[0] and link[2] == False %}
-                                <li class="active invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
+                                <li class="nav-item active invis"><a class="nav-link" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                                 {% elif entry and entry.id == link[0] %}
-                                <li class="active"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
+                                <li class="nav-item active"><a class="nav-link" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                                 {% elif link[2] == False %}
-                                <li class="invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
+                                <li class="nav-item invis"><a class="nav-link" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                                 {% else %}
-                                <li><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                                 {% endif %}
                             {% endfor %}
                             </ul>
@@ -90,13 +90,13 @@ $(document).ready(function() {
 
                     {% for link in nav[0][""] %}
                         {% if entry and entry.id == link[0] and link[2] == False %}
-                        <li class="active invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
+                        <li class="nav-item active invis"><a class="nav-link" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                         {% elif entry and entry.id == link[0] %}
-                        <li class="active"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
+                        <li class="nav-item active"><a class="nav-link" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                         {% elif link[2] == False %}
-                        <li class="invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
+                        <li class="nav-item invis"><a class="nav-link" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                         {% else %}
-                        <li><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
