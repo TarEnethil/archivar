@@ -376,7 +376,7 @@ def icon_fkt(name, text_class=""):
     return Markup('<span class="fas fa-{} {}" aria-hidden="true"></span>'.format(name, text_class))
 
 def navbar_start(no_margin=False):
-    if no_margin:
+    if no_margin == False:
         return Markup('<ul class="nav nav-tabs mb-4">')
 
     return Markup('<ul class="nav nav-tabs">')
@@ -433,7 +433,7 @@ def register_processors_and_filters(app):
 
     @app.template_filter()
     def hash(text):
-        return md5(text.encode('utf-8')).hexdigest()[:10]
+        return "{}-{}".format(urlfriendly(text), md5(text.encode('utf-8')).hexdigest()[:3])
 
     @app.template_filter()
     def urlfriendly(text):

@@ -2,7 +2,7 @@
 
 {% block app_content %}
 {% if current_user.has_admin_role() %}
-    {{ navbar_start() }}
+    {{ navbar_start(no_margin=True) }}
         {{ button_nav(url=url_for('main.settings'), text="Edit Text", icon="edit") }}
     {{ navbar_end() }}
 {% endif %}

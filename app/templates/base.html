@@ -74,10 +74,10 @@ $(document).ready(function() {
                     </a>
                     <ul class="dropdown-menu">
                         {% for link in user_ql %}
-                        <li class="nav-item"><a class="nav-link" href="{{ link[0] }}">{{ link[1] }}</a></li>
+                        <li class="nav-item"><a class="nav-link pl-3" href="{{ link[0] }}">{{ link[1] }}</a></li>
                         {% endfor %}
                         <li role="separator" class="dropdown-divider"></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('user.settings') }}">
+                        <li class="nav-item"><a class="nav-link pl-3" href="{{ url_for('user.settings') }}">
                             {{ icon("cog") }}
                             Edit quicklinks
                             </a>
@@ -118,28 +118,28 @@ $(document).ready(function() {
                     <ul class="dropdown-menu">
                         {% if current_user.has_admin_role() %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.settings') }}">General</a>
-                            <a class="nav-link" href="{{ url_for('calendar.settings') }}">Calendar</a>
+                            <a class="nav-link pl-3" href="{{ url_for('main.settings') }}">General</a>
+                            <a class="nav-link pl-3" href="{{ url_for('calendar.settings') }}">Calendar</a>
                         </li>
                         {% endif %}
                         {% if current_user.is_map_admin() %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('map.settings') }}">Map</a>
+                            <a class="nav-link pl-3" href="{{ url_for('map.settings') }}">Map</a>
                         </li>
                         {% endif %}
                         {% if current_user.is_event_admin() %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('event.settings') }}">Events</a>
+                            <a class="nav-link pl-3" href="{{ url_for('event.settings') }}">Events</a>
                         </li>
                         {% endif %}
                         {% if current_user.is_wiki_admin() %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('wiki.settings') }}">Wiki</a>
+                            <a class="nav-link pl-3" href="{{ url_for('wiki.settings') }}">Wiki</a>
                         </li>
                         {% endif %}
                         {% if current_user.is_media_admin() %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('media.settings') }}">Media</a>
+                            <a class="nav-link pl-3" href="{{ url_for('media.settings') }}">Media</a>
                         </li>
                         {% endif %}
                     </ul>
@@ -154,9 +154,9 @@ $(document).ready(function() {
                     {{ icon("user") }} {{ current_user.username }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="nav-item">{{ current_user.view_link(classes="nav-link") }}</li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('user.settings') }}">Settings</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a></li>
+                        <li class="nav-item">{{ current_user.view_link(classes="nav-link pl-3") }}</li>
+                        <li class="nav-item"><a class="nav-link pl-3" href="{{ url_for('user.settings') }}">Settings</a></li>
+                        <li class="nav-item"><a class="nav-link pl-3" href="{{ url_for('main.logout') }}">Logout</a></li>
                     </ul>
                 </li>
                 {% endif %}

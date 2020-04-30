@@ -22,7 +22,7 @@
 {% block app_content %}
 {{ super() }}
 
-{{ navbar_start() }}
+{{ navbar_start(no_margin=True) }}
     {{ button_nav(url=url_for('wiki.create'), text="Add Article", icon="plus") }}
     {{ entry.edit_button_nav() }}
 
