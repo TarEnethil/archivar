@@ -18,6 +18,6 @@ label[for=searchterm] {
     display:none;
 }
 
-.flex-column li:hover {
+.flex-column a:hover {
     background:#eee;
 }
