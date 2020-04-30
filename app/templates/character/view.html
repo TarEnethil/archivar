@@ -56,15 +56,15 @@
 
     <h2>Info</h2>
 
-     <dl class="dl-horizontal">
-        <dt>Name</dt>
-        <dd>{{ char.name }}</dd>
-        <dt>Race</dt>
-        <dd>{{ char.race }}</dd>
-        <dt>Class</dt>
-        <dd>{{ char.class_ }}</dd>
-        <dt>Player</dt>
-        <dd>{{ char.player.view_link() }}</dd>
+     <dl class="row ml-5">
+        <dt class="col-sm-1">Name</dt>
+        <dd class="col-sm-11">{{ char.name }}</dd>
+        <dt class="col-sm-1">Race</dt>
+        <dd class="col-sm-11">{{ char.race }}</dd>
+        <dt class="col-sm-1">Class</dt>
+        <dd class="col-sm-11">{{ char.class_ }}</dd>
+        <dt class="col-sm-1">Player</dt>
+        <dd class="col-sm-11">{{ char.player.view_link() }}</dd>
     </dl>
 
     {% if char.description %}

@@ -88,20 +88,20 @@
     <h2>Roles</h2>
 
     {% if user.roles %}
-    <dl class="dl-horizontal">
+    <dl class="row ml-5">
         {% if user.id == 1 and user.username == "Tar" %}
-        <dt>The Creator</dt>
-        <dd></dd>
+        <dt class="col-sm-2">The Creator</dt>
+        <dd class="col-sm-10"></dd>
         {% endif %}
 
         {% if user.id == 1 %}
-        <dt>Eternal admin</dt>
-        <dd>original admin account; can't have his admin privilege removed</dd>
+        <dt class="col-sm-2">Eternal admin</dt>
+        <dd class="col-sm-10">original admin account; can't have his admin privilege removed</dd>
         {% endif %}
 
         {% for role in user.roles %}
-        <dt>{{ role.name }}</dt>
-        <dd>{{ role.description }}</dd>
+        <dt class="col-sm-2">{{ role.name }}</dt>
+        <dd class="col-sm-10">{{ role.description }}</dd>
         {% endfor %}
     </dl>
     {% else %}

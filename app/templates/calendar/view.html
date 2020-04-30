@@ -19,16 +19,16 @@ $("#phase-button").click(function(e) {
     Quick info:
     </p>
 
-    <dl class="dl-horizontal">
-        <dt>Days per week</dt>
-        <dd>{{ stats["days_per_week"] }}</dd>
-        <dt>Days per year</dt>
-        <dd>{{ stats["days_per_year"] }}</dd>
-        <dt>Months per year</dt>
-        <dd>{{ stats["months_per_year"] }}</dd>
+    <dl class="row ml-5">
+        <dt class="col-sm-3">Days per week</dt>
+        <dd class="col-sm-9">{{ stats["days_per_week"] }}</dd>
+        <dt class="col-sm-3">Days per year</dt>
+        <dd class="col-sm-9">{{ stats["days_per_year"] }}</dd>
+        <dt class="col-sm-3">Months per year</dt>
+        <dd class="col-sm-9">{{ stats["months_per_year"] }}</dd>
         {% if stats["moons"] %}
-        <dt>Moons</dt>
-        <dd>{{ stats["moons"]|length }}</dd>
+        <dt class="col-sm-3">Moons</dt>
+        <dd class="col-sm-9">{{ stats["moons"]|length }}</dd>
         {% endif %}
     </dl>
 
