@@ -416,6 +416,9 @@ def button_nav(url, text, icon=None, classes="", ids=None, swap=False, icon_text
 
     return Markup(btn)
 
+def debug_mode():
+    return current_app.config["DEBUG"] == True
+
 def register_processors_and_filters(app):
     @app.context_processor
     def utility_processor():
@@ -429,7 +432,8 @@ def register_processors_and_filters(app):
                     navbar_end=navbar_end,
                     link=link,
                     button=button,
-                    button_nav=button_nav)
+                    button_nav=button_nav,
+                    debug_mode=debug_mode)
 
     @app.template_filter()
     def hash(text):
