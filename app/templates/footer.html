@@ -1,6 +1,14 @@
-<p id="footer">
-    version {{ get_archivar_version() }}
-    &bullet; <a href="{{ url_for('main.about') }}">About Archivar</a>
-    &bullet; <a href="{{ url_for('main.changelog') }} ">Changelog</a>
-    &bullet; <a href="{{ url_for('main.statistics') }}">Statistics</a>
-</p>
+
+<div class="row mt-5">
+    <div class="col-sm-2"></div>
+    <div class="col-xl-8" id="footer">
+        version {{ get_archivar_version() }}
+        {% if debug_mode %}
+            <span class="text-danger">((DEV))</span>
+        {% endif %}
+        &bullet; <a href="{{ url_for('main.about') }}">About Archivar</a>
+        &bullet; <a href="{{ url_for('main.changelog') }} ">Changelog</a>
+        &bullet; <a href="{{ url_for('main.statistics') }}">Statistics</a>
+    </div>
+    <div class="col-sm-2"></div>
+</div>

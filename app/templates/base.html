@@ -30,21 +30,22 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block navbar %}
-    {% if "127.0.0.1" in request.host or "localhost" in request.host %}
-    <!--<nav class="navbar navbar-expand-md navbar-default bg-dark" id="topnav" style="background:#ffea8c !important">-->
     <nav class="navbar navbar-expand-xl sticky-top navbar-light bg-light" id="topnav">
-    {% else %}
-    <nav class="navbar navbar-expand-lg navbar-default bg-dark" id="topnav">
-    {% endif %}
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#topnav-navbar" aria-expanded="true" aria-controls="navbar">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse" id="topnav-navbar">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
+                    {% if debug_mode() %}
+                    <a class="navbar-brand text-danger" href="{{ url_for('main.index') }}">
+                        {{ icon("code") }} <small class="text-light bg-danger p-1">DEV</small>
+                    </a>
+                    {% else %}
                     <a class="navbar-brand" href="{{ url_for('main.index') }}">
                         {{ icon("home") }}
                     </a>
+                    {% endif %}
                 </li>
 
                 {% if current_user.is_authenticated %}
