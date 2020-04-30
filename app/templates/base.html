@@ -168,11 +168,16 @@ $(document).ready(function() {
 {% block content %}
 {% include "markdown_editor_sidebar.html" %}
 
-<div class="container mt-5">
-    {{ utils.flashed_messages(dismissible=True) }}
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-xl-8">
+        {{ utils.flashed_messages(dismissible=True) }}
 
-    {% block app_content %}{% endblock %}
-
+        {% block app_content %}{% endblock %}
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
     {% include "footer.html" %}
 </div>
 {% endblock %}

@@ -264,8 +264,8 @@ def include_css(styles):
             "local" : [local_url + "css/leaflet.css"]
         },
         "bootstrap-datetimepicker" : {
-            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"],
-            "local" : [local_url + "css/bootstrap-datetimepicker.min.css"]
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"],
+            "local" : [local_url + "css/tempusdominus.min.css"]
         },
         "datatables" : {
             "cdn" : ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"],
@@ -316,8 +316,8 @@ def include_js(scripts):
             "local" : [local_url + "js/leaflet.js"]
         },
         "bootstrap-datetimepicker" : {
-            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"],
-            "local" : [local_url + "js/bootstrap-datetimepicker.min.js"]
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"],
+            "local" : [local_url + "js/tempusdominus.min.js"]
         },
         "datatables" : {
             "cdn" : ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"],

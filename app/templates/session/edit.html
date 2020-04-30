@@ -24,21 +24,32 @@ moment.updateLocale('en', {
     week: { dow: 1 }
 });
 
-$("#date").wrap('<div class="input-group date" id="datetimepicker"></div>');
-iga = $("<span/>").addClass("input-group-addon");
-$("<span/>").addClass("fas fa-calendar-alt").appendTo(iga);
-iga.appendTo($("#datetimepicker"));
+$("#date").wrap('<div class="input-group date" id="datetimepicker_session" data-target-input="nearest"></div>');
+$("#date").attr('data-target', '#datetimepicker_session').addClass("datetimepicker-input");
+iga = $("<div/>").addClass("input-group-append").attr("data-target", "#datetimepicker_session").attr("data-toggle", "datetimepicker");
+igt = $("<div/>").addClass("input-group-text").appendTo(iga);
+$("<span/>").addClass("fas fa-calendar-alt").appendTo(igt);
+iga.appendTo($("#datetimepicker_session"));
 
-var dateformat_string = "YYYY-MM-DD HH:mm";
+var dateformat_string = "YYYY-MM-DD HH:mm"
+
+$.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, {
+    icons: {
+        time: 'fas fa-clock',
+        date: 'fas fa-calendar-alt',
+        up: 'fas fa-arrow-up',
+        down: 'fas fa-arrow-down',
+        previous: 'fas fa-chevron-left',
+        next: 'fas fa-chevron-right',
+        today: 'fas fa-calendar-check-o',
+        clear: 'fas fa-trash',
+        close: 'fas fa-times'
+} });
 
 $(function() {
-    utc_d = $("#date").val();
-    d = moment.utc(utc_d).local().format(dateformat_string);
-    $("#date").val(d);
-
-    $("#datetimepicker").datetimepicker({
+    $("#datetimepicker_session").datetimepicker({
         format: dateformat_string
-    });
+    })
 });
 
 $("form").submit(function(e) {
