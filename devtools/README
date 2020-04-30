@@ -44,3 +44,8 @@ pip freeze | grep -v "pkg-resources" > requirements.txt
 
 Note: the grep prevents a bug on some systems where pkg-resources=0.0.0 is erroneously added to the requirements-file.
 The updates requirements.txt *must* be part of the commit that uses functions from the new packages.
+
+## Running in Dev/Debug-Mode
+
+Start `flask run` with FLASK_ENV=development to enter debug-mode.
+It will provide a python debugger, automatic reload on code-change as well as some extra logging (and hints in the template that you are in dev-mode).
