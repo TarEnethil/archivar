@@ -22,38 +22,25 @@
 {% block app_content %}
 <h1>{{ session.title }} ({{ moment(session.date).format(current_user.dateformat) }})</h1>
 
-<ul class="nav nav-tabs">
+{{ navbar_start() }}
 {% if prev %}
-    <li>
-        {{ prev.view_button_nav(text="Previous Session", icon="arrow-left") }}
-    </li>
+    {{ prev.view_button_nav(text="Previous Session", icon="arrow-left") }}
 {% endif %}
 
 {% if current_user.has_char_in_session(session) or current_user.has_admin_role() or current_user.is_dm_of(session.campaign) %}
-    <li>
-        {{ session.edit_button_nav(text="Edit Session") }}
-    </li>
+    {{ session.edit_button_nav(text="Edit Session") }}
 {% endif %}
 
 {% if next %}
-    <li>
-        {{ next.view_button_nav(text="Next Session", icon="arrow-right", swap=True) }}
-    </li>
+    {{ next.view_button_nav(text="Next Session", icon="arrow-right", classes="nav-link", swap=True) }}
 {% elif current_user.has_admin_role() or current_user.is_dm_of(session.campaign) %}
-    <li>
-        <a href="{{ url_for('session.create_with_campaign', id=session.campaign_id) }}">
-            {{ icon("plus") }}
-            Add Follow-Up Session
-        </a>
-    </li>
+    {{ button_nav(url=url_for('session.create_with_campaign', id=session.campaign_id), text="Add Follow-Up Session", icon="plus") }}
 {% endif %}
 
 {% if current_user.is_event_admin() %}
-    <li class="delete-li">
-        {{ session.delete_button_nav() }}
-    </li>
+    {{ session.delete_button_nav() }}
 {% endif %}
-</ul>
+{{ navbar_end() }}
 
 {% if session.campaign %}
 <p>

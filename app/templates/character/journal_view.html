@@ -22,14 +22,10 @@ $(document).ready(function() {
 <h1>{{ journal.title }}</h1>
 
 {% if current_user == char.player or current_user.has_admin_role() %}
-<ul class="nav nav-tabs">
-    <li>
-        {{ journal.edit_button_nav() }}
-    </li>
-    <li class="delete-li">
-        {{ journal.delete_button_nav() }}
-    </li>
-</ul>
+{{ navbar_start() }}
+    {{ journal.edit_button_nav() }}
+    {{ journal.delete_button_nav() }}
+{{ navbar_end() }}
 {% endif %}
 
 <ul class="list-unstyled">

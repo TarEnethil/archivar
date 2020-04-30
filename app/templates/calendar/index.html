@@ -8,38 +8,19 @@
 The calendar has not been finalized by the admin yet.
 </p>
 {% else %}
-<ul class="nav nav-tabs">
-    <li>
-        <a href="{{ url_for('calendar.view') }}">
-            {{ icon("calendar") }}
-            View Info
-        </a>
-    </li>
-    <li>
-        <a href="{{ url_for('event.create') }}">
-            {{ icon("plus") }}
-            Add Event
-        </a>
-    </li>
+
+{{ navbar_start() }}
+    {{ button_nav(url=url_for('calendar.view'), text="View Info", icon="calendar") }}
+    {{ button_nav(url=url_for('event.create'), text="Add Event", icon="plus") }}
 
     {% if current_user.has_admin_role() %}
-    <li>
-        <a href="{{ url_for('calendar.settings') }}">
-            {{ icon("cog") }}
-            Calendar Settings
-        </a>
-    </li>
+        {{ button_nav(url=url_for('calendar.settings'), text="Calendar Settings", icon="cog") }}
     {% endif %}
 
     {% if current_user.is_event_admin() %}
-     <li>
-        <a href="{{ url_for('event.settings') }}">
-            {{ icon("cog") }}
-            Event Settings
-        </a>
-    </li>
+        {{ button_nav(url=url_for('event.settings'), text="Event Settings", icon="cog") }}
     {% endif %}
-</ul>
+{{ navbar_end() }}
 
 <p>
     View <a href="{{ url_for('event.list') }}">all events</a>.

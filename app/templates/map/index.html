@@ -18,11 +18,13 @@
   {% include "markdown_editor_sidebar.html" %}
 
   <div id="messagebox"></div>
-  <div id="nodeform" class="panel">
-    <a class="close-link">
-      {{ icon("times") }}
-    </a>
-    <div id="nodeform_content"></div>
+
+  <div class="modal" data-backdrop="static" id="nodeform">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content" id="nodeform_content">
+          test
+        </div>
+    </div>
   </div>
 
   <div id="location-list">
@@ -33,35 +35,21 @@
     <ul id="locations"></ul>
   </div>
 
-  <span id="worldname" class="btn btn-default">
+  <span id="worldname" class="btn btn-primary">
     {{ map_.name }}
   </span>
 
-  <a id="btn-loc-sidebar" class="btn btn-default btn-left">
-    {{ icon("list") }}
-    Location List
-  </a>
+  {{ button(url="#", text="Location List", icon="list", classes="btn-primary mr-auto", ids="btn-loc-sidebar") }}
 
   <div id="bottom-right-buttons">
-    <a id="btn-add-node" class="btn btn-default">
-      {{ icon("plus") }}
-      Add Location
-    </a>
+    {{ button(url="#", text="Add Location", icon="plus", classes="btn-primary", ids="btn-add-node") }}
+    {{ button(url="#", text="Cancel", icon="plus", classes="btn-warning", ids="btn-cancel-add-node") }}
 
-    <a id="btn-cancel-add-node" class="btn btn-warning">
-      {{ icon("times") }}
-      Cancel
-    </a>
   {% if current_user.has_admin_role() %}
-    <a id="btn-add-node" class="btn btn-default" href="{{ url_for('map.create') }}">
-      {{ icon("plus") }}
-      Add Map
-    </a>
-    <a id="btn-settings" class="btn btn-default" href="{{ url_for('map.list') }}">
-      {{ icon("list") }}
-      Ĺist
-    </a>
-    {{ map_.settings_button(ids="btn-settings") }}
+    {{ button(url=url_for('map.create'), text="Add Map", icon="plus", classes="btn-primary") }}
+
+    {{ button(url=url_for('map.list'), text="List of Maps", icon="list", classes="btn-primary") }}
+    {{ map_.settings_button(ids="btn-settings", classes="btn-primary") }}
   {% endif %}
   </div>
 {% endblock %}
@@ -83,7 +71,7 @@
     var map_last_change;
     var map_change_check_delay = {{ settings.check_interval * 1000 }};
 
-    $.fn.selectpicker.Constructor.BootstrapVersion = '3';
+    $.fn.selectpicker.Constructor.BootstrapVersion = '4';
 
     function check_map_change() {
       if(map_changed)
@@ -254,12 +242,12 @@
     // show the node form
     function show_nodeform() {
       $("#nodeform input[type=submit]").removeClass("btn-default").addClass("btn-success");
-      $("#nodeform").show();
+      $("#nodeform").modal('show');
     }
 
     // hide the node form
     function hide_nodeform() {
-      $("#nodeform").hide();
+      $("#nodeform").modal('hide');
     }
 
     // evaluate ajax error (reachability, loading, timeout, ...)
@@ -311,6 +299,10 @@
       {% if current_user.has_admin_role() %}
       $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
       {% endif %}
+
+      $('.modal-footer #fake-submit').click(function() {
+        $(".create_node_form #submit").click();
+      });
     }
 
     // attach listeners for a edit-node form
@@ -352,11 +344,6 @@
           }
       });
 
-      // close 'x'
-      $(".close-link").click(function() {
-        hide_nodeform();
-      });
-
       // filterable dropdown of wiki articles
       var wiki = $("#wiki_entry")
       if (wiki.attr("disabled") != "disabled") {
@@ -366,6 +353,10 @@
       {% if current_user.has_admin_role() %}
       $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
       {% endif %}
+
+      $('.modal-footer #fake-submit').click(function() {
+        $(".edit_node_form #submit").click();
+      });
     }
 
     // insert the icons into the dropdown for the node type
@@ -485,9 +476,9 @@
       loading();
       var url = "{{ url_for('map.node_edit', id='-42') }}"
       $("#nodeform_content").load(url.replace("-42", id), function() {
+          // $(".edit_node_form #submit").detach().appendTo(".edit_node_form + .modal-footer");
           attach_edit_form_listener(id);
           prep_node_type_select();
-          $("#btn-move-node").detach().appendTo(".edit_node_form form");
           $("button[data-id=node_type]").css("height", "34px");
           $("button[data-id=wiki_entry]").css("height", "34px");
           show_nodeform();
@@ -526,17 +517,17 @@
 
       if (submap_id != 0 && submap_id != null) {
         var fake_url = "{{ url_for('map.view', id=-1) }}"
-        pop.append('<a href="' + fake_url.replace("-1", submap_id) + '" class="btn btn-default">{{ icon("map-marker") }} View map</a>');
+        pop.append('<a href="' + fake_url.replace("-1", submap_id) + '" class="btn btn-default">{{ icon("map-marker-alt") }} View map</a>');
       }
 
       pop.append($('<div />').addClass("popup-markdown").append(description));
 
-      var edit_btn = $("<a />").addClass("btn btn-default node-edit-btn").attr("data", id);
-      edit_btn.append('{{ icon("pencil") }}');
+      var edit_btn = $("<a />").addClass("btn btn-primary node-edit-btn text-light").attr("data", id);
+      edit_btn.append('{{ icon("edit") }}');
       edit_btn.append(' edit');
 
-      var delete_btn = $("<a />").addClass("btn btn-danger node-delete-btn").attr("data", id).css("float", "right");
-      delete_btn.append('{{ icon("remove-circle") }}');
+      var delete_btn = $("<a />").addClass("btn btn-danger node-delete-btn text-light").attr("data", id).css("float", "right");
+      delete_btn.append('{{ icon("trash") }}');
       delete_btn.append(' delete');
 
       var btns = $("<nav />").append(edit_btn);

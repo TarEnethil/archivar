@@ -243,6 +243,10 @@ def include_css(styles):
     local_url = url_for('static', filename="")
 
     s = {
+        "bootstrap": {
+            "cdn": ["https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"],
+            "local": [local_url + "css/bootstrap.min.css"]
+        },
         "markdown-editor" : {
             "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.css"],
             "local" : [local_url + "css/easymde.min.css"]
@@ -260,11 +264,11 @@ def include_css(styles):
             "local" : [local_url + "css/leaflet.css"]
         },
         "bootstrap-datetimepicker" : {
-            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"],
-            "local" : [local_url + "css/bootstrap-datetimepicker.min.css"]
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"],
+            "local" : [local_url + "css/tempusdominus.min.css"]
         },
         "datatables" : {
-            "cdn" : ["https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css"],
+            "cdn" : ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"],
             "local" : [local_url + "css/dataTables.bootstrap.min.css"]
         }
     }
@@ -286,6 +290,14 @@ def include_js(scripts):
     local_url = url_for('static', filename="")
 
     s = {
+        "bootstrap": {
+            "cdn": ["https://code.jquery.com/jquery-3.4.1.slim.min.js",
+                    "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js",
+                    "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"],
+            "local": [  local_url + "js/jquery-3.4.1.min.js",
+                        local_url + "js/popper.min.js",
+                        local_url + "js/bootstrap.min.js"]
+        },
         "markdown-editor" : {
             "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.js"],
             "local" : [local_url + "js/easymde.min.js"]
@@ -304,12 +316,12 @@ def include_js(scripts):
             "local" : [local_url + "js/leaflet.js"]
         },
         "bootstrap-datetimepicker" : {
-            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"],
-            "local" : [local_url + "js/bootstrap-datetimepicker.min.js"]
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"],
+            "local" : [local_url + "js/tempusdominus.min.js"]
         },
         "datatables" : {
-            "cdn" : ["https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js", "https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"],
-            "local" : [local_url + "js/jquery.dataTables.min.js", local_url + "js/dataTables.bootstrap.min.js"],
+            "cdn" : ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"],
+            "local" : [local_url + "js/dataTables.bootstrap.min.js"],
             "helper" : [local_url + "js/helpers/datatables.js"]
         },
         "quicksearch" : {
@@ -360,8 +372,49 @@ def urlfriendly(text):
 
     return text
 
-def icon(name):
-    return Markup('<span class="fas fa-{}" aria-hidden="true"></span>'.format(name))
+def icon_fkt(name, text_class=""):
+    return Markup('<span class="fas fa-{} {}" aria-hidden="true"></span>'.format(name, text_class))
+
+def navbar_start(no_margin=False):
+    if no_margin == False:
+        return Markup('<ul class="nav nav-tabs mb-4">')
+
+    return Markup('<ul class="nav nav-tabs">')
+
+def navbar_end():
+    return Markup("</ul>")
+
+def link(url, text, classes=None, ids=None):
+    attrs = ""
+
+    if classes != None:
+        attrs += 'class="{}"'.format(classes)
+
+    if ids != None:
+        attrs += 'id="{}"'.format(ids)
+
+    return Markup('<a href="{}" {}>{}</a>'.format(url, attrs, text))
+
+def button_internal(url, text, icon=None, classes=None, ids=None, swap=False, icon_text_class=""):
+    if icon != None:
+        icon = icon_fkt(icon, text_class=icon_text_class)
+    else:
+        icon = ""
+
+    if swap == False:
+        text = "{}\n{}".format(icon, text)
+    else:
+        text = "{}\n{}".format(text, icon)
+
+    return link(url, text, classes, ids)
+
+def button(url, text, icon=None, classes="btn-secondary", ids=None, swap=False, icon_text_class=""):
+    return button_internal(url, text, icon, "btn {}".format(classes), ids, swap, icon_text_class=icon_text_class)
+
+def button_nav(url, text, icon=None, classes="", ids=None, swap=False, icon_text_class="", li_classes=""):
+    btn = '<li class="nav-item {}">{}</li>'.format(li_classes, button_internal(url, text, icon, "nav-link {}".format(classes), ids, swap, icon_text_class))
+
+    return Markup(btn)
 
 def register_processors_and_filters(app):
     @app.context_processor
@@ -371,11 +424,16 @@ def register_processors_and_filters(app):
                     include_css=include_css,
                     include_js=include_js,
                     get_archivar_version=get_archivar_version,
-                    icon=icon)
+                    icon=icon_fkt,
+                    navbar_start=navbar_start,
+                    navbar_end=navbar_end,
+                    link=link,
+                    button=button,
+                    button_nav=button_nav)
 
     @app.template_filter()
     def hash(text):
-        return md5(text.encode('utf-8')).hexdigest()[:10]
+        return "{}-{}".format(urlfriendly(text), md5(text.encode('utf-8')).hexdigest()[:3])
 
     @app.template_filter()
     def urlfriendly(text):

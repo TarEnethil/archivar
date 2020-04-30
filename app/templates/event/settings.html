@@ -25,17 +25,14 @@
 ({{ categories|length }})
 {% endif %}
 </h2>
+
+{{ navbar_start() }}
+    {{ button_nav(url=url_for('event.category_create'), text="Add Category", icon="plus") }}
+{{ navbar_end() }}
+
 <p>
     Create or edit event categories, used to sort events by type of occurence.
 </p>
-<ul class="nav nav-tabs">
-    <li>
-        <a href="{{ url_for('event.category_create') }}">
-            {{ icon("plus") }}
-            Add Category
-        </a>
-    </li>
-</ul>
 
 {% if categories %}
 <table class="table table-hover table-striped">

@@ -49,9 +49,9 @@ class Map(db.Model, SimpleChangeTracker, LinkGenerator):
     def settings_url(self):
         return url_for("map.map_settings", id=self.id, name=urlfriendly(self.name))
 
-    def settings_button(self, ids=None):
+    def settings_button(self, ids=None, classes="btn-secondary"):
         url = self.settings_url()
-        return self.button(url=url, text="Settings", icon="cog", ids=None, classes="btn btn-default")
+        return self.button(url=url, text="Settings", icon="cog", ids=None, classes=classes)
 
 class MapNodeType(db.Model, SimpleChangeTracker):
     __tablename__ = "map_node_types"

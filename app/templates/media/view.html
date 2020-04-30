@@ -22,27 +22,23 @@ $(document).ready(function() {
 {% block app_content %}
     <h1>{{ item.name }}</h1>
 
-    <ul class="nav nav-tabs">
-        <li>
-            {{ item.edit_button_nav() }}
-        </li>
+    {{ navbar_start() }}
+        {{ item.edit_button_nav() }}
 
         {% if current_user.is_media_admin() %}
-        <li class="delete-li">
             {{ item.delete_button_nav() }}
-        </li>
         {% endif %}
-    </ul>
+    {{ navbar_end() }}
 
-    <dl class="dl-horizontal">
-        <dt>Category</dt>
-        <dd>{{ item.category.view_link() }}</dd>
-        <dt>File name</dt>
-        <dd>{{ item.filename }}</dd>
-        <dt>File size</dt>
-        <dd>{{ item.filesize|filesizeformat(True) }} ({{ item.filesize }} Byte)</dd>
-        <dt>Direct link</dt>
-        <dd>{{ item.serve_link() }}</dd>
+    <dl class="row ml-5">
+        <dt class="col-sm-2">Category</dt>
+        <dd class="col-sm-10">{{ item.category.view_link() }}</dd>
+        <dt class="col-sm-2">File name</dt>
+        <dd class="col-sm-10">{{ item.filename }}</dd>
+        <dt class="col-sm-2">File size</dt>
+        <dd class="col-sm-10">{{ item.filesize|filesizeformat(True) }} ({{ item.filesize }} Byte)</dd>
+        <dt class="col-sm-2">Direct link</dt>
+        <dd class="col-sm-10">{{ item.serve_link() }}</dd>
     </dl>
 
     {% if item.get_file_ext() in ["png", "gif", "jpg", "jpeg"] %}

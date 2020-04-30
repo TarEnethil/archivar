@@ -17,14 +17,9 @@ makeDatatable("user-table");
 {% block app_content %}
     <h1>Users ({{ users|length }})</h1>
 
-    <ul class="nav nav-tabs">
-        <li>
-            <a href="{{ url_for('user.create') }}">
-                {{ icon("plus") }}
-                Add User
-            </a>
-        </li>
-    </ul>
+    {{ navbar_start() }}
+        {{ button_nav(url=url_for('user.create'), text="Add User", icon="plus") }}
+    {{ navbar_end() }}
 
     <table class="table table-hover table-striped" id="user-table">
         <thead>

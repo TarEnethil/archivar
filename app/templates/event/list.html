@@ -19,20 +19,17 @@ makeDatatable("event-table");
 {% block app_content %}
     <h1>{{ heading }}</h1>
 
-    <ul class="nav nav-tabs">
-        <li>
+    {{ navbar_start() }}
         {% if epoch_flag %}
-            <a href="{{ url_for('event.create', epoch=request.view_args['e_id']) }}">
+            {{ button_nav(url=url_for('event.create', epoch=request.view_args['e_id']), text="Add Event here", icon="plus") }}
         {% elif epoch_year_flag %}
-            <a href="{{ url_for('event.create', epoch=request.view_args['e_id'], year=request.view_args['year']) }}">
+            {{ button_nav(url=url_for('event.create', epoch=request.view_args['e_id'], year=request.view_args['year']), text="Add Event here", icon="plus") }}
         {% elif category_flag %}
-            <a href="{{ url_for('event.create', category=request.view_args['c_id']) }}">
+            {{ button_nav(url=url_for('event.create', category=request.view_args['c_id']), text="Add Event here", icon="plus") }}
+        {% else %}
+            {{ button_nav(url=url_for('event.create'), text="Add Event here", icon="plus") }}
         {% endif %}
-                {{ icon("plus") }}
-                Add Event here
-            </a>
-        </li>
-    </ul>
+    {{ navbar_end() }}
 
     {% if events %}
      <p>

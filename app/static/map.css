@@ -1,7 +1,3 @@
-body {
-    padding-top:50px !important;
-}
-
 .navbar {
     margin-bottom:0 !important;
 }
@@ -12,7 +8,7 @@ body {
     width:100%;
 }
 
-#nodeform {
+/*#nodeform {
     width:35%;
     top:10%;
     left:50%;
@@ -20,7 +16,7 @@ body {
     position:absolute;
     z-index:5000;
     display:none;
-}
+}*/
 
 #messagebox {
     z-index:500000;
@@ -73,11 +69,6 @@ body {
 
 .leaflet-popup-content nav {
     margin-top:10px;
-}
-
-.leaflet-popup-content .btn {
-    padding:3px 6px;
-    color:#000;
 }
 
 .leaflet-popup-content .popup_info {
@@ -240,6 +231,13 @@ body {
     border-width:1px !important;
 }
 
-#nodeform .CodeMirror {
-    height:320px !important;
+/* TODO: this hides the "real" submit buttons, as they are not placed in the modal-footer yet */
+.create_node_form input[type=submit],
+.edit_node_form input[type=submit] {
+    display:none;
+}
+
+.sidebar {
+    z-index:2000 !important;
+    padding:10px !important;
 }

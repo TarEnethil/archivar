@@ -2,14 +2,9 @@
 
 {% block app_content %}
 {% if current_user.has_admin_role() %}
-    <ul class="nav nav-tabs">
-        <li>
-            <a href="{{ url_for('main.settings') }}">
-                {{ icon("pencil") }}
-                Edit Text
-            </a>
-        </li>
-    </ul>
+    {{ navbar_start(no_margin=True) }}
+        {{ button_nav(url=url_for('main.settings'), text="Edit Text", icon="edit") }}
+    {{ navbar_end() }}
 {% endif %}
 
 {% if settings.welcome_page %}

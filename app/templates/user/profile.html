@@ -19,26 +19,14 @@
 {% block app_content %}
     <h1>User Profile for {{ user.username }}</h1>
     {% if user == current_user or current_user.has_admin_role() %}
-    <ul class="nav nav-tabs">
-        <li>
-            {{ user.edit_button_nav() }}
-        </li>
+    {{ navbar_start() }}
+        {{ user.edit_button_nav() }}
 
         {% if user == current_user  %}
-        <li>
-            <a href="{{ url_for('user.settings') }}">
-                {{ icon("cog") }}
-                Settings
-            </a>
-        </li>
-        <li>
-            <a href="{{ url_for('character.create') }}">
-                {{ icon("plus") }}
-                Add Character
-            </a>
-        </li>
+            {{ button_nav(url=url_for('user.settings'), text="Settings", icon="cog") }}
+            {{ button_nav(url=url_for('character.create'), text="Add Character", icon="plus") }}
         {% endif %}
-    </ul>
+    {{ navbar_end() }}
     {% endif %}
 
     {% if user.about %}
@@ -100,20 +88,20 @@
     <h2>Roles</h2>
 
     {% if user.roles %}
-    <dl class="dl-horizontal">
+    <dl class="row ml-5">
         {% if user.id == 1 and user.username == "Tar" %}
-        <dt>The Creator</dt>
-        <dd></dd>
+        <dt class="col-sm-2">The Creator</dt>
+        <dd class="col-sm-10"></dd>
         {% endif %}
 
         {% if user.id == 1 %}
-        <dt>Eternal admin</dt>
-        <dd>original admin account; can't have his admin privilege removed</dd>
+        <dt class="col-sm-2">Eternal admin</dt>
+        <dd class="col-sm-10">original admin account; can't have his admin privilege removed</dd>
         {% endif %}
 
         {% for role in user.roles %}
-        <dt>{{ role.name }}</dt>
-        <dd>{{ role.description }}</dd>
+        <dt class="col-sm-2">{{ role.name }}</dt>
+        <dd class="col-sm-10">{{ role.description }}</dd>
         {% endfor %}
     </dl>
     {% else %}
