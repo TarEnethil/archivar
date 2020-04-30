@@ -24,14 +24,9 @@ makeDatatable("campaigns-table");
     </h1>
 
     {% if current_user.has_admin_role() %}
-    <ul class="nav nav-tabs">
-        <li>
-            <a href="{{ url_for('campaign.create') }}">
-                {{ icon("plus") }}
-                Add Campaign
-            </a>
-        </li>
-    </ul>
+    {{ navbar_start() }}
+         {{ button_nav(url=url_for('campaign.create'), text="Add Campaign", icon="plus") }}
+    {{ navbar_end() }}
     {% endif %}
 
     <p>
@@ -61,10 +56,7 @@ makeDatatable("campaigns-table");
                     {% if current_user.is_dm_of(campaign) or current_user.has_admin_role() %}
                     {{ campaign.edit_button() }}
 
-                    <a href="{{ url_for('session.create_with_campaign', id=campaign.id) }}" class="btn btn-default">
-                        {{ icon("plus") }}
-                        Add Session
-                    </a>
+                    {{ button(url=url_for('session.create_with_campaign', id=campaign.id), text="Add Session", icon="plus") }}
                     {% endif %}
                 </td>
             </tr>

@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block styles %}
-{{ super() }}
+{{ include_css(["bootstrap"]) }}
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 {{ fontawesome_css() }}
@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block scripts %}
-{{ super() }}
+{{ include_js(["bootstrap"]) }}
 
 {{ fontawesome_js() }}
 
@@ -31,28 +31,28 @@ $(document).ready(function() {
 
 {% block navbar %}
     {% if "127.0.0.1" in request.host or "localhost" in request.host %}
-    <nav class="navbar navbar-expand-md navbar-default bg-dark" id="topnav" style="background:#ffea8c !important">
+    <!--<nav class="navbar navbar-expand-md navbar-default bg-dark" id="topnav" style="background:#ffea8c !important">-->
+    <nav class="navbar navbar-expand-xl sticky-top navbar-light bg-light" id="topnav">
     {% else %}
-    <nav class="navbar navbar-expand-md navbar-default bg-dark" id="topnav">
+    <nav class="navbar navbar-expand-lg navbar-default bg-dark" id="topnav">
     {% endif %}
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topnav-navbar" aria-expanded="true" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#topnav-navbar" aria-expanded="true" aria-controls="navbar">
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse" id="topnav-navbar">
-            <ul class="nav navbar-nav navbar-left" id="leftnav">
-                <li><a href="{{ url_for('main.index') }}">
-                    {{ icon("home") }}
-                </a></li>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                        {{ icon("home") }}
+                    </a>
+                </li>
 
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('campaign.index') }}">{{ icon("book") }} Campaigns</a></li>
-                <li><a href="{{ url_for('session.index') }}">{{ icon("file") }} Sessions</a></li>
-                <li><a href="{{ url_for('map.index') }}">{{ icon("map-marker-alt") }} Map</a></li>
-                <li><a href="{{ url_for('wiki.index') }}">{{ icon("graduation-cap") }} Wiki</a></li>
-                <li><a href="{{ url_for('calendar.index') }}">{{ icon("calendar-alt") }} Calendar</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('campaign.index') }}">{{ icon("book") }} Campaigns</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('session.index') }}">{{ icon("file") }} Sessions</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('map.index') }}">{{ icon("map-marker-alt") }} Map</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('wiki.index') }}">{{ icon("graduation-cap") }} Wiki</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('calendar.index') }}">{{ icon("calendar-alt") }} Calendar</a></li>
                 {% endif %}
 
             </ul>
@@ -62,20 +62,22 @@ $(document).ready(function() {
                 {% set global_ql = load_global_quicklinks() %}
 
                 {% if user_ql|length > 0 or global_ql|length > 0 %}
-            <ul class="nav navbar-nav navbar-left">
+            <ul class="navbar-nav mx-auto">
                     {% if user_ql|length == 1 %}
-                <li class="user-quicklinks"><a href="{{ user_ql[0][0] }}"> {{ user_ql[0][1] }}</a></li>
+                <li class="user-quicklinks nav-item mr-5">
+                    <a class="nav-link" href="{{ user_ql[0][0] }}"> {{ user_ql[0][1] }}</a>
+                </li>
                     {% elif user_ql|length > 1 %}
-                <li class="dropdown user-quicklinks">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <li class="nav-item dropdown user-quicklinks mr-5">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ icon("bolt") }} Quicklinks <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         {% for link in user_ql %}
-                        <li><a href="{{ link[0] }}">{{ link[1] }}</a></li>
+                        <li class="nav-item"><a class="nav-link pl-3" href="{{ link[0] }}">{{ link[1] }}</a></li>
                         {% endfor %}
-                        <li role="separator" class="divider"></li>
-                        <li><a href="{{ url_for('user.settings') }}">
+                        <li role="separator" class="dropdown-divider"></li>
+                        <li class="nav-item"><a class="nav-link pl-3" href="{{ url_for('user.settings') }}">
                             {{ icon("cog") }}
                             Edit quicklinks
                             </a>
@@ -85,24 +87,24 @@ $(document).ready(function() {
                     {% endif %}
 
                     {% for link in global_ql %}
-                <li><a href="{{ link[0] }}">{{ link[1] }}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ link[0] }}">{{ link[1] }}</a></li>
                     {% endfor %}
             </ul>
                 {% endif %}
             {% endif %}
 
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="navbar-nav ml-auto">
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('media.index') }}">{{ icon("images") }} Media</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('media.index') }}">{{ icon("images") }} Media</a></li>
                 {% endif %}
 
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('character.list') }}">{{ icon("list") }} Parties & Chars</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('character.list') }}">{{ icon("list") }} Parties & Chars</a></li>
                 {% endif %}
 
                 {% if current_user.is_authenticated and current_user.has_admin_role() %}
                 <li class="dropdown">
-                    <a href="{{ url_for('user.list') }}">
+                    <a class="nav-link" href="{{ url_for('user.list') }}">
                     {{ icon("users") }} Users
                     </a>
                 </li>
@@ -110,34 +112,34 @@ $(document).ready(function() {
 
                 {% if current_user.is_authenticated and current_user.has_access_to_some_settings() %}
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ icon("cog") }} Settings <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         {% if current_user.has_admin_role() %}
-                        <li>
-                            <a href="{{ url_for('main.settings') }}">General</a>
-                            <a href="{{ url_for('calendar.settings') }}">Calendar</a>
+                        <li class="nav-item">
+                            <a class="nav-link pl-3" href="{{ url_for('main.settings') }}">General</a>
+                            <a class="nav-link pl-3" href="{{ url_for('calendar.settings') }}">Calendar</a>
                         </li>
                         {% endif %}
                         {% if current_user.is_map_admin() %}
-                        <li>
-                            <a href="{{ url_for('map.settings') }}">Map</a>
+                        <li class="nav-item">
+                            <a class="nav-link pl-3" href="{{ url_for('map.settings') }}">Map</a>
                         </li>
                         {% endif %}
                         {% if current_user.is_event_admin() %}
-                        <li>
-                            <a href="{{ url_for('event.settings') }}">Events</a>
+                        <li class="nav-item">
+                            <a class="nav-link pl-3" href="{{ url_for('event.settings') }}">Events</a>
                         </li>
                         {% endif %}
                         {% if current_user.is_wiki_admin() %}
-                        <li>
-                            <a href="{{ url_for('wiki.settings') }}">Wiki</a>
+                        <li class="nav-item">
+                            <a class="nav-link pl-3" href="{{ url_for('wiki.settings') }}">Wiki</a>
                         </li>
                         {% endif %}
                         {% if current_user.is_media_admin() %}
-                        <li>
-                            <a href="{{ url_for('media.settings') }}">Media</a>
+                        <li class="nav-item">
+                            <a class="nav-link pl-3" href="{{ url_for('media.settings') }}">Media</a>
                         </li>
                         {% endif %}
                     </ul>
@@ -145,16 +147,16 @@ $(document).ready(function() {
                 {% endif %}
 
                 {% if current_user.is_anonymous %}
-                <li><a href="{{ url_for('main.login') }}">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.login') }}">Login</a></li>
                 {% else %}
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ icon("user") }} {{ current_user.username }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li>{{ current_user.view_link() }}</li>
-                        <li><a href="{{ url_for('user.settings') }}">Settings</a></li>
-                        <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+                        <li class="nav-item">{{ current_user.view_link(classes="nav-link pl-3") }}</li>
+                        <li class="nav-item"><a class="nav-link pl-3" href="{{ url_for('user.settings') }}">Settings</a></li>
+                        <li class="nav-item"><a class="nav-link pl-3" href="{{ url_for('main.logout') }}">Logout</a></li>
                     </ul>
                 </li>
                 {% endif %}
@@ -166,12 +168,16 @@ $(document).ready(function() {
 {% block content %}
 {% include "markdown_editor_sidebar.html" %}
 
-<div class="big-wrapper">
-    <div class="container">
-    {{ utils.flashed_messages(dismissible=True) }}
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-xl-8">
+        {{ utils.flashed_messages(dismissible=True) }}
 
-    {% block app_content %}{% endblock %}
-
+        {% block app_content %}{% endblock %}
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
     {% include "footer.html" %}
 </div>
 {% endblock %}

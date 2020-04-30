@@ -9,20 +9,13 @@
 {% endif %}
 </h1>
 
-<ul class="nav nav-tabs">
-    <li>
-        {{ char.view_button_nav(text="Back to Char", icon="arrow-left") }}
-    </li>
+{{ navbar_start() }}
+    {{ char.view_button_nav(text="Back to Char", icon="arrow-left") }}
 
 {% if current_user == char.player %}
-    <li>
-        <a href="{{ url_for('character.journal_create', c_id=char.id, c_name=char.name|urlfriendly) }}">
-            {{ icon("plus") }}
-            Add Entry
-        </a>
-    </li>
+    {{ button_nav(url=url_for('character.journal_create', c_id=char.id, c_name=char.name|urlfriendly), text="Add Entry", icon="plus") }}
 {% endif %}
-</ul>
+{{ navbar_end() }}
 
 <p>
     Here you can CTRL+F your heart out.

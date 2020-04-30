@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import urlfriendly, icon as icon_fkt
+from app.helpers import urlfriendly, link as link_fkt, button as button_fkt, button_nav as button_nav_fkt
 from datetime import datetime
 from flask import current_app
 from flask_login import current_user
@@ -73,28 +73,10 @@ class SimpleChangeTracker(object):
 
 class LinkGenerator(object):
     def link(self, url, text, classes=None, ids=None):
-        attrs = ""
+        return link_fkt(url, text, classes, ids)
 
-        if classes != None:
-            attrs += 'class="{}"'.format(classes)
-
-        if ids != None:
-            attrs += 'id="{}"'.format(ids)
-
-        return Markup('<a href="{}" {}>{}</a>'.format(url, attrs, text))
-
-    def button(self, url, text, icon=None, classes=None, ids=None, swap=False):
-        if icon != None:
-            icon = icon_fkt(icon)
-
-        if swap == False:
-            text = "{}\n{}".format(icon, text)
-        else:
-            text = "{}\n{}".format(text, icon)
-
-        link = self.link(url, text, classes, ids)
-
-        return Markup(link)
+    def button(self, url, text, icon=None, classes=None, ids=None, swap=False, icon_text_class=""):
+        return button_fkt(url, text, icon, classes, ids, swap, icon_text_class)
 
     def view_link(self, text=None, classes=None, ids=None):
         if text == None:
@@ -114,23 +96,23 @@ class LinkGenerator(object):
 
         return self.link(self.delete_url(), text, classes, ids)
 
-    def view_button(self, text="View", icon="eye", classes="btn btn-default", ids=None, swap=False):
+    def view_button(self, text="View", icon="eye", classes="btn-secondary", ids=None, swap=False):
         return self.button(self.view_url(), text, icon, classes, ids, swap)
 
-    def edit_button(self, text="Edit", icon="edit", classes="btn btn-default", ids=None, swap=False):
+    def edit_button(self, text="Edit", icon="edit", classes="btn-secondary", ids=None, swap=False):
         return self.button(self.edit_url(), text, icon, classes, ids, swap)
 
-    def delete_button(self, text="Delete", icon="trash-alt", classes="btn btn-danger", ids="delete-link", swap=False):
-        return self.button(self.delete_url(), text, icon, classes, ids, swap)
+    def delete_button(self, text="Delete", icon="trash-alt", classes="btn-danger", ids="delete-link", swap=False):
+        return self.button(self.delete_url(), text, icon, classes, ids, swap, icon_text_class="text-light")
 
-    def view_button_nav(self, text="View", icon="eye", classes=None, ids=None, swap=False):
-        return self.button(self.view_url(), text, icon, classes, ids, swap)
+    def view_button_nav(self, text="View", icon="eye", classes="nav-link", ids=None, swap=False):
+        return button_nav_fkt(self.view_url(), text, icon, classes, ids, swap)
 
-    def edit_button_nav(self, text="Edit", icon="edit", classes=None, ids=None, swap=False):
-        return self.button(self.edit_url(), text, icon, classes, ids, swap)
+    def edit_button_nav(self, text="Edit", icon="edit", classes="nav-link", ids=None, swap=False):
+        return button_nav_fkt(self.edit_url(), text, icon, classes, ids, swap)
 
-    def delete_button_nav(self, text="Delete", icon="trash-alt", classes="btn btn-danger", ids="delete-link", swap=False):
-        return self.button(self.delete_url(), text, icon, classes, ids, swap)
+    def delete_button_nav(self, text="Delete", icon="trash-alt", classes="nav-link bg-danger text-light", ids="delete-link", swap=False):
+        return button_nav_fkt(self.delete_url(), text, icon, classes, ids, swap, icon_text_class="text-light", li_classes="ml-auto")
 
     def view_text(self):
         return "View"

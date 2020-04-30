@@ -41,18 +41,13 @@ $(document).ready(function() {
     <h1>Sessions</h1>
 
     {% if current_user.has_admin_role() or current_user.is_dm_of_anything() %}
-    <ul class="nav nav-tabs">
-        <li>
-            {% if url %}
-            <a href="{{ url }}" id="add-session-button">
-            {% else %}
-            <a href="{{ url_for('session.create') }}" id="add-session-button">
-            {% endif %}
-                {{ icon("plus") }}
-                Add Session
-            </a>
-        </li>
-    </ul>
+    {{ navbar_start() }}
+        {% if url %}
+            {{ button_nav(url=url, text="Add Session", icon="plus", ids="add-session-button") }}
+        {% else %}
+            {{ button_nav(url=url_for('session.create'), text="Add Session", icon="plus", ids="add-session-button") }}
+        {% endif %}
+    {{ navbar_end() }}
     {% endif %}
 
     {% if form %}

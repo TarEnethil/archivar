@@ -34,81 +34,92 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-    <div id="wrapper">
+    <div class="container-fluid mt-5">
        {% include "markdown_editor_sidebar.html" %}
-
-        <div id="sidebar-wrapper">
-            <h2>Search</h2>
-            {% if nav[1] %}
-                {{ wtf.quick_form(nav[1]) }}
-            {% endif %}
-
-            <h2>Static Links</h2>
-            <ul class="nav nav-pills nav-stacked">
-                <li><a href="{{ url_for('wiki.create') }}">New Page</a></li>
-                <li><a href="{{ url_for('wiki.recent') }}">Recent Changes</a></li>
-
-                {% if current_user.is_wiki_admin() %}
-                <li><a href="{{ url_for('wiki.settings') }}">Settings</a></li>
+        <div class="row">
+            <div class="col-2 pl-2">
+                <div class="p-2 mb-2">
+                {% if nav[1] %}
+                    {{ wtf.quick_form(nav[1]) }}
                 {% endif %}
-            </ul>
+                </div>
 
-            <h2>Articles</h2>
-            <ul class="nav nav-pills nav-stacked" id="stacked-menu">
-                {% if entry and entry.id == 1 %}
-                <li class="active"><a href="{{ url_for('wiki.view', id=1, name='Main Page'|urlfriendly) }}">Main Page</a></li>
-                {% else %}
-                <li><a href="{{ url_for('wiki.view', id=1, name='Main Page'|urlfriendly) }}">Main Page</a></li>
-                {% endif %}
+                <h4 class="mt-3">Static Links</h2>
+                <ul class="nav flex-column flex-nowrap">
+                    <li class="nav-item"><a class="nav-link p-0 pl-2" href="{{ url_for('wiki.create') }}">New Page</a></li>
+                    <li class="nav-item"><a class="nav-link p-0 pl-2" href="{{ url_for('wiki.recent') }}">Recent Changes</a></li>
 
-                {% if nav[0] %}
-                    {% for cat in nav[0] %}
-                        {% if cat != "" %}
-                        <li>
-                            <a data-toggle="collapse" data-parent="#stacked-menu" href="#{{cat|hash}}">{{ cat }} <span class="caret arrow"></span></a>
-                            {% if entry and entry.category == cat %}
-                            <ul class="nav nav-pills nav-stacked collapse in" id="{{cat|hash}}">
+                    {% if current_user.is_wiki_admin() %}
+                    <li class="nav-item"><a class="nav-link p-0 pl-2" href="{{ url_for('wiki.settings') }}">Settings</a></li>
+                    {% endif %}
+                </ul>
+
+                <h4 class="mt-3">Articles</h2>
+                <ul class="nav flex-column" id="stacked-menu">
+                    {% if entry and entry.id == 1 %}
+                    <li class="nav-item active">
+                    {% else %}
+                    <li class="nav-item">
+                    {% endif %}
+
+                    <a class="nav-link p-0 pl-2" href="{{ url_for('wiki.view', id=1, name='Main Page'|urlfriendly) }}">Main Page</a></li>
+
+                    {% if nav[0] %}
+                        {% for cat in nav[0] %}
+                            {% if cat != "" %}
+                            <li class="nav-item">
+                                <a class="dropdown-toggle nav-link p-0 pl-2" data-toggle="collapse" data-parent="#stacked-menu" href="#{{cat|hash}}">{{ cat }}</a>
+
+                                {% if entry and entry.category == cat %}
+                                <div class="collapse show" id="{{cat|hash}}">
+                                {% else %}
+                                <div class="collapse" id="{{cat|hash}}">
+                                {% endif %}
+
+                                    <ul class="nav flex-column pl-4">
+                                    {% for link in nav[0][cat] %}
+                                        {% if entry and entry.id == link[0] and link[2] == False %}
+                                        <li class="nav-item active invis">
+                                        {% elif entry and entry.id == link[0] %}
+                                        <li class="nav-item active">
+                                        {% elif link[2] == False %}
+                                        <li class="nav-item invis">
+                                        {% else %}
+                                        <li class="nav-item">
+                                        {% endif %}
+
+                                        <a class="nav-link p-0" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
+                                    {% endfor %}
+                                    </ul>
+                                </div>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for link in nav[0][""] %}
+                            {% if entry and entry.id == link[0] and link[2] == False %}
+                            <li class="nav-item active invis">
+                            {% elif entry and entry.id == link[0] %}
+                            <li class="nav-item active">
+                            {% elif link[2] == False %}
+                            <li class="nav-item invis">
                             {% else %}
-                            <ul class="nav nav-pills nav-stacked collapse" id="{{cat|hash}}">
+                            <li class="nav-item">
                             {% endif %}
 
-                            {% for link in nav[0][cat] %}
-                                {% if entry and entry.id == link[0] and link[2] == False %}
-                                <li class="active invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
-                                {% elif entry and entry.id == link[0] %}
-                                <li class="active"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
-                                {% elif link[2] == False %}
-                                <li class="invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
-                                {% else %}
-                                <li><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
-                                {% endif %}
-                            {% endfor %}
-                            </ul>
-                        </li>
-                        {% endif %}
-                    {% endfor %}
+                            <a class="nav-link p-0 pl-2" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
 
-                    {% for link in nav[0][""] %}
-                        {% if entry and entry.id == link[0] and link[2] == False %}
-                        <li class="active invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
-                        {% elif entry and entry.id == link[0] %}
-                        <li class="active"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
-                        {% elif link[2] == False %}
-                        <li class="invis"><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
-                        {% else %}
-                        <li><a href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            </ul>
-        </div>
+            <div class="col-xl">
+            {% block app_content %}
+                {{ utils.flashed_messages(dismissible=True) }}
+            {% endblock %}
 
-        <div id="content-wrapper">
-        {% block app_content %}
-            {{ utils.flashed_messages(dismissible=True) }}
-        {% endblock %}
-
-        {% include "footer.html" %}
+            {% include "footer.html" %}
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -1,14 +1,23 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
-<div class="panel-heading">
-    <h2>Edit Location</h2>
+<div class="modal-header">
+    <h5 class="modal-title">Edit Location</h5>
+    <button type="button" class="close" data-dismiss="modal">
+        <span>&times</span>
+    </button>
 </div>
 
-<div class="panel-body edit_node_form">
+<div class="modal-body edit_node_form p-4 pb-5">
     <div id="form_messagebox"></div>
     {{ wtf.quick_form(form) }}
-    <a class="btn btn-default" id="btn-move-node" data="{{ node.id }}" style="float:right;">
-        {{ icon("move") }}
+</div>
+
+<div class="modal-footer">
+    <!-- TODO: revisit this hack when removing quick_form() -->
+    {{ button(url="#", text="Save Location", classes="btn-success mr-auto", ids="fake-submit") }}
+
+    <a href="#" class="btn btn-secondary" id="btn-move-node" data="{{ node.id }}" class="ml-auto">
+        {{ icon("arrows-alt") }}
         Move Location
     </a>
 </div>

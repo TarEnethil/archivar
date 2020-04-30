@@ -39,44 +39,32 @@
 {% block app_content %}
 
     <h1>{{ char.name }}</h1>
-    <ul class="nav nav-tabs">
+    {{ navbar_start() }}
         {% if current_user == char.player %}
-        <li>
-            <a href="{{ url_for('character.journal_create', c_id=char.id, c_name=char.name|urlfriendly) }}">
-                {{ icon("plus") }}
-                Add Journal Entry
-            </a>
-        </li>
+            {{ button_nav(url=url_for('character.journal_create', c_id=char.id, c_name=char.name|urlfriendly), text="Add Journal Entry", icon="plus") }}
         {% endif %}
+
         {% if char.journals %}
-        <li>
-            <a href="{{ url_for('character.journal_list', c_id=char.id, c_name=char.name|urlfriendly) }}">
-                {{ icon("book") }}
-                View Full Journal
-            </a>
-        </li>
+            {{ button_nav(url=url_for('character.journal_list', c_id=char.id, c_name=char.name|urlfriendly), text="View Full Journal", icon="book") }}
         {% endif %}
-    {% if char.player == current_user or current_user.has_admin_role() %}
-        <li>
+
+        {% if char.player == current_user or current_user.has_admin_role() %}
             {{ char.edit_button_nav(text="Edit Character") }}
-        </li>
-        <li class="delete-li">
             {{ char.delete_button_nav() }}
-        </li>
-    {% endif %}
-    </ul>
+        {% endif %}
+    {{ navbar_end() }}
 
     <h2>Info</h2>
 
-     <dl class="dl-horizontal">
-        <dt>Name</dt>
-        <dd>{{ char.name }}</dd>
-        <dt>Race</dt>
-        <dd>{{ char.race }}</dd>
-        <dt>Class</dt>
-        <dd>{{ char.class_ }}</dd>
-        <dt>Player</dt>
-        <dd>{{ char.player.view_link() }}</dd>
+     <dl class="row ml-5">
+        <dt class="col-sm-1">Name</dt>
+        <dd class="col-sm-11">{{ char.name }}</dd>
+        <dt class="col-sm-1">Race</dt>
+        <dd class="col-sm-11">{{ char.race }}</dd>
+        <dt class="col-sm-1">Class</dt>
+        <dd class="col-sm-11">{{ char.class_ }}</dd>
+        <dt class="col-sm-1">Player</dt>
+        <dd class="col-sm-11">{{ char.player.view_link() }}</dd>
     </dl>
 
     {% if char.description %}
