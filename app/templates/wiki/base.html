@@ -34,7 +34,7 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-    <div id="wrapper">
+    <div id="wrapper" class="mt-5">
        {% include "markdown_editor_sidebar.html" %}
 
         <div id="sidebar-wrapper">
@@ -84,6 +84,7 @@ $(document).ready(function() {
                                 {% endif %}
                             {% endfor %}
                             </ul>
+
                         </li>
                         {% endif %}
                     {% endfor %}
@@ -103,7 +104,7 @@ $(document).ready(function() {
             </ul>
         </div>
 
-        <div id="content-wrapper">
+        <div class="container" id="content-wrapper">
         {% block app_content %}
             {{ utils.flashed_messages(dismissible=True) }}
         {% endblock %}

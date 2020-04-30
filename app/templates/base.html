@@ -168,8 +168,7 @@ $(document).ready(function() {
 {% block content %}
 {% include "markdown_editor_sidebar.html" %}
 
-<div class="big-wrapper mt-5">
-    <div class="container">
+<div class="container mt-5">
     {{ utils.flashed_messages(dismissible=True) }}
 
     {% block app_content %}{% endblock %}

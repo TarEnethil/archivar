@@ -61,6 +61,14 @@
     border-top:2px solid #000000;
 }
 
+.custom-markdown pre {
+    display:block;
+    background-color:#f5f5f5;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:4px;
+}
+
 .partymember-select {
     width:80% !important;
 }
