@@ -2,7 +2,7 @@ from app import db
 from app.helpers import page_title, flash_no_permission
 from app.media import bp
 from app.media.forms import SettingsForm, MediaItemCreateForm, MediaItemEditForm, CategoryForm
-from app.media.helpers import media_admin_required, get_media, gen_media_category_choices, media_filename
+from app.media.helpers import media_admin_required, get_media, gen_media_category_choices, media_filename, generate_thumbnail
 from app.media.models import MediaSetting, MediaItem, MediaCategory
 from app.user.models import User, Role
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory, current_app
@@ -71,6 +71,11 @@ def upload():
         else:
             new_media.is_visible = settings.default_visible
 
+        if new_media.is_image():
+            if generate_thumbnail(filename) == False:
+                flash("generating the thumbnail failed.", "error")
+                # TODO: abort on error?
+
         db.session.add(new_media)
         db.session.commit()
 
@@ -122,12 +127,17 @@ def edit(id, name=None):
             item.is_visible = form.is_visible.data
 
         if form.file.data:
-            remove(path.join(current_app.config["MEDIA_DIR"], item.filename))
-
             filepath = path.join(current_app.config["MEDIA_DIR"], item.filename)
+            # overrides former file
             form.file.data.save(filepath)
 
             item.filesize = stat(filepath).st_size
+
+            if item.is_image():
+                # overrides former thumbnail
+                if generate_thumbnail(item.filename) == False:
+                    flash("generating the thumbnail failed.", "error")
+                    # TODO: abort on error?
 
         db.session.commit()
 
@@ -157,6 +167,10 @@ def delete(id, name=None):
         return redirect(url_for(no_perm_url))
 
     remove(path.join(current_app.config["MEDIA_DIR"], item.filename))
+
+    if item.is_image():
+        remove(path.join(current_app.config["MEDIA_DIR"], "thumbnails", item.filename))
+
     db.session.delete(item)
     db.session.commit()
 
@@ -260,3 +274,8 @@ def sidebar_categories():
 @login_required
 def serve_file(filename):
     return send_from_directory(current_app.config["MEDIA_DIR"], filename)
+
+@bp.route("/serve-thumb/<filename>")
+@login_required
+def serve_thumbnail(filename):
+    return send_from_directory(path.join(current_app.config["MEDIA_DIR"], "thumbnails"), filename)
