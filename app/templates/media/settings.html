@@ -45,7 +45,7 @@
         {% for cat in categories %}
         <tr>
             <td>
-            {{ cat.name }}
+            {{ cat.name }} ({{ cat.items|length }} files)
             </td>
             <td>
                 {{ cat.edit_button() }}

@@ -41,7 +41,7 @@ class MediaItem(db.Model, SimpleChangeTracker, LinkGenerator):
     filename = db.Column(db.String(100))
     filesize = db.Column(db.Integer)
     category_id = db.Column(db.Integer, db.ForeignKey("media_categories.id"))
-    category = db.relationship("MediaCategory", backref="events")
+    category = db.relationship("MediaCategory", backref="items")
 
     def get_file_ext(self):
         return (self.filename.split(".")[-1]).lower()
