@@ -1,7 +1,7 @@
 from app import db
 from app.helpers import urlfriendly
 from app.mixins import LinkGenerator, SimpleChangeTracker
-from flask import url_for
+from flask import url_for, current_app
 
 class MediaSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "media_settings"
@@ -45,6 +45,9 @@ class MediaItem(db.Model, SimpleChangeTracker, LinkGenerator):
 
     def get_file_ext(self):
         return (self.filename.split(".")[-1]).lower()
+
+    def is_image(self):
+        return self.get_file_ext() in current_app.config["MAPNODES_FILE_EXT"]
 
     def to_dict(self):
         dic = {

@@ -5,7 +5,8 @@ from flask_login import current_user
 from functools import wraps
 from sqlalchemy import and_, or_, not_
 from werkzeug import secure_filename
-from os import path
+from os import path, stat
+from PIL import Image
 
 # @media_admin_required decorater, use AFTER login_required
 def media_admin_required(f):
@@ -41,6 +42,16 @@ def media_filename(initial_filename):
         counter += 1
 
     return filename
+
+def generate_thumbnail(filename):
+    filepath_orig = path.join(current_app.config["MEDIA_DIR"], filename)
+    filepath_thumb = path.join(current_app.config["MEDIA_DIR"], "thumbnails", filename)
+
+    image = Image.open(filepath_orig)
+    image.thumbnail((200, 200))
+    image.save(filepath_thumb)
+
+    return True
 
 # get all media visible to the user, can be filtered by category
 def get_media(filter_category=None):

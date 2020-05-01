@@ -325,3 +325,8 @@ tr.invisible_item,
 .nav-tabs .fas {
     color:#343a40;
 }
+
+.thumbnail {
+    max-width:200px;
+    max-height:200px;
+}

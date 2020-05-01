@@ -9,6 +9,9 @@ data/map/*
 !data/map/.gitkeep
 data/media/*
 !data/media/.gitkeep
+!data/media/thumbnails
+data/media/thumbnails/*
+!data/media/thumbnails/.gitkeep
 data/mapnodes/*
 !data/mapnodes/village.png
 !data/mapnodes/town.png
