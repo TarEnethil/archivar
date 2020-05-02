@@ -228,15 +228,15 @@ def install():
         flash("Setup was already executed.", "danger")
         return redirect(url_for("main.index"))
 
-@bp.errorhandler(404)
+@bp.app_errorhandler(404)
 def not_found_error(error):
     return render_template("404.html", info=request.path, title="404"), 404
 
-@bp.errorhandler(500)
+@bp.app_errorhandler(500)
 def internal_error(error):
     return render_template("500.html", info=request.path, title="500"), 500
 
-@bp.errorhandler(413)
+@bp.app_errorhandler(413)
 def request_entity_too_large(error):
     size_bytes = current_app.config["MAX_CONTENT_LENGTH"]
 
