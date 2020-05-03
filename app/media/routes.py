@@ -53,6 +53,9 @@ def upload():
     form = MediaItemCreateForm()
     form.category.choices = gen_media_category_choices()
 
+    # check if ajax-GET param was set, which means we must return json
+    ajax = request.args.get("ajax") != None
+
     if not current_user.is_media_admin():
         del form.is_visible
 
@@ -80,7 +83,27 @@ def upload():
         db.session.commit()
 
         flash("Upload successful.", "success")
-        return redirect(new_media.view_url())
+
+        # uploaded succeeded, send back info about new media
+        if ajax:
+            return jsonify(data={'success' : True,
+                                'html' : render_template("media/upload_success.html", item=new_media),
+                                'media_info' : {
+                                        'id' : new_media.id,
+                                        'name' : new_media.name,
+                                        'view_url' : new_media.view_url(),
+                                        'serve_url' : new_media.serve_url(),
+                                        'thumbnail_url' : new_media.thumbnail_url(),
+                                        'is_image' : new_media.is_image()
+                                    }
+                                })
+        else:
+            return redirect(new_media.view_url())
+
+    elif ajax and request.method == "POST":
+        # the form validation failed, send back the form with displayed errors
+        flash("There was an error processing the upload.", "danger")
+        return jsonify(data={'success' : False, 'html': render_template("media/upload_raw.html", form=form, max_filesize=current_app.config["MAX_CONTENT_LENGTH"]) })
     elif request.method == "GET":
         if current_user.is_media_admin() and settings.default_visible:
             form.is_visible.data = True
@@ -95,7 +118,14 @@ def upload():
             except:
                 pass
 
-    return render_template("media/upload.html", form=form, max_filesize=current_app.config["MAX_CONTENT_LENGTH"], title=page_title("Upload File"))
+    # non-ajax: return the full page
+    template = "media/upload.html"
+
+    # ajax: return only the form
+    if ajax:
+        template = "media/upload_raw.html"
+
+    return render_template(template, form=form, max_filesize=current_app.config["MAX_CONTENT_LENGTH"], title=page_title("Upload File"))
 
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required

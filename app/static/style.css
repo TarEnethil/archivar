@@ -330,3 +330,7 @@ tr.invisible_item,
     max-width:200px;
     max-height:200px;
 }
+
+#media-ajax-modal .modal-body input[type=submit] {
+    display:none;
+}
