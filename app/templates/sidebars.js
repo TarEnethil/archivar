@@ -282,35 +282,99 @@ function insertMedia(editor, name, id, filename, file_ext) {
 
     output = output.replace("linktext", oldText);
     output = output.replace("url", url);
+
     cm.replaceSelection(output);
 }
+
+function insertNewMedia(text) {
+    var cm = active_editor.codemirror;
+    cm.replaceSelection(text);
+}
+
+// after successful media upload via MediaUploader
+// places buttons in the footer to directly add the new file to the editor
+function on_success(new_media_info) {
+    if (new_media_info) {
+        var cm = active_editor.codemirror;
+        var text = cm.getSelection() || new_media_info.name;
+
+        var footer = media_uploader.get_footer();
+
+        // button to add a link to the newly uploaded file
+        var link_button = $('<button/>').attr("type", "button").addClass("btn btn-primary mr-auto").text("Add Link");
+        link_button.click(function() {
+            insertNewMedia("[" + text + "](" + new_media_info.serve_url + ")");
+            media_uploader.close_modal();
+        });
+        footer.prepend(link_button);
+
+        if (new_media_info.is_image) {
+            var thumbnail_button = $('<button/>').attr("type", "button").addClass("btn btn-primary").text("Add Thumbnail");
+            thumbnail_button.click(function() {
+                insertNewMedia("![" + text + "](" + new_media_info.thumbnail_url + ")");
+                media_uploader.close_modal();
+            });
+            footer.prepend(thumbnail_button);
+
+            var direct_button = $('<button/>').attr("type", "button").addClass("btn btn-primary").text("Add Image");
+            direct_button.click(function() {
+                insertNewMedia("![" + text + "](" + new_media_info.serve_url + ")");
+                media_uploader.close_modal();
+            });
+            footer.prepend(direct_button);
+        }
+    } else {
+        var err = $("<div/>").addClass("alert alert-danger").text("No information about the uploaded media could be retrieved.");
+        media_uploader.get_body().append(err);
+    }
+}
+
+// global var
+var media_uploader = new MediaUploader('{{ url_for("media.upload", ajax=1) }}', { onSuccess : on_success })
+
+function toggleMediaUploader(editor) {
+    active_editor = editor;
+
+    media_uploader.open_modal();
+}
+
+$("#media_upload").click(function() {
+    m.open_modal();
+});
 
 var reference = {
     name: "insertReference",
     action: toggleIntRefSidebar,
-    className: "fas fa-star fa-red",
+    className: "fas fa-star text-primary",
     title: "Insert Reference",
 }
 
 var media = {
     name: "insertMedia",
     action: toggleMediaSidebar,
-    className: "fas fa-images fa-red",
+    className: "fas fa-images text-primary",
     title: "Insert Media File"
 }
 
 var maps = {
     name: "insertMapNode",
     action: toggleMapSidebar,
-    className: "fas fa-map-marker-alt fa-red",
+    className: "fas fa-map-marker-alt text-primary",
     title: "Insert Location"
 }
 
+var upload = {
+    name: "uploadMedia",
+    action: toggleMediaUploader,
+    className: "fas fa-file-upload text-primary",
+    title: "Upload File"
+}
+
 function generateMarkdownConfig(id, withHeading=true) {
-    var toolb = ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps];
+    var toolb = ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps, "|", upload];
 
     if (withHeading == false) {
-        toolb = ["bold", "italic", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps];
+        toolb = ["bold", "italic", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps, upload];
     }
 
     return {

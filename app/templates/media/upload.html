@@ -1,12 +1,9 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1>Upload File</h1>
 
-    <p>
-        The maximum file size is {{ max_filesize|filesizeformat(True) }}.
-    </p>
+<h1>Upload File</h1>
 
-    {{ wtf.quick_form(form) }}
+{% include "media/upload_raw.html" %}
+
 {% endblock %}

@@ -80,5 +80,8 @@ class MediaItem(db.Model, SimpleChangeTracker, LinkGenerator):
     def serve_url(self):
         return url_for('media.serve_file', filename=self.filename)
 
+    def thumbnail_url(self):
+        return url_for('media.serve_thumbnail', filename=self.filename)
+
     def serve_link(self):
         return self.link(self.serve_url(), self.filename)

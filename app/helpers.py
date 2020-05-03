@@ -300,7 +300,8 @@ def include_js(scripts):
         },
         "markdown-editor" : {
             "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.js"],
-            "local" : [local_url + "js/easymde.min.js"]
+            "local" : [local_url + "js/easymde.min.js"],
+            "helper": [local_url + "js/helpers/media-uploader.js"]
         },
         "bootstrap-select" : {
             "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"],

@@ -1,0 +1,10 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/utils.html' as utils %}
+
+{{ utils.flashed_messages(dismissible=True) }}
+
+<p>
+    The maximum file size is {{ max_filesize|filesizeformat(True) }}.
+</p>
+
+{{ wtf.quick_form(form) }}

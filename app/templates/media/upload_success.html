@@ -1,0 +1,14 @@
+{% import 'bootstrap/utils.html' as utils %}
+
+{{ utils.flashed_messages(dismissible=True) }}
+
+<div class="row align-items-center">
+    <div class="col text-center">
+        {% if item.is_image() %}
+        <figure class="figure">
+            <img class="thumbnail img-thumbnail" src="{{ item.thumbnail_url() }}" />
+            <figcaption class="figure-caption text-center">Thumbnail</figcaption>
+        </figure>
+        {% endif %}
+    </div>
+</div>
