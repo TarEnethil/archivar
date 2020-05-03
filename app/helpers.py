@@ -90,6 +90,17 @@ def admin_or_dm_required(url="index"):
         return decorated_function
     return decorator
 
+# @debug_mode_required decorator, use AFTER login_required
+def debug_mode_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not debug_mode():
+            # TODO: add link to README / documentation on how to activate it
+            flash("This endpoint is only available in debug-mode.", "danger")
+            return redirect(url_for("main.index"))
+        return f(*args, **kwargs)
+    return decorated_function
+
 # generate the page <title>
 def page_title(dynamic_part=None):
     from app.main.models import GeneralSetting
