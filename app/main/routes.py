@@ -3,7 +3,7 @@ from app.calendar.models import CalendarSetting
 from app.campaign.models import Campaign
 from app.character.models import Character, Journal
 from app.event.models import Event, EventSetting, EventCategory
-from app.helpers import page_title, count_rows, admin_required
+from app.helpers import page_title, count_rows, admin_required, debug_mode_required
 from app.main import bp
 from app.main.forms import LoginForm, SettingsForm, InstallForm
 from app.main.models import GeneralSetting
@@ -227,6 +227,16 @@ def install():
     else:
         flash("Setup was already executed.", "danger")
         return redirect(url_for("main.index"))
+
+@bp.route("/debuginfo", methods=["GET"])
+@login_required
+@debug_mode_required
+def debug_info():
+    import pyinfo
+
+    pynf = pyinfo.info_as_text()
+
+    return render_template("debuginfo.html", pynf=pynf, title=page_title("Debug Info"))
 
 @bp.app_errorhandler(404)
 def not_found_error(error):

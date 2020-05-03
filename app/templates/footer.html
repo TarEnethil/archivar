@@ -9,6 +9,10 @@
         &bullet; <a href="{{ url_for('main.about') }}">About Archivar</a>
         &bullet; <a href="{{ url_for('main.changelog') }} ">Changelog</a>
         &bullet; <a href="{{ url_for('main.statistics') }}">Statistics</a>
+
+        {% if debug_mode() %}
+        &bullet; <a href="{{ url_for('main.debug_info') }}" class="text-danger">DebugInfo</a>
+        {% endif %}
     </div>
     <div class="col-sm-2"></div>
 </div>

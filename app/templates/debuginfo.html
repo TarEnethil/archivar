@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>Debug Info</h1>
+
+    <p>
+        If you run into a bug, information on this page can potentially help to narrow down the issue.
+    </p>
+
+    <p>
+        Be aware that the data contains information like <strong>OS type and version, your username, working directories and environment variables</strong>.
+    </p>
+
+    <pre class="bg-light p-3">
+        <code>
+Archivar version {{ get_archivar_version() }}
+{{ pynf }}
+        </code>
+    </pre>
+{% endblock %}
