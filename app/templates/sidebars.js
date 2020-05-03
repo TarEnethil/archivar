@@ -383,7 +383,11 @@ function generateMarkdownConfig(id, withHeading=true) {
         spellChecker: false,
         status: false,
         autoDownloadFontAwesome: false,
-        minHeight: '{{ current_user.editor_height }}px'
+        minHeight: '{{ current_user.editor_height }}px',
+        onToggleFullScreen: function(fullscreen) {
+            // hide navbar when going fullscreen
+            $("#topnav").toggle(!fullscreen);
+        }
     }
 }
 
