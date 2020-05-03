@@ -35,7 +35,7 @@ $(document).ready(function() {
             {% if item.is_image() %}
             <div class="col-sm-3 text-center">
                 <figure class="figure">
-                    <img class="thumbnail img-thumbnail" src="{{ url_for('media.serve_thumbnail', filename=item.filename) }}" />
+                    <img class="thumbnail img-thumbnail" src="{{ item.thumbnail_url() }}" />
                     <figcaption class="figure-caption text-center">Thumbnail</figcaption>
                 </figure>
             </div>
