@@ -338,10 +338,6 @@ function toggleMediaUploader(editor) {
     media_uploader.open_modal();
 }
 
-$("#media_upload").click(function() {
-    m.open_modal();
-});
-
 var reference = {
     name: "insertReference",
     action: toggleIntRefSidebar,
@@ -377,8 +373,15 @@ function generateMarkdownConfig(id, withHeading=true) {
         toolb = ["bold", "italic", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps, upload];
     }
 
+    var previewClasses = ["custom-markdown"];
+
+    {% if current_user.markdown_phb_style == True %}
+    previewClasses.push("phb-style")
+    {% endif %}
+
     return {
         element: document.getElementById(id),
+        previewClass: previewClasses,
         toolbar: toolb,
         spellChecker: false,
         status: false,
@@ -387,7 +390,8 @@ function generateMarkdownConfig(id, withHeading=true) {
         onToggleFullScreen: function(fullscreen) {
             // hide navbar when going fullscreen
             $("#topnav").toggle(!fullscreen);
-        }
+        },
+        promptURLs: true
     }
 }
 
