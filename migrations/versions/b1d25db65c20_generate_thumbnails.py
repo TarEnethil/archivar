@@ -25,18 +25,37 @@ def upgrade():
 
     files = MediaItem.query.all()
 
+    correct = 0
+    exceptions = 0
+    skipped_no_image = 0
+    skipped_no_file = 0
+
     for f in files:
+
         if f.is_image():
             filepath = path.join(current_app.config["MEDIA_DIR"], f.filename)
-
             if path.isfile(filepath):
-                print("generating thumbnail for {}".format(f.filename))
+                try:
+                    generate_thumbnail(f.filename)
+                except Exception as err:
+                    exceptions += 1
+                    print("could not generate thumbnail for {}: {}".format(f.filename, err))
+                else:
+                    correct += 1
+                    print("generated thumbnail for {}".format(f.filename))
 
-                generate_thumbnail(f.filename)
             else:
+                skipped_no_file += 1
                 print("skipping {} as the file does not exist".format(f.filename))
         else:
+            skipped_no_image += 1
             print("skipping {} as it is not an image".format(f.filename))
+
+    print("proceseed {} files".format(len(files)))
+    print("skipped {} as they weren't images".format(skipped_no_image))
+    print("skipped {} because the file did not exist".format(skipped_no_file))
+    print("error occured on {} images".format(exceptions))
+    print("generated {} thumbnails".format(correct))
 
 def downgrade():
     pass

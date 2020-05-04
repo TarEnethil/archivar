@@ -49,9 +49,16 @@ def generate_thumbnail(filename):
 
     image = Image.open(filepath_orig)
     image.thumbnail((200, 200))
-    image.save(filepath_thumb)
 
-    return True
+    success = True
+
+    try:
+        image.save(filepath_thumb)
+    except Exception as err:
+        flash("Could not generate the thumbnail: {}".format(err), "error")
+        success = False
+
+    return False
 
 # get all media visible to the user, can be filtered by category
 def get_media(filter_category=None):

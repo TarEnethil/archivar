@@ -74,15 +74,18 @@ def upload():
         else:
             new_media.is_visible = settings.default_visible
 
+        msg = "Upload successful."
+        level = "success"
+
         if new_media.is_image():
             if generate_thumbnail(filename) == False:
-                flash("generating the thumbnail failed.", "error")
-                # TODO: abort on error?
+                msg = "Upload successful, but there were errors."
+                level = "warning"
 
         db.session.add(new_media)
         db.session.commit()
 
-        flash("Upload successful.", "success")
+        flash(msg, level)
 
         # uploaded succeeded, send back info about new media
         if ajax:
@@ -156,6 +159,9 @@ def edit(id, name=None):
         if current_user.is_event_admin():
             item.is_visible = form.is_visible.data
 
+        msg = "File was edited."
+        level = "success"
+
         if form.file.data:
             filepath = path.join(current_app.config["MEDIA_DIR"], item.filename)
             # overrides former file
@@ -166,12 +172,12 @@ def edit(id, name=None):
             if item.is_image():
                 # overrides former thumbnail
                 if generate_thumbnail(item.filename) == False:
-                    flash("generating the thumbnail failed.", "error")
-                    # TODO: abort on error?
+                    msg = "File was edited, but there were errors."
+                    level = "warning"
 
         db.session.commit()
 
-        flash("File was edited.", "success")
+        flash(msg, level)
 
         return redirect(item.view_url())
     elif request.method == "GET":
