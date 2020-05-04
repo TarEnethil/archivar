@@ -37,7 +37,7 @@ $(document).ready(function() {
     <div class="container-fluid mt-5">
        {% include "markdown_editor_sidebar.html" %}
         <div class="row">
-            <div class="col-2 pl-2">
+            <div class="col-sm-2 pl-2">
                 <div class="p-2 mb-2">
                 {% if nav[1] %}
                     {{ wtf.quick_form(nav[1]) }}
@@ -118,8 +118,8 @@ $(document).ready(function() {
                 {{ utils.flashed_messages(dismissible=True) }}
             {% endblock %}
 
-            {% include "footer.html" %}
             </div>
         </div>
+        {% include "footer.html" %}
     </div>
 {% endblock %}
