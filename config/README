@@ -4,7 +4,16 @@ Some configuration must be done before starting up the application.
 You can set these options using the file config/user_config.py.
 The config follows a simple KEY = value format, although data types apply.
 
-## SECRET_KEY (type: String)
+## First Steps
+
+* Copy or rename `config/user_config.template.py` to `config/user_config.py`
+* Set the SECRET_KEY configuration (mandatory)
+* Set other options
+
+
+## Mandatory Configuration
+
+### SECRET_KEY (type: String)
 
 A secret key that will be used for securely signing the session cookie
 and can be used for any other security related needs by extensions or
@@ -16,28 +25,29 @@ see also: https://flask.palletsprojects.com/en/1.1.x/config/#SECRET_KEY
 Do not reveal the secret key when posting questions or committing code.
 
 
-### Default Value
+#### Default Value
 
 *none*, **must** be provided
 
 
-### Examples
+#### Examples
 ```python
     SECRET_KEY = "_4sdo%&AAdk7c6dd]"
 ```
 
 
+## Optional Configuration
 
-## MAX_CONTENT_LENGTH (type: Integer)
+### MAX_CONTENT_LENGTH (type: Integer)
 
 Maximum size of media files (in Bytes)
 
 
-### Default Value
+#### Default Value
 1024 * 50 = 50 KiloByte
 
 
-### Examples
+#### Examples
 ```python
     # 1 MByte
     MAX_CONTENT_LENGTH = 1024 * 1024
@@ -48,17 +58,17 @@ Maximum size of media files (in Bytes)
 
 
 
-## SERVE_LOCAL (type: Boolean)
+### SERVE_LOCAL (type: Boolean)
 
 Whether to use a CDNs to deliver external js/css files.
 Using CDNs means slightly less load / traffic on your server.
 
 
-### Default Value
+#### Default Value
 True
 
 
-### Examples
+#### Examples
 ```python
     # Dont use CDNs
     SERVE_LOCAL = True
