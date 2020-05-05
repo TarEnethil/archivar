@@ -89,14 +89,14 @@ def edit(id, name=None):
         if is_dm:
             form.dm_notes.data = campaign.dm_notes
 
-    return render_template("campaign/edit.html", form=form, campaign=campaign, title=page_title("Edit Campaign '%s'" % campaign.name))
+    return render_template("campaign/edit.html", form=form, campaign=campaign, title=page_title("Edit Campaign '{}'".format(campaign.name)))
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @login_required
 def view(id, name=None):
     campaign = Campaign.query.filter_by(id=id).first_or_404()
 
-    return render_template("campaign/view.html", campaign=campaign, title=page_title("View Campaign '%s'" % campaign.name))
+    return render_template("campaign/view.html", campaign=campaign, title=page_title("View Campaign '{}'".format(campaign.name)))
 
 # @bp.route("/delete/<int:id>", methods=["GET", "POST"])
 # @login_required

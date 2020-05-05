@@ -18,7 +18,7 @@ def gen_participant_choices():
         p = (party.name, [])
 
         for member in party.members:
-            p[1].append((member.id, "%s (%s)" % (member.name, member.player.username)))
+            p[1].append((member.id, "{} ({})".format(member.name, member.player.username)))
 
         choices.append(p)
 
@@ -28,7 +28,7 @@ def gen_participant_choices():
         p = ("No party", [])
 
         for char in no_party_chars:
-            p[1].append((char.id, "%s (%s)" % (char.name, char.player.username)))
+            p[1].append((char.id, "{} ({})".format(char.name, char.player.username)))
 
         choices.append(p)
 

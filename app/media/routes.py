@@ -44,7 +44,7 @@ def list_by_cat(c_id, c_name=None):
     m = MediaCategory.query.filter_by(id=c_id).first_or_404()
     files = get_media(c_id)
 
-    return render_template("media/list.html", media=files, cat=m, title=page_title("View Files in Category '%s'" % m.name))
+    return render_template("media/list.html", media=files, cat=m, title=page_title("View Files in Category '{}'".format(m.name)))
 
 @bp.route("/upload", methods=["GET", "POST"])
 @login_required
@@ -187,7 +187,7 @@ def edit(id, name=None):
         if current_user.is_media_admin():
             form.is_visible.data = item.is_visible
 
-    return render_template("media/edit.html", form=form, title=page_title("Edit File '%s'" % item.name))
+    return render_template("media/edit.html", form=form, title=page_title("Edit File '{}'".format(item.name)))
 
 @bp.route("/delete/<int:id>/<string:name>", methods=["GET"])
 @login_required

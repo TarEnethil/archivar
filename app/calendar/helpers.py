@@ -52,14 +52,14 @@ def calendar_sanity_check():
 
         if current_epoch.years != 0:
             tests_passed = False
-            flash("The current epoch (" + current_epoch.name + ") needs a duration of 0.", "danger")
+            flash("The current epoch ({}) needs a duration of 0.".format(current_epoch.name), "danger")
 
         all_other_epochs = Epoch.query.filter(Epoch.id != current_epoch.id).all()
 
         for epoch in all_other_epochs:
             if epoch.years == 0:
                 tests_passed = False
-                flash("All epochs except the current one need a duration > 0. '" + epoch.name + "' violates that constraint." , "danger")
+                flash("All epochs except the current one need a duration > 0. '{}' violates that constraint.".format(epoch.name) , "danger")
 
     months = Month.query.all()
 

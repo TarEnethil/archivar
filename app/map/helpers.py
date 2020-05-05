@@ -28,7 +28,7 @@ def map_node_filename(filename_from_form):
         split = filename.rsplit(".", 1)
 
         # fancy duplication avoidance (tm)
-        filename = split[0] + "-" + str(counter) + "." + split[1]
+        filename = "{}-{}.{}".format(split[0], counter, split[1])
         counter += 1
 
     return filename

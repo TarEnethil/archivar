@@ -53,7 +53,7 @@ class Event(db.Model, SimpleChangeTracker, LinkGenerator):
         day_str = str(day)
 
         if with_weekday:
-            day_str = self.day_of_the_week(timestamp) + ", " + day_str
+            day_str = "{}, {}".format(self.day_of_the_week(timestamp), day_str)
 
         month_str = month.abbreviation if use_abbr and month.abbreviation else month.name
         year_str = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch_year', e_id=epoch.id, year=year, e_name=urlfriendly(epoch.name)), year) if with_link else str(year)

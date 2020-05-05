@@ -112,14 +112,14 @@ def page_title(dynamic_part=None):
         static_part = gset.title
 
     if dynamic_part != None:
-        return dynamic_part + " :: " + static_part
+        return "{} :: {}".format(dynamic_part, static_part)
     else:
         return static_part
 
 # stretch color code from #xxx to #xxxxxx if needed
 def stretch_color(color):
     if len(color) == 4:
-        return "#" + color[1] + color[1] + color[2] + color[2] + color[3] + color[3]
+        return "#{0}{0}{1}{1}{2}{2}".format(color[1], color[2], color[3])
     return color
 
 # make a COUNT(id) query for a db object
@@ -141,11 +141,11 @@ class LessThanOrEqual(object):
         other_field = form._fields.get(self.comp_value_field_name)
 
         if other_field is None:
-            raise Exception('No field named %s in form' % self.comp_value_field_name)
+            raise Exception('No field named {} in form'.format(self.comp_value_field_name))
 
         if other_field.data and field.data:
             if field.data > other_field.data:
-                raise ValidationError("Value must be less than or equal to %s" % self.comp_value_field_name)
+                raise ValidationError("Value must be less than or equal to {}".format(self.comp_value_field_name))
 
 # validate that a form field contains a value that is >= that of another field
 class GreaterThanOrEqual(object):
@@ -156,11 +156,11 @@ class GreaterThanOrEqual(object):
         other_field = form._fields.get(self.comp_value_field_name)
 
         if other_field is None:
-            raise Exception('No field named %s in form' % self.comp_value_field_name)
+            raise Exception('No field named {} in form'.format(self.comp_value_field_name))
 
         if other_field.data and field.data:
             if field.data < other_field.data:
-                raise ValidationError("Value must be greater than or equal to %s" % self.comp_value_field_name)
+                raise ValidationError("Value must be greater than or equal to {}".format(self.comp_value_field_name))
 
 # validate that a form field contains a year that is valid for a given epoch
 class YearPerEpochValidator(object):
@@ -178,7 +178,7 @@ class YearPerEpochValidator(object):
             raise ValidationError("Unknown epoch.")
 
         if ep.years != 0 and (field.data < 1 or field.data > ep.years):
-            raise ValidationError("Year " + field.data + " is invalid for this epoch.")
+            raise ValidationError("Year {} is invalid for this epoch.".format(field.data))
 
 # validate that a form field contains a valid day for a given month
 class DayPerMonthValidator(object):
@@ -195,7 +195,7 @@ class DayPerMonthValidator(object):
             raise ValidationError("Unknown month.")
 
         if field.data < 1 or field.data > mo.days:
-            raise ValidationError("Day " + field.data + " is invalid for this month.")
+            raise ValidationError("Day is invalid for this month.".format(field.data))
 
 # validate that a user is a DM of the campaign he wants to create a session for
 class IsDMValidator(object):
@@ -256,38 +256,38 @@ def include_css(styles):
     s = {
         "bootstrap": {
             "cdn": ["https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"],
-            "local": [local_url + "css/bootstrap.min.css"]
+            "local": ["{}css/bootstrap.min.css".format(local_url)]
         },
         "markdown-editor" : {
             "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.css"],
-            "local" : [local_url + "css/easymde.min.css"]
+            "local" : ["{}css/easymde.min.css".format(local_url)]
         },
         "bootstrap-select" : {
             "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css"],
-            "local" : [local_url + "css/bootstrap-select.min.css"]
+            "local" : ["{}css/bootstrap-select.min.css".format(local_url)]
         },
         "multi-select" : {
             "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.min.css"],
-            "local" : [local_url + "css/multi-select.min.css"]
+            "local" : ["{}css/multi-select.min.css".format(local_url)]
         },
         "leaflet" : {
             "cdn" : ["https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"],
-            "local" : [local_url + "css/leaflet.css"]
+            "local" : ["{}css/leaflet.css".format(local_url)]
         },
         "bootstrap-datetimepicker" : {
             "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"],
-            "local" : [local_url + "css/tempusdominus.min.css"]
+            "local" : ["{}css/tempusdominus.min.css".format(local_url)]
         },
         "datatables" : {
             "cdn" : ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"],
-            "local" : [local_url + "css/dataTables.bootstrap.min.css"]
+            "local" : ["{}css/dataTables.bootstrap.min.css".format(local_url)]
         }
     }
 
     for style in styles:
         if style in s:
             for url in s[style][source]:
-                out += '<link rel="stylesheet" href="' + url + '">\n'
+                out += '<link rel="stylesheet" href="{}">\n'.format(url)
 
     return Markup(out)
 
@@ -305,62 +305,62 @@ def include_js(scripts):
             "cdn": ["https://code.jquery.com/jquery-3.4.1.slim.min.js",
                     "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js",
                     "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"],
-            "local": [  local_url + "js/jquery-3.4.1.min.js",
-                        local_url + "js/popper.min.js",
-                        local_url + "js/bootstrap.min.js"]
+            "local": [  "{}js/jquery-3.4.1.min.js".format(local_url),
+                        "{}js/popper.min.js".format(local_url),
+                        "{}js/bootstrap.min.js".format(local_url)]
         },
         "markdown-editor" : {
             "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.js"],
-            "local" : [local_url + "js/easymde.min.js"],
-            "helper": [local_url + "js/helpers/media-uploader.js"]
+            "local" : ["{}js/easymde.min.js".format(local_url)],
+            "helper": ["{}js/helpers/media-uploader.js".format(local_url)]
         },
         "bootstrap-select" : {
             "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"],
-            "local" : [local_url + "js/bootstrap-select.min.js"]
+            "local" : ["{}js/bootstrap-select.min.js".format(local_url)]
         },
         "multi-select" : {
             "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js"],
-            "local" : [local_url + "js/jquery.multi-select.min.js"],
-            "helper" : [local_url + "js/helpers/multi-select.js"]
+            "local" : ["{}js/jquery.multi-select.min.js".format(local_url)],
+            "helper" : ["{}js/helpers/multi-select.js".format(local_url)]
         },
         "leaflet" : {
             "cdn" : ["https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"],
-            "local" : [local_url + "js/leaflet.js"]
+            "local" : ["{}js/leaflet.js".format(local_url)]
         },
         "bootstrap-datetimepicker" : {
             "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"],
-            "local" : [local_url + "js/tempusdominus.min.js"]
+            "local" : ["{}js/tempusdominus.min.js".format(local_url)]
         },
         "datatables" : {
             "cdn" : ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"],
-            "local" : [local_url + "js/dataTables.bootstrap.min.js"],
-            "helper" : [local_url + "js/helpers/datatables.js"]
+            "local" : ["{}js/dataTables.bootstrap.min.js".format(local_url)],
+            "helper" : ["{}js/helpers/datatables.js".format(local_url)]
         },
         "quicksearch" : {
             "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/jquery.quicksearch/2.4.0/jquery.quicksearch.min.js"],
-            "local" : [local_url + "js/jquery.quicksearch.min.js"]
+            "local" : ["{}js/jquery.quicksearch.min.js".format(local_url)]
         }
     }
 
     for script in scripts:
         if script in s:
             for url in s[script][source]:
-                out += '<script src="' + url + '"></script>\n'
+                out += '<script src="{}"></script>\n'.format(url)
 
             if "helper" in s[script]:
                 for url in s[script]["helper"]:
-                    out += '<script src="' + url + '"></script>\n'
-
-    out = Markup(out)
+                    out += '<script src="{}"></script>\n'.format(url)
 
     # special rules for moment.js, include first because it must be before datetimepicker
     if "moment" in scripts:
         if source == "cdn":
-            out = current_app.extensions['moment'].include_moment() + "\n" + out
+            moment = current_app.extensions['moment'].include_moment()
         elif source == "local":
-            out = current_app.extensions['moment'].include_moment(local_js=local_url + "js/moment-with-locales.min.js") + "\n" + out
+            moment = current_app.extensions['moment'].include_moment(local_js="{}js/moment-with-locales.min.js\n".format(local_url))
 
-    return out
+        out = "{}\n{}".format(moment, out)
+
+    return Markup(out)
 
 def get_archivar_version():
     return version()
