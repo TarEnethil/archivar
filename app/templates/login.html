@@ -1,10 +1,17 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
-{% block app_content %}
-    <div id="login-wrap">
-    <h1>Login</h1>
+{% block content %}
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-md-3 mx-auto">
+        <h1>Login</h1>
 
-    {{ wtf.quick_form(form) }}
+        {{ utils.flashed_messages(dismissible=True) }}
+
+        {{ wtf.quick_form(form) }}
+        </div>
     </div>
+    {% include "footer.html" %}
+</div>
 {% endblock %}
