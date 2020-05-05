@@ -23,7 +23,7 @@ Do not reveal the secret key when posting questions or committing code.
 
 ### Examples
 ```python
-    SECRET_KEY = "_5#y2L"F4Q8z\n\xec]/" # flask example
+    SECRET_KEY = "_4sdo%&AAdk7c6dd]"
 ```
 
 
