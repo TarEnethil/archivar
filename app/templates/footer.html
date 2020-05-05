@@ -3,7 +3,7 @@
     <div class="col-sm-2"></div>
     <div class="col-xl-8" id="footer">
         version {{ get_archivar_version() }}
-        {% if debug_mode %}
+        {% if debug_mode() %}
             <span class="text-danger">((DEV))</span>
         {% endif %}
         &bullet; <a href="{{ url_for('main.about') }}">About Archivar</a>
