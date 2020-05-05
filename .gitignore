@@ -22,3 +22,4 @@ data/mapnodes/*
 !data/mapnodes/note.png
 !data/mapnodes/ruins.png
 __pycache__
+config/user_config.py

@@ -1,4 +1,4 @@
-from config import Config
+from config.user_config import UserConfig
 from flask import Flask, url_for
 from flask_bootstrap import Bootstrap
 from flask_fontawesome import FontAwesome
@@ -27,9 +27,12 @@ markdown = Misaka(tables=True, fenced_code=True, escape=True)
 moment = Moment()
 fontawesome = FontAwesome()
 
-def create_app(config=Config):
+def create_app(config=UserConfig):
     app = Flask(__name__)
     app.config.from_object(config)
+
+    if "SECRET_KEY" not in app.config.keys() or app.config["SECRET_KEY"] in [None, "", "your_key_here"]:
+        raise Exception("Invalid value for SECRET_KEY. Set a value in config/user_config.py!")
 
     db.init_app(app)
     migrate.init_app(app, db)

@@ -1,0 +1,68 @@
+# Archivar configuration
+
+Some configuration must be done before starting up the application.
+You can set these options using the file config/user_config.py.
+The config follows a simple KEY = value format, although data types apply.
+
+## SECRET_KEY (type: String)
+
+A secret key that will be used for securely signing the session cookie
+and can be used for any other security related needs by extensions or
+your application. It should be a long random string of bytes,
+although unicode is accepted too.
+
+see also: https://flask.palletsprojects.com/en/1.1.x/config/#SECRET_KEY
+
+Do not reveal the secret key when posting questions or committing code.
+
+
+### Default Value
+
+*none*, **must** be provided
+
+
+### Examples
+```python
+    SECRET_KEY = "_5#y2L"F4Q8z\n\xec]/" # flask example
+```
+
+
+
+## MAX_CONTENT_LENGTH (type: Integer)
+
+Maximum size of media files (in Bytes)
+
+
+### Default Value
+1024 * 50 = 50 KiloByte
+
+
+### Examples
+```python
+    # 1 MByte
+    MAX_CONTENT_LENGTH = 1024 * 1024
+
+    # 10 MByte
+    MAX_CONTENT_LENGTH = 10 * 1024 * 1024
+```
+
+
+
+## SERVE_LOCAL (type: Boolean)
+
+Whether to use a CDNs to deliver external js/css files.
+Using CDNs means slightly less load / traffic on your server.
+
+
+### Default Value
+True
+
+
+### Examples
+```python
+    # Dont use CDNs
+    SERVE_LOCAL = True
+
+    # Use CDNs
+    SERVE_LOCAL = False
+```
