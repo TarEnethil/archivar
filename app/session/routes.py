@@ -170,7 +170,7 @@ def edit(id, name=None):
         if is_dm:
             form.dm_notes.data = session.dm_notes
 
-    return render_template("session/edit.html", form=form, title=page_title("Edit Session '%s'" % session.title))
+    return render_template("session/edit.html", form=form, title=page_title("Edit Session '{}'".format(session.title)))
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
@@ -182,7 +182,7 @@ def view(id, name=None):
 
     session.participants.sort(key=lambda x: x.name)
 
-    return render_template("session/view.html", session=session, prev=prev_session, next=next_session, title=page_title("View Session '%s'" % session.title))
+    return render_template("session/view.html", session=session, prev=prev_session, next=next_session, title=page_title("View Session '{}'".format(session.title)))
 
 @bp.route("/delete/<int:id>/<string:name>")
 @login_required

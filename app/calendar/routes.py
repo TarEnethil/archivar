@@ -194,7 +194,7 @@ def epoch_edit(id, name=None):
             form.years.data = epoch.years
             form.circa.data = epoch.circa
 
-    return render_template("calendar/form.html", item=epoch, form=form, heading=heading, title=page_title("Edit Epoch '%s'" % epoch.name))
+    return render_template("calendar/form.html", item=epoch, form=form, heading=heading, title=page_title("Edit Epoch '{}'".format(epoch.name)))
 
 @bp.route("/epoch/delete/<int:id>/<string:name>", methods=["GET"])
 @login_required
@@ -238,7 +238,7 @@ def epoch_up(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '" + epoch_to_up.name + "' and '" + epoch_to_down.name + "' has been swapped.", "success")
+    flash("Order of '{}' and '{}' has been swapped.".format(epoch_to_up.name, epoch_to_down.name), "success")
     return redirect(url_for("calendar.settings"))
 
 @bp.route("/epoch/down/<int:id>/<string:name>", methods=["GET"])
@@ -265,7 +265,7 @@ def epoch_down(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '" + epoch_to_down.name + "' and '" + epoch_to_up.name + "' has been swapped.", "success")
+    flash("Order of '{}' and '{}' has been swapped.".format(epoch_to_down.name, epoch_to_up.name), "success")
     return redirect(url_for("calendar.settings"))
 
 @bp.route("/month/create", methods=["GET", "POST"])
@@ -328,7 +328,7 @@ def month_edit(id, name=None):
         if cset.finalized == False:
             form.days.data = month.days
 
-    return render_template("calendar/form.html", item=month, form=form, heading=heading, title=page_title("Edit Month '%s'" % month.name))
+    return render_template("calendar/form.html", item=month, form=form, heading=heading, title=page_title("Edit Month '{}'".format(month.name)))
 
 @bp.route("/month/delete/<int:id>/<string:name>", methods=["GET"])
 @login_required
@@ -372,7 +372,7 @@ def month_up(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '" + month_to_up.name + "' and '" + month_to_down.name + "' has been swapped.", "success")
+    flash("Order of '{}' and '{}' has been swapped.".format(month_to_up.name, month_to_down.name), "success")
     return redirect(url_for("calendar.settings"))
 
 @bp.route("/month/down/<int:id>/<string:name>", methods=["GET"])
@@ -399,7 +399,7 @@ def month_down(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '" + month_to_down.name + "' and '" + month_to_up.name + "' has been swapped.", "success")
+    flash("Order of '{}' and '{}' has been swapped.".format(month_to_down.name, month_to_up.name), "success")
     return redirect(url_for("calendar.settings"))
 
 @bp.route("/day/create", methods=["GET", "POST"])
@@ -452,7 +452,7 @@ def day_edit(id, name=None):
         form.abbreviation.data = day.abbreviation
         form.description.data = day.description
 
-    return render_template("calendar/form.html", item=day, form=form, heading=heading, title=page_title("Edit Day '%s'" % day.name))
+    return render_template("calendar/form.html", item=day, form=form, heading=heading, title=page_title("Edit Day '{}'".format(day.name)))
 
 @bp.route("/day/delete/<int:id>/<string:name>", methods=["GET"])
 @login_required
@@ -496,7 +496,7 @@ def day_up(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '" + day_to_up.name + "' and '" + day_to_down.name + "' has been swapped.", "success")
+    flash("Order of '{}' and '{}' has been swapped.".format(day_to_up.name, day_to_down.name), "success")
     return redirect(url_for("calendar.settings"))
 
 @bp.route("/day/down/<int:id>/<string:name>", methods=["GET"])
@@ -523,7 +523,7 @@ def day_down(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '" + day_to_down.name + "' and '" + day_to_up.name + "' has been swapped.", "success")
+    flash("Order of '{}' and '{}' has been swapped.".format(day_to_down.name, day_to_up.name), "success")
     return redirect(url_for("calendar.settings"))
 
 @bp.route("/moon/create", methods=["GET", "POST"])
@@ -579,7 +579,7 @@ def moon_edit(id, name=None):
         form.waxing_color.data = moon.waxing_color
         form.waning_color.data = moon.waning_color
 
-    return render_template("calendar/form.html", item=moon, form=form, heading=heading, title=page_title("Edit Moon '%s'" % moon.name))
+    return render_template("calendar/form.html", item=moon, form=form, heading=heading, title=page_title("Edit Moon '{}'".format(moon.name)))
 
 @bp.route("/moon/delete/<int:id>/<string:name>", methods=["GET"])
 @login_required

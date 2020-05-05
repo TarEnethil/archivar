@@ -128,7 +128,7 @@ def map_settings(id, name=None):
         form.default_zoom.data = map_.default_zoom
         form.is_visible.data = map_.is_visible
 
-        return render_template("map/edit.html", map=map_, form=form, title=page_title("Edit Map '%s'" % map_.name))
+        return render_template("map/edit.html", map=map_, form=form, title=page_title("Edit Map '{}'".format(map_.name)))
 
 # global map settings
 @bp.route("/settings", methods=["GET", "POST"])
@@ -363,7 +363,7 @@ def node_type_create():
         db.session.add(new_map_node_type)
         db.session.commit()
 
-        flash('"' + form.name.data + '" was successfully created.', "success")
+        flash("'{}' was successfully created.".format(form.name.data), "success")
         return redirect(url_for('map.settings'))
 
     return render_template("map/node_type_create.html", form=form, title=page_title("Create location type"))
@@ -394,13 +394,13 @@ def node_type_edit(id):
             node.icon_height = height
 
         db.session.commit()
-        flash('"' + form.name.data + '" was successfully edited.', "success")
+        flash("'{}' was successfully edited.".format(form.name.data), "success")
         return redirect(url_for('map.settings'))
     elif request.method == "GET":
         form.name.data = node.name
         form.description.data = node.description
 
-    return render_template("map/node_type_edit.html", form=form, node_type=node, title=("Edit location type '%s'" % node.name))
+    return render_template("map/node_type_edit.html", form=form, node_type=node, title=("Edit location type '{}'".format(node.name)))
 
 @bp.route("/node_type/json")
 @login_required

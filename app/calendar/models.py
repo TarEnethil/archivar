@@ -2,6 +2,7 @@ from app import db
 from app.helpers import urlfriendly
 from app.mixins import LinkGenerator, SimpleChangeTracker
 from flask import url_for
+from jinja2 import Markup
 
 class CalendarSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "calendar_settings"
@@ -220,12 +221,12 @@ class Moon(db.Model, SimpleChangeTracker, LinkGenerator):
 
         wrap = '<div class="moon-wrap" style="width:{0}px;height:{0}px;{1}">{2}</div>'.format(moon_size, align, moon_div)
         div = '<div class="moon-box" title="{0} ({1:4.3f})">{2}{3}{4}</div>'.format(phase_name, phase_percent, name, wrap, phase_name_span);
-        return div
+        return Markup(div)
 
     def print_phases(self, moon_size=50, print_name=False, print_phase=False):
         out = ""
         for x in range(self.phase_length):
-            out += self.print_phase(x + 1, moon_size, print_name, print_phase) + "\n"
+            out += "{}\n".format(self.print_phase(x + 1, moon_size, print_name, print_phase))
 
         return out
 
