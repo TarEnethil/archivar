@@ -238,6 +238,21 @@ def debug_info():
 
     return render_template("debuginfo.html", pynf=pynf, title=page_title("Debug Info"))
 
+@bp.after_app_request
+def debug_trace_queries(response):
+    if current_app.config.get("TRACE_SQL_QUERIES"):
+        from flask_sqlalchemy import get_debug_queries
+
+        queries = get_debug_queries()
+        dur = 0
+
+        for query in queries:
+            dur += query.duration
+
+        print("processed {} queries in {}".format(len(queries), dur))
+
+    return response
+
 @bp.app_errorhandler(404)
 def not_found_error(error):
     return render_template("404.html", info=request.path, title="404"), 404

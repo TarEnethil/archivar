@@ -43,6 +43,28 @@ def create_app(config=UserConfig):
     moment.init_app(app)
     fontawesome.init_app(app)
 
+    # enable debugging options if set
+    if app.config.get("DEBUG") == True:
+        # enable Flask-DebugToolbar
+        if app.config.get("ENABLE_TOOLBAR") == True:
+            print("Enabling Flask-DebugToolbar")
+            from flask_debugtoolbar import DebugToolbarExtension
+            toolbar = DebugToolbarExtension(app)
+
+            for tup in app.config.get("TOOLBAR_OPTIONS"):
+                print("Setting Flask-Toolbar option: {} = {}".format(tup[0], tup[1]))
+                app.config["DEBUG_TB_{}".format(tup[0])] = tup[1]
+
+        # enable SQLAlchemy query logging to stderr
+        if app.config.get("LOG_SQL_QUERIES") == True:
+            print("Enabling SQL-logging to stderr")
+            app.config["SQLALCHEMY_ECHO"] = True
+
+        # trace the count and length of queries for each request
+        if app.config.get("TRACE_SQL_QUERIES") == True:
+            print("Enabling SQL-Tracing")
+            app.config["SQLALCHEMY_RECORD_QUERIES"] = True
+
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
