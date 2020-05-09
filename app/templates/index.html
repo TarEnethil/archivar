@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+{{ super() }}
+
+{% endblock %}
+
 {% block app_content %}
 {% if current_user.has_admin_role() %}
     {{ navbar_start(no_margin=True) }}

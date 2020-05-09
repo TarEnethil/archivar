@@ -13,26 +13,26 @@ class MediaUploader {
    */
   constructor(url, opts) {
     this.upload_url = url;
-    this.parent = "body"
-    this.modal_id = "media-ajax-modal"
+    this.parent = "body";
+    this.modal_id = "media-ajax-modal";
 
     // set opts
     if (opts) {
       if (opts.onSuccess)
-        this.success_fkt = opts.onSuccess
+        this.success_fkt = opts.onSuccess;
 
       if (opts.parent)
-        this.parent = opts.parent
+        this.parent = opts.parent;
     }
 
     // add modal to DOM
-    this.insert_modal()
+    this.insert_modal();
   }
 
   // insert modal into DOM inside of this.parent
   // only done once (even if multiple instances of MediaUploader exist)
   insert_modal() {
-    if (!$("#media-ajax-modal").length) {
+    if (!$("#" + this.modal_id).length) {
       $(this.parent).append('<div class="modal" id="' + this.modal_id + '" data-backdrop="static"> \
           <div class="modal-dialog"> \
               <div class="modal-content"> \

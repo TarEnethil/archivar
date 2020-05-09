@@ -326,6 +326,25 @@ tr.invisible_item,
     max-height:200px;
 }
 
+.thumbnail-small {
+    max-width:125px;
+    max-height:125px;
+}
+
 #media-ajax-modal .modal-body input[type=submit] {
     display:none;
+}
+
+.sidebar-element[data-is-visible=false] {
+    background:rgba(255, 150, 150, 0.5);
+}
+
+.sidebar-element > * {
+    max-width:150px;
+}
+
+.sidebar-element:hover,
+.sidebar-element.active {
+    background:#e2e3e5;
+    cursor:pointer;
 }
