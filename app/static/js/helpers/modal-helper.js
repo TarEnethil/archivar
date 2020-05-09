@@ -26,6 +26,7 @@ class AsyncCategoryLoader {
     this.allow_multiselect = true;
 
     this.loaded = false;
+    this.setup = false;
 
     // set opts
     if (opts) {
@@ -68,7 +69,8 @@ class AsyncCategoryLoader {
               <p class="mr-auto left-footer"> \
                 Elements selected: <span class="active-elem-count">0</span> | deselect: \
                 <a href="#" id="deselect-all">all</a> &bullet; \
-                <a href="#" id="deselect-hidden">hidden</a> \
+                <a href="#" id="deselect-hidden">hidden</a> | \
+                <a href="#" id="refresh">refresh</a> \
               </p> \
             </div> \
           </div> \
@@ -99,37 +101,10 @@ class AsyncCategoryLoader {
           $(_this.body).html($("<p/>").addClass("alert alert-danger").text("A server-side error occured while loading the categories. If this problem consists, please contact the administrator. (Hints: " + textStatus + ", " + errorThrown + ")"));
         }
       });
+    }
 
-      // setup filter form
-      $(modal_id + " .filter-input").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-
-        $(modal_id + " .sidebar-element").filter(function() {
-          // matches() is defined in the derived class
-          $(this).toggle(_this.matches($(this), value));
-        });
-
-        // update category counters after filtering
-        $(modal_id + " .sidebar-category").each(function() {
-          _this.update_count_for_category(this);
-        });
-
-        // update selected-count after filtering
-        _this.update_active_count();
-      });
-
-      // hook up deselect-link
-      $(_this.footer + " #deselect-all").click(function(e) {
-        e.preventDefault();
-        _this.clear_active_elements();
-      });
-
-      // hook up deselect-hidden-link
-      $(_this.footer + " #deselect-hidden").click(function(e) {
-        e.preventDefault();
-        _this.clear_active_hidden_elements();
-      });
-
+    if (!this.setup) {
+      this.setup = true;
       this.setup_header();
       this.setup_footer();
     }
@@ -282,15 +257,66 @@ class AsyncCategoryLoader {
     $("#" + this.modal_id).modal("hide");
   }
 
-  // set heading
+  // set title and hook up filter form
   setup_header() {
     $(this.header + " h5").text(this.title);
+
+    var _this = this;
+    var modal_id = "#" + _this.modal_id;
+
+    // setup filter form
+    $(modal_id + " .filter-input").on("keyup", function() {
+      var value = $(this).val().toLowerCase();
+
+      $(modal_id + " .sidebar-element").filter(function() {
+        // matches() is defined in the derived class
+        $(this).toggle(_this.matches($(this), value));
+      });
+
+      // update category counters after filtering
+      $(modal_id + " .sidebar-category").each(function() {
+        _this.update_count_for_category(this);
+      });
+
+      // update selected-count after filtering
+      _this.update_active_count();
+    });
   }
 
-  // display and hook up footer buttons
+  // display and hook up footer buttons and link
   setup_footer() {
     var _this = this;
 
+    // hook up deselect-link
+    $(_this.footer + " #deselect-all").click(function(e) {
+      e.preventDefault();
+      _this.clear_active_elements();
+    });
+
+    // hook up deselect-hidden-link
+    $(_this.footer + " #deselect-hidden").click(function(e) {
+      e.preventDefault();
+      _this.clear_active_hidden_elements();
+    });
+
+    // set up refresh button
+    $(_this.footer + " #refresh").click(function(e) {
+      e.preventDefault();
+
+      var sure = true;
+
+      if (_this.get_active_elements().length > 0) {
+        sure = confirm("If you refresh, your current selection will be lost. Continue?");
+      }
+
+      if (sure) {
+        _this.loaded = false;
+        $("#" + _this.modal_id + " .modal-body").empty();
+        _this.open_modal();
+      }
+    });
+
+    // set up custom buttons
     this.footer_info.forEach(function(foo) {
         // buttons spawn in a disabled state
         $(foo.button).addClass("footer-btn disabled").attr("disabled", "disabled");
