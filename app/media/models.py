@@ -58,7 +58,8 @@ class MediaItem(db.Model, SimpleChangeTracker, LinkGenerator):
             'serve-url' : self.serve_url(),
             'thumbnail-url' : self.thumbnail_url(),
             'is-image' : self.is_image(),
-            "is-visible": self.is_visible
+            "is-visible": self.is_visible,
+            "file-ext": self.get_file_ext()
         }
 
 

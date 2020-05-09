@@ -339,18 +339,31 @@ class MediaModal extends AsyncCategoryLoader {
   insert_single_data(file_data) {
     var elem;
 
-    // images are display as <figures>
+    // images are displayed as <figures>
     if (file_data["is-image"] == true) {
       elem = $("<figure/>").addClass("p-1 figure mb-0");
 
       $("<img/>").addClass("thumbnail-small img-thumbnail mx-auto").attr("src", file_data["thumbnail-url"]).appendTo(elem);
-      $("<figcaption/>").addClass("figure-caption text-center").text(file_data.name).appendTo(elem);
+      $("<figcaption/>").addClass("figure-caption text-center text-truncate").text(file_data.name).appendTo(elem);
     } else {
-      // non-images are display as TODO
-      elem = $("<p/>").text(file_data.name);
+      // non-images are displayed as <p> with an icon (based on some light filetype logic)
+      elem = $("<p/>").text(file_data.name).addClass("mx-auto figure-caption text-center text-truncate mb-0");
+
+      var icon = "file-alt";
+
+      if (file_data["file-ext"] == "pdf") {
+        icon = "file-pdf";
+      }
+
+      if (["rar", "zip", "7z", "tar", "gz", "bz2", "xz"].indexOf(file_data["file-ext"]) != -1) {
+        icon = "file-archive";
+      }
+
+      $("<span/>").addClass("fas fa-" + icon).css("font-size", "48px").css("display", "block").prependTo(elem);
     }
 
     var col = $("<div/>").addClass("mb-3 text-center col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6");
+    col.attr("title", file_data.name);
     col.append(elem);
 
     return col;
