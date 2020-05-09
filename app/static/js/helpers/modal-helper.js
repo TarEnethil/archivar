@@ -181,17 +181,25 @@ class AsyncCategoryLoader {
     data.forEach(function(elem, index) {
       // insert_single_data is implemented in derived class
       var single_data = _this.insert_single_data(elem);
-      single_data.addClass("sidebar-element");
-
-      // copy every member of the element into data-* attributes for usage outside
-      for (var key in elem) {
-        single_data.attr("data-" + key, elem[key]);
-      }
-
+      single_data = _this.tag_data(single_data, elem);
       row.append(single_data);
     });
 
     parent.append(row);
+  }
+
+  // add data-*-fields to the element
+  // done as extra function so new items can be added externally
+  tag_data(data, tags) {
+    var tagged_data = $(data);
+    tagged_data.addClass("sidebar-element");
+
+    // copy every member of the element into data-* attributes for usage outside
+    for (var key in tags) {
+      tagged_data.attr("data-" + key, tags[key]);
+    }
+
+    return tagged_data;
   }
 
   // update how many (visible) elements are displayed in a category
@@ -313,6 +321,7 @@ class MediaModal extends AsyncCategoryLoader {
    *    - parent: parent-element for the modal
    *    - modal_opts: additional classes for the modal-dialog
    *    - allow_multiselect: whether or not to allow multiple selected elements at once
+   *    - media_upload_url: if given, a MediaUploader will be added to the Modal to upload files asynchronously
    */
   constructor(title, url, id, footer_info, opts) {
     if (!opts) {
@@ -325,6 +334,19 @@ class MediaModal extends AsyncCategoryLoader {
     }
 
     super(title, url, id, footer_info, opts);
+
+    // hook up MediaUploader if url is given
+    // this works after super(), because setup_header() is only done in open_modal()
+    if (opts.media_upload_url) {
+      var _this = this;
+
+      // TODO: temporary function to refer to this, is it needed?
+      var success = function(info) {
+        _this.on_successful_upload(info);
+      }
+
+      this.media_uploader = new MediaUploader(opts.media_upload_url, "sidebar-upload-modal", { onSuccess : success });
+    }
   }
 
   // matches a media file against a (lower-cased) search term
@@ -347,19 +369,9 @@ class MediaModal extends AsyncCategoryLoader {
       $("<figcaption/>").addClass("figure-caption text-center text-truncate").text(file_data.name).appendTo(elem);
     } else {
       // non-images are displayed as <p> with an icon (based on some light filetype logic)
-      elem = $("<p/>").text(file_data.name).addClass("mx-auto figure-caption text-center text-truncate mb-0");
+      elem = $("<p/>").text(file_data.name).addClass("p-1 mx-auto figure-caption text-center text-truncate mb-0");
 
-      var icon = "file-alt";
-
-      if (file_data["file-ext"] == "pdf") {
-        icon = "file-pdf";
-      }
-
-      if (["rar", "zip", "7z", "tar", "gz", "bz2", "xz"].indexOf(file_data["file-ext"]) != -1) {
-        icon = "file-archive";
-      }
-
-      $("<span/>").addClass("fas fa-" + icon).css("font-size", "48px").css("display", "block").prependTo(elem);
+      $("<span/>").addClass("fas fa-big fa-" + file_data.icon).css("display", "block").prependTo(elem);
     }
 
     var col = $("<div/>").addClass("mb-3 text-center col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6");
@@ -367,5 +379,69 @@ class MediaModal extends AsyncCategoryLoader {
     col.append(elem);
 
     return col;
+  }
+
+  // overrides base function
+  // add button to upload media on-the-fly
+  setup_header() {
+    var _this = this;
+    // call parent function to set title
+    super.setup_header();
+
+    // MediaUploader is optional
+    if (this.media_uploader) {
+      var upload_button = $("<button/>").addClass("btn btn-primary mr-2").attr("type", "button");
+      upload_button.append($("<span/>").addClass("fas fa-file-upload mr-2"));
+      upload_button.append(" Upload");
+      upload_button.click(function() {
+        _this.media_uploader.open_modal();
+      })
+
+      $(this.header + " .form-inline").prepend(upload_button);
+    }
+  }
+
+  // called when an image is successfully uploaded asynchronously via the MediaUploader
+  // adds the newly uploaded file to the gallery and hooks up a button
+  // in the MediaUploader to add the item to the selection
+  // NOTE: the newly added file will be visible, even if it does not match the current filter
+  // this is _intended_ behaviour, so it is more obvious that the file was added
+  on_successful_upload(new_file_info) {
+    var _this = this;
+    var footer = _this.media_uploader.get_footer();
+
+    // create new sidebar-element
+    var new_elem = _this.insert_single_data(new_file_info);
+
+    // add data-* tags
+    new_elem = _this.tag_data(new_elem, new_file_info);
+
+    // hook up onclick
+    new_elem.click(function() {
+      _this.elem_clicked($(this));
+    });
+
+    // find category and add to category
+    var cat = $(_this.body + " #cat-" + new_file_info.category);
+    cat.find(".row").append(new_elem);
+
+    // update counter
+    _this.update_count_for_category(cat);
+
+    // button to add the newly uploaded file to the selection
+    var add_button = $('<button/>').attr("type", "button").addClass("btn btn-primary ml-auto").text("Add to Selection");
+
+    add_button.click(function() {
+      // "click" on element once to select it
+      // done this way so stuff like allow_multiselect is honored
+      _this.elem_clicked(new_elem);
+      _this.update_active_count();
+
+      _this.media_uploader.close_modal();
+
+      // TODO: find a way to scroll to the newly added item inside the modal?
+    });
+
+    footer.prepend(add_button);
   }
 }

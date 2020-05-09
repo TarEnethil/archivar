@@ -207,22 +207,22 @@ function on_successful_upload(new_media_info) {
     // button to add a link to the newly uploaded file
     var link_button = $('<button/>').attr("type", "button").addClass("btn btn-primary mr-auto").text("Add Link");
     link_button.click(function() {
-      add_to_editor(markdown_link(text, new_media_info.serve_url));
+      add_to_editor(markdown_link(text, new_media_info["serve-url"]));
       media_uploader.close_modal();
     });
     footer.prepend(link_button);
 
-    if (new_media_info.is_image) {
+    if (new_media_info["is-image"]) {
       var thumbnail_button = $('<button/>').attr("type", "button").addClass("btn btn-primary").text("Add Thumbnail");
       thumbnail_button.click(function() {
-        add_to_editor(markdown_image(text, new_media_info.thumbnail_url));
+        add_to_editor(markdown_image(text, new_media_info["thumbnail-url"]));
         media_uploader.close_modal();
       });
       footer.prepend(thumbnail_button);
 
       var direct_button = $('<button/>').attr("type", "button").addClass("btn btn-primary").text("Add Image");
       direct_button.click(function() {
-        add_to_editor(markdown_image(text, new_media_info.serve_url));
+        add_to_editor(markdown_image(text, new_media_info["serve-url"]));
         media_uploader.close_modal();
       });
       footer.prepend(direct_button);
@@ -293,8 +293,8 @@ var footer = [
   }
 ];
 
-var media_sidebar = new MediaModal("Insert file", "{{ url_for('media.sidebar_categories') }}", "media-sidebar", footer);
-var media_uploader = new MediaUploader('{{ url_for("media.upload", ajax=1) }}', { onSuccess : on_successful_upload })
+var media_sidebar = new MediaModal("Insert file", "{{ url_for('media.sidebar_categories') }}", "media-sidebar", footer, { media_upload_url : '{{ url_for("media.upload", ajax=1) }}'});
+var media_uploader = new MediaUploader('{{ url_for("media.upload", ajax=1) }}', "media-ajax-modal", { onSuccess : on_successful_upload })
 
 function toggleMediaSidebar(editor) {
   active_editor = editor;
@@ -366,3 +366,20 @@ function generateMarkdownConfig(id, withHeading=true) {
 function makeMarkdownEditor(id, withHeading=true) {
   new EasyMDE(generateMarkdownConfig(id, withHeading))
 }
+
+/* stacking multiple modals does not work well, as the backgrops all have the same z-index.
+this piece of code adjust the z-indexes of the backdrops whenever a modal is closed or opened
+taken from https://stackoverflow.com/questions/51547165/multiple-modals-in-bootstrap4-not-working/61305365#61305365 */
+$(document).ready(function() {
+  $(document).on('show.bs.modal', '.modal', function () {
+    var zIndex = 1040 + (10 * $('.modal:visible').length);
+    $(this).css('z-index', zIndex);
+    setTimeout(function () {
+        $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+    }, 0);
+  });
+
+  $(document).on('hidden.bs.modal', '.modal', function () {
+    $('.modal:visible').length && $(document.body).addClass('modal-open');
+  });
+});

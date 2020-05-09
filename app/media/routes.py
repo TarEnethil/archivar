@@ -91,14 +91,7 @@ def upload():
         if ajax:
             return jsonify(data={'success' : True,
                                 'html' : render_template("media/upload_success.html", item=new_media),
-                                'media_info' : {
-                                        'id' : new_media.id,
-                                        'name' : new_media.name,
-                                        'view_url' : new_media.view_url(),
-                                        'serve_url' : new_media.serve_url(),
-                                        'thumbnail_url' : new_media.thumbnail_url(),
-                                        'is_image' : new_media.is_image()
-                                    }
+                                'media_info' : new_media.sidebar_info()
                                 })
         else:
             return redirect(new_media.view_url())

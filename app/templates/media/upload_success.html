@@ -9,6 +9,14 @@
             <img class="thumbnail img-thumbnail" src="{{ item.thumbnail_url() }}" />
             <figcaption class="figure-caption text-center">Thumbnail</figcaption>
         </figure>
+        {% else %}
+        <p class="figcaption">
+            {{ icon(item.get_icon_str(), text_class="fa-big") }}
+        </p>
+        <p>
+            {{ item.filename }}
+            {{ media.filename }}
+        </p>
         {% endif %}
     </div>
 </div>

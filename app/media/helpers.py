@@ -59,7 +59,7 @@ def generate_thumbnail(filename):
         flash("Could not generate the thumbnail: {}".format(err), "error")
         success = False
 
-    return False
+    return success
 
 # get all media visible to the user, can be filtered by category
 def get_media(filter_category=None):

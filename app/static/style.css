@@ -321,6 +321,10 @@ tr.invisible_item,
     color:#343a40;
 }
 
+.fa-big {
+    font-size:48px;
+}
+
 .thumbnail {
     max-width:200px;
     max-height:200px;
@@ -331,8 +335,12 @@ tr.invisible_item,
     max-height:125px;
 }
 
-#media-ajax-modal .modal-body input[type=submit] {
+.media-uploader .modal-body input[type=submit] {
     display:none;
+}
+
+.sidebar-element {
+    border-radius:10px;
 }
 
 .sidebar-element[data-is-visible=false] {
@@ -346,5 +354,12 @@ tr.invisible_item,
 .sidebar-element:hover,
 .sidebar-element.active {
     background:#e2e3e5;
+    font-weight:bold;
     cursor:pointer;
+}
+
+.sidebar-element[data-is-visible=false]:hover,
+.sidebar-element[data-is-visible=false].active {
+    background: rgb(226,227,229);
+    background: linear-gradient(180deg, rgba(226,227,229,1) 0%, rgba(226,227,229,1) 35%, rgba(255,150,150,0.5) 100%);
 }
