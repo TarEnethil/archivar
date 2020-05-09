@@ -31,11 +31,12 @@ def gen_media_category_choices():
 
 # get best available file name for an uploaded media item
 def media_filename(initial_filename):
-    filename = secure_filename(initial_filename)
+    orig_filename = secure_filename(initial_filename)
+    filename = orig_filename
 
     counter = 1
     while path.isfile(path.join(current_app.config["MEDIA_DIR"], filename)):
-        split = filename.rsplit(".", 1)
+        split = orig_filename.rsplit(".", 1)
 
         # fancy duplication avoidance (tm)
         filename = "{}-{}.{}".format(split[0], counter, split[1])
