@@ -484,9 +484,8 @@ class MediaModal extends AsyncCategoryLoader {
 
     add_button.click(function() {
       // "click" on element once to select it
-      // done this way so stuff like allow_multiselect is honored
+      // done this way so stuff like allow_multiselect is honored and counters are updated
       _this.elem_clicked(new_elem);
-      _this.update_active_count();
 
       _this.media_uploader.close_modal();
 
