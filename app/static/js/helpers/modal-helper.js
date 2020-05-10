@@ -490,7 +490,15 @@ class MediaModal extends AsyncCategoryLoader {
 
       _this.media_uploader.close_modal();
 
-      // TODO: find a way to scroll to the newly added item inside the modal?
+      // calculate scroll position
+      // body-offset of element - body-offset of first category = relative offset inside modal
+      // adjust with half heights so that element is in the center
+      var elem_offset = $(new_elem).offset().top - $(_this.body + " > div[id^=cat]:first").offset().top; - ($(_this.body).height() / 2) + ($(new_elem).height() / 2);
+
+      $(_this.body).stop().animate({'scrollTop': elem_offset}, 900, 'swing', function() {
+        // poor mans blink
+        $(new_elem).fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200);
+      });
     });
 
     footer.prepend(add_button);
