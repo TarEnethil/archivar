@@ -353,13 +353,13 @@ tr.invisible_item,
 
 .sidebar-element:hover,
 .sidebar-element.active {
-    background:#e2e3e5;
+    background:#cce5ff;
     font-weight:bold;
     cursor:pointer;
 }
 
 .sidebar-element[data-is-visible=false]:hover,
 .sidebar-element[data-is-visible=false].active {
-    background: rgb(226,227,229);
-    background: linear-gradient(180deg, rgba(226,227,229,1) 0%, rgba(226,227,229,1) 35%, rgba(255,150,150,0.5) 100%);
+    background: rgb(204, 229, 255);
+    background: linear-gradient(180deg, rgba(204, 229, 255,1) 0%, rgba(204, 229, 255,1) 35%, rgba(255,150,150,0.5) 100%);
 }
