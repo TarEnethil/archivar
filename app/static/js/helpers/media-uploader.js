@@ -11,29 +11,29 @@ class MediaUploader {
    *                            takes a single parameter, which is an object containing information about the uploaded file
    *    - parent: parent-element for the modal
    */
-  constructor(url, opts) {
+  constructor(url, id, opts) {
     this.upload_url = url;
-    this.parent = "body"
-    this.modal_id = "media-ajax-modal"
+    this.parent = "body";
+    this.modal_id = id;
 
     // set opts
     if (opts) {
       if (opts.onSuccess)
-        this.success_fkt = opts.onSuccess
+        this.success_fkt = opts.onSuccess;
 
       if (opts.parent)
-        this.parent = opts.parent
+        this.parent = opts.parent;
     }
 
     // add modal to DOM
-    this.insert_modal()
+    this.insert_modal();
   }
 
   // insert modal into DOM inside of this.parent
   // only done once (even if multiple instances of MediaUploader exist)
   insert_modal() {
-    if (!$("#media-ajax-modal").length) {
-      $(this.parent).append('<div class="modal" id="' + this.modal_id + '" data-backdrop="static"> \
+    if (!$("#" + this.modal_id).length) {
+      $(this.parent).append('<div class="modal media-uploader" id="' + this.modal_id + '" data-backdrop="static"> \
           <div class="modal-dialog"> \
               <div class="modal-content"> \
                   <div class="modal-header"> \
@@ -104,7 +104,7 @@ class MediaUploader {
             // spawn a retry-button which reloads the form
             var retry_button = $("<button/>").attr("type", "butto").addClass("btn btn-primary mr-auto").text("Upload new File");
             retry_button.click(function() {
-                recurse.open_modal();
+                _this.open_modal();
             });
 
             $(modal_id + " #fake-submit").replaceWith(retry_button);

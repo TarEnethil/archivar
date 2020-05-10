@@ -13,10 +13,11 @@ class MediaCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
 
-    def to_dict(self):
-        dic = {
+    def sidebar_info(self):
+        return {
             "id" : self.id,
             "name" : self.name,
+            "url" : url_for('media.sidebar', c_id=self.id)
         }
 
         return dic
@@ -49,18 +50,31 @@ class MediaItem(db.Model, SimpleChangeTracker, LinkGenerator):
     def is_image(self):
         return self.get_file_ext() in current_app.config["MAPNODES_FILE_EXT"]
 
-    def to_dict(self):
-        dic = {
-            "id" : self.id,
-            "name" : self.name,
-            "filename" : self.filename,
-            "filesize" : self.filesize,
-            "category" : self.category_id,
-            "file_ext" : self.get_file_ext(),
-            "is_visible" : self.is_visible
+    def get_icon_str(self):
+        ext = self.get_file_ext()
+
+        if ext == "pdf":
+            return "file-pdf"
+
+        if ext in ["rar", "zip", "7z", "tar", "gz", "bz2", "xz"]:
+            return "file-archive"
+
+        return "file-alt"
+
+    def sidebar_info(self):
+        return {
+            'name' : self.name,
+            'filename' : self.filename,
+            'view-url' : self.view_url(),
+            'serve-url' : self.serve_url(),
+            'thumbnail-url' : self.thumbnail_url(),
+            'is-image' : self.is_image(),
+            "is-visible" : self.is_visible,
+            "file-ext": self.get_file_ext(),
+            "icon" : self.get_icon_str(),
+            "category" : self.category_id
         }
 
-        return dic
 
     #####
     # LinkGenerator functions

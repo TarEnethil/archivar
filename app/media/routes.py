@@ -91,14 +91,7 @@ def upload():
         if ajax:
             return jsonify(data={'success' : True,
                                 'html' : render_template("media/upload_success.html", item=new_media),
-                                'media_info' : {
-                                        'id' : new_media.id,
-                                        'name' : new_media.name,
-                                        'view_url' : new_media.view_url(),
-                                        'serve_url' : new_media.serve_url(),
-                                        'thumbnail_url' : new_media.thumbnail_url(),
-                                        'is_image' : new_media.is_image()
-                                    }
+                                'media_info' : new_media.sidebar_info()
                                 })
         else:
             return redirect(new_media.view_url())
@@ -274,7 +267,7 @@ def settings():
 
     return render_template("media/settings.html", settings=settings, categories=categories, form=form, title=page_title("Media Settings"))
 
-@bp.route("/sidebar/<int:c_id>", methods=["GET"])
+@bp.route("/sidebar/<int:c_id>", methods=["POST"])
 @login_required
 def sidebar(c_id):
     if current_user.has_admin_role():
@@ -288,23 +281,24 @@ def sidebar(c_id):
 
     entries = entries.filter_by(category_id=c_id).order_by(MediaItem.name.asc()).all()
 
-    d = {}
+    data = []
     for m in entries:
-        d[m.id] = m.to_dict();
+        data.append(m.sidebar_info())
 
-    return jsonify(d)
+    return jsonify({ "data" : data})
 
-@bp.route("/sidebar/categories", methods=["GET"])
+@bp.route("/sidebar/categories", methods=["POST"])
 @login_required
 def sidebar_categories():
     cats = MediaCategory.query.order_by(MediaCategory.name.asc()).all()
 
-    d = {}
+    valid_categories = []
 
     for c in cats:
-        d[c.id] = c.to_dict()
+        if len(c.items) > 0:
+            valid_categories.append(c.sidebar_info())
 
-    return jsonify(d);
+    return jsonify({ "categories" : valid_categories });
 
 @bp.route("/serve/<filename>")
 @login_required
