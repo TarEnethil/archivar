@@ -307,11 +307,9 @@ def sidebar_categories():
     return jsonify({ "categories" : valid_categories });
 
 @bp.route("/serve/<filename>")
-@login_required
 def serve_file(filename):
     return send_from_directory(current_app.config["MEDIA_DIR"], filename)
 
 @bp.route("/serve-thumb/<filename>")
-@login_required
 def serve_thumbnail(filename):
     return send_from_directory(path.join(current_app.config["MEDIA_DIR"], "thumbnails"), filename)

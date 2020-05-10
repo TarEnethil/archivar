@@ -427,7 +427,6 @@ def node_json(id):
     return jsonify(nodes_dict)
 
 @bp.route("/node_type/icon/<filename>")
-@login_required
 def node_type_icon(filename):
     return send_from_directory(current_app.config["MAPNODES_DIR"], filename)
 
@@ -439,7 +438,6 @@ def last_change(id):
     return jsonify({'last_change' : str(mset.last_change) })
 
 @bp.route("/tile/<path:filename>")
-@login_required
 def tile(filename):
     return send_from_directory(current_app.config["MAPTILES_DIR"], filename)
 
