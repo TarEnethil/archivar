@@ -1,4 +1,3 @@
-
 /*
  * Base class to create a Modal which displays information retrieved asynchronously.
  * It queries a given endpoint for categories, and subsequently queries each category for the items it should display.
@@ -206,7 +205,8 @@ class AsyncCategoryLoader {
   // display how many elements are selected in the footer
   // counts hidden / filtered elements separately
   update_active_count() {
-    var full_count = this.get_active_elements().length;
+    var all = this.get_active_elements();
+    var full_count = all.length;
     var count_str = full_count;
 
     var hidden = $(this.body).find(".sidebar-element.active").filter(function() {
@@ -219,14 +219,39 @@ class AsyncCategoryLoader {
 
     $(this.footer).find(".active-elem-count").text(count_str);
 
-    // disable / enable footer buttons if there are selected elements
-    if (full_count > 0) {
-      $(this.footer).find(".footer-btn").each(function() {
-        $(this).removeClass("disabled").removeAttr("disabled");
-      });
-    } else {
-      $(this.footer).find(".footer-btn").addClass("disabled").attr("disabled", "disabled");
+    this.update_footer_buttons(all);
+  }
+
+  // enable/disable buttons in footer based on the currently selected elements
+  update_footer_buttons(active_elements) {
+    var _this = this;
+
+    if (!this.footer_info) {
+      return;
     }
+
+    this.footer_info.forEach(function(foo) {
+      var enabled;
+
+      // if a button has a custom enabled_func, use this
+      if (foo.enabled_func) {
+        enabled = foo.enabled_func(active_elements);
+      } else {
+      // no custom func -> simple logic: only enable if elements are selected
+        if (active_elements.length > 0) {
+          enabled = true;
+        } else {
+          enabled = false;
+        }
+      }
+
+      // set button state
+      if (enabled) {
+        $(foo.button).removeClass("disabled").removeAttr("disabled");
+      } else {
+        $(foo.button).addClass("disabled").attr("disabled", "disabled");
+      }
+    });
   }
 
   // get all currently selected elements
@@ -323,7 +348,7 @@ class AsyncCategoryLoader {
 
         // fire this buttons function when its clicked
         $(foo.button).click(function() {
-            foo.func(_this.get_active_elements());
+            foo.click_func(_this.get_active_elements());
         });
 
         $(_this.footer).append($(foo.button));
@@ -421,7 +446,7 @@ class MediaModal extends AsyncCategoryLoader {
       upload_button.append(" Upload");
       upload_button.click(function() {
         _this.media_uploader.open_modal();
-      })
+      });
 
       $(this.header + " .form-inline").prepend(upload_button);
     }

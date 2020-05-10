@@ -271,23 +271,35 @@ function insert_media(type, elements) {
   media_sidebar.close_modal();
 }
 
+// enable func for buttons that only pertain to images
+// returns true if there are only images selected
+function only_images_selected(elements) {
+  var non_images =  $(elements).filter(function() {
+    return $(this).attr("data-is-image") == "false";
+  });
+
+  return non_images.length == 0 && elements.length > 0;
+}
+
 // footer buttons for media sidebar
 var footer = [
   {
     button: $("<button/>").addClass("btn btn-primary").text("Add Thumbnail"),
-    func: function(elements) {
+    enabled_func: only_images_selected,
+    click_func: function(elements) {
       insert_media("thumbnail", elements);
     }
   },
   {
     button: $("<button/>").addClass("btn btn-primary").text("Add Image"),
-    func: function(elements) {
+    enabled_func: only_images_selected,
+    click_func: function(elements) {
       insert_media("image", elements);
     }
   },
   {
     button: $("<button/>").addClass("btn btn-primary").text("Add Link"),
-    func: function(elements) {
+    click_func: function(elements) {
       insert_media("link", elements);
     }
   }
