@@ -36,10 +36,8 @@ def media_filename(initial_filename):
 
     counter = 1
     while path.isfile(path.join(current_app.config["MEDIA_DIR"], filename)):
-        split = orig_filename.rsplit(".", 1)
-
         # fancy duplication avoidance (tm)
-        filename = "{}-{}.{}".format(split[0], counter, split[1])
+        filename = "{}-{}".format(counter, orig_filename)
         counter += 1
 
     return filename
