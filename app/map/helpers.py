@@ -21,14 +21,13 @@ def map_admin_required(f):
 
 # find the best available file name for a map node type image
 def map_node_filename(filename_from_form):
-    filename = secure_filename(filename_from_form)
+    orig_filename = secure_filename(filename_from_form)
+    filename = orig_filename
 
     counter = 1
     while path.isfile(path.join(current_app.config["MAPNODES_DIR"], filename)):
-        split = filename.rsplit(".", 1)
-
         # fancy duplication avoidance (tm)
-        filename = "{}-{}.{}".format(split[0], counter, split[1])
+        filename = "{}-{}".format(counter, orig_filename)
         counter += 1
 
     return filename
