@@ -127,7 +127,7 @@ class AsyncCategoryLoader {
       url: category_data.url,
       success: function(resp) {
         // create container for this category
-        var cat_container = $("<div/>").addClass("m-2 sidebar-category").attr("id", "cat-" + category_data.id).append($("<h5/>").text(category_data.name).append($("<span/>").addClass("cat-count").text(" (0)"))).appendTo($(_this.body));
+        var cat_container = $("<div/>").addClass("m-2 modal-category").attr("id", "cat-" + category_data.id).append($("<h5/>").text(category_data.name).append($("<span/>").addClass("cat-count").text(" (0)"))).appendTo($(_this.body));
 
         // insert data into container
         _this.insert_data(resp.data, cat_container);
@@ -136,7 +136,7 @@ class AsyncCategoryLoader {
         _this.update_count_for_category(cat_container);
 
         // hook up onclick-event for elements
-        $(cat_container).find(".sidebar-element").click(function() {
+        $(cat_container).find(".single-modal-element").click(function() {
             _this.elem_clicked($(this));
         })
       },
@@ -166,7 +166,7 @@ class AsyncCategoryLoader {
   // done as extra function so new items can be added externally
   tag_data(data, tags) {
     var tagged_data = $(data);
-    tagged_data.addClass("sidebar-element");
+    tagged_data.addClass("single-modal-element");
 
     // copy every member of the element into data-* attributes for usage outside
     for (var key in tags) {
@@ -178,7 +178,7 @@ class AsyncCategoryLoader {
 
   // update how many (visible) elements are displayed in a category
   update_count_for_category(category) {
-    var count = $(category).find(".sidebar-element").filter(function() {
+    var count = $(category).find(".single-modal-element").filter(function() {
         return $(this).css("display") !== 'none';
     }).length;
 
@@ -209,7 +209,7 @@ class AsyncCategoryLoader {
     var full_count = all.length;
     var count_str = full_count;
 
-    var hidden = $(this.body).find(".sidebar-element.active").filter(function() {
+    var hidden = $(this.body).find(".single-modal-element.active").filter(function() {
         return $(this).css("display") === 'none';
     }).length;
 
@@ -256,7 +256,7 @@ class AsyncCategoryLoader {
 
   // get all currently selected elements
   get_active_elements() {
-    return $(this.body).find(".sidebar-element.active");
+    return $(this.body).find(".single-modal-element.active");
   }
 
   // deselect all selected elements
@@ -293,13 +293,13 @@ class AsyncCategoryLoader {
     $(modal_id + " .filter-input").on("keyup", function() {
       var value = $(this).val().toLowerCase();
 
-      $(modal_id + " .sidebar-element").filter(function() {
+      $(modal_id + " .single-modal-element").filter(function() {
         // matches() is defined in the derived class
         $(this).toggle(_this.matches($(this), value));
       });
 
       // update category counters after filtering
-      $(modal_id + " .sidebar-category").each(function() {
+      $(modal_id + " .modal-category").each(function() {
         _this.update_count_for_category(this);
       });
 
@@ -396,7 +396,7 @@ class MediaModal extends AsyncCategoryLoader {
         _this.on_successful_upload(info);
       }
 
-      this.media_uploader = new MediaUploader(opts.media_upload_url, "sidebar-upload-modal", { onSuccess : success });
+      this.media_uploader = new MediaUploader(opts.media_upload_url, _this.modal_id + "-upload-modal", { onSuccess : success });
     }
   }
 
@@ -461,7 +461,7 @@ class MediaModal extends AsyncCategoryLoader {
     var _this = this;
     var footer = _this.media_uploader.get_footer();
 
-    // create new sidebar-element
+    // create new single-modal-element
     var new_elem = _this.insert_single_data(new_file_info);
 
     // add data-* tags

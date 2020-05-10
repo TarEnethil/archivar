@@ -339,27 +339,27 @@ tr.invisible_item,
     display:none;
 }
 
-.sidebar-element {
+.single-modal-element {
     border-radius:10px;
 }
 
-.sidebar-element[data-is-visible=false] {
+.single-modal-element[data-is-visible=false] {
     background:rgba(255, 150, 150, 0.5);
 }
 
-.sidebar-element > * {
+.single-modal-element > * {
     max-width:150px;
 }
 
-.sidebar-element:hover,
-.sidebar-element.active {
+.single-modal-element:hover,
+.single-modal-element.active {
     background:#cce5ff;
     font-weight:bold;
     cursor:pointer;
 }
 
-.sidebar-element[data-is-visible=false]:hover,
-.sidebar-element[data-is-visible=false].active {
+.single-modal-element[data-is-visible=false]:hover,
+.single-modal-element[data-is-visible=false].active {
     background: rgb(204, 229, 255);
     background: linear-gradient(180deg, rgba(204, 229, 255,1) 0%, rgba(204, 229, 255,1) 35%, rgba(255,150,150,0.5) 100%);
 }
