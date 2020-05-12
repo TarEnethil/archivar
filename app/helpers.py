@@ -258,6 +258,12 @@ def include_css(styles):
             "cdn": ["https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"],
             "local": ["{}css/bootstrap.min.css".format(local_url)]
         },
+        "fontawesome": {
+            "cdn": [    "https://use.fontawesome.com/releases/v5.3.1/css/fontawesome.css",
+                        "https://use.fontawesome.com/releases/v5.3.1/css/solid.css"],
+            "local": [  "{}css/fontawesome.min.css".format(local_url),
+                        "{}css/solid.min.css".format(local_url)]
+        },
         "markdown-editor" : {
             "cdn" : ["https://unpkg.com/easymde/dist/easymde.min.css"],
             "local" : ["{}css/easymde.min.css".format(local_url)]

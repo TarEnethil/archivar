@@ -1,7 +1,6 @@
 from config.user_config import UserConfig
 from flask import Flask, url_for
 from flask_bootstrap import Bootstrap
-from flask_fontawesome import FontAwesome
 from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
 from flask_misaka import Misaka
@@ -25,7 +24,6 @@ login.login_view = 'login'
 bootstrap = Bootstrap()
 markdown = Misaka(tables=True, fenced_code=True, escape=True)
 moment = Moment()
-fontawesome = FontAwesome()
 
 def create_app(config=UserConfig):
     app = Flask(__name__)
@@ -41,7 +39,6 @@ def create_app(config=UserConfig):
     bootstrap.init_app(app)
     markdown.init_app(app)
     moment.init_app(app)
-    fontawesome.init_app(app)
 
     # enable debugging options if set
     if app.config.get("DEBUG") == True:
