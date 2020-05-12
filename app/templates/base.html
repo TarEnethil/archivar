@@ -10,17 +10,13 @@
 {% endblock %}
 
 {% block styles %}
-{{ include_css(["bootstrap"]) }}
+{{ include_css(["bootstrap", "fontawesome"]) }}
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-{{ fontawesome_css() }}
-
 {% endblock %}
 
 {% block scripts %}
 {{ include_js(["bootstrap"]) }}
-
-{{ fontawesome_js() }}
 
 <script type="text/javascript">
 $(document).ready(function() {
