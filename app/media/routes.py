@@ -159,7 +159,7 @@ def edit(id, name=None):
             filepath = path.join(current_app.config["MEDIA_DIR"], item.filename)
 
             # see github issue #47
-            if item.get_file_ext() != form.file.data.filename.rsplit(".", 1):
+            if item.get_file_ext() != form.file.data.filename.split(".", 1)[-1]:
                 flash("Due to current technical limitations, the old and new file need to have the same file type. As a workaround, you can upload a new file instead.", "danger")
                 return render_template("media/edit.html", form=form, title=page_title("Edit File '{}'".format(item.name)))
 
