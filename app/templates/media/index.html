@@ -28,7 +28,6 @@ $(document).ready(function() {
 
     {{ navbar_start() }}
         {{ button_nav(url=url_for('media.upload'), text="Add File", icon="plus") }}
-        {{ button_nav(url="#", text="Add File", icon="code", ids="ajax-button") }}
 
         {% if current_user.is_media_admin() %}
         {{ button_nav(url=url_for('media.settings'), text="Media Settings", icon="cog") }}
