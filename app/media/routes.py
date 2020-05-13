@@ -201,10 +201,13 @@ def delete(id, name=None):
         flash_no_permission()
         return redirect(url_for(no_perm_url))
 
-    remove(path.join(current_app.config["MEDIA_DIR"], item.filename))
+    fname = path.join(current_app.config["MEDIA_DIR"], item.filename)
+    if path.isfile(fname):
+        remove(fname)
 
-    if item.is_image():
-        remove(path.join(current_app.config["MEDIA_DIR"], "thumbnails", item.filename))
+    tname = path.join(current_app.config["MEDIA_DIR"], "thumbnails", item.filename)
+    if item.is_image() and path.isfile(tname):
+        remove(tname)
 
     db.session.delete(item)
     db.session.commit()
