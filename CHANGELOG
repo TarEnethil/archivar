@@ -1,6 +1,52 @@
 # Changelog
 
 
+## Version 0.6.0 (released 2020-05-13)
+
+The main focus on this release was the upgrade from Bootstrap 3 to Bootstrap 4.
+Beside that, the most notable change would be the new Media Sidebar, which is accessible from the markdown editor.
+For it to be useful, image thumbnails are automatically created on upload.
+The Media Sidebar is the base for all new sidebars and potentially some data pickers as advanced form elements in the future.
+There were also some regressions from earlier works and bug fixes.
+
+Detailed list of changes:
+
+* Base: remove Flask-FontAwesome
+* Base: prevent excessive database access on static files
+* Media: prevent file extension change on edit
+* Base: Fix upload file name duplication (again)
+* Implement new Media Sidebar (#49)
+* Template: improve flexbox markup
+* Base: only use python3 format strings
+* Config: rename config files for git tracking
+* Devtools: add some debugging options
+* Config: rename files for consistency
+* Devtools: add debug config
+* Template: Fix footer debug_mode detection
+* Config: improve config handling
+* Template: improve login on mobile
+* Media: improve thumbnail handling
+* Wiki: fix footer markup
+* Devtools: add endpoint for debug info dump
+* Base: add own markdown-classes to editor preview
+* Base: fix editor fullscreen (again)
+* Media: add asynchronous upload form to editor
+* Media: add file count for category settings
+* Media: add thumbnail-generation for images
+* Base: Fix HTTP Error Handlers
+* Wiki: fix eager navigation hover effect
+* Devtools: add readme for DEV-mode
+* Dev: re-add hints for dev-mode, rework footer
+* Migrate from Bootstrap 3 to Bootstrap 4 (#44)
+* Devtools: add README for dev tips
+* Character: sort sessions by date
+* Devtools: add venv check
+* Template: fix editor fullscreen
+* Devtools: add updating requirements to make_release
+* Base: fix requirements
+* Devtools: improve & add comments
+
+
 ## Version 0.5.1 (released 2020-04-25)
 
 This release was mainly internal restructuring to make further development a little easier. Notable changes for users include:
