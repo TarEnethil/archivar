@@ -140,6 +140,14 @@ if [[ -z $VIRTUAL_ENV ]]; then
     exit 1
 fi
 
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# check that we are running on master-branch
+if [[ "$GIT_BRANCH" != "master" ]]; then
+    err "not running on master-branch"
+    exit 1
+fi
+
 # check that new version tag was $1
 if [[ "$#" -ne 1 ]]; then
     err "not enough parameters"
