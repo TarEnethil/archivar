@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import current_app
 from flask_login import current_user
 from jinja2 import Markup, Template, contextfunction
+from sqlalchemy import or_
 from sqlalchemy.ext.declarative import declared_attr
 
 def current_user_id():
@@ -70,6 +71,33 @@ class SimpleChangeTracker(object):
             return ""
 
         return Markup(Template(out).render(context))
+
+class SimplePermissionChecker(SimpleChangeTracker):
+    is_visible = db.Column(db.Boolean, default=True)
+
+    @declared_attr
+    def is_visible(cls):
+        return db.Column(db.Boolean, default=True)
+
+    def is_owned_by_user(self):
+        return self.created_by_id == current_user.id
+
+    def is_visible_for_user(self):
+        return self.is_visible or self.is_owned_by_user()
+
+    def is_editable_by_user(self):
+        return self.is_visible or self.is_owned_by_user()
+
+    def is_deletable_by_user(self):
+        return self.is_owned_by_user() or (self.is_visible and current_user.has_admin_role())
+
+    @classmethod
+    def get_query_for_visible_items(cls):
+        return cls.query.filter(or_(cls.is_visible == True, cls.created_by_id == current_user.id))
+
+    @classmethod
+    def get_visible_items(cls):
+        return cls.get_query_for_visible_items().all()
 
 class LinkGenerator(object):
     def link(self, url, text, classes=None, ids=None):
