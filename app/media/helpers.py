@@ -59,10 +59,7 @@ def generate_thumbnail(filename):
 
 # get all media visible to the user, can be filtered by category
 def get_media(filter_category=None):
-    if current_user.has_admin_role():
-        media = MediaItem.query
-    else:
-        media = MediaItem.query.filter(or_(MediaItem.is_visible == True, MediaItem.created_by_id == current_user.id))
+    media = MediaItem.get_query_for_visible_items()
 
     if filter_category:
         media = media.filter_by(category_id = filter_category)

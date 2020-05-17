@@ -12,7 +12,7 @@ class MediaItemCreateForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(),Length(min=0, max=100)])
     category = SelectField("Category", coerce=int)
     file = FileField("File", validators=[FileRequired()])
-    is_visible = BooleanField("Is publicly visible")
+    is_visible = BooleanField("Is publicly visible", default=True)
 
     def validate_file(self, file):
         if not "." in file.data.filename:
