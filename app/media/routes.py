@@ -26,14 +26,12 @@ def index():
 def view(id, name=None):
     item = MediaItem.query.filter_by(id=id).first_or_404()
 
-    # TODO: write custom decorator for this?
-    if not current_user.is_event_admin() and item.is_visible == False and not item.created_by == current_user:
+    if not item.is_visible_for_user():
         flash_no_permission()
         return redirect(url_for(no_perm_url))
 
-    if not current_user.has_admin_role() and current_user.has_media_role() and item.is_visible == False and item.created_by.has_admin_role():
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
+    if not item.is_visible:
+        flash("This item is only visible to you.", "warning")
 
     return render_template("media/view.html", item=item, title=page_title("View File"))
 
@@ -48,15 +46,11 @@ def list_by_cat(c_id, c_name=None):
 @bp.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload():
-    settings = MediaSetting.query.get(1)
     form = MediaItemCreateForm()
     form.category.choices = gen_media_category_choices()
 
     # check if ajax-GET param was set, which means we must return json
     ajax = request.args.get("ajax") != None
-
-    if not current_user.is_media_admin():
-        del form.is_visible
 
     if form.validate_on_submit():
         filename = media_filename(form.file.data.filename)
@@ -66,12 +60,7 @@ def upload():
 
         size = stat(filepath).st_size
 
-        new_media = MediaItem(name=form.name.data, filename=filename, filesize=size, category_id=form.category.data)
-
-        if current_user.is_media_admin():
-            new_media.is_visible = form.is_visible.data
-        else:
-            new_media.is_visible = settings.default_visible
+        new_media = MediaItem(name=form.name.data, filename=filename, filesize=size, is_visible=form.is_visible.data, category_id=form.category.data)
 
         msg = "Upload successful."
         level = "success"
@@ -100,9 +89,6 @@ def upload():
         flash("There was an error processing the upload.", "danger")
         return jsonify(data={'success' : False, 'html': render_template("media/upload_raw.html", form=form, max_filesize=current_app.config["MAX_CONTENT_LENGTH"]) })
     elif request.method == "GET":
-        if current_user.is_media_admin() and settings.default_visible:
-            form.is_visible.data = True
-
         # pre-select category if get-param was passed
         category_id = request.args.get("category")
 
@@ -130,16 +116,11 @@ def edit(id, name=None):
     form = MediaItemEditForm()
     form.category.choices = gen_media_category_choices()
 
-    # TODO: write custom decorator for this?
-    if not current_user.has_admin_role() and current_user.has_media_role() and item.is_visible == False and item.created_by.has_admin_role():
+    if not item.is_editable_by_user():
         flash_no_permission()
         return redirect(url_for(no_perm_url))
 
-    if not current_user.is_media_admin() and item.is_visible == False and not item.created_by == current_user:
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
-
-    if not current_user.is_media_admin():
+    if not item.is_owned_by_user():
         del form.is_visible
 
     form.file.label.text = "Replace with file"
@@ -148,7 +129,7 @@ def edit(id, name=None):
         item.name = form.name.data
         item.category_id = form.category.data
 
-        if current_user.is_event_admin():
+        if item.is_owned_by_user():
             item.is_visible = form.is_visible.data
 
         msg = "File was edited."
@@ -182,7 +163,7 @@ def edit(id, name=None):
         form.name.data = item.name
         form.category.data = item.category_id
 
-        if current_user.is_media_admin():
+        if item.is_owned_by_user():
             form.is_visible.data = item.is_visible
 
     return render_template("media/edit.html", form=form, title=page_title("Edit File '{}'".format(item.name)))
@@ -192,11 +173,7 @@ def edit(id, name=None):
 def delete(id, name=None):
     item = MediaItem.query.filter_by(id=id).first_or_404()
 
-    if not current_user.is_event_admin() and item.is_visible == False and not item.created_by == current_user:
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
-
-    if not current_user.has_admin_role() and current_user.has_media_role() and item.is_visible == False and item.created_by.has_admin_role():
+    if not item.is_deletable_by_user():
         flash_no_permission()
         return redirect(url_for(no_perm_url))
 
@@ -260,49 +237,37 @@ def category_edit(id, name=None):
 @media_admin_required
 def settings():
     settings = MediaSetting.query.get(1)
-    form = SettingsForm()
+    # form = SettingsForm()
 
-    if form.validate_on_submit():
-        settings.default_visible = form.default_visible.data
+    # if form.validate_on_submit():
+    #     settings.default_visible = form.default_visible.data
 
-        db.session.commit()
+    #     db.session.commit()
 
-        flash("Event settings have been changed.", "success")
-    elif request.method == "GET":
-        form.default_visible.data = settings.default_visible
+    #     flash("Event settings have been changed.", "success")
+    # elif request.method == "GET":
+    #     form.default_visible.data = settings.default_visible
 
     categories = MediaCategory.query.all()
 
-    return render_template("media/settings.html", settings=settings, categories=categories, form=form, title=page_title("Media Settings"))
+    return render_template("media/settings.html", settings=settings, categories=categories, title=page_title("Media Settings"))
 
-@bp.route("/sidebar/<int:c_id>", methods=["POST"])
+@bp.route("/sidebar/", methods=["POST"])
 @login_required
-def sidebar(c_id):
-    if current_user.has_admin_role():
-        entries = MediaItem.query
-    else:
-        entries = MediaItem.query.filter(or_(MediaItem.is_visible == True, MediaItem.created_by_id == current_user.id))
+def sidebar():
+    tbsend = {}
 
-    entries = entries.filter_by(category_id=c_id).order_by(MediaItem.name.asc()).all()
+    files = get_media()
 
-    data = []
-    for m in entries:
-        data.append(m.sidebar_info())
+    for mfile in files:
+        k = mfile.category_id
+        if not k in tbsend.keys():
+            tbsend[k] = mfile.category.sidebar_info()
+            tbsend[k]["data"] = []
 
-    return jsonify({ "data" : data})
+        tbsend[k]["data"].append(mfile.sidebar_info())
 
-@bp.route("/sidebar/categories", methods=["POST"])
-@login_required
-def sidebar_categories():
-    cats = MediaCategory.query.order_by(MediaCategory.name.asc()).all()
-
-    valid_categories = []
-
-    for c in cats:
-        if len(c.items) > 0:
-            valid_categories.append(c.sidebar_info())
-
-    return jsonify({ "categories" : valid_categories });
+    return jsonify({"categories" : list(tbsend.values()) })
 
 @bp.route("/serve/<filename>")
 def serve_file(filename):

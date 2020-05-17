@@ -23,9 +23,11 @@ $(document).ready(function() {
     <h1>{{ item.name }}</h1>
 
     {{ navbar_start() }}
-        {{ item.edit_button_nav() }}
+        {% if item.is_editable_by_user() %}
+            {{ item.edit_button_nav() }}
+        {% endif %}
 
-        {% if current_user.is_media_admin() %}
+        {% if item.is_deletable_by_user() %}
             {{ item.delete_button_nav() }}
         {% endif %}
     {{ navbar_end() }}

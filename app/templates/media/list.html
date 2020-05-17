@@ -52,7 +52,9 @@ makeDatatable("media-table", 25, 25);
                 <td>
                     {{ item.view_button() }}
 
-                    {{ item.edit_button() }}
+                    {% if item.is_editable_by_user() %}
+                        {{ item.edit_button() }}
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
