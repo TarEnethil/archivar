@@ -305,7 +305,7 @@ var footer = [
   }
 ];
 
-var media_sidebar = new MediaModal("Insert file", "{{ url_for('media.sidebar_categories') }}", "media-sidebar", footer, { media_upload_url : '{{ url_for("media.upload", ajax=1) }}'});
+var media_sidebar = new MediaModal("Insert file", "{{ url_for('media.sidebar') }}", "media-sidebar", footer, { media_upload_url : '{{ url_for("media.upload", ajax=1) }}'});
 var media_uploader = new MediaUploader('{{ url_for("media.upload", ajax=1) }}', "media-ajax-modal", { onSuccess : on_successful_upload })
 
 function toggleMediaSidebar(editor) {

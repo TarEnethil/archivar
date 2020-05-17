@@ -1,7 +1,8 @@
 /*
  * Base class to create a Modal which displays information retrieved asynchronously.
- * It queries a given endpoint for categories, and subsequently queries each category for the items it should display.
- * How an element is displayed must be defined in the derived class.
+ * It queries a given endpoint, requiring the following format:
+ * { "categories" : [ "id", "name", "data" : [ --single element data-- ] ] }
+ * How a single element is displayed must be defined in the derived class.
  * Provides the possibility to customize footer button / actions.
  */
 class AsyncCategoryLoader {
@@ -54,6 +55,9 @@ class AsyncCategoryLoader {
       $(this.parent).append('<div class="modal" id="' + this.modal_id + '" data-backdrop="static"> \
         <div class="modal-dialog ' + this.modal_opts + '"> \
           <div class="modal-content"> \
+            <div class="spinner-overlay d-flex justify-content-center align-items-center"> \
+              <div class="spinner-border text-light"></div> \
+            </div> \
             <div class="modal-header"> \
               <h5 class="modal-title"></h5> \
               <form class="form-inline ml-auto"> \
@@ -86,18 +90,23 @@ class AsyncCategoryLoader {
 
     // not loaded -> load categories
     if (!this.loaded) {
+      this.start_loading();
       $.ajax({
         type: "POST",
         url: _this.query_url,
         success: function(resp) {
           _this.loaded = true;
-          resp.categories.forEach(function(category, index) {
-            _this.load_category(category);
+          resp.categories.forEach(function(category) {
+            _this.insert_category(category);
           });
+          _this.stop_loading();
         },
         error: function(resp, textStatus, errorThrown) { //< called when the server reports an error
           _this.loaded = false;
           $(_this.body).html($("<p/>").addClass("alert alert-danger").text("A server-side error occured while loading the categories. If this problem consists, please contact the administrator. (Hints: " + textStatus + ", " + errorThrown + ")"));
+        },
+        done: function() {
+          _this.stop_loading();
         }
       });
     }
@@ -117,33 +126,24 @@ class AsyncCategoryLoader {
     $(modal_id).modal("show");
   }
 
-  // load the content for a single category
-  load_category(category_data) {
+  // insert the content for a single category
+  // category must have the following attributes: { "id", "name", "data" : [ --list of single element data-- ] }
+  insert_category(category) {
     var _this = this;
     var modal_id = "#" + _this.modal_id;
 
-    $.ajax({
-      type: "POST",
-      url: category_data.url,
-      success: function(resp) {
-        // create container for this category
-        var cat_container = $("<div/>").addClass("m-2 modal-category").attr("id", "cat-" + category_data.id).append($("<h5/>").text(category_data.name).append($("<span/>").addClass("cat-count").text(" (0)"))).appendTo($(_this.body));
+    // create container for this category
+    var cat_container = $("<div/>").addClass("m-2 modal-category").attr("id", "cat-" + category.id).append($("<h5/>").text(category.name).append($("<span/>").addClass("cat-count").text(" (0)"))).appendTo($(_this.body));
 
-        // insert data into container
-        _this.insert_data(resp.data, cat_container);
+    // insert data into container
+    _this.insert_data(category.data, cat_container);
 
-        // display element count for this category
-        _this.update_count_for_category(cat_container);
+    // display element count for this category
+    _this.update_count_for_category(cat_container);
 
-        // hook up onclick-event for elements
-        $(cat_container).find(".single-modal-element").click(function() {
-            _this.elem_clicked($(this));
-        })
-      },
-      error: function(resp, textStatus, errorThrown) { //< called when the server reports an error
-        _this.loaded = false;
-        $(modal_id + " .modal-body").html($("<p/>").addClass("alert alert-danger").text("A server-side error occured while loading the category '" + category_data.name + "'. If this problem consists, please contact the administrator. (Hints: " + textStatus + ", " + errorThrown + ")"));
-      }
+    // hook up onclick-event for elements
+    $(cat_container).find(".single-modal-element").click(function() {
+        _this.elem_clicked($(this));
     });
   }
 
@@ -352,6 +352,18 @@ class AsyncCategoryLoader {
         });
 
         $(_this.footer).append($(foo.button));
+    });
+  }
+
+  // display the loading spinner
+  start_loading() {
+    $("#" + this.modal_id + " .spinner-overlay").addClass("d-flex").fadeIn(200);
+  }
+
+  // hide the loading spinner
+  stop_loading() {
+    $("#" + this.modal_id + " .spinner-overlay").fadeOut(200, function() {
+      $(this).removeClass("d-flex");
     });
   }
 }
