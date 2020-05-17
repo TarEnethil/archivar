@@ -1,12 +1,12 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleChangeTracker
+from app.mixins import LinkGenerator, SimpleChangeTracker, SimplePermissionChecker
 from flask import url_for, current_app
+from flask_login import current_user
 
 class MediaSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "media_settings"
     id = db.Column(db.Integer, primary_key=True)
-    default_visible = db.Column(db.Boolean)
 
 class MediaCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "media_categories"
@@ -16,8 +16,7 @@ class MediaCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     def sidebar_info(self):
         return {
             "id" : self.id,
-            "name" : self.name,
-            "url" : url_for('media.sidebar', c_id=self.id)
+            "name" : self.name
         }
 
         return dic
@@ -34,10 +33,9 @@ class MediaCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     def edit_url(self):
         return url_for('media.category_edit', id=self.id, name=urlfriendly(self.name))
 
-class MediaItem(db.Model, SimpleChangeTracker, LinkGenerator):
+class MediaItem(db.Model, SimplePermissionChecker, LinkGenerator):
     __tablename__ = "media"
     id = db.Column(db.Integer, primary_key=True)
-    is_visible = db.Column(db.Boolean)
     name = db.Column(db.String(100))
     filename = db.Column(db.String(100))
     filesize = db.Column(db.Integer)
@@ -75,6 +73,9 @@ class MediaItem(db.Model, SimpleChangeTracker, LinkGenerator):
             "category" : self.category_id
         }
 
+    # overrides SimplePermissionChecker
+    def is_deletable_by_user(self):
+        return self.created_by_id == current_user.id or (self.is_visible and (current_user.is_media_admin() or current_user.has_admin_role()))
 
     #####
     # LinkGenerator functions
