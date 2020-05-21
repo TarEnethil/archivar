@@ -1,9 +1,7 @@
 from app.media.models import MediaItem, MediaCategory
-from app.user.models import Role, User
 from flask import redirect, url_for, flash, current_app
 from flask_login import current_user
 from functools import wraps
-from sqlalchemy import and_, or_, not_
 from werkzeug import secure_filename
 from os import path, stat
 from PIL import Image
@@ -63,10 +61,6 @@ def generate_thumbnail(filename):
 def get_media(filter_category=None):
     if current_user.has_admin_role():
         media = MediaItem.query
-    elif current_user.has_media_role():
-        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
-        admin_ids = [a.id for a in admins]
-        media = MediaItem.query.filter(not_(and_(MediaItem.is_visible == False, MediaItem.created_by_id.in_(admin_ids))))
     else:
         media = MediaItem.query.filter(or_(MediaItem.is_visible == True, MediaItem.created_by_id == current_user.id))
 

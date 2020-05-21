@@ -25,7 +25,7 @@ makeDatatable("user-table");
         <thead>
             <tr>
                 <th>User</th>
-                <th>Roles</th>
+                <th>Role</th>
                 <th>Last seen</th>
                 <th>Actions</th>
             </tr>
@@ -34,20 +34,8 @@ makeDatatable("user-table");
         <tbody>
         {% for user in users %}
             <tr>
-                <td> {{ user.username }}</td>
-                <td>
-                    {% if user.roles %}
-                        {% for role in user.roles %}
-                            {% if loop.index != 1 %}
-                            &bullet;
-                            {% endif %}
-
-                            {{ role.name }}
-                        {% endfor %}
-                    {% else %}
-                    User
-                    {% endif %}
-                </td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.role_name() }}</td>
                 <td>
                     {% if user.last_seen %}
                         {{ moment(user.last_seen).format(current_user.dateformat) }}

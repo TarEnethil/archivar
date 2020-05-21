@@ -1,7 +1,7 @@
 from app.user.helpers import gen_date_string_choices
 from app.user.models import User
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField, SubmitField, SelectMultipleField, SelectField, BooleanField, IntegerField
+from wtforms import StringField, TextAreaField, PasswordField, SubmitField, SelectField, BooleanField, IntegerField
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 
 class CreateUserForm(FlaskForm):
@@ -9,8 +9,7 @@ class CreateUserForm(FlaskForm):
     password = PasswordField("Password", validators=[InputRequired()])
     password2 = PasswordField("Password again", validators=[EqualTo("password")])
 
-    # choices are populated later
-    roles = SelectMultipleField("Roles")
+    role = SelectField("Role", coerce=int)
     submit = SubmitField("Create User")
 
     def validate_username(self, username):
@@ -24,8 +23,7 @@ class EditProfileForm(FlaskForm):
     password = PasswordField("Password")
     password2 = PasswordField("Password again", validators=[EqualTo("password")])
 
-    # choices are populated later
-    roles = SelectMultipleField("Roles")
+    role = SelectField("Role", coerce=int)
 
     submit = SubmitField("Save Changes")
 

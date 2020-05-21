@@ -3,7 +3,7 @@ from app.calendar.models import CalendarSetting
 from app.campaign.models import Campaign
 from app.character.models import Character, Journal
 from app.event.models import Event, EventSetting, EventCategory
-from app.helpers import page_title, count_rows, admin_required, debug_mode_required
+from app.helpers import page_title, count_rows, admin_required, debug_mode_required, Role
 from app.main import bp
 from app.main.forms import LoginForm, SettingsForm, InstallForm
 from app.main.models import GeneralSetting
@@ -11,7 +11,7 @@ from app.map.models import  Map, MapNode, MapSetting, MapNodeType
 from app.media.models import MediaItem, MediaSetting, MediaCategory
 from app.party.models import  Party
 from app.session.models import Session
-from app.user.models import User, Role
+from app.user.models import User
 from app.wiki.models import WikiSetting, WikiEntry
 from collections import OrderedDict
 from datetime import datetime
@@ -152,21 +152,6 @@ def install():
 
             setting = GeneralSetting(title="My Page", welcome_page=welcome_msg)
 
-            admin_role = Role(name="Admin", description="aka DM, can see everything and has text fields hidden from all other roles")
-            map_role = Role(name="Map admin", description="has access to map settings; can see invisible nodes (if not created by an admin); can hide/unhide map nodes")
-            wiki_role = Role(name="Wiki admin", description="has access to wiki settings; can see invisible articles (if not created by an admin); can hide/unhide wiki articles")
-            event_role = Role(name="Event admin", description="has access to event settings; can add/edit event categories; can see invisible events (if not created by an admin); can hide/unhide events")
-            media_role = Role(name="Media admin", description="has access to media settings; can hide/unhide media; can add/edit media categories")
-            special_role = Role(name="Special", description="no function as of yet")
-
-            db.session.add(setting)
-            db.session.add(admin_role)
-            db.session.add(map_role)
-            db.session.add(wiki_role)
-            db.session.add(event_role)
-            db.session.add(media_role)
-            db.session.add(special_role)
-
             calendar_setting = CalendarSetting(finalized=False)
             map_setting = MapSetting(icon_anchor=0)
             wiki_setting = WikiSetting(default_visible=False)
@@ -212,7 +197,7 @@ def install():
 
             admin = User(username=form.admin_name.data)
             admin.set_password(form.admin_password.data)
-            admin.roles = [Role.query.get(1)]
+            admin.role = Role.Admin.value
             admin.must_change_password = False
 
             db.session.add(admin)
