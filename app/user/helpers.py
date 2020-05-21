@@ -1,12 +1,11 @@
-from app.user.models import Role
+from app.helpers import Role
 
 # generate choices for the role SelectField
 def gen_role_choices():
     role_choices = []
 
-    all_roles = Role.query.all()
-    for role in all_roles:
-        role_choices.append((str(role.id), role.name + " --- (" + role.description + ")"))
+    for role in Role:
+        role_choices.append((role.value, role.name))
 
     return role_choices
 

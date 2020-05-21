@@ -1,12 +1,4 @@
-from app import db
-from app.calendar.helpers import gen_calendar_stats
-from app.event.models import Event, EventCategory
-from app.user.models import Role, User
-from flask import redirect, url_for, flash
-from flask_login import current_user
-from functools import wraps
 from jinja2 import Markup
-from sqlalchemy import and_, or_, not_
 
 def gen_session_choices(char):
     choices_dict = {}

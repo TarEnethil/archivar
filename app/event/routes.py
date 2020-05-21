@@ -6,7 +6,6 @@ from app.event.forms import SettingsForm, EventForm, CategoryForm
 from app.event.helpers import event_admin_required, update_timestamp, get_events, gen_event_category_choices, get_events_by_category
 from app.event.models import EventSetting, Event, EventCategory
 from app.helpers import page_title, flash_no_permission, stretch_color
-from app.user.models import User, Role
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import not_, and_, or_
@@ -297,10 +296,6 @@ def settings():
 def sidebar():
     if current_user.has_admin_role():
         entries = Event.query
-    elif current_user.has_event_role():
-        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
-        admin_ids = [a.id for a in admins]
-        entries = Event.query.filter(not_(and_(Event.is_visible == False, Event.created_by_id.in_(admin_ids))))
     else:
         entries = Event.query.filter(or_(Event.is_visible == True, Event.created_by_id == current_user.id))
 

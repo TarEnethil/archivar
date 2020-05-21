@@ -4,7 +4,6 @@ from app.media import bp
 from app.media.forms import SettingsForm, MediaItemCreateForm, MediaItemEditForm, CategoryForm
 from app.media.helpers import media_admin_required, get_media, gen_media_category_choices, media_filename, generate_thumbnail
 from app.media.models import MediaSetting, MediaItem, MediaCategory
-from app.user.models import User, Role
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory, current_app
 from flask_login import login_required, current_user
 from sqlalchemy import not_, and_, or_
@@ -281,10 +280,6 @@ def settings():
 def sidebar(c_id):
     if current_user.has_admin_role():
         entries = MediaItem.query
-    elif current_user.has_media_role():
-        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
-        admin_ids = [a.id for a in admins]
-        entries = MediaItem.query.filter(not_(and_(MediaItem.is_visible == False, MediaItem.created_by_id.in_(admin_ids))))
     else:
         entries = MediaItem.query.filter(or_(MediaItem.is_visible == True, MediaItem.created_by_id == current_user.id))
 

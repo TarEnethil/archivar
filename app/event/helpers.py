@@ -1,11 +1,9 @@
 from app import db
 from app.event.models import Event, EventCategory
-from app.user.models import Role, User
 from app.calendar.helpers import gen_calendar_stats
 from flask import redirect, url_for, flash
 from functools import wraps
 from flask_login import current_user
-from sqlalchemy import and_, or_, not_
 
 # @event_admin_required decorater, use AFTER login_required
 def event_admin_required(f):
@@ -56,10 +54,6 @@ def update_timestamp(event_id):
 def get_events(filter_epoch=None, filter_year=None):
     if current_user.has_admin_role():
         events = Event.query
-    elif current_user.has_event_role():
-        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
-        admin_ids = [a.id for a in admins]
-        events = Event.query.filter(not_(and_(Event.is_visible == False, Event.created_by_id.in_(admin_ids))))
     else:
         events = Event.query.filter(or_(Event.is_visible == True, Event.created_by_id == current_user.id))
 
@@ -76,10 +70,6 @@ def get_events(filter_epoch=None, filter_year=None):
 def get_events_by_category(category_id):
     if current_user.has_admin_role():
         events = Event.query
-    elif current_user.has_event_role():
-        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
-        admin_ids = [a.id for a in admins]
-        events = Event.query.filter(not_(and_(Event.is_visible == False, Event.created_by_id.in_(admin_ids))))
     else:
         events = Event.query.filter(or_(Event.is_visible == True, Event.created_by_id == current_user.id))
 

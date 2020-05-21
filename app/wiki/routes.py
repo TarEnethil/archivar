@@ -1,7 +1,6 @@
 from app import db
 from app.helpers import page_title, flash_no_permission, urlfriendly
 from app.map.helpers import get_nodes_by_wiki_id
-from app.user.models import User, Role
 from app.wiki import bp
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm, WikiMoveCategoryForm
 from app.wiki.helpers import wiki_admin_required, prepare_wiki_nav, search_wiki_tag, search_wiki_text, prepare_search_result, get_recently_created, get_recently_edited, gen_wiki_category_choices, gen_category_strings
