@@ -1,4 +1,3 @@
-from app.user.models import Role, User
 from app.wiki.models import WikiEntry
 from collections import OrderedDict
 from flask import redirect, flash, url_for
@@ -21,10 +20,6 @@ def gen_wiki_entry_choices():
     # get visible wiki entries for current user
     if current_user.has_admin_role():
         entries = WikiEntry.query
-    elif current_user.has_wiki_role():
-        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
-        admin_ids = [a.id for a in admins]
-        entries = WikiEntry.query.filter(not_(and_(WikiEntry.is_visible == False, WikiEntry.created_by_id.in_(admin_ids))))
     else:
         entries = WikiEntry.query.filter(or_(WikiEntry.is_visible == True, WikiEntry.created_by_id == current_user.id))
 

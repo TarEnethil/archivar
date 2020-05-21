@@ -1,9 +1,9 @@
 from app import db
-from app.helpers import page_title, admin_required
+from app.helpers import page_title, admin_required, Role
 from app.user import bp
 from app.user.forms import CreateUserForm, EditProfileForm, SettingsForm, PasswordOnlyForm
 from app.user.helpers import gen_role_choices
-from app.user.models import User, Role
+from app.user.models import User
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
@@ -26,9 +26,9 @@ def edit(username):
         form = EditProfileForm()
 
         if current_user.has_admin_role():
-            form.roles.choices = gen_role_choices()
+            form.role.choices = gen_role_choices()
         else:
-            del form.roles
+            del form.role
 
         user = User.query.filter_by(username=username).first_or_404()
 
@@ -44,35 +44,33 @@ def edit(username):
                     # user must reset password after it has been changed by an admin
                     user.must_change_password = True
 
+            role_okay = True
+
             if current_user.has_admin_role():
-                new_user_roles = Role.query.filter(Role.id.in_(form.roles.data)).all()
+                old_role = user.role
+                new_role = form.role.data
 
-                admin_role = Role.query.get(1)
-                admin_role.color = "cc9900"
-
-                if username == current_user.username and current_user.has_admin_role() and admin_role not in new_user_roles:
-                    new_user_roles.append(admin_role)
+                if username == current_user.username and current_user.has_admin_role() and new_role != Role.Admin.value:
                     flash("You can't revoke your own admin role.", "danger")
-
-                if user.id == 1 and admin_role not in new_user_roles:
-                    new_user_roles.append(admin_role)
+                    role_okay = False
+                elif user.id == 1 and new_role != Role.Admin.value:
                     flash("The original admin can't be removed.", "danger")
+                    role_okay = False
+                else:
+                    user.role = new_role
 
-                user.roles = new_user_roles
+            if role_okay:
+                db.session.commit()
+                flash("Your changes have been saved.", "success")
 
-            db.session.commit()
-            flash("Your changes have been saved.", "success")
-
-            return redirect(user.view_url())
+                return redirect(user.view_url())
+            else:
+                form.role.data = old_role
         elif request.method == "GET":
             form.about.data = user.about
 
             if current_user.has_admin_role():
-                user_roles = []
-                for role in user.roles:
-                    user_roles.append(str(role.id))
-
-                form.roles.data = user_roles
+                form.role.data = user.role
 
         return render_template("user/edit.html", form=form, user=user, title=page_title("Edit User '%s'" % user.username))
     else:
@@ -85,15 +83,13 @@ def edit(username):
 def create():
     form = CreateUserForm()
 
-    form.roles.choices = gen_role_choices()
+    form.role.choices = gen_role_choices()
 
     if form.validate_on_submit():
         new_user = User(username=form.username.data)
         new_user.set_password(form.password.data)
 
-        new_user_roles = Role.query.filter(Role.id.in_(form.roles.data)).all()
-        new_user.roles = new_user_roles
-
+        new_user_role = form.role.data
         new_user.created = datetime.utcnow()
 
         db.session.add(new_user)

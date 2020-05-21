@@ -29,6 +29,16 @@
     {{ navbar_end() }}
     {% endif %}
 
+    {% if user.id == 1 and user.username == "Tar" %}
+    <p>Tar is the Creator of Archivar.</p>
+    {% endif %}
+
+    {% if user.id == 1 %}
+    <p>{{ user.username }} is the original Admin, and can't have his admin privilege removed.</p>
+    {% else %}
+    <p>{{ user.username }} has the {{ user.role_name() }}-Role.
+    {% endif %}
+
     {% if user.about %}
     <h2>About</h2>
 {% if current_user.markdown_phb_style %}
@@ -84,35 +94,9 @@
     </ul>
     {% endif %}
 
-    {% if current_user.has_admin_role() or current_user.id == user.id %}
-    <h2>Roles</h2>
-
-    {% if user.roles %}
-    <dl class="row ml-5">
-        {% if user.id == 1 and user.username == "Tar" %}
-        <dt class="col-sm-2">The Creator</dt>
-        <dd class="col-sm-10"></dd>
-        {% endif %}
-
-        {% if user.id == 1 %}
-        <dt class="col-sm-2">Eternal admin</dt>
-        <dd class="col-sm-10">original admin account; can't have his admin privilege removed</dd>
-        {% endif %}
-
-        {% for role in user.roles %}
-        <dt class="col-sm-2">{{ role.name }}</dt>
-        <dd class="col-sm-10">{{ role.description }}</dd>
-        {% endfor %}
-    </dl>
-    {% else %}
-    <p>User has no special roles.</p>
-    {% endif %}
-
     <hr>
     <p>
         Created: {{ moment(user.created).format(current_user.dateformat) }} <br />
         Last seen: {{ moment(user.last_seen).format(current_user.dateformat) }}
     </p>
-    {% endif %}
-
 {% endblock %}

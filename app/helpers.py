@@ -1,5 +1,6 @@
 from app import db
 from app.version import version
+from enum import Enum
 from flask import flash, redirect, url_for, current_app
 from flask_login import current_user
 from functools import wraps
@@ -20,8 +21,20 @@ def admin_required(url="index"):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if not current_user.has_admin_role():
+            if not current_user.is_admin():
                 flash("You need to be admin to perform this action.", "danger")
+                return redirect(url_for(url))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+# @admin_required decorater, use AFTER login_required
+def moderator_required(url="index"):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not (current_user.is_moderator() or current_user.is_admin()):
+                flash("You need to be moderator or admin to perform this action.", "danger")
                 return redirect(url_for(url))
             return f(*args, **kwargs)
         return decorated_function
@@ -434,6 +447,11 @@ def button_nav(url, text, icon=None, classes="", ids=None, swap=False, icon_text
     btn = '<li class="nav-item {}">{}</li>'.format(li_classes, button_internal(url, text, icon, "nav-link {}".format(classes), ids, swap, icon_text_class))
 
     return Markup(btn)
+
+class Role(Enum):
+    User = 0
+    Moderator = 1
+    Admin = 2
 
 def debug_mode():
     return current_app.config["DEBUG"] == True

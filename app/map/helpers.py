@@ -1,6 +1,6 @@
 from app import db
 from app.map.models import Map, MapNodeType, MapNode
-from app.user.models import User, Role
+from app.user.models import User
 from datetime import datetime
 from flask import flash, redirect, url_for, current_app
 from flask_login import current_user
@@ -61,10 +61,6 @@ def gen_submap_choices(zerochoice="*no submap*"):
 def get_visible_nodes(map_id):
     if current_user.has_admin_role():
         nodes = MapNode.query
-    elif current_user.is_map_admin():
-        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
-        admin_ids = [a.id for a in admins]
-        nodes = MapNode.query.filter(not_(and_(MapNode.is_visible == False, MapNode.created_by_id.in_(admin_ids))))
     else:
         nodes = MapNode.query.filter(or_(MapNode.is_visible == True, MapNode.created_by_id == current_user.id))
 
@@ -74,10 +70,6 @@ def get_visible_nodes(map_id):
 def get_nodes_by_wiki_id(w_id):
     if current_user.has_admin_role():
         nodes = MapNode.query
-    elif current_user.is_map_admin():
-        admins = User.query.filter(User.roles.contains(Role.query.get(1)))
-        admin_ids = [a.id for a in admins]
-        nodes = MapNode.query.filter(not_(and_(MapNode.is_visible == False, MapNode.created_by_id.in_(admin_ids))))
     else:
         nodes = MapNode.query.filter(or_(MapNode.is_visible == True, MapNode.created_by_id == current_user.id))
 

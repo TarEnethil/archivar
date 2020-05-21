@@ -1,4 +1,5 @@
 from app import db, login
+from app.helpers import Role
 from app.mixins import LinkGenerator
 from datetime import datetime
 from flask import url_for, current_app
@@ -8,16 +9,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
-
-user_role_assoc = db.Table("user_role_assoc",
-                            db.Column("user_id", db.Integer, db.ForeignKey("users.id")),
-                            db.Column("role_id", db.Integer, db.ForeignKey("roles.id")))
-
-class Role(db.Model):
-    __tablename__ = "roles"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
-    description = db.Column(db.String(256))
 
 class User(UserMixin, db.Model, LinkGenerator):
     __tablename__ = "users"
@@ -31,7 +22,7 @@ class User(UserMixin, db.Model, LinkGenerator):
     created = db.Column(db.DateTime, default=datetime.utcnow)
     edited = db.Column(db.DateTime, default=None, onupdate=datetime.utcnow)
 
-    roles = db.relationship("Role", secondary=user_role_assoc, backref="users")
+    role = db.Column(db.Integer, default=0)
 
     dateformat = db.Column(db.String(25), default="LLL")
     editor_height = db.Column(db.Integer, default=500)
@@ -40,28 +31,35 @@ class User(UserMixin, db.Model, LinkGenerator):
     markdown_phb_style = db.Column(db.Boolean, default=False)
     quicklinks = db.Column(db.Text)
 
-    def has_role(self, roleId):
-        role = Role.query.get(roleId)
+    def is_admin(self):
+        return self.role == Role.Admin.value
 
-        return role in self.roles
+    def is_moderator(self):
+        return self.role == Role.Moderator.value
+
+    def is_user(self):
+        return self.role == Role.User.value
+
+    def role_name(self):
+        return Role(self.role).name
 
     def has_admin_role(self):
-        return self.has_role(1)
+        return self.is_admin()
 
     def has_map_role(self):
-        return self.has_role(2)
+        return self.is_moderator()
 
     def has_wiki_role(self):
-        return self.has_role(3)
+        return self.is_moderator()
 
     def has_event_role(self):
-        return self.has_role(4)
+        return self.is_moderator()
 
     def has_media_role(self):
-        return self.has_role(5)
+        return self.is_moderator()
 
     def has_special_role(self):
-        return self.has_role(6)
+        return self.is_moderator()
 
     def is_map_admin(self):
         return self.has_admin_role() or self.has_map_role()
