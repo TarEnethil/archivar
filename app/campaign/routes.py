@@ -51,7 +51,7 @@ def edit(id, name=None):
     is_dm = current_user.is_dm_of(campaign)
 
     form = CampaignEditForm()
-    form.default_participants.choices = gen_participant_choices()
+    form.default_participants.choices = gen_participant_choices(ensure=campaign.default_participants)
 
     if not is_admin:
         del form.dm

@@ -76,9 +76,9 @@ def create():
 def create_with_campaign(id):
     form = SessionForm()
     form.submit.label.text = "Create Session"
-    form.participants.choices = gen_participant_choices()
 
     campaign = Campaign.query.filter_by(id=id).first_or_404()
+    form.participants.choices = gen_participant_choices(ensure=campaign.default_participants)
 
     if not campaign.is_editable_by_user():
         return deny_access(no_perm_url)
@@ -126,7 +126,7 @@ def edit(id, name=None):
     form.submit.label.text = "Save Session"
 
     if is_admin or is_dm:
-        form.participants.choices = gen_participant_choices()
+        form.participants.choices = gen_participant_choices(ensure=campaign.participants)
     else:
         del form.participants
         del form.date

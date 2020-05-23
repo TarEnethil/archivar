@@ -48,8 +48,11 @@
             {{ button_nav(url=url_for('character.journal_list', c_id=char.id, c_name=char.name|urlfriendly), text="View Full Journal", icon="book") }}
         {% endif %}
 
-        {% if char.player == current_user or current_user.has_admin_role() %}
+        {% if char.is_editable_by_user() %}
             {{ char.edit_button_nav(text="Edit Character") }}
+        {% endif %}
+
+        {% if char.is_deletable_by_user() %}
             {{ char.delete_button_nav() }}
         {% endif %}
     {{ navbar_end() }}

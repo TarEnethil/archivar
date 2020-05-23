@@ -73,7 +73,7 @@ class SimpleChangeTracker(object):
         return Markup(Template(out).render(context))
 
 class PermissionTemplate(object):
-    def is_viewable_for_user(self):
+    def is_viewable_by_user(self):
         raise NotImplementedError
 
     def is_editable_by_user(self):
@@ -96,12 +96,15 @@ class SimplePermissionChecker(PermissionTemplate, SimpleChangeTracker):
         return self.is_owned_by_user()
 
     @classmethod
-    def get_query_for_visible_items(cls):
-        return cls.query.filter(or_(cls.is_visible == True, cls.created_by_id == current_user.id))
+    def get_query_for_visible_items(cls, include_hidden_for_user=False):
+        if include_hidden_for_user:
+            return cls.query.filter(or_(cls.is_visible == True, cls.created_by_id == current_user.id))
+        else:
+            return cls.query.filter(cls.is_visible == True)
 
     @classmethod
-    def get_visible_items(cls):
-        return cls.get_query_for_visible_items().all()
+    def get_visible_items(cls, include_hidden_for_user=False):
+        return cls.get_query_for_visible_items(include_hidden_for_user).all()
 
 class LinkGenerator(object):
     def link(self, url, text, classes=None, ids=None):

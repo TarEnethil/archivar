@@ -49,7 +49,7 @@ def generate_thumbnail(filename):
 
 # get all media visible to the user, can be filtered by category
 def get_media(filter_category=None):
-    media = MediaItem.get_query_for_visible_items()
+    media = MediaItem.get_query_for_visible_items(include_hidden_for_user=True)
 
     if filter_category:
         media = media.filter_by(category_id = filter_category)

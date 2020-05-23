@@ -26,7 +26,7 @@ def index():
 def view(id, name=None):
     item = MediaItem.query.filter_by(id=id).first_or_404()
 
-    if not item.is_viewable_for_user():
+    if not item.is_viewable_by_user():
         return deny_access(no_perm_url)
 
     if not item.is_visible:

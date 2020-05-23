@@ -1,13 +1,14 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleChangeTracker
+from app.mixins import LinkGenerator, SimpleChangeTracker, SimplePermissionChecker
 from flask import url_for
+from flask_login import current_user
 
 character_party_assoc = db.Table("character_party_assoc",
                     db.Column("character_id", db.Integer, db.ForeignKey("characters.id")),
                     db.Column("party_id", db.Integer, db.ForeignKey("parties.id")))
 
-class Character(db.Model, SimpleChangeTracker, LinkGenerator):
+class Character(db.Model, SimplePermissionChecker, LinkGenerator):
     __tablename__ = "characters"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -19,8 +20,22 @@ class Character(db.Model, SimpleChangeTracker, LinkGenerator):
     race = db.Column(db.String(100))
     class_ = db.Column(db.String(100))
     description = db.Column(db.Text)
-    dm_notes = db.Column(db.Text)
     private_notes = db.Column(db.Text)
+
+    #####
+    # Permissions
+    #####
+    def is_viewable_by_user(self):
+        return self.is_visible or self.is_owned_by_user()
+
+    def is_editable_by_user(self):
+        return self.is_owned_by_user()
+
+    def is_deletable_by_user(self):
+        return self.is_owned_by_user() or (self.is_visible and current_user.is_admin())
+
+    def is_owned_by_user(self):
+        return self.user_id == current_user.id
 
     #####
     # LinkGenerator functions
