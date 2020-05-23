@@ -13,11 +13,8 @@ The calendar has not been finalized by the admin yet.
     {{ button_nav(url=url_for('calendar.view'), text="View Info", icon="calendar") }}
     {{ button_nav(url=url_for('event.create'), text="Add Event", icon="plus") }}
 
-    {% if current_user.has_admin_role() %}
+    {% if current_user.is_at_least_moderator() %}
         {{ button_nav(url=url_for('calendar.settings'), text="Calendar Settings", icon="cog") }}
-    {% endif %}
-
-    {% if current_user.is_event_admin() %}
         {{ button_nav(url=url_for('event.settings'), text="Event Settings", icon="cog") }}
     {% endif %}
 {{ navbar_end() }}
@@ -55,7 +52,7 @@ The calendar has not been finalized by the admin yet.
 <ul class="list-unstyled">
 {% for cat in categories %}
 <li>
-    {{ cat.view_link(text="{} ({})".format(cat.view_text(), cat.events|length)) }}
+    {{ cat.view_link(text="{} ({})".format(cat.view_text(), cat.get_events()|length)) }}
 </li>
 {% endfor %}
 </ul>

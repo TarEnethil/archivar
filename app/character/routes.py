@@ -222,6 +222,9 @@ def journal_view(c_id, j_id, c_name=None, j_name=None):
     if journal not in char.journals:
         return deny_access(no_perm_url, "Journal does not belong to this character.")
 
+    if journal.is_visible == False:
+        flash("This Journal is only visible to you.", "warning")
+
     return render_template("character/journal_view.html", char=char, journal=journal, title=page_title("View Journal Entry '{}'".format(journal.title)))
 
 @bp.route("<int:c_id>/<string:c_name>/journal/delete/<int:j_id>/<string:j_name>", methods=["GET"])
