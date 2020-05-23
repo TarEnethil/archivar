@@ -22,13 +22,17 @@
 {% block app_content %}
     <h1>{{ event.name }}</h1>
 
+    {% if event.is_editable_by_user() or event.is_deletable_by_user() %}
     {{ navbar_start() }}
+        {% if event.is_editable_by_user() %}
         {{ event.edit_button_nav() }}
+        {% endif %}
 
-        {% if current_user.is_event_admin() %}
+        {% if event.is_deletable_by_user() %}
             {{ event.delete_button_nav() }}
         {% endif %}
     {{ navbar_end() }}
+    {% endif %}
 
     <dl class="row ml-5">
         <dt class="col-sm-2">Category</dt>

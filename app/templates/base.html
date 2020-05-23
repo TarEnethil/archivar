@@ -107,38 +107,28 @@ $(document).ready(function() {
                 </li>
                 {% endif %}
 
-                {% if current_user.is_authenticated and current_user.has_access_to_some_settings() %}
+                {% if current_user.is_authenticated and current_user.is_at_least_moderator() %}
                 <li class="dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ icon("cog") }} Settings <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        {% if current_user.is_at_least_moderator() %}
                         <li class="nav-item">
                             <a class="nav-link pl-3" href="{{ url_for('main.settings') }}">General</a>
                             <a class="nav-link pl-3" href="{{ url_for('calendar.settings') }}">Calendar</a>
                         </li>
-                        {% endif %}
-                        {% if current_user.is_map_admin() %}
                         <li class="nav-item">
                             <a class="nav-link pl-3" href="{{ url_for('map.settings') }}">Map</a>
                         </li>
-                        {% endif %}
-                        {% if current_user.is_event_admin() %}
                         <li class="nav-item">
                             <a class="nav-link pl-3" href="{{ url_for('event.settings') }}">Events</a>
                         </li>
-                        {% endif %}
-                        {% if current_user.is_wiki_admin() %}
                         <li class="nav-item">
                             <a class="nav-link pl-3" href="{{ url_for('wiki.settings') }}">Wiki</a>
                         </li>
-                        {% endif %}
-                        {% if current_user.is_media_admin() %}
                         <li class="nav-item">
                             <a class="nav-link pl-3" href="{{ url_for('media.settings') }}">Media</a>
                         </li>
-                        {% endif %}
                     </ul>
                 </li>
                 {% endif %}

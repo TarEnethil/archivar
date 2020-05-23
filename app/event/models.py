@@ -1,14 +1,14 @@
 from app import db
 from app.helpers import urlfriendly
 from app.calendar.models import Day, Month, Epoch
-from app.mixins import LinkGenerator, SimpleChangeTracker
+from app.mixins import LinkGenerator, SimpleChangeTracker, SimplePermissionChecker
 from flask import url_for
+from flask_login import current_user
 from jinja2 import Markup
 
 class EventSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "event_settings"
     id = db.Column(db.Integer, primary_key=True)
-    default_visible = db.Column(db.Boolean)
     default_category = db.Column(db.Integer, db.ForeignKey("event_categories.id"))
     default_epoch = db.Column(db.Integer, db.ForeignKey("epochs.id"))
     default_year = db.Column(db.Integer)
@@ -18,6 +18,9 @@ class EventCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     color = db.Column(db.String(10))
+
+    def get_events(self):
+        return list(filter(lambda x: x.is_viewable_by_user(), self.events))
 
     #####
     # LinkGenerator functions
@@ -31,10 +34,9 @@ class EventCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     def edit_url(self):
         return url_for('event.category_edit', id=self.id, name=urlfriendly(self.name))
 
-class Event(db.Model, SimpleChangeTracker, LinkGenerator):
+class Event(db.Model, SimplePermissionChecker, LinkGenerator):
     __tablename__ = "events"
     id = db.Column(db.Integer, primary_key=True)
-    is_visible = db.Column(db.Boolean)
     name = db.Column(db.String(100))
     category_id = db.Column(db.Integer, db.ForeignKey("event_categories.id"))
     category = db.relationship("EventCategory", backref="events")
@@ -115,6 +117,18 @@ class Event(db.Model, SimpleChangeTracker, LinkGenerator):
             return wd[(self.timestamp % len(wd)) - 1].name
         else:
             return wd[(timestamp % len(wd)) -1].name
+
+    #####
+    # Permissions
+    #####
+    def is_viewable_by_user(self):
+        return self.is_visible or self.is_owned_by_user()
+
+    def is_editable_by_user(self):
+        return self.is_visible or self.is_owned_by_user()
+
+    def is_deletable_by_user(self):
+        return self.is_owned_by_user() or (self.is_visible and current_user.is_at_least_moderator())
 
     #####
     # LinkGenerator functions

@@ -3,9 +3,9 @@ from app.calendar.models import Epoch, Moon
 from app.calendar.helpers import gen_calendar_stats, gen_epoch_choices, gen_month_choices, gen_day_choices
 from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
-from app.event.helpers import event_admin_required, update_timestamp, get_events, gen_event_category_choices, get_events_by_category
+from app.event.helpers import update_timestamp, get_events, gen_event_category_choices, get_events_by_category
 from app.event.models import EventSetting, Event, EventCategory
-from app.helpers import page_title, flash_no_permission, stretch_color
+from app.helpers import page_title, stretch_color, deny_access, moderator_required
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import not_, and_, or_
@@ -19,14 +19,11 @@ def view(id, name=None):
     event = Event.query.filter_by(id=id).first_or_404()
     moons = Moon.query.all()
 
-    # TODO: write decorator for this?
-    if not current_user.is_event_admin() and event.is_visible == False and not event.created_by == current_user:
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
+    if not event.is_viewable_by_user():
+        return deny_access(no_perm_url)
 
-    if not current_user.has_admin_role() and current_user.has_event_role() and event.is_visible == False and event.created_by.has_admin_role():
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
+    if event.is_visible == False:
+        flash("This Event is only visible to you.", "warning")
 
     return render_template("event/view.html", event=event, moons=moons, title=page_title("View Event '{}'".format(event.name)))
 
@@ -80,7 +77,7 @@ def create():
     else:
         form.day.choices = gen_day_choices(1)
         form.category.data = settings.default_category
-        form.is_visible.data = settings.default_visible
+        form.is_visible.data = True
 
         if settings.default_epoch:
             form.epoch.data = settings.default_epoch
@@ -88,16 +85,9 @@ def create():
         if settings.default_year:
             form.year.data = settings.default_year
 
-    if not current_user.is_event_admin():
-        del form.is_visible
-
     if form.validate_on_submit():
         new_event = Event(name=form.name.data, category_id=form.category.data, description=form.description.data, epoch_id=form.epoch.data, year=form.year.data, month_id=form.month.data, day=form.day.data, duration=form.duration.data)
-
-        if current_user.is_event_admin():
-            new_event.is_visible = form.is_visible.data
-        else:
-            new_event.is_visible = settings.default_visible
+        new_event.is_visible = form.is_visible.data
 
         db.session.add(new_event)
         db.session.commit()
@@ -141,6 +131,9 @@ def create():
 def edit(id, name=None):
     event = Event.query.filter_by(id=id).first_or_404()
 
+    if not event.is_editable_by_user():
+        return deny_access(no_perm_url)
+
     form = EventForm()
     form.submit.label.text = "Save Event"
     form.category.choices = gen_event_category_choices()
@@ -152,16 +145,7 @@ def edit(id, name=None):
     else:
         form.day.choices = gen_day_choices(event.month_id)
 
-    # TODO: write custom decorator for this?
-    if not current_user.has_admin_role() and current_user.has_event_role() and event.is_visible == False and event.created_by.has_admin_role():
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
-
-    if not current_user.is_event_admin() and event.is_visible == False and not event.created_by == current_user:
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
-
-    if not current_user.is_event_admin():
+    if not event.is_hideable_by_user():
         del form.is_visible
 
     if form.validate_on_submit():
@@ -174,7 +158,7 @@ def edit(id, name=None):
         event.day = form.day.data
         event.duration = form.duration.data
 
-        if current_user.is_event_admin():
+        if event.is_hideable_by_user():
             event.is_visible = form.is_visible.data
 
         db.session.commit()
@@ -194,7 +178,7 @@ def edit(id, name=None):
         form.day.data = event.day
         form.duration.data = event.duration
 
-        if current_user.is_event_admin():
+        if event.is_hideable_by_user():
             form.is_visible.data = event.is_visible
 
     calendar_helper = gen_calendar_stats()
@@ -205,14 +189,8 @@ def edit(id, name=None):
 def delete(id, name=None):
     event = Event.query.filter_by(id=id).first_or_404()
 
-    # TODO: write custom decorator for this?
-    if not current_user.has_admin_role() and current_user.has_event_role() and event.is_visible == False and event.created_by.has_admin_role():
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
-
-    if not current_user.is_event_admin() and event.is_visible == False and not event.created_by == current_user:
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
+    if not event.is_deletable_by_user():
+        return deny_access(no_perm_url)
 
     db.session.delete(event)
     db.session.commit()
@@ -222,7 +200,7 @@ def delete(id, name=None):
 
 @bp.route("/category/create", methods=["GET", "POST"])
 @login_required
-@event_admin_required
+@moderator_required(no_perm_url)
 def category_create():
     heading = "Add Event Category"
     form = CategoryForm()
@@ -241,13 +219,13 @@ def category_create():
 
 @bp.route("/category/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-@event_admin_required
+@moderator_required(no_perm_url)
 def category_edit(id, name=None):
     form = CategoryForm()
     form.submit.label.text = "Edit Category"
 
     category = EventCategory.query.filter_by(id=id).first_or_404()
-    heading = "Edit Event Category '%s'" % category.name
+    heading = "Edit Event Category '{}'".format(category.name)
 
     if form.validate_on_submit():
         category.name = form.name.data
@@ -265,7 +243,7 @@ def category_edit(id, name=None):
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
-@event_admin_required
+@moderator_required(no_perm_url)
 def settings():
     settings = EventSetting.query.get(1)
     form = SettingsForm()
@@ -273,7 +251,6 @@ def settings():
     form.default_epoch.choices = gen_epoch_choices()
 
     if form.validate_on_submit():
-        settings.default_visible = form.default_visible.data
         settings.default_category = form.default_category.data
         settings.default_epoch = form.default_epoch.data
         settings.default_year = form.default_year.data
@@ -282,7 +259,6 @@ def settings():
 
         flash("Event settings have been changed.", "success")
     elif request.method == "GET":
-        form.default_visible.data = settings.default_visible
         form.default_category.data = settings.default_category
         form.default_epoch.data = settings.default_epoch
         form.default_year.data = settings.default_year
@@ -294,11 +270,7 @@ def settings():
 @bp.route("/sidebar", methods=["GET"])
 @login_required
 def sidebar():
-    if current_user.has_admin_role():
-        entries = Event.query
-    else:
-        entries = Event.query.filter(or_(Event.is_visible == True, Event.created_by_id == current_user.id))
-
+    entries = Event.get_query_for_invisible_items(include_hidden_for_user=True)
     entries = entries.with_entities(Event.id, Event.name, Event.is_visible).order_by(Event.name.asc()).all()
 
     return jsonify(entries)

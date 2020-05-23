@@ -46,7 +46,11 @@ makeDatatable("event-table");
 
         <tbody>
         {% for event in events %}
+            {% if event.is_visible %}
             <tr style="border-left:7px solid {{ event.category.color }}">
+            {% else %}
+            <tr style="border-left:7px solid {{ event.category.color }}" class="invisible_item">
+            {% endif %}
                 <td>{{ event.name }}</td>
                 <td>
                     {% if epoch_flag %}
@@ -64,7 +68,9 @@ makeDatatable("event-table");
                 <td>
                     {{ event.view_button() }}
 
+                    {% if event.is_editable_by_user() %}
                     {{ event.edit_button() }}
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
