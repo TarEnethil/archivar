@@ -3,7 +3,7 @@ from app.calendar.models import CalendarSetting
 from app.campaign.models import Campaign
 from app.character.models import Character, Journal
 from app.event.models import Event, EventSetting, EventCategory
-from app.helpers import page_title, count_rows, admin_required, debug_mode_required, Role
+from app.helpers import page_title, count_rows, admin_required, moderator_required, debug_mode_required, Role
 from app.main import bp
 from app.main.forms import LoginForm, SettingsForm, InstallForm
 from app.main.models import GeneralSetting
@@ -116,7 +116,7 @@ def logout():
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
-@admin_required("index")
+@moderator_required("main.index")
 def settings():
     form = SettingsForm()
     settings = GeneralSetting.query.get(1)
