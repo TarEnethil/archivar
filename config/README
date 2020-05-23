@@ -27,7 +27,7 @@ Do not reveal the secret key when posting questions or committing code.
 
 #### Default Value
 
-*none*, **must** be provided
+`None`, **must** be provided
 
 
 #### Examples
@@ -44,7 +44,7 @@ Maximum size of media files (in Bytes)
 
 
 #### Default Value
-1024 * 50 = 50 KiloByte
+`1024 * 50 = 50 KiloByte`
 
 
 #### Examples
@@ -65,7 +65,7 @@ Using CDNs means slightly less load / traffic on your server.
 
 
 #### Default Value
-True
+`True`
 
 
 #### Examples
@@ -75,4 +75,23 @@ True
 
     # Use CDNs
     SERVE_LOCAL = False
+```
+
+
+
+### PAGE_TITLE_SUFFIX (type: String)
+
+Suffix for the HTML title attribute.
+A space will automatically be added in the front of the string.
+
+
+#### Default Value
+`:: Archivar`
+
+
+#### Examples
+```python
+    PAGE_TITLE_SUFFIX = "- Worldbuilder5000"
+
+    PAGE_TITLE_SUFFIX = ""
 ```

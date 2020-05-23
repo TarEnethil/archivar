@@ -9,7 +9,6 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Sign in")
 
 class SettingsForm(FlaskForm):
-    title = StringField("Title", validators=[Length(max=64)])
     world_name = StringField("Worldname", validators=[Length(max=64)])
     welcome_page = TextAreaField("Text for welcome page", render_kw={"rows": 20})
     quicklinks = TextAreaField("Quicklinks", render_kw={"rows": 7})
