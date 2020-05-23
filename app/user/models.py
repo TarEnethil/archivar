@@ -85,6 +85,12 @@ class User(UserMixin, db.Model, LinkGenerator):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def get_characters(self):
+        if current_user.id == self.id:
+            return self.characters
+        else:
+            return list(filter(lambda x: x.is_visible, self.characters))
+
     # TODO: could be more efficient with a query
     def has_char_in_party(self, party):
         for char in self.characters:

@@ -80,7 +80,7 @@
 <ul class="list-unstyled">
     {% for member in session.participants %}
     <li>
-        {% if member.player.id == current_user.id %}
+        {% if member.journal_is_creatable_by_user() %}
         {{ member.view_link(classes="own-char") }} (<a href="{{ url_for('character.journal_create', c_id=member.id, c_name=member.name|urlfriendly, session=session.id) }}">write Journal</a>)
         {% else %}
         {{ member.view_link() }}
@@ -96,7 +96,7 @@
 <h2>Journals</h2>
 <ul class="list-unstyled">
     {% for journal in session.journals %}
-    {% if journal.is_visible or journal.character.player == current_user or current_user.has_admin_role() %}
+    {% if journal.is_viewable_by_user() %}
     <li>
         {% if journal.is_visible %}
         "{{ journal.view_link() }}"
@@ -108,7 +108,7 @@
 
         {{ journal.character.name }}
 
-        {% if journal.character.player == current_user or current_user.has_admin_role() %}
+        {% if journal.is_editable_by_user() %}
         ({{ journal.edit_link(text="edit") }})
         {% endif %}
     </li>

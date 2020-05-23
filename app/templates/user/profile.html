@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% set characters = user.get_characters() %}
+
 {% block styles %}
 {{ super() }}
 {{ include_css(['datatables']) }}
@@ -10,7 +12,7 @@
 {{ include_js(['moment', 'datatables']) }}
 
 <script type="text/javascript">
-{% if user.characters %}
+{% if characters %}
     makeDatatable("char-table");
 {% endif %}
 </script>
@@ -52,11 +54,11 @@
     <p>No description given.</p>
     {% endif %}
 
-    {% if user == current_user or user.characters %}
-    <h2>Characters ({{ user.characters|length }})</h2>
+    {% if characters %}
+    <h2>Characters ({{ characters|length }})</h2>
     {% endif %}
 
-    {% if user.characters %}
+    {% if characters %}
     <table class="table table-hover table-striped" id="char-table">
         <thead>
             <tr>
@@ -66,8 +68,7 @@
         </thead>
 
         <tbody>
-        {% for char in user.characters %}
-        {% if char.is_viewable_by_user() %}
+        {% for char in characters %}
             {% if char.is_visible %}
             <tr>
             {% else %}
@@ -82,7 +83,6 @@
                     {% endif %}
                 </td>
             </tr>
-        {% endif %}
         {% endfor %}
         </tbody>
     </table>
