@@ -1,14 +1,15 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleChangeTracker
+from app.mixins import LinkGenerator, SimpleChangeTracker, PermissionTemplate
 from flask import url_for
+from flask_login import current_user
 from jinja2 import Markup
 
 campaign_character_assoc = db.Table("campaign_character_assoc",
                     db.Column("campaign_id", db.Integer, db.ForeignKey("campaigns.id")),
                     db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
 
-class Campaign(db.Model, SimpleChangeTracker, LinkGenerator):
+class Campaign(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
     __tablename__ = "campaigns"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -21,6 +22,12 @@ class Campaign(db.Model, SimpleChangeTracker, LinkGenerator):
     dm_notes = db.Column(db.Text)
 
     default_participants = db.relationship("Character", secondary=campaign_character_assoc, backref="default_participants")
+
+    #####
+    # Permissions
+    #####
+    def is_editable_by_user(self):
+        return current_user.is_dm_of(self) or current_user.is_admin()
 
     #####
     # LinkGenerator functions
