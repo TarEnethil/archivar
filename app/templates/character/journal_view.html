@@ -21,10 +21,15 @@ $(document).ready(function() {
 {% block app_content %}
 <h1>{{ journal.title }}</h1>
 
-{% if current_user == char.player or current_user.has_admin_role() %}
+{% if journal.is_editable_by_user() or journal.is_deletable_by_user() %}
 {{ navbar_start() }}
+{% if journal.is_editable_by_user() %}
     {{ journal.edit_button_nav() }}
+{% endif %}
+
+{% journal.is_deletable_by_user() %}
     {{ journal.delete_button_nav() }}
+{% endif %}
 {{ navbar_end() }}
 {% endif %}
 
@@ -33,14 +38,6 @@ $(document).ready(function() {
 
     {% if journal.session %}
     <li>Belongs to Session {{ journal.session.view_link() }} of {{ journal.session.campaign.view_link() }}</li>
-    {% endif %}
-
-    {% if current_user == char.player or current_user.has_admin_role() %}
-        {% if journal.is_visible %}
-        <li>Status: visible</li>
-        {% else %}
-        <li>Status: invisible</li>
-        {% endif %}
     {% endif %}
 </ul>
 

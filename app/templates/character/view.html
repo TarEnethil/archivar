@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% set journals = char.get_journals() %}
+
 {% block styles %}
 {{ super() }}
 {{ include_css(['datatables']) }}
@@ -30,7 +32,7 @@
     makeDatatable("sessions-table")
     {% endif %}
 
-    {% if char.journals %}
+    {% if journals %}
     makeDatatable("journals-table");
     {% endif %}
 </script>
@@ -44,7 +46,7 @@
             {{ button_nav(url=url_for('character.journal_create', c_id=char.id, c_name=char.name|urlfriendly), text="Add Journal Entry", icon="plus") }}
         {% endif %}
 
-        {% if char.journals %}
+        {% if journals %}
             {{ button_nav(url=url_for('character.journal_list', c_id=char.id, c_name=char.name|urlfriendly), text="View Full Journal", icon="book") }}
         {% endif %}
 
@@ -144,11 +146,11 @@
     <p>{{ char.name }} has not participated in any sessions.</p>
     {% endif %}
 
-    {% if char.journals %}
+    {% if journals %}
     <hr>
     <h2>Journals
 
-    ({{ char.journals|length }})
+    ({{ journals|length }})
     </h2>
 
     <table class="table table-hover table-striped" id="journals-table">
@@ -161,8 +163,7 @@
         </thead>
 
         <tbody>
-        {% for journal in char.journals|reverse %}
-        {% if journal.is_visible or current_user == char.player or current_user.has_admin_role() %}
+        {% for journal in journals|reverse %}
             {% if journal.is_visible %}
             <tr>
             {% else %}
@@ -177,18 +178,17 @@
                 <td>
                     {{ journal.view_button() }}
 
-                    {% if char.player == current_user or current_user.has_admin_role() %}
+                    {% if journal.is_editable_by_user() %}
                     {{ journal.edit_button() }}
                     {% endif %}
                 </td>
             </tr>
-        {% endif %}
         {% endfor %}
         </tbody>
     </table>
     {% endif %}
 
-    {% if char.private_notes and (current_user.has_admin_role() or char.player.id == current_user.id) %}
+    {% if char.player.id == current_user.id %}
     <hr>
     <h2>Private Notes</h2>
 {% if current_user.markdown_phb_style %}
@@ -198,20 +198,6 @@
 {% endif %}
 {{ char.private_notes|markdown }}
     </div>
-    {% endif %}
-
-    {% if current_user.has_admin_role() %}
-        {% if char.dm_notes %}
-        <hr>
-        <h2>DM Notes</h2>
-    {% if current_user.markdown_phb_style %}
-        <div class="custom-markdown phb-style">
-    {% else %}
-        <div class="custom-markdown">
-    {% endif %}
-{{ char.dm_notes|markdown }}
-        </div>
-        {% endif %}
     {% endif %}
 
     {{ char.print_info() }}

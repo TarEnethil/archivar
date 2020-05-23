@@ -1,6 +1,6 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleChangeTracker, SimplePermissionChecker
+from app.mixins import LinkGenerator, SimplePermissionChecker
 from flask import url_for
 from flask_login import current_user
 
@@ -22,6 +22,12 @@ class Character(db.Model, SimplePermissionChecker, LinkGenerator):
     description = db.Column(db.Text)
     private_notes = db.Column(db.Text)
 
+    def get_journals(self):
+        if self.user_id == current_user.id:
+            return self.journals
+        else:
+            return (list(filter(lambda x: x.is_visible, self.journals)))
+
     #####
     # Permissions
     #####
@@ -36,6 +42,9 @@ class Character(db.Model, SimplePermissionChecker, LinkGenerator):
 
     def is_owned_by_user(self):
         return self.user_id == current_user.id
+
+    def journal_is_creatable_by_user(self):
+        return self.is_owned_by_user()
 
     #####
     # LinkGenerator functions
@@ -52,11 +61,10 @@ class Character(db.Model, SimplePermissionChecker, LinkGenerator):
     def delete_url(self):
         return url_for('character.delete', id=self.id, name=urlfriendly(self.name))
 
-class Journal(db.Model, SimpleChangeTracker, LinkGenerator):
+class Journal(db.Model, SimplePermissionChecker, LinkGenerator):
     __tablename__ = "journal"
 
     id = db.Column(db.Integer, primary_key=True)
-    is_visible = db.Column(db.Boolean)
     title = db.Column(db.String(100))
     content = db.Column(db.Text)
 
@@ -65,6 +73,21 @@ class Journal(db.Model, SimpleChangeTracker, LinkGenerator):
 
     session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
     session = db.relationship("Session", backref="journals", foreign_keys=[session_id])
+
+    #####
+    # Permissions
+    #####
+    def is_viewable_by_user(self):
+        return self.is_visible or self.is_owned_by_user()
+
+    def is_editable_by_user(self):
+        return self.is_owned_by_user()
+
+    def is_deletable_by_user(self):
+        return self.is_owned_by_user() or (self.is_visible and current_user.is_admin())
+
+    def is_owned_by_user(self):
+        return self.character.user_id == current_user.id
 
     # LinkGenerator functions
     #####

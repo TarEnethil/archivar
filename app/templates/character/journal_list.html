@@ -12,7 +12,7 @@
 {{ navbar_start() }}
     {{ char.view_button_nav(text="Back to Char", icon="arrow-left") }}
 
-{% if current_user == char.player %}
+{% if char.journal_is_creatable_by_user() %}
     {{ button_nav(url=url_for('character.journal_create', c_id=char.id, c_name=char.name|urlfriendly), text="Add Entry", icon="plus") }}
 {% endif %}
 {{ navbar_end() }}
@@ -20,14 +20,13 @@
 <p>
     Here you can CTRL+F your heart out.
 
-    {% if current_user == char.player or current_user.has_admin_role() %}
+    {% if current_user == char.player %}
     <span class="invisible_item">Red text denotes a non-public entry.</span>
     {% endif %}
 </p>
 
 {% if journals %}
 {% for journal in journals|reverse %}
-{% if journal.is_visible or current_user == char.player or current_user.has_admin_role() %}
     <hr>
     {% if journal.is_visible %}
     <h2>{{ journal.title }}</h2>
@@ -35,7 +34,7 @@
     <h2 class="invisible_item">{{ journal.title }}</h2>
     {% endif %}
     {{ journal.view_link(text="View") }}
-    {% if current_user == char.player or current_user.has_admin_role() %}
+    {% if journal.is_editable_by_user() %}
     &bullet; {{ journal.edit_link() }}
     {% endif %}
 
@@ -48,7 +47,6 @@
 {{ journal.content|markdown }}
     </div>
     {% endif %}
-{% endif %}
 {% endfor %}
 {% else %}
 <p>This character has no (public) journals.</p>
