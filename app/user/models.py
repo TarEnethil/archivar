@@ -35,7 +35,7 @@ class User(UserMixin, db.Model, LinkGenerator):
         return self.role == Role.Admin.value
 
     def is_moderator(self):
-        return self.role == Role.Moderator.value
+        return self.role == Role.Moderator.value or self.is_admin()
 
     def is_user(self):
         return self.role == Role.User.value

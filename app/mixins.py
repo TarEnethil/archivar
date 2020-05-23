@@ -72,7 +72,17 @@ class SimpleChangeTracker(object):
 
         return Markup(Template(out).render(context))
 
-class SimplePermissionChecker(SimpleChangeTracker):
+class PermissionTemplate(object):
+    def is_viewable_for_user(self):
+        raise NotImplementedError
+
+    def is_editable_by_user(self):
+        raise NotImplementedError
+
+    def is_deletable_by_user(self):
+        raise NotImplementedError
+
+class SimplePermissionChecker(PermissionTemplate, SimpleChangeTracker):
     is_visible = db.Column(db.Boolean, default=True)
 
     @declared_attr
@@ -82,14 +92,8 @@ class SimplePermissionChecker(SimpleChangeTracker):
     def is_owned_by_user(self):
         return self.created_by_id == current_user.id
 
-    def is_visible_for_user(self):
-        return self.is_visible or self.is_owned_by_user()
-
-    def is_editable_by_user(self):
-        return self.is_visible or self.is_owned_by_user()
-
-    def is_deletable_by_user(self):
-        return self.is_owned_by_user() or (self.is_visible and current_user.has_admin_role())
+    def is_hideable_by_user(self):
+        return self.is_owned_by_user()
 
     @classmethod
     def get_query_for_visible_items(cls):
