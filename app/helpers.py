@@ -12,7 +12,7 @@ from wtforms.validators import ValidationError
 # flash generic error message
 def flash_no_permission(msg=None):
     if (msg != None):
-        flash(msg)
+        flash(msg, "danger")
     else:
         flash("No permission for this action.", "danger")
 
@@ -38,7 +38,7 @@ def moderator_required(url="index"):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if not current_user.is_moderator():
+            if not current_user.is_at_least_moderator():
                 flash("You need to be moderator or admin to perform this action.", "danger")
                 return redirect(url_for(url))
             return f(*args, **kwargs)

@@ -5,17 +5,21 @@ from app.calendar.models import CalendarSetting, Epoch, Month, Day, Moon
 from app.calendar.helpers import get_next_epoch_order, get_next_month_order, get_next_day_order, calendar_sanity_check, gen_calendar_preview_data, gen_calendar_stats, get_years_in_epoch, get_epochs, gen_epoch_choices, gen_month_choices, gen_day_choices
 from app.event.forms import EventForm
 from app.event.helpers import get_event_categories
-from app.helpers import page_title, admin_required, stretch_color
+from app.helpers import page_title, admin_required, stretch_color, moderator_required, deny_access
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 
-no_perm_url = "index"
+no_perm_url = "main.index"
 
 @bp.route("/settings", methods=["GET"])
 @login_required
-@admin_required(no_perm_url)
+@moderator_required(no_perm_url)
 def settings():
     cset = CalendarSetting.query.get(1)
+
+    if cset.finalized == False:
+        if current_user.is_moderator():
+            return deny_access(no_perm_url, "A Moderator can only edit the Calendar after it has been finalized.")
 
     epochs = Epoch.query.order_by(Epoch.order.asc()).all()
     months = Month.query.order_by(Month.order.asc()).all()
@@ -159,7 +163,7 @@ def epoch_create():
 
 @bp.route("/epoch/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-@admin_required(no_perm_url)
+@moderator_required(no_perm_url)
 def epoch_edit(id, name=None):
     heading = "Edit Epoch"
     form = EpochForm()
@@ -169,6 +173,9 @@ def epoch_edit(id, name=None):
     if cset.finalized == True:
         del form.years
         del form.circa
+    else:
+        if current_user.is_moderator():
+            return deny_access(no_perm_url, "A Moderator can only edit the Calendar after it has been finalized.")
 
     epoch = Epoch.query.filter_by(id=id).first_or_404()
 
@@ -296,7 +303,7 @@ def month_create():
 
 @bp.route("/month/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-@admin_required(no_perm_url)
+@moderator_required(no_perm_url)
 def month_edit(id, name=None):
     heading = "Edit Month"
     form = MonthForm()
@@ -305,6 +312,9 @@ def month_edit(id, name=None):
     cset = CalendarSetting.query.get(1)
     if cset.finalized == True:
         del form.days
+    else:
+        if current_user.is_moderator():
+            return deny_access(no_perm_url, "A Moderator can only edit the Calendar after it has been finalized.")
 
     month = Month.query.filter_by(id=id).first_or_404()
 
@@ -430,8 +440,13 @@ def day_create():
 
 @bp.route("/day/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-@admin_required(no_perm_url)
+@moderator_required(no_perm_url)
 def day_edit(id, name=None):
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == False:
+        if current_user.is_moderator():
+            return deny_access(no_perm_url, "A Moderator can only edit the Calendar after it has been finalized.")
+
     heading = "Edit Day"
     form = DayForm()
     form.submit.label.text = "Save Day"
@@ -552,8 +567,13 @@ def moon_create():
 
 @bp.route("/moon/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-@admin_required(no_perm_url)
+@moderator_required(no_perm_url)
 def moon_edit(id, name=None):
+    cset = CalendarSetting.query.get(1)
+    if cset.finalized == False:
+        if current_user.is_moderator():
+            return deny_access(no_perm_url, "A Moderator can only edit the Calendar after it has been finalized.")
+
     heading = "Edit Moon"
     form = MoonForm()
     form.submit.label.text = "Save Moon"
