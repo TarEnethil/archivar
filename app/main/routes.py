@@ -23,7 +23,7 @@ from werkzeug.urls import url_parse
 @bp.before_app_request
 def before_request():
     # prevent db access on static file retrieval
-    if request.endpoint in ["static", "fontawesome.static", "media.serve_file", "media.serve_thumbnail", "map.node_type_icon", "map.tile"]:
+    if request.endpoint in ["static", "media.serve_file", "media.serve_thumbnail", "map.node_type_icon", "map.tile"]:
         return
 
     if current_user.is_authenticated:

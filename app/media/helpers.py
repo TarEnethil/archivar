@@ -6,16 +6,6 @@ from werkzeug import secure_filename
 from os import path, stat
 from PIL import Image
 
-# @media_admin_required decorater, use AFTER login_required
-def media_admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not current_user.is_media_admin():
-            flash("You need to be a media admin to perform this action.", "danger")
-            return redirect(url_for("media.index"))
-        return f(*args, **kwargs)
-    return decorated_function
-
 # generate choices for the media category SelectField
 def gen_media_category_choices():
     choices = []

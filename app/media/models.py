@@ -73,9 +73,17 @@ class MediaItem(db.Model, SimplePermissionChecker, LinkGenerator):
             "category" : self.category_id
         }
 
-    # overrides SimplePermissionChecker
+    #####
+    # Permissions
+    #####
+    def is_viewable_for_user(self):
+        return self.is_visible or self.is_owned_by_user()
+
+    def is_editable_by_user(self):
+        return self.is_owned_by_user() or (self.is_visible and current_user.is_moderator())
+
     def is_deletable_by_user(self):
-        return self.created_by_id == current_user.id or (self.is_visible and (current_user.is_media_admin() or current_user.has_admin_role()))
+        return self.is_owned_by_user() or (self.is_visible and current_user.is_moderator())
 
     #####
     # LinkGenerator functions
