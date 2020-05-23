@@ -3,7 +3,7 @@ from app.character import bp
 from app.character.forms import CreateCharacterForm, EditCharacterForm, JournalForm
 from app.character.helpers import gen_session_choices
 from app.character.models import Character, Journal
-from app.helpers import page_title, flash_no_permission, deny_access
+from app.helpers import page_title, deny_access
 from app.party.models import Party
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, jsonify, request
@@ -123,7 +123,7 @@ def sidebar():
 def journal_list(c_id, c_name=None):
     char = Character.query.filter_by(id=c_id).first_or_404()
 
-    journals = Journal.query.filter_by(character_id = c_id).all()
+    journals = Journal.get_query_for_visible_items(include_hidden_for_user=True).filter_by(character_id = c_id).all()
 
     return render_template("character/journal_list.html", char=char, journals=journals, title=page_title("Journals for '{}'".format(char.name)))
 
@@ -132,9 +132,8 @@ def journal_list(c_id, c_name=None):
 def journal_create(c_id, c_name=None):
     char = Character.query.filter_by(id=c_id).first_or_404()
 
-    if current_user.id != char.user_id:
-        flash_no_permission()
-        return redirect(url_for(no_perm))
+    if not char.journal_is_creatable_by_user():
+        return deny_access(no_perm_url)
 
     heading = "Create Journal Entry for {}".format(char.name)
 
@@ -154,6 +153,10 @@ def journal_create(c_id, c_name=None):
 
         return redirect(journal_entry.view_url())
     else:
+        # set default for visibility
+        if request.method == "GET":
+            form.is_visible.data = True
+
         # pre-select session if get-param was passed
         session_id = request.args.get("session")
 
@@ -172,15 +175,12 @@ def journal_edit(c_id, j_id, c_name=None, j_name=None):
     char = Character.query.filter_by(id=c_id).first_or_404()
     journal = Journal.query.filter_by(id=j_id).first_or_404()
 
-    # user owns character or is admin
-    if not current_user.id == char.user_id and not current_user.has_admin_role():
-        flash_no_permission()
-        return redirect(url_for(no_perm))
+    if not journal.is_editable_by_user():
+        return deny_access(no_perm_url)
 
     # journal belongs to character
     if journal not in char.journals:
-        flash("Journal does not belong to this character.", "danger")
-        return redirect(url_for(no_perm))
+        return deny_access(no_perm_url, "Journal does not belong to this character.")
 
     heading = "Edit Journal Entry for {}".format(char.name)
 
@@ -215,15 +215,12 @@ def journal_view(c_id, j_id, c_name=None, j_name=None):
     char = Character.query.filter_by(id=c_id).first_or_404()
     journal = Journal.query.filter_by(id=j_id).first_or_404()
 
-    # user owns character or is admin
-    if journal.is_visible == False and not current_user.id == char.user_id and not current_user.has_admin_role():
-        flash_no_permission()
-        return redirect(url_for(no_perm))
+    if not journal.is_viewable_by_user():
+        return deny_access(no_perm_url)
 
     # journal belongs to character
     if journal not in char.journals:
-        flash("Journal does not belong to this character.", "danger")
-        return redirect(url_for(no_perm))
+        return deny_access(no_perm_url, "Journal does not belong to this character.")
 
     return render_template("character/journal_view.html", char=char, journal=journal, title=page_title("View Journal Entry '{}'".format(journal.title)))
 
@@ -233,15 +230,12 @@ def journal_delete(c_id, j_id, c_name=None, j_name=None):
     char = Character.query.filter_by(id=c_id).first_or_404()
     journal = Journal.query.filter_by(id=j_id).first_or_404()
 
-    # user owns character or is admin
-    if journal.is_visible == False and not current_user.id == char.user_id and not current_user.has_admin_role():
-        flash_no_permission()
-        return redirect(url_for(no_perm))
+    if not journal.is_deletable_by_user():
+        return deny_access(no_perm_url)
 
     # journal belongs to character
     if journal not in char.journals:
-        flash("Journal does not belong to this character.", "danger")
-        return redirect(url_for(no_perm))
+        return deny_access(no_perm_url, "Journal does not belong to this character.")
 
     db.session.delete(journal)
     db.session.commit()
