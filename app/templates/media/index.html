@@ -29,7 +29,7 @@ $(document).ready(function() {
     {{ navbar_start() }}
         {{ button_nav(url=url_for('media.upload'), text="Add File", icon="plus") }}
 
-        {% if current_user.is_media_admin() %}
+        {% if current_user.is_at_least_moderator() %}
         {{ button_nav(url=url_for('media.settings'), text="Media Settings", icon="cog") }}
         {% endif %}
     {{ navbar_end() }}
