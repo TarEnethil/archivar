@@ -2,7 +2,7 @@ from app import db
 from app.campaign.helpers import gen_campaign_choices_dm, gen_campaign_choices_admin
 from app.campaign.models import Campaign
 from app.character.models import Character
-from app.helpers import page_title, admin_required, admin_dm_or_session_required, admin_or_dm_required, count_rows
+from app.helpers import page_title, admin_required, admin_dm_or_session_required, count_rows, deny_access
 from app.party.models import Party
 from app.session import bp
 from app.session.forms import SessionForm, CampaignSelectForm
@@ -73,13 +73,15 @@ def create():
 
 @bp.route("/create/for-campaign/<int:id>", methods=["GET", "POST"])
 @login_required
-@admin_or_dm_required(no_perm_url)
 def create_with_campaign(id):
     form = SessionForm()
     form.submit.label.text = "Create Session"
     form.participants.choices = gen_participant_choices()
 
     campaign = Campaign.query.filter_by(id=id).first_or_404()
+
+    if not campaign.is_editable_by_user():
+        return deny_access(no_perm_url)
 
     if not current_user.is_dm_of(campaign):
         del form.dm_notes

@@ -19,7 +19,7 @@ makeDatatable("sessions-table");
 {% block app_content %}
 <h1>{{ campaign.name }}</h1>
 
-{% if current_user.is_dm_of(campaign) or current_user.has_admin_role() %}
+{% if campaign.is_editable_by_user() %}
 {{ navbar_start() }}
     {{ button_nav(url=url_for('session.create', base=campaign.id), text="Add Session", icon="plus") }}
     {{ campaign.edit_button_nav(text="Edit Campaign") }}
