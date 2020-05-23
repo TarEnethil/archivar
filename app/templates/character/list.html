@@ -95,7 +95,11 @@ makeDatatable("parties-table", 5);
 
     <tbody>
     {% for char in chars %}
+    {% if char.is_visible %}
         <tr>
+    {% else %}
+        <tr class="invisible_item">
+    {% endif %}
             <td> {{ char.name }} </td>
             <td> {{ char.race }}</td>
             <td> {{ char.class_ }}</td>

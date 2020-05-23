@@ -3,13 +3,13 @@ from app.character import bp
 from app.character.forms import CreateCharacterForm, EditCharacterForm, JournalForm
 from app.character.helpers import gen_session_choices
 from app.character.models import Character, Journal
-from app.helpers import page_title, flash_no_permission
+from app.helpers import page_title, flash_no_permission, deny_access
 from app.party.models import Party
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, jsonify, request
 from flask_login import current_user, login_required
 
-no_perm = "index"
+no_perm_url = "main.index"
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
@@ -17,7 +17,7 @@ def create():
     form = CreateCharacterForm()
 
     if form.validate_on_submit():
-        char = Character(name=form.name.data, race=form.race.data, class_=form.class_.data, description=form.description.data, private_notes=form.private_notes.data, user_id=current_user.id)
+        char = Character(name=form.name.data, race=form.race.data, class_=form.class_.data, description=form.description.data, private_notes=form.private_notes.data, user_id=current_user.id, is_visible=form.is_visible.data)
 
         db.session.add(char)
         db.session.commit()
@@ -33,6 +33,12 @@ def create():
 def view(id, name=None):
     char = Character.query.filter_by(id=id).first_or_404()
 
+    if not char.is_viewable_by_user():
+        return deny_access(no_perm_url)
+
+    if char.is_visible == False:
+        flash("This Character is only visible to you.", "warning")
+
     return render_template("character/view.html", char=char, title=page_title("View Character '{}'".format(char.name)))
 
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
@@ -40,25 +46,29 @@ def view(id, name=None):
 def edit(id, name=None):
     char = Character.query.filter_by(id=id).first_or_404()
 
-    if current_user.id != char.user_id and current_user.has_admin_role() == False:
-        flash_no_permission()
-        return redirect(url_for(no_perm))
+    if not char.is_editable_by_user():
+        return deny_access(no_perm_url)
 
     form = EditCharacterForm()
 
-    if not current_user.has_admin_role():
-        del form.dm_notes
+    if not char.is_owned_by_user():
+        del form.private_notes
+
+    if not char.is_hideable_by_user():
+        del form.is_visible
 
     if form.validate_on_submit():
         char.name = form.name.data
         char.race = form.race.data
         char.class_ = form.class_.data
         char.description = form.description.data
-        char.private_notes = form.private_notes.data
         char.edited = datetime.utcnow()
 
-        if current_user.has_admin_role():
-            char.dm_notes = form.dm_notes.data
+        if char.is_owned_by_user():
+            char.private_notes = form.private_notes.data
+
+        if char.is_hideable_by_user():
+            char.is_visible = form.is_visible.data
 
         db.session.commit()
         flash("Character changes have been saved.", "success")
@@ -68,17 +78,19 @@ def edit(id, name=None):
         form.race.data = char.race
         form.class_.data = char.class_
         form.description.data = char.description
-        form.private_notes.data = char.private_notes
 
-        if current_user.has_admin_role():
-            form.dm_notes.data = char.dm_notes
+        if char.is_owned_by_user():
+            form.private_notes.data = char.private_notes
+
+        if char.is_hideable_by_user():
+            form.is_visible.data = char.is_visible
 
         return render_template("character/edit.html", form=form, title=page_title("Edit character '{}'".format(char.name)))
 
 @bp.route("/list", methods=["GET"])
 @login_required
 def list():
-    chars = Character.query.all()
+    chars = Character.get_visible_items(include_hidden_for_user=True)
     parties = Party.query.all()
 
     return render_template("character/list.html", chars=chars, parties=parties, title=page_title("Characters and Parties"))
@@ -88,9 +100,8 @@ def list():
 def delete(id, name=None):
     char = Character.query.filter_by(id=id).first_or_404()
 
-    if current_user.id != char.user_id and current_user.has_admin_role() == False:
-        flash_no_permission()
-        return redirect(url_for(no_perm))
+    if not char.is_deletable_by_user():
+        return deny_access(no_perm_url)
 
     player = char.player
 
@@ -103,7 +114,7 @@ def delete(id, name=None):
 @bp.route("/sidebar", methods=["GET"])
 @login_required
 def sidebar():
-    chars = Character.query.with_entities(Character.id, Character.name).order_by(Character.name.asc()).all()
+    chars = Character.get_query_for_visible_items(include_hidden_for_user=True).with_entities(Character.id, Character.name).order_by(Character.name.asc()).all()
 
     return jsonify(chars)
 

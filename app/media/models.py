@@ -76,7 +76,7 @@ class MediaItem(db.Model, SimplePermissionChecker, LinkGenerator):
     #####
     # Permissions
     #####
-    def is_viewable_for_user(self):
+    def is_viewable_by_user(self):
         return self.is_visible or self.is_owned_by_user()
 
     def is_editable_by_user(self):

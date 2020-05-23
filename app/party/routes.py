@@ -42,7 +42,7 @@ def edit(id, name=None):
     form.submit.label.text = "Save Party"
 
     if is_admin:
-        form.members.choices = gen_party_members_choices()
+        form.members.choices = gen_party_members_choices(ensure=party.members)
     else:
         del form.members
         del form.dm_notes

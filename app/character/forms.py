@@ -9,6 +9,7 @@ class CreateCharacterForm(FlaskForm):
     class_ = StringField("Class", validators=[InputRequired()])
     description = TextAreaField("Description", render_kw={"rows": 15})
     private_notes = TextAreaField("Private Notes (hidden)", render_kw={"rows": 15})
+    is_visible = BooleanField("Is publicly visible", default=True)
 
     submit = SubmitField("Create Character")
 
@@ -18,7 +19,7 @@ class EditCharacterForm(FlaskForm):
     class_ = StringField("Class", validators=[InputRequired()])
     description = TextAreaField("Description", render_kw={"rows": 15})
     private_notes = TextAreaField("Private Notes (hidden)", render_kw={"rows": 15})
-    dm_notes = TextAreaField("DM Notes (hidden)", render_kw={"rows": 15})
+    is_visible = BooleanField("Is publicly visible")
 
     submit = SubmitField("Save Character")
 
