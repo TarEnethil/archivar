@@ -55,9 +55,7 @@ $(document).ready(function() {
             {% endif %}
                 <td>{{ item.name }}</td>
                 <td>{{ item.category.view_link() }}</td>
-                <td>
-                    {{ item.get_file_ext() }}
-                </td>
+                <td>{{ item.get_file_ext() }}</td>
                 <td>{{ item.filename }}</td>
                 <td>
                     {{ item.view_button() }}

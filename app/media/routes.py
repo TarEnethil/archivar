@@ -1,8 +1,8 @@
 from app import db
-from app.helpers import page_title, flash_no_permission
+from app.helpers import page_title, deny_access, moderator_required
 from app.media import bp
 from app.media.forms import SettingsForm, MediaItemCreateForm, MediaItemEditForm, CategoryForm
-from app.media.helpers import media_admin_required, get_media, gen_media_category_choices, media_filename, generate_thumbnail
+from app.media.helpers import get_media, gen_media_category_choices, media_filename, generate_thumbnail
 from app.media.models import MediaSetting, MediaItem, MediaCategory
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory, current_app
 from flask_login import login_required, current_user
@@ -26,9 +26,8 @@ def index():
 def view(id, name=None):
     item = MediaItem.query.filter_by(id=id).first_or_404()
 
-    if not item.is_visible_for_user():
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
+    if not item.is_viewable_for_user():
+        return deny_access(no_perm_url)
 
     if not item.is_visible:
         flash("This item is only visible to you.", "warning")
@@ -117,10 +116,9 @@ def edit(id, name=None):
     form.category.choices = gen_media_category_choices()
 
     if not item.is_editable_by_user():
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
+        return deny_access(no_perm_url)
 
-    if not item.is_owned_by_user():
+    if not item.is_hideable_by_user():
         del form.is_visible
 
     form.file.label.text = "Replace with file"
@@ -129,7 +127,7 @@ def edit(id, name=None):
         item.name = form.name.data
         item.category_id = form.category.data
 
-        if item.is_owned_by_user():
+        if item.is_hideable_by_user():
             item.is_visible = form.is_visible.data
 
         msg = "File was edited."
@@ -163,7 +161,7 @@ def edit(id, name=None):
         form.name.data = item.name
         form.category.data = item.category_id
 
-        if item.is_owned_by_user():
+        if item.is_hideable_by_user():
             form.is_visible.data = item.is_visible
 
     return render_template("media/edit.html", form=form, title=page_title("Edit File '{}'".format(item.name)))
@@ -174,8 +172,7 @@ def delete(id, name=None):
     item = MediaItem.query.filter_by(id=id).first_or_404()
 
     if not item.is_deletable_by_user():
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
+        return deny_access(no_perm_url)
 
     fname = path.join(current_app.config["MEDIA_DIR"], item.filename)
     if path.isfile(fname):
@@ -193,7 +190,7 @@ def delete(id, name=None):
 
 @bp.route("/category/create", methods=["GET", "POST"])
 @login_required
-@media_admin_required
+@moderator_required(no_perm_url)
 def category_create():
     heading = "Add Media Category"
     form = CategoryForm()
@@ -212,7 +209,7 @@ def category_create():
 
 @bp.route("/category/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-@media_admin_required
+@moderator_required(no_perm_url)
 def category_edit(id, name=None):
     form = CategoryForm()
     form.submit.label.text = "Save Category"
@@ -234,7 +231,7 @@ def category_edit(id, name=None):
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
-@media_admin_required
+@moderator_required(no_perm_url)
 def settings():
     settings = MediaSetting.query.get(1)
     # form = SettingsForm()

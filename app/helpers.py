@@ -16,6 +16,11 @@ def flash_no_permission(msg=None):
     else:
         flash("No permission for this action.", "danger")
 
+# flash error and return a redirect
+def deny_access(url, msg=None):
+    flash_no_permission(msg)
+    return redirect(url_for(url))
+
 # @admin_required decorater, use AFTER login_required
 def admin_required(url="index"):
     def decorator(f):
@@ -28,12 +33,12 @@ def admin_required(url="index"):
         return decorated_function
     return decorator
 
-# @admin_required decorater, use AFTER login_required
+# @moderator decorater, use AFTER login_required
 def moderator_required(url="index"):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if not (current_user.is_moderator() or current_user.is_admin()):
+            if not current_user.is_moderator():
                 flash("You need to be moderator or admin to perform this action.", "danger")
                 return redirect(url_for(url))
             return f(*args, **kwargs)
