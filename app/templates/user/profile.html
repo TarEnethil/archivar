@@ -67,16 +67,22 @@
 
         <tbody>
         {% for char in user.characters %}
+        {% if char.is_viewable_by_user() %}
+            {% if char.is_visible %}
             <tr>
-                <td> {{ char.name }} ({{ char.race}} {{ char.class_ }})</td>
+            {% else %}
+            <tr class="invisible_item">
+            {% endif %}
+                <td>{{ char.name }} ({{ char.race}} {{ char.class_ }})</td>
                 <td>
                     {{ char.view_button() }}
 
-                    {% if user == current_user or current_user.has_admin_role() %}
+                    {% if char.is_editable_by_user() %}
                     {{ char.edit_button() }}
                     {% endif %}
                 </td>
             </tr>
+        {% endif %}
         {% endfor %}
         </tbody>
     </table>

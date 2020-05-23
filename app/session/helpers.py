@@ -6,7 +6,7 @@ from sqlalchemy import and_
 
 # generate choices for session participant SelectField (multi-select)
 # tuples are nested by party (=optgroup)
-def gen_participant_choices():
+def gen_participant_choices(ensure=None):
     choices = []
 
     parties = Party.query.all()
@@ -15,22 +15,24 @@ def gen_participant_choices():
         if len(party.members) == 0:
             continue
 
-        p = (party.name, [])
+        members = []
 
         for member in party.members:
-            p[1].append((member.id, "{} ({})".format(member.name, member.player.username)))
+            if member.is_visible or (ensure != None and member in ensure):
+                members.append((member.id, "{} ({})".format(member.name, member.player.username)))
 
-        choices.append(p)
+        choices.append((party.name, members))
 
     no_party_chars = Character.query.filter(Character.parties==None).all()
 
     if len(no_party_chars) > 0:
-        p = ("No party", [])
+        members = []
 
         for char in no_party_chars:
-            p[1].append((char.id, "{} ({})".format(char.name, char.player.username)))
+            if char.is_visible or (ensure != None and char in ensure):
+                members.append((char.id, "{} ({})".format(char.name, char.player.username)))
 
-        choices.append(p)
+        choices.append(("No Party", members))
 
     return choices
 
@@ -45,7 +47,6 @@ def get_next_session(session):
     return q
 
 def recalc_session_numbers(campaign, db):
-    print("recalc called")
     sessions = Session.query.filter(Session.campaign_id == campaign.id).order_by(Session.date.asc()).all()
     count = 1
 
