@@ -99,19 +99,11 @@ def debug_mode_required(f):
     return decorated_function
 
 # generate the page <title>
-def page_title(dynamic_part=None):
-    from app.main.models import GeneralSetting
-    gset = GeneralSetting.query.get(1)
+def page_title(prefix):
+    if prefix == None or prefix == "":
+        raise UserWarning("No title prefix provided")
 
-    if not gset:
-        static_part = ""
-    else:
-        static_part = gset.title
-
-    if dynamic_part != None:
-        return "{} :: {}".format(dynamic_part, static_part)
-    else:
-        return static_part
+    return "{} {}".format(prefix, current_app.config["PAGE_TITLE_SUFFIX"])
 
 # stretch color code from #xxx to #xxxxxx if needed
 def stretch_color(color):
