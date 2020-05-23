@@ -4,12 +4,12 @@ from app.campaign import bp
 from app.campaign.models import Campaign
 from app.campaign.forms import CampaignCreateForm, CampaignEditForm
 from app.campaign.helpers import gen_dm_choices
-from app.helpers import page_title, admin_required, stretch_color, admin_or_dm_required
+from app.helpers import page_title, admin_required, stretch_color, deny_access
 from app.session.helpers import gen_participant_choices
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 
-no_perm_url = "campaign.list"
+no_perm_url = "campaign.index"
 
 @bp.route("/", methods=["GET"])
 @login_required
@@ -41,10 +41,13 @@ def create():
 
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-@admin_or_dm_required(no_perm_url)
 def edit(id, name=None):
     campaign = Campaign.query.filter_by(id=id).first_or_404()
-    is_admin = current_user.has_admin_role()
+
+    if not campaign.is_editable_by_user():
+        return deny_access(no_perm_url)
+
+    is_admin = current_user.is_admin()
     is_dm = current_user.is_dm_of(campaign)
 
     form = CampaignEditForm()

@@ -87,27 +87,6 @@ def admin_dm_or_session_required(url="index"):
         return decorated_function
     return decorator
 
-# @admin_or_dm_required decorator, use AFTER login_required
-# url must contain 'id'-param which is assumed to be a campaign id
-def admin_or_dm_required(url="index"):
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            from app.campaign.models import Campaign
-
-            if not 'id' in kwargs:
-                flash("@admin_or_dm_required was used incorrectly, contact the administrator", "danger")
-                return redirect(url_for(url))
-
-            campaign = Campaign.query.filter_by(id=kwargs['id']).first_or_404()
-
-            if not current_user.has_admin_role() and not current_user.is_dm_of(campaign):
-                flash("You need to be admin or dm for this campaign to perform this action.", "danger")
-                return redirect(url_for(url))
-            return f(*args, **kwargs)
-        return decorated_function
-    return decorator
-
 # @debug_mode_required decorator, use AFTER login_required
 def debug_mode_required(f):
     @wraps(f)

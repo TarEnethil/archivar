@@ -53,7 +53,7 @@ makeDatatable("campaigns-table");
                 <td>{{ campaign.sessions|length }}</td>
                 <td>
                     {{ campaign.view_button() }}
-                    {% if current_user.is_dm_of(campaign) or current_user.has_admin_role() %}
+                    {% if campaign.is_editable_by_user() %}
                     {{ campaign.edit_button() }}
 
                     {{ button(url=url_for('session.create_with_campaign', id=campaign.id), text="Add Session", icon="plus") }}
