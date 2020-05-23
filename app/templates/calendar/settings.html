@@ -12,6 +12,7 @@
 The calendar was finalized, which means no alterations can be made, except for the name, description and abbreviation fields.
 </p>
 {% else %}
+
 {{ navbar_start() }}
     {{ button_nav(url=url_for('calendar.check'), text="Check Constraints", icon="calendar-check") }}
     {{ button_nav(url=url_for('calendar.preview'), text="Preview Calendar", icon="calendar-alt") }}

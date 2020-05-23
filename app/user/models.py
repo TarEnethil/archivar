@@ -35,10 +35,13 @@ class User(UserMixin, db.Model, LinkGenerator):
         return self.role == Role.Admin.value
 
     def is_moderator(self):
-        return self.role == Role.Moderator.value or self.is_admin()
+        return self.role == Role.Moderator.value
 
     def is_user(self):
         return self.role == Role.User.value
+
+    def is_at_least_moderator(self):
+        return self.is_moderator() or self.is_admin()
 
     def role_name(self):
         return Role(self.role).name
@@ -47,19 +50,19 @@ class User(UserMixin, db.Model, LinkGenerator):
         return self.is_admin()
 
     def has_map_role(self):
-        return self.is_moderator()
+        return self.is_at_least_moderator()
 
     def has_wiki_role(self):
-        return self.is_moderator()
+        return self.is_at_least_moderator()
 
     def has_event_role(self):
-        return self.is_moderator()
+        return self.is_at_least_moderator()
 
     def has_media_role(self):
-        return self.is_moderator()
+        return self.is_at_least_moderator()
 
     def has_special_role(self):
-        return self.is_moderator()
+        return self.is_at_least_moderator()
 
     def is_map_admin(self):
         return self.has_admin_role() or self.has_map_role()

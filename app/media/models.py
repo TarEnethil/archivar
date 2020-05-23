@@ -80,10 +80,10 @@ class MediaItem(db.Model, SimplePermissionChecker, LinkGenerator):
         return self.is_visible or self.is_owned_by_user()
 
     def is_editable_by_user(self):
-        return self.is_owned_by_user() or (self.is_visible and current_user.is_moderator())
+        return self.is_owned_by_user() or (self.is_visible and current_user.is_at_least_moderator())
 
     def is_deletable_by_user(self):
-        return self.is_owned_by_user() or (self.is_visible and current_user.is_moderator())
+        return self.is_owned_by_user() or (self.is_visible and current_user.is_at_least_moderator())
 
     #####
     # LinkGenerator functions
