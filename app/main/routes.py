@@ -122,7 +122,6 @@ def settings():
     settings = GeneralSetting.query.get(1)
 
     if form.validate_on_submit():
-        settings.title = form.title.data
         settings.world_name = form.world_name.data
         settings.welcome_page = form.welcome_page.data
         settings.quicklinks = form.quicklinks.data
@@ -131,7 +130,6 @@ def settings():
 
         db.session.commit()
     else:
-        form.title.data = settings.title
         form.world_name.data =  settings.world_name
         form.welcome_page.data = settings.welcome_page
         form.quicklinks.data = settings.quicklinks

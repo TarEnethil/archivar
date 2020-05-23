@@ -9,6 +9,7 @@ class DefaultConfig(object):
     # default values for user config
     MAX_CONTENT_LENGTH = 1024 * 50
     SERVE_LOCAL = True
+    PAGE_TITLE_SUFFIX = ":: Archivar"
 
     # static configuration
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or 'sqlite:///' + os.path.join(basedir, 'app.db')
