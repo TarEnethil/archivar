@@ -5,16 +5,6 @@ from flask import redirect, url_for, flash
 from functools import wraps
 from flask_login import current_user
 
-# @event_admin_required decorater, use AFTER login_required
-def event_admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not current_user.is_event_admin():
-            flash("You need to be a event admin to perform this action.", "danger")
-            return redirect(url_for("calendar.index"))
-        return f(*args, **kwargs)
-    return decorated_function
-
 # generate choices for event category SelectField
 def gen_event_category_choices():
     choices = []
@@ -52,10 +42,7 @@ def update_timestamp(event_id):
 
 # get events by epoch and/or year
 def get_events(filter_epoch=None, filter_year=None):
-    if current_user.has_admin_role():
-        events = Event.query
-    else:
-        events = Event.query.filter(or_(Event.is_visible == True, Event.created_by_id == current_user.id))
+    events = Event.get_query_for_visible_items(include_hidden_for_user=True)
 
     if filter_epoch and filter_year:
         events = events.filter_by(epoch_id = filter_epoch, year = filter_year)
@@ -68,13 +55,8 @@ def get_events(filter_epoch=None, filter_year=None):
 
 # get all events for the specified category
 def get_events_by_category(category_id):
-    if current_user.has_admin_role():
-        events = Event.query
-    else:
-        events = Event.query.filter(or_(Event.is_visible == True, Event.created_by_id == current_user.id))
-
+    events = Event.get_query_for_visible_items(include_hidden_for_user=True)
     events = events.filter_by(category_id = category_id)
-
     events = events.order_by(Event.timestamp.asc()).all()
 
     return events

@@ -162,6 +162,6 @@ def get_epochs():
 def get_years_in_epoch(e_id):
     from app.event.models import Event
 
-    q = Event.query.with_entities(Event.year).filter_by(epoch_id=e_id).group_by(Event.year).order_by(Event.year.asc()).all()
+    q = Event.get_query_for_visible_items(include_hidden_for_user=True).with_entities(Event.year).filter_by(epoch_id=e_id).group_by(Event.year).order_by(Event.year.asc()).all()
 
     return q

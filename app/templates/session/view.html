@@ -37,7 +37,7 @@
     {{ button_nav(url=url_for('session.create_with_campaign', id=session.campaign_id), text="Add Follow-Up Session", icon="plus") }}
 {% endif %}
 
-{% if current_user.is_event_admin() %}
+{% if event.is_deletable_by_user() %}
     {{ session.delete_button_nav() }}
 {% endif %}
 {{ navbar_end() }}

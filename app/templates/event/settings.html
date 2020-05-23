@@ -47,7 +47,7 @@
         {% for cat in categories %}
         <tr>
             <td>
-            {{ cat.name }}
+            {{ cat.name }} ({{cat.get_events()|length}} events)
             </td>
             <td style="background:{{ cat.color }}">{{ cat.color }}</td>
             <td>

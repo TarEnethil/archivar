@@ -55,12 +55,6 @@ class User(UserMixin, db.Model, LinkGenerator):
     def has_wiki_role(self):
         return self.is_at_least_moderator()
 
-    def has_event_role(self):
-        return self.is_at_least_moderator()
-
-    def has_media_role(self):
-        return self.is_at_least_moderator()
-
     def has_special_role(self):
         return self.is_at_least_moderator()
 
@@ -69,9 +63,6 @@ class User(UserMixin, db.Model, LinkGenerator):
 
     def is_wiki_admin(self):
         return self.has_admin_role() or self.has_wiki_role()
-
-    def is_event_admin(self):
-        return self.has_admin_role() or self.has_event_role()
 
     def is_media_admin(self):
         return self.has_admin_role() or self.has_media_role()
