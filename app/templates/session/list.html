@@ -40,7 +40,7 @@ $(document).ready(function() {
 {% block app_content %}
     <h1>Sessions</h1>
 
-    {% if current_user.has_admin_role() or current_user.is_dm_of_anything() %}
+    {% if current_user.is_admin() or current_user.is_dm_of_anything() %}
     {{ navbar_start() }}
         {% if url %}
             {{ button_nav(url=url, text="Add Session", icon="plus", ids="add-session-button") }}
@@ -108,7 +108,7 @@ $(document).ready(function() {
                 </td>
                 <td>
                     {{ session.view_button() }}
-                    {% if current_user.has_char_in_session(session) or current_user.has_admin_role() %}
+                    {% if session.is_editable_by_user() %}
                     {{ session.edit_button() }}
                     {% endif %}
                 </td>
@@ -163,7 +163,7 @@ $(document).ready(function() {
                 </td>
                 <td>
                     {{ session.view_button() }}
-                    {% if current_user.has_char_in_session(session) or current_user.has_admin_role() %}
+                    {% if session.is_editable_by_user() %}
                     {{ session.edit_button() }}
                     {% endif %}
                 </td>

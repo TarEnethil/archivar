@@ -116,17 +116,20 @@ def create_with_campaign(id):
 
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-@admin_dm_or_session_required(no_perm_url)
 def edit(id, name=None):
     session = Session.query.filter_by(id=id).first_or_404()
-    is_admin = current_user.has_admin_role()
+
+    if not session.is_editable_by_user():
+        return deny_access(no_perm_url)
+
     is_dm = current_user.is_dm_of(session.campaign)
+    is_admin = current_user.is_admin()
 
     form = SessionForm()
     form.submit.label.text = "Save Session"
 
-    if is_admin or is_dm:
-        form.participants.choices = gen_participant_choices(ensure=campaign.participants)
+    if is_dm or is_admin:
+        form.participants.choices = gen_participant_choices(ensure=session.participants)
     else:
         del form.participants
         del form.date
@@ -140,7 +143,7 @@ def edit(id, name=None):
         session.title = form.title.data
         session.summary = form.summary.data
 
-        if is_admin or is_dm:
+        if is_dm or is_admin:
             session.date = form.date.data
 
             participants = Character.query.filter(Character.id.in_(form.participants.data)).all()
@@ -159,7 +162,7 @@ def edit(id, name=None):
         form.title.data = session.title
         form.summary.data = session.summary
 
-        if is_admin or is_dm:
+        if is_dm or is_admin:
             form.date.data = session.date
 
             participants = []
@@ -172,7 +175,7 @@ def edit(id, name=None):
         if is_dm:
             form.dm_notes.data = session.dm_notes
 
-    return render_template("session/edit.html", form=form, title=page_title("Edit Session '{}'".format(session.title)))
+    return render_template("session/edit.html", form=form, campaign=session.campaign, title=page_title("Edit Session '{}'".format(session.title)))
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
@@ -188,9 +191,11 @@ def view(id, name=None):
 
 @bp.route("/delete/<int:id>/<string:name>")
 @login_required
-@admin_required(no_perm_url)
 def delete(id, name=None):
     session = Session.query.filter_by(id=id).first_or_404()
+
+    if not session.is_editable_by_user():
+        return deny_access(no_perm_url)
 
     campaign = session.campaign
 

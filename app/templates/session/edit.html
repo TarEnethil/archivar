@@ -14,7 +14,7 @@
 {% include "sidebars.js" %}
 makeMarkdownEditor("summary");
 
-{% if current_user.has_admin_role() %}
+{% if current_user.is_dm_of(campaign) %}
 makeMarkdownEditor("dm_notes");
 {% endif %}
 
