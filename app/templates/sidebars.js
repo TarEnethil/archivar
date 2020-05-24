@@ -366,7 +366,7 @@ function generateMarkdownConfig(id, withHeading=true) {
     spellChecker: false,
     status: false,
     autoDownloadFontAwesome: false,
-    minHeight: '{{ current_user.editor_height }}px',
+    minHeight: '{{ current_user.editor_height if current_user.editor_height else 200 }}px',
     onToggleFullScreen: function(fullscreen) {
       // hide navbar when going fullscreen
       $("#topnav").toggle(!fullscreen);
