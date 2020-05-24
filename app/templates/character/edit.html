@@ -15,11 +15,7 @@ $(document).ready(function() {
     {% include "sidebars.js" %}
     makeMarkdownEditor("description");
     makeMarkdownEditor("private_notes");
-
-    {% if current_user.has_admin_role() %}
-    makeMarkdownEditor("dm_notes");
-    {% endif %}
-})
+});
 </script>
 {% endblock %}
 

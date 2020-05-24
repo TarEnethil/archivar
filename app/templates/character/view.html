@@ -12,7 +12,7 @@
 {{ include_js(['moment', 'datatables']) }}
 
 <script type="text/javascript">
-    {% if char.player.id == current_user.id or current_user.has_admin_role() %}
+    {% if char.is_deletable_by_user() %}
     $(document).ready(function() {
         $("#delete-link").click(function(e) {
             var p = confirm("Are you sure you want to delete '{{ char.name }}'?");
@@ -101,7 +101,7 @@
                 <td>{{ party.members|length }}</td>
                 <td>
                     {{ party.view_button() }}
-                    {% if current_user.has_char_in_party(party) or current_user.has_admin_role() %}
+                    {% if party.is_editable_by_user() %}
                     {{ party.edit_button() }}
                     {% endif %}
                 </td>
@@ -134,7 +134,7 @@
                 <td>{{ session.campaign.view_link() }}</td>
                 <td>
                     {{ session.view_button() }}
-                    {% if current_user.has_char_in_session(session) or current_user.has_admin_role() %}
+                    {% if session.is_editable_by_user() %}
                     {{ session.edit_button() }}
                     {% endif %}
                 </td>

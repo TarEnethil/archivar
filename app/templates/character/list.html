@@ -33,7 +33,7 @@ makeDatatable("parties-table", 5);
 {% endif %}
 </h2>
 
-{% if current_user.has_admin_role() %}
+{% if current_user.is_admin() %}
 {{ navbar_start() }}
     {{ button_nav(url=url_for('party.create'), text="Add Party", icon="plus") }}
 {{ navbar_end() }}
@@ -106,7 +106,7 @@ makeDatatable("parties-table", 5);
             <td> {{ char.player.view_link() }}</td>
             <td>
                 {{ char.view_button() }}
-                {% if current_user.has_admin_role() or char.player.id == current_user.id %}
+                {% if char.is_editable_by_user() %}
                 {{ char.edit_button() }}
                 {% endif %}
             </td>

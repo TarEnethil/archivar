@@ -99,7 +99,7 @@ $(document).ready(function() {
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('character.list') }}">{{ icon("list") }} Parties & Chars</a></li>
                 {% endif %}
 
-                {% if current_user.is_authenticated and current_user.has_admin_role() %}
+                {% if current_user.is_authenticated and current_user.is_admin() %}
                 <li class="dropdown">
                     <a class="nav-link" href="{{ url_for('user.list') }}">
                     {{ icon("users") }} Users

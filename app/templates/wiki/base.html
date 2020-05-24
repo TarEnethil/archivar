@@ -49,7 +49,7 @@ $(document).ready(function() {
                     <li class="nav-item"><a class="nav-link p-0 pl-2" href="{{ url_for('wiki.create') }}">New Page</a></li>
                     <li class="nav-item"><a class="nav-link p-0 pl-2" href="{{ url_for('wiki.recent') }}">Recent Changes</a></li>
 
-                    {% if current_user.is_wiki_admin() %}
+                    {% if current_user.is_at_least_moderator() %}
                     <li class="nav-item"><a class="nav-link p-0 pl-2" href="{{ url_for('wiki.settings') }}">Settings</a></li>
                     {% endif %}
                 </ul>

@@ -158,7 +158,7 @@ class IsDMValidator(object):
         if campaign == None:
             raise ValidationError("Unknown campaign.")
 
-        if not current_user.is_dm_of(campaign) and not current_user.has_admin_role():
+        if not current_user.is_dm_of(campaign) and not current_user.is_admin():
             raise ValidationError("You are not the DM of the selected campaign.")
 
 def load_global_quicklinks():

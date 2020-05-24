@@ -36,7 +36,7 @@ def index():
 
     if cset.finalized == True:
         calendar = gen_calendar_stats()
-    elif current_user.has_admin_role():
+    elif current_user.is_admin():
         flash("The calendar has not been finalized, you have been redirected to the calendar setup.", "warning")
         return redirect(url_for('calendar.settings'))
 
