@@ -1,8 +1,8 @@
 from app import db
-from app.helpers import page_title, flash_no_permission, admin_required
+from app.helpers import page_title, admin_required, moderator_required, deny_access
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
-from app.map.helpers import map_admin_required, map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed, gen_submap_choices
+from app.map.helpers import map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed, gen_submap_choices
 from app.map.models import Map, MapNodeType, MapSetting, MapNode
 from app.wiki.helpers import gen_wiki_entry_choices
 from app.wiki.models import WikiEntry
@@ -12,7 +12,7 @@ from flask_login import current_user, login_required
 from os import path, remove
 from PIL import Image
 
-no_perm_url = "index"
+no_perm_url = "main.index"
 
 @bp.route("/")
 @login_required
@@ -21,21 +21,17 @@ def index():
     indexmap = Map.query.get(mapsettings.default_map)
 
     if not indexmap:
-        if current_user.has_admin_role():
-            maps = Map.query.all()
+        maps = Map.query.all()
 
-            if maps:
-                flash("You need to select a default map to make this link work.", "warning")
-                return redirect(url_for("map.settings"))
-            else:
-                flash("No map was created yet. You were redirected to the map creation.", "info")
-                return redirect(url_for("map.create"))
-        flash("The admin has not created a map yet.", "danger")
-        return redirect(url_for("index"))
-
-    if indexmap.is_visible == False and not current_user.has_admin_role():
-        flash("This map is not visible.", "danger")
-        return redirect(url_for("index"))
+        if maps and current_user.is_at_least_moderator():
+            flash("You need to select a default map to make this link work.", "warning")
+            return redirect(url_for("map.settings"))
+        elif current_user.is_admin():
+            flash("No map was created yet. You were redirected to the map creation.", "info")
+            return redirect(url_for("map.create"))
+        else:
+            flash("The admin has not created a map yet.", "danger")
+            return redirect(url_for(no_perm_url))
 
     return redirect(indexmap.view_url())
 
@@ -46,9 +42,8 @@ def view(id, name=None):
     map_ = Map.query.filter_by(id=id).first_or_404()
     settings = MapSetting.query.filter_by(id=1).first_or_404()
 
-    if map_.is_visible == False and not current_user.has_admin_role():
-        flash("This map is not visible.", "danger")
-        return redirect(url_for("index"))
+    if not map_.is_viewable_by_user():
+        return deny_access(no_perm_url)
 
     return render_template("map/index.html", settings=settings, map_=map_, title=page_title(map_.name))
 
@@ -60,13 +55,12 @@ def view_with_node(id, n_id, m_name=None, n_name=None):
     map_ = Map.query.filter_by(id=id).first_or_404()
     node = MapNode.query.filter_by(id=n_id).first_or_404()
 
-    if map_.is_visible == False and not current_user.has_admin_role():
-        flash("This map is not visible.", "danger")
-        return redirect(url_for("index"))
+    if not map_.is_viewable_by_user():
+        return deny_access(no_perm_url)
 
     if node.on_map != map_.id:
         flash("Map node {0} could not be found on this map".format(node.id), "danger")
-        return render_template("map/index.html", settings=mapsettings, map_=map_, title=page_title(map_.name))
+        return redirect(map_.view_url())
 
     return render_template("map/index.html", settings=mapsettings, map_=map_, jump_to_node=node.id, title=page_title(map_.name))
 
@@ -99,9 +93,12 @@ def create():
 # map specific settings
 @bp.route("/<int:id>/<string:name>/settings", methods=["GET", "POST"])
 @login_required
-@admin_required(no_perm_url)
 def map_settings(id, name=None):
     map_ = Map.query.filter_by(id=id).first_or_404()
+
+    if not map_.is_editable_by_user():
+        return deny_access(no_perm_url)
+
     form = MapForm()
     form.submit.label.text = "Save Map"
 
@@ -133,24 +130,19 @@ def map_settings(id, name=None):
 # global map settings
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
-@map_admin_required
+@moderator_required(no_perm_url)
 def settings():
     form = MapSettingsForm()
 
     settings = MapSetting.query.get(1)
 
-    if not current_user.has_admin_role():
-        del form.default_map
-    else:
-        form.default_map.choices = gen_submap_choices("disabled")
+    form.default_map.choices = gen_submap_choices("disabled", ensure=settings.default_map)
 
     if form.validate_on_submit():
         settings.icon_anchor = form.icon_anchor.data
         settings.default_visible = form.default_visible.data
         settings.check_interval = form.check_interval.data
-
-        if current_user.has_admin_role():
-            settings.default_map = form.default_map.data
+        settings.default_map = form.default_map.data
 
         db.session.commit()
 
@@ -159,9 +151,7 @@ def settings():
         form.icon_anchor.data = settings.icon_anchor
         form.default_visible.data = settings.default_visible
         form.check_interval.data = settings.check_interval
-
-        if current_user.has_admin_role():
-            form.default_map.data = settings.default_map
+        form.default_map.data = settings.default_map
 
     node_types = MapNodeType.query.all()
 
@@ -169,27 +159,24 @@ def settings():
 
 @bp.route("/list")
 @login_required
-@admin_required(no_perm_url)
 def list():
-    maps = Map.query.all()
+    maps = Map.get_visible_items(include_hidden_for_user=True)
 
     return render_template("map/list.html", maps=maps, title=page_title("List of Maps"))
 
 @bp.route("/node/create/<int:map_id>/<x>/<y>", methods=["GET", "POST"])
 @login_required
 def node_create(map_id, x, y):
-    Map.query.filter_by(id=map_id).first_or_404()
+    map_ = Map.query.filter_by(id=map_id).first_or_404()
+
+    if not map_.is_viewable_by_user():
+        flash("No permission to create Location on this map.", "danger")
+        return render_template("map/ajax_error.html")
 
     form = MapNodeForm()
     form.submit.label.text = "Create Location"
 
-    if not current_user.is_map_admin():
-        del form.is_visible
-
-    if not current_user.has_admin_role():
-        del form.submap
-    else:
-        form.submap.choices = gen_submap_choices()
+    form.submap.choices = gen_submap_choices(ensure=map_.sub_map)
 
     form.coord_x.data = x
     form.coord_y.data = y
@@ -198,89 +185,51 @@ def node_create(map_id, x, y):
     form.wiki_entry.choices = gen_wiki_entry_choices()
 
     if form.validate_on_submit():
-        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, wiki_entry_id=form.wiki_entry.data, on_map=map_id)
+        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, on_map=map_id)
 
-        if current_user.is_map_admin():
-            new_node.is_visible = form.is_visible.data
+        new_node.is_visible = form.is_visible.data
+        new_node.submap = form.submap.data
 
-            if new_node.is_visible:
-                message = "Location was created."
-            else:
-                message = "Location was created, it is only visible to map admins."
-        else:
-            msetting = MapSetting.query.get(1)
-            new_node.is_visible = msetting.default_visible
-
-            if new_node.is_visible:
-                message = "Location was created."
-            else:
-                message = "Location was created. Until approved, it is only visible to map admins and you."
-
-        if current_user.has_admin_role():
-            new_node.submap = form.submap.data
+        if form.wiki_entry.data != 0:
+            new_node.wiki_entry_id = form.wiki_entry.data
 
         db.session.add(new_node)
         db.session.commit()
 
         map_changed(new_node.on_map)
 
+        message = "The Location was added."
+
         return jsonify(data={'success' : True, 'message': message})
     elif request.method == "POST":
         return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors})
     else:
-        if current_user.is_map_admin():
-            msetting = MapSetting.query.get(1)
-            form.is_visible.data = msetting.default_visible
+        form.is_visible.data = True
 
     return render_template("map/node_create.html", form=form, x=x, y=y)
 
 @bp.route("/node/edit/<id>", methods=["GET", "POST"])
 @login_required
 def node_edit(id):
+    node = MapNode.query.get(id)
+
+    if not node:
+        flash("Location could not be found..", "danger")
+        return render_template("map/ajax_error.html")
+
+    if not node.is_editable_by_user():
+        flash("No permission to edit this Location.", "danger")
+        return render_template("map/ajax_error.html")
+
     form = MapNodeForm()
     form.submit.label.text = "Save Location"
 
-    if not current_user.is_map_admin():
+    if not node.is_hideable_by_user():
         del form.is_visible
 
-    if not current_user.has_admin_role():
-        del form.submap
-    else:
-        form.submap.choices = gen_submap_choices()
-
+    form.submap.choices = gen_submap_choices(ensure=node.sub_map)
     form.node_type.choices = gen_node_type_choices()
-
-    node = MapNode.query.filter_by(id=id).first_or_404()
-
-    # TODO: make custom decorators for this?
-    if not current_user.has_admin_role() and current_user.has_map_role() and node.is_visible == False and node.created_by.has_admin_role():
-        flash_no_permission()
-        return redirect(url_for(no_perm_url))
-
-    if not current_user.is_map_admin() and node.is_visible == False and not node.created_by == current_user:
-        flash_no_permission()
-        redirect(url_for(no_perm_url))
-
-    wiki_entry_ok = True
-
-    if node.wiki_entry_id != 0 and node.wiki_entry_id != None:
-        wentry = WikiEntry.query.filter_by(id=node.wiki_entry_id).first()
-
-        if not wentry:
-            wiki_entry_ok = False
-        else:
-            if not current_user.has_admin_role() and current_user.is_wiki_admin() and wentry.is_visible == False and wentry.created_by.has_admin_role():
-                wiki_entry_ok = False
-
-            if not current_user.is_wiki_admin() and wentry.is_visible == False and not wentry.created_by == current_user:
-                wiki_entry_ok = False
-
-    if wiki_entry_ok == True:
-        form.wiki_entry.choices = gen_wiki_entry_choices()
-    else:
-        form.wiki_entry.label.text = "(wiki entry is invisible to you and can not be changed.)"
-        form.wiki_entry.render_kw = {"disabled": "disabled"};
-        form.wiki_entry.choices = [(0, "disabled")]
+    form.wiki_entry.choices = gen_wiki_entry_choices(ensure=node.wiki_entry)
 
     if form.validate_on_submit():
         node.name = form.name.data
@@ -290,14 +239,15 @@ def node_edit(id):
         node.coord_x = form.coord_x.data
         node.coord_y = form.coord_y.data
 
-        if wiki_entry_ok == True:
+        if form.wiki_entry.data == 0:
+            node.wiki_entry = None
+        else:
             node.wiki_entry_id = form.wiki_entry.data
 
-        if current_user.is_map_admin():
+        if node.is_hideable_by_user():
             node.is_visible = form.is_visible.data
 
-        if current_user.has_admin_role():
-            node.submap = form.submap.data
+        node.submap = form.submap.data
 
         db.session.commit()
         map_changed(node.on_map)
@@ -313,27 +263,25 @@ def node_edit(id):
     form.coord_x.data = node.coord_x
     form.coord_y.data = node.coord_y
 
-    if wiki_entry_ok == True:
-        form.wiki_entry.data = node.wiki_entry_id
+    form.wiki_entry.data = node.wiki_entry_id
 
-    if current_user.is_map_admin():
+    if node.is_hideable_by_user():
         form.is_visible.data = node.is_visible
 
-    if current_user.has_admin_role():
-        form.submap.data = node.submap
+    form.submap.data = node.submap
 
     return render_template("map/node_edit.html", form=form, node=node)
 
 @bp.route("/node/delete/<id>", methods=["POST"])
 @login_required
 def node_delete(id):
-    if not current_user.is_map_admin():
-        return jsonify(data={'success': False, 'message': "You dont have the necessary role to do that."})
-
     node = MapNode.query.get(id)
 
     if not node:
-        return jsonify(data={'success': False, 'message': "No such id to delete."})
+        return jsonify(data={'success': False, 'message': "Location could not be found."})
+
+    if not node.is_deletable_by_user():
+        return jsonify(data={'success': False, 'message': "You dont have the necessary role to do that."})
 
     map_id = node.on_map
 
@@ -346,7 +294,7 @@ def node_delete(id):
 
 @bp.route("/node_type/create", methods=["GET", "POST"])
 @login_required
-@admin_required(no_perm_url)
+@moderator_required(no_perm_url)
 def node_type_create():
     form = MapNodeTypeCreateForm()
 
@@ -370,7 +318,7 @@ def node_type_create():
 
 @bp.route("/node_type/edit/<id>", methods=["GET", "POST"])
 @login_required
-@map_admin_required
+@moderator_required(no_perm_url)
 def node_type_edit(id):
     form = MapNodeTypeEditForm()
     node = MapNodeType.query.filter_by(id=id).first_or_404()
@@ -455,7 +403,7 @@ def sidebar(m_id):
 @bp.route("/sidebar/maps", methods=["GET"])
 @login_required
 def sidebar_maps():
-    cats = Map.query.order_by(Map.id.asc()).all()
+    cats = Map.get_query_for_visible_items(include_hidden_for_user=True).order_by(Map.id.asc()).all()
 
     d = {}
 

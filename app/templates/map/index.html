@@ -45,10 +45,13 @@
     {{ button(url="#", text="Add Location", icon="plus", classes="btn-primary", ids="btn-add-node") }}
     {{ button(url="#", text="Cancel", icon="plus", classes="btn-warning", ids="btn-cancel-add-node") }}
 
-  {% if current_user.has_admin_role() %}
-    {{ button(url=url_for('map.create'), text="Add Map", icon="plus", classes="btn-primary") }}
-
     {{ button(url=url_for('map.list'), text="List of Maps", icon="list", classes="btn-primary") }}
+
+  {% if current_user.is_admin() %}
+    {{ button(url=url_for('map.create'), text="Add Map", icon="plus", classes="btn-primary") }}
+  {% endif %}
+
+  {% if map_.is_editable_by_user() %}
     {{ map_.settings_button(ids="btn-settings", classes="btn-primary") }}
   {% endif %}
   </div>
@@ -296,9 +299,7 @@
       // filterable dropdown of wiki articles
       $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
 
-      {% if current_user.has_admin_role() %}
       $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
-      {% endif %}
 
       $('.modal-footer #fake-submit').click(function() {
         $(".create_node_form #submit").click();
@@ -350,9 +351,7 @@
         $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
       }
 
-      {% if current_user.has_admin_role() %}
       $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
-      {% endif %}
 
       $('.modal-footer #fake-submit').click(function() {
         $(".edit_node_form #submit").click();
@@ -506,35 +505,37 @@
     }
 
     // generate the popup for a node
-    function gen_popup(id, name, description, created, created_by, wiki_id, submap_id, edited=undefined, edited_by=undefined) {
+    function gen_popup(id, name, description, created, created_by, wiki_id, submap_id, is_editable, is_deletable, edited=undefined, edited_by=undefined) {
       var pop = $("<div />").attr("id", "popup-" + id);
       pop.append("<h2>" + name + "</h2>");
 
       if (wiki_id != 0 && wiki_id != null) {
         var fake_url = "{{ url_for('wiki.view', id=-1) }}"
-        pop.append('<a href="' + fake_url.replace("-1", wiki_id) + '" class="btn btn-default">{{ icon("education") }} Wiki article</a> ');
+        pop.append('<a href="' + fake_url.replace("-1", wiki_id) + '" class="btn btn-outline-primary">{{ icon("graduation-cap") }} Wiki article</a> ');
       }
 
       if (submap_id != 0 && submap_id != null) {
         var fake_url = "{{ url_for('map.view', id=-1) }}"
-        pop.append('<a href="' + fake_url.replace("-1", submap_id) + '" class="btn btn-default">{{ icon("map-marker-alt") }} View map</a>');
+        pop.append('<a href="' + fake_url.replace("-1", submap_id) + '" class="btn btn-outline-primary">{{ icon("map-marker-alt") }} View map</a>');
       }
 
       pop.append($('<div />').addClass("popup-markdown").append(description));
 
-      var edit_btn = $("<a />").addClass("btn btn-primary node-edit-btn text-light").attr("data", id);
-      edit_btn.append('{{ icon("edit") }}');
-      edit_btn.append(' edit');
+      var btns = $("<nav />")
 
-      var delete_btn = $("<a />").addClass("btn btn-danger node-delete-btn text-light").attr("data", id).css("float", "right");
-      delete_btn.append('{{ icon("trash") }}');
-      delete_btn.append(' delete');
+      if (is_editable) {
+        var edit_btn = $("<a />").addClass("btn btn-primary node-edit-btn text-light").attr("data", id);
+        edit_btn.append('{{ icon("edit") }}');
+        edit_btn.append(' edit');
+        btns.append(edit_btn);
+      }
 
-      var btns = $("<nav />").append(edit_btn);
-
-      {% if current_user.is_map_admin() %}
-      btns.append(delete_btn);
-      {% endif %}
+      if (is_deletable) {
+        var delete_btn = $("<a />").addClass("btn btn-danger node-delete-btn text-light").attr("data", id).css("float", "right");
+        delete_btn.append('{{ icon("trash") }}');
+        delete_btn.append(' delete');
+        btns.append(delete_btn);
+      }
 
       var info = $("<div />").addClass("popup_info")
 
@@ -563,7 +564,7 @@
 
         for (var nid in _nodes) {
           _nodes[nid].marker = gen_marker(_nodes[nid].x, _nodes[nid].y, _nodes[nid].node_type, _nodes[nid].visible);
-          _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, _nodes[nid].wiki_id, _nodes[nid].submap, _nodes[nid].edited, _nodes[nid].edited_by), { minWidth: 200 });
+          _nodes[nid].marker.bindPopup(gen_popup(_nodes[nid].id, _nodes[nid].name, _nodes[nid].desc, _nodes[nid].created, _nodes[nid].created_by, _nodes[nid].wiki_id, _nodes[nid].submap, _nodes[nid].is_editable, _nodes[nid].is_deletable, _nodes[nid].edited, _nodes[nid].edited_by), { minWidth: 200 });
           _marker_layer.addLayer(_nodes[nid].marker);
           _filterbase[_nodes[nid].node_type].push({ name: _nodes[nid].name, id: _nodes[nid].id, visible: _nodes[nid].visible });
         }

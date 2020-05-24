@@ -7,19 +7,20 @@ from functools import wraps
 from sqlalchemy import and_, or_, not_
 
 # generate choices for the wiki link SelectField for map nodes
-def gen_wiki_entry_choices():
+def gen_wiki_entry_choices(ensure=None):
     # get visible wiki entries for current user
-    entries = WikiEntry.get_query_for_visible_items()
-    entries = entries.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title).order_by(WikiEntry.title.asc()).all()
+    entries = WikiEntry.query.order_by(WikiEntry.title.asc()).all()
 
     cat_dict = {}
 
     # make dict by wiki category
     for entry in entries:
-        if entry[0] not in cat_dict:
-            cat_dict[entry[0]] = []
+        if entry.is_viewable_by_user() or (ensure != None and ensure == entry):
+            cat = entry.category
+            if cat not in cat_dict:
+                cat_dict[cat] = []
 
-        cat_dict[entry[0]].append(entry[1:3])
+            cat_dict[cat].append([entry.id, entry.title])
 
     ordered = OrderedDict(sorted(cat_dict.items(), key=lambda t: t[0]))
 

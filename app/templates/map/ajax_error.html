@@ -1,0 +1,15 @@
+{% import 'bootstrap/utils.html' as utils %}
+
+<div class="modal-header">
+    <h5 class="modal-title">New Location</h5>
+    <button type="button" class="close" data-dismiss="modal">
+        <span>&times</span>
+    </button>
+</div>
+
+<div class="modal-body create_node_form edit_node_form p-4">
+    {{ utils.flashed_messages(dismissible=True) }}
+</div>
+
+<div class="modal-footer">
+</div>
