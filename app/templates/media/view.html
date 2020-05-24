@@ -6,6 +6,7 @@
 
 {{ include_js(['moment']) }}
 
+{% if item.is_deletable_by_user() %}
 <script>
 $(document).ready(function() {
     $("#delete-link").click(function(e) {
@@ -17,6 +18,7 @@ $(document).ready(function() {
     });
 });
 </script>
+{% endif %}
 {% endblock %}
 
 {% block app_content %}

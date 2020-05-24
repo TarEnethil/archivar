@@ -46,24 +46,6 @@ class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
     def role_name(self):
         return Role(self.role).name
 
-    def has_admin_role(self):
-        return self.is_admin()
-
-    def has_map_role(self):
-        return self.is_at_least_moderator()
-
-    def has_wiki_role(self):
-        return self.is_at_least_moderator()
-
-    def has_special_role(self):
-        return self.is_at_least_moderator()
-
-    def is_map_admin(self):
-        return self.has_admin_role() or self.has_map_role()
-
-    def is_wiki_admin(self):
-        return self.has_admin_role() or self.has_wiki_role()
-
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

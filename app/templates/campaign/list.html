@@ -23,7 +23,7 @@ makeDatatable("campaigns-table");
     {% endif %}
     </h1>
 
-    {% if current_user.has_admin_role() %}
+    {% if current_user.is_admin() %}
     {{ navbar_start() }}
          {{ button_nav(url=url_for('campaign.create'), text="Add Campaign", icon="plus") }}
     {{ navbar_end() }}

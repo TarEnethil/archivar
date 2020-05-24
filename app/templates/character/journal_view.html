@@ -5,6 +5,8 @@
 {{ super() }}
 
 {{ include_js(['moment']) }}
+
+{% if journal.is_deletable_by_user() %}
 <script>
 $(document).ready(function() {
     $("#delete-link").click(function(e) {
@@ -16,6 +18,7 @@ $(document).ready(function() {
     });
 });
 </script>
+{% endif %}
 {% endblock %}
 
 {% block app_content %}
@@ -27,7 +30,7 @@ $(document).ready(function() {
     {{ journal.edit_button_nav() }}
 {% endif %}
 
-{% journal.is_deletable_by_user() %}
+{% if journal.is_deletable_by_user() %}
     {{ journal.delete_button_nav() }}
 {% endif %}
 {{ navbar_end() }}

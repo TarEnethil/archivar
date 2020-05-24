@@ -6,7 +6,7 @@
 {{ include_js(['moment']) }}
 
 <script type="text/javascript">
-{% if current_user.has_admin_role() %}
+{% if party.is_deletable_by_user() %}
     $(document).ready(function() {
         $("#delete-link").click(function(e) {
             var p = confirm("Are you sure you want to delete '{{ party.name }}'?");
@@ -58,17 +58,6 @@
 </ul>
 {% else %}
 <p>No members.</p>
-{% endif %}
-
-{% if current_user.has_admin_role() and party.dm_notes %}
-<h2>DM Notes</h2>
-{% if current_user.markdown_phb_style %}
-    <div class="custom-markdown phb-style">
-{% else %}
-    <div class="custom-markdown">
-{% endif %}
-{{ party.dm_notes|markdown }}
-</div>
 {% endif %}
 
 {{ party.print_info() }}

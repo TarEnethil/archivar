@@ -8,7 +8,7 @@
 
 {% block app_content %}
     <h1>Map Settings</h1>
-    {% if current_user.has_admin_role() %}
+    {% if current_user.is_admin() %}
     {{ navbar_start() }}
         {{ button_nav(url=url_for('map.create'), text="Add Map", icon="plus") }}
         {{ button_nav(url=url_for('map.list'), text="Map List", icon="plus") }}

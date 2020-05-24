@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block app_content %}
-{% if current_user.has_admin_role() %}
+{% if current_user.is_at_least_moderator() %}
     {{ navbar_start(no_margin=True) }}
         {{ button_nav(url=url_for('main.settings'), text="Edit Text", icon="edit") }}
     {{ navbar_end() }}

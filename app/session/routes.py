@@ -30,13 +30,13 @@ def index():
     url = None
     form = None
 
-    if current_user.has_admin_role() and num_campaigns > 1:
+    if current_user.is_admin() and num_campaigns > 1:
         form = CampaignSelectForm()
         form.campaigns.choices = gen_campaign_choices_admin()
     elif current_user.is_dm_of_anything() and len(current_user.campaigns) > 1:
         form = CampaignSelectForm()
         form.campaigns.choices = gen_campaign_choices_dm()
-    elif current_user.has_admin_role() and num_campaigns == 1:
+    elif current_user.is_admin() and num_campaigns == 1:
         campaign = Campaign.query.first()
         url = url_for('session.create_with_campaign', id=campaign.id)
     elif current_user.is_dm_of_anything() and len(current_user.campaigns) == 1:
@@ -48,20 +48,20 @@ def index():
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
-    if not current_user.has_admin_role() and not current_user.is_dm_of_anything():
+    if not current_user.is_admin() and not current_user.is_dm_of_anything():
         flash("You are now allowed to perform this action.", "danger")
         return redirect(request.referrer)
 
-    if not current_user.has_admin_role() and len(current_user.campaigns) == 1:
+    if not current_user.is_admin() and len(current_user.campaigns) == 1:
         return redirect(url_for("session.create_with_campaign", id=current_user.campaigns[0].id))
 
-    if current_user.has_admin_role() and count_rows(Campaign) == 1:
+    if current_user.is_admin() and count_rows(Campaign) == 1:
         campaign = Campaign.query.first()
         return redirect(url_for("session.create_with_campaign", id=campaign.id))
 
     form = CampaignSelectForm()
 
-    if current_user.has_admin_role():
+    if current_user.is_admin():
         form.campaigns.choices = gen_campaign_choices_admin()
     else:
         form.campaigns.choices = gen_campaign_choices_dm()
