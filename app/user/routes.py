@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, admin_required, Role
+from app.helpers import page_title, admin_required, Role, deny_access
 from app.user import bp
 from app.user.forms import CreateUserForm, EditProfileForm, SettingsForm, PasswordOnlyForm
 from app.user.helpers import gen_role_choices
@@ -9,7 +9,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
 from werkzeug import check_password_hash
 
-no_perm_url = "index"
+no_perm_url = "main.index"
 
 @bp.route("/<username>")
 @login_required
@@ -21,61 +21,59 @@ def profile(username):
 @bp.route("/<username>/edit", methods=["GET", "POST"])
 @login_required
 def edit(username):
-    # TODO: make a custom decorator for this?
-    if current_user.has_admin_role() or current_user.username == username:
-        form = EditProfileForm()
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if not user.is_editable_by_user():
+        return deny_access(no_perm_url)
+
+    form = EditProfileForm()
+
+    if current_user.has_admin_role():
+        form.role.choices = gen_role_choices()
+    else:
+        del form.role
+
+    if form.validate_on_submit():
+        user.about = form.about.data
+
+        if(form.password.data):
+            user.set_password(form.password.data)
+
+            if current_user.username == user.username:
+                user.must_change_password = False
+            elif current_user.has_admin_role():
+                # user must reset password after it has been changed by an admin
+                user.must_change_password = True
+
+        role_okay = True
 
         if current_user.has_admin_role():
-            form.role.choices = gen_role_choices()
-        else:
-            del form.role
+            old_role = user.role
+            new_role = form.role.data
 
-        user = User.query.filter_by(username=username).first_or_404()
-
-        if form.validate_on_submit():
-            user.about = form.about.data
-
-            if(form.password.data):
-                user.set_password(form.password.data)
-
-                if current_user.username == user.username:
-                    user.must_change_password = False
-                elif current_user.has_admin_role():
-                    # user must reset password after it has been changed by an admin
-                    user.must_change_password = True
-
-            role_okay = True
-
-            if current_user.has_admin_role():
-                old_role = user.role
-                new_role = form.role.data
-
-                if username == current_user.username and current_user.has_admin_role() and new_role != Role.Admin.value:
-                    flash("You can't revoke your own admin role.", "danger")
-                    role_okay = False
-                elif user.id == 1 and new_role != Role.Admin.value:
-                    flash("The original admin can't be removed.", "danger")
-                    role_okay = False
-                else:
-                    user.role = new_role
-
-            if role_okay:
-                db.session.commit()
-                flash("Your changes have been saved.", "success")
-
-                return redirect(user.view_url())
+            if username == current_user.username and current_user.has_admin_role() and new_role != Role.Admin.value:
+                flash("You can't revoke your own admin role.", "danger")
+                role_okay = False
+            elif user.id == 1 and new_role != Role.Admin.value:
+                flash("The original admin can't be removed.", "danger")
+                role_okay = False
             else:
-                form.role.data = old_role
-        elif request.method == "GET":
-            form.about.data = user.about
+                user.role = new_role
 
-            if current_user.has_admin_role():
-                form.role.data = user.role
+        if role_okay:
+            db.session.commit()
+            flash("Your changes have been saved.", "success")
 
-        return render_template("user/edit.html", form=form, user=user, title=page_title("Edit User '%s'" % user.username))
-    else:
-        flash("You dont have the neccessary role to perform this action.", "danger")
-        return redirect(url_for(no_perm_url))
+            return redirect(user.view_url())
+        else:
+            form.role.data = old_role
+    elif request.method == "GET":
+        form.about.data = user.about
+
+        if current_user.has_admin_role():
+            form.role.data = user.role
+
+    return render_template("user/edit.html", form=form, user=user, title=page_title("Edit User '%s'" % user.username))
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
