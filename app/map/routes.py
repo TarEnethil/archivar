@@ -176,7 +176,7 @@ def node_create(map_id, x, y):
     form = MapNodeForm()
     form.submit.label.text = "Create Location"
 
-    form.submap.choices = gen_submap_choices(ensure=map_.sub_map)
+    form.submap.choices = gen_submap_choices()
 
     form.coord_x.data = x
     form.coord_y.data = y

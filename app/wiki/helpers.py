@@ -20,7 +20,11 @@ def gen_wiki_entry_choices(ensure=None):
             if cat not in cat_dict:
                 cat_dict[cat] = []
 
-            cat_dict[cat].append([entry.id, entry.title])
+            name = entry.title
+
+            if entry.is_visible == False:
+                name = "{} (invisible)".format(name)
+            cat_dict[cat].append([entry.id, name])
 
     ordered = OrderedDict(sorted(cat_dict.items(), key=lambda t: t[0]))
 

@@ -28,7 +28,7 @@ def edit(username):
 
     form = EditProfileForm()
 
-    if current_user.has_admin_role():
+    if current_user.is_admin():
         form.role.choices = gen_role_choices()
     else:
         del form.role
@@ -41,17 +41,17 @@ def edit(username):
 
             if current_user.username == user.username:
                 user.must_change_password = False
-            elif current_user.has_admin_role():
+            elif current_user.is_admin():
                 # user must reset password after it has been changed by an admin
                 user.must_change_password = True
 
         role_okay = True
 
-        if current_user.has_admin_role():
+        if current_user.is_admin():
             old_role = user.role
             new_role = form.role.data
 
-            if username == current_user.username and current_user.has_admin_role() and new_role != Role.Admin.value:
+            if username == current_user.username and current_user.is_admin() and new_role != Role.Admin.value:
                 flash("You can't revoke your own admin role.", "danger")
                 role_okay = False
             elif user.id == 1 and new_role != Role.Admin.value:
@@ -70,7 +70,7 @@ def edit(username):
     elif request.method == "GET":
         form.about.data = user.about
 
-        if current_user.has_admin_role():
+        if current_user.is_admin():
             form.role.data = user.role
 
     return render_template("user/edit.html", form=form, user=user, title=page_title("Edit User '%s'" % user.username))
