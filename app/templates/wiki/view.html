@@ -5,7 +5,7 @@
 {{ include_js(['moment']) }}
 
 <script type="text/javascript">
-{% if current_user.is_wiki_admin() and entry.id != 1 %}
+{% if entry.is_deletable_by_user() and entry.id != 1 %}
     $(document).ready(function() {
         $("#delete-link").click(function(e) {
             var p = confirm("Are you sure you want to delete '{{ entry.title }}'?");
@@ -24,30 +24,23 @@
 
 {{ navbar_start(no_margin=True) }}
     {{ button_nav(url=url_for('wiki.create'), text="Add Article", icon="plus") }}
-    {{ entry.edit_button_nav() }}
 
-    {% if current_user.is_wiki_admin() %}
+    {% if entry.is_editable_by_user() %}
+    {{ entry.edit_button_nav() }}
+    {% endif %}
+
+    {% if entry.is_hideable_by_user() %}
         {% if entry.is_visible %}
             {{ button_nav(url=url_for('wiki.toggle_vis', id=entry.id, name=entry.title|urlfriendly), text="Hide Article", icon="eye-slash") }}
         {% else %}
             {{ button_nav(url=url_for('wiki.toggle_vis', id=entry.id, name=entry.title|urlfriendly), text="Make Public", icon="eye") }}
         {% endif %}
+    {% endif %}
 
-        {% if entry.id != 1 %}
-            {{ entry.delete_button_nav() }}
-        {% endif %}
+    {% if entry.id != 1 and entry.is_deletable_by_user() %}
+        {{ entry.delete_button_nav() }}
     {% endif %}
 {{ navbar_end() }}
-
-{% if not entry.is_visible %}
-<p class="alert alert-warning invis-warn">
-    {% if not current_user.is_wiki_admin() %}
-    This page is currently only visible to (wiki) admins and you.
-    {% else %}
-    This page is currently only visible to (wiki) admins.
-    {% endif %}
-</p>
-{% endif %}
 
 {% if current_user.markdown_phb_style %}
     <div class="custom-markdown phb-style">
@@ -71,20 +64,6 @@ No content.
 <li><a href="{{ url_for('map.view_with_node', id=node.on_map, n_id=node.id, m_name=node.parent_map.name|urlfriendly, n_name=node.name|urlfriendly) }}">{{ node.name }}</a></li>
 {% endfor %}
 </ul>
-{% endif %}
-
-{% if current_user.has_admin_role() %}
-    {% if entry.dm_content %}
-    <hr>
-    <h2>DM Notes</h2>
-{% if current_user.markdown_phb_style %}
-    <div class="custom-markdown phb-style">
-{% else %}
-    <div class="custom-markdown">
-{% endif %}
-{{ entry.dm_content|markdown }}
-    </div>
-    {% endif %}
 {% endif %}
 
 {% if entry.tags %}

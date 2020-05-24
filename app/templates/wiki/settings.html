@@ -11,9 +11,12 @@
 
     <p>
         Set some default values for new articles.
+        Currently unused.
     </p>
 
+    {% if form %}
     {{ wtf.quick_form(form) }}
+    {% endif %}
 
     <h2>Rename wiki category</h2>
     <p>
