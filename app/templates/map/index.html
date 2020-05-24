@@ -76,6 +76,12 @@
 
     $.fn.selectpicker.Constructor.BootstrapVersion = '4';
 
+    function do_log(what) {
+      {% if debug_mode() %}
+      console.log(what);
+      {% endif %}
+    }
+
     function check_map_change() {
       if(map_changed)
         return;
@@ -260,7 +266,7 @@
 
     // attach listeners for the new-node form
     function attach_new_form_listener(event) {
-      console.log("loaded new form functions");
+      do_log("loaded new form functions");
 
       // needs to be bound before submit trigger, otherwise value doesnt get copied to original textarea
       makeMarkdownEditor("description", false);
@@ -308,7 +314,7 @@
 
     // attach listeners for a edit-node form
     function attach_edit_form_listener(id) {
-      console.log("loaded edit form functions");
+      do_log("loaded edit form functions");
 
       // move button
       $("#btn-move-node").click(function() {
@@ -415,7 +421,7 @@
     // load the map node types via ajax and add them to the global variable
     // generate icon styles for each and store them as well
     function load_map_node_types(cb) {
-      console.log("start loading node types");
+      do_log("start loading node types");
       $.getJSON("{{ url_for('map.node_type_json') }}", function(data) {
         _map_node_types = data;
 
@@ -425,7 +431,7 @@
           _filterbase[nt] = []
         }
 
-        console.log("finished loading node types");
+        do_log("finished loading node types");
         cb();
       });
     }
@@ -558,7 +564,7 @@
     // generate the marker for the node
     // add marker to layer
     function load_map_nodes(cb) {
-      console.log("start loading nodes");
+      do_log("start loading nodes");
       $.getJSON("{{ url_for('map.node_json', id=map_.id) }}", function(data) {
         _nodes = data;
 
@@ -569,7 +575,7 @@
           _filterbase[_nodes[nid].node_type].push({ name: _nodes[nid].name, id: _nodes[nid].id, visible: _nodes[nid].visible });
         }
 
-        console.log("finished loading nodes");
+        do_log("finished loading nodes");
         cb();
       });
     }
@@ -606,7 +612,7 @@
         marker.openPopup();
       });
 
-      console.log("finished populating location list");
+      do_log("finished populating location list");
       cb();
     }
 
@@ -752,7 +758,7 @@
             }
             {% endif %}
 
-            console.log("init done.");
+            do_log("init done.");
           });
         });
       });
