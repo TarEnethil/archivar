@@ -6,7 +6,6 @@ class WikiEntryForm(FlaskForm):
     title = StringField("Title", validators=[InputRequired(),Length(min=0, max=255)])
     category = StringField("Category", validators=[Length(min=0, max=100)], render_kw={"list": "category-list"})
     content = TextAreaField("Content", render_kw={"rows": 15})
-    dm_content = TextAreaField("DM Notes (hidden)", render_kw={"rows": 15})
     tags = StringField("Tags", validators=[Length(min=0, max=255)])
     is_visible = BooleanField("Visible to others")
 

@@ -13,10 +13,6 @@
 <script>
 {% include "sidebars.js" %}
 makeMarkdownEditor("content");
-
-{% if current_user.has_admin_role() %}
-makeMarkdownEditor("dm_content");
-{% endif %}
 </script>
 {% endblock %}
 

@@ -13,7 +13,7 @@
 $(document).ready(function() {
     $("#searchterm").attr("placeholder", "search for ...");
 
-    $("#sidebar-wrapper form").submit(function(e) {
+    $(".wiki-search form").submit(function(e) {
         text_url = "{{ url_for('wiki.search_text', text='textxyz') }}";
         tag_url = "{{ url_for('wiki.search_tag', tag='tagxyz') }}";
 
@@ -38,7 +38,7 @@ $(document).ready(function() {
        {% include "markdown_editor_sidebar.html" %}
         <div class="row">
             <div class="col-sm-2 pl-2">
-                <div class="p-2 mb-2">
+                <div class="p-2 mb-2 wiki-search">
                 {% if nav[1] %}
                     {{ wtf.quick_form(nav[1]) }}
                 {% endif %}
