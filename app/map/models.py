@@ -1,8 +1,9 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleChangeTracker
+from app.mixins import LinkGenerator, SimpleChangeTracker, SimplePermissionChecker
 from datetime import datetime
 from flask import url_for
+from flask_login import current_user
 from flask_misaka import markdown
 
 class MapSetting(db.Model, SimpleChangeTracker):
@@ -13,7 +14,7 @@ class MapSetting(db.Model, SimpleChangeTracker):
     check_interval = db.Column(db.Integer, default=30)
     default_map = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
 
-class Map(db.Model, SimpleChangeTracker, LinkGenerator):
+class Map(db.Model, SimplePermissionChecker, LinkGenerator):
     __tablename__ = "maps"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -24,7 +25,6 @@ class Map(db.Model, SimpleChangeTracker, LinkGenerator):
     external_provider = db.Column(db.Boolean, default=False)
     no_wrap = db.Column(db.Boolean, default=True)
     last_change = db.Column(db.DateTime, default=datetime.utcnow)
-    is_visible = db.Column(db.Boolean, default=True)
 
     def to_dict(self):
         dic = {
@@ -33,6 +33,18 @@ class Map(db.Model, SimpleChangeTracker, LinkGenerator):
         }
 
         return dic
+
+    #####
+    # Permissions
+    #####
+    def is_viewable_by_user(self):
+        return self.is_visible or current_user.is_admin()
+
+    def is_editable_by_user(self):
+        return current_user.is_admin()
+
+    def is_hideable_by_user(self):
+        return current_user.is_admin()
 
     #####
     # LinkGenerator functions
@@ -74,7 +86,7 @@ class MapNodeType(db.Model, SimpleChangeTracker):
 
         return dic
 
-class MapNode(db.Model, SimpleChangeTracker):
+class MapNode(db.Model, SimplePermissionChecker):
     __tablename__ = "map_nodes"
     id = db.Column(db.Integer, primary_key=True)
     coord_x = db.Column(db.Float)
@@ -82,11 +94,12 @@ class MapNode(db.Model, SimpleChangeTracker):
     name = db.Column(db.String(64))
     description = db.Column(db.String(10000))
     node_type = db.Column(db.Integer, db.ForeignKey("map_node_types.id"))
-    is_visible = db.Column(db.Boolean, default=False)
     wiki_entry_id = db.Column(db.Integer, db.ForeignKey("wiki_entries.id"), default=0)
+    wiki_entry = db.relationship("WikiEntry", foreign_keys=[wiki_entry_id])
     on_map = db.Column(db.Integer, db.ForeignKey("maps.id"))
     parent_map = db.relationship("Map", foreign_keys=[on_map])
     submap = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
+    sub_map = db.relationship("Map", foreign_keys=[submap])
 
     def to_dict(self):
         dic = {
@@ -100,7 +113,9 @@ class MapNode(db.Model, SimpleChangeTracker):
             "created" : self.created,
             "created_by" : self.created_by.username,
             "wiki_id" : self.wiki_entry_id,
-            "submap" : self.submap
+            "submap" : self.submap,
+            "is_editable" : self.is_editable_by_user(),
+            "is_deletable" : self.is_deletable_by_user()
         }
 
         if self.edited_by:
@@ -120,3 +135,18 @@ class MapNode(db.Model, SimpleChangeTracker):
         }
 
         return dic
+
+    #####
+    # Permissions
+    #####
+    def is_viewable_by_user(self):
+        return ((self.is_visible or self.is_owned_by_user()) and self.parent_map.is_viewable_by_user())
+
+    def is_editable_by_user(self):
+        return ((self.is_visible or self.is_owned_by_user()) and self.parent_map.is_viewable_by_user())
+
+    def is_deletable_by_user(self):
+        return (((self.is_visible and current_user.is_at_least_moderator()) or self.is_owned_by_user()) and self.parent_map.is_viewable_by_user())
+
+    def is_hideable_by_user(self):
+        return self.is_owned_by_user()

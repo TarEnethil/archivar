@@ -40,7 +40,7 @@ class MapNodeForm(FlaskForm):
     wiki_entry = BetterSelectField("Wiki Article",validators=[Optional()],coerce=int)
     submap = SelectField("Sub Map",validators=[Optional()],coerce=int)
 
-    is_visible = BooleanField("Is approved / visible (to anyone)")
+    is_visible = BooleanField("Is publicly visible")
 
     coord_x = HiddenField(validators=[InputRequired()])
     coord_y = HiddenField(validators=[InputRequired()])
