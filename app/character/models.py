@@ -26,7 +26,7 @@ class Character(db.Model, SimplePermissionChecker, LinkGenerator):
         if self.user_id == current_user.id:
             return self.journals
         else:
-            return (list(filter(lambda x: x.is_visible, self.journals)))
+            return (list(filter(lambda x: x.is_viewable_by_user(), self.journals)))
 
     #####
     # Permissions
