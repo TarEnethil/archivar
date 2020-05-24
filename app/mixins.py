@@ -73,9 +73,6 @@ class SimpleChangeTracker(object):
         return Markup(Template(out).render(context))
 
 class PermissionTemplate(object):
-    def is_viewable_by_user(self):
-        raise NotImplementedError
-
     def is_editable_by_user(self):
         raise NotImplementedError
 
@@ -88,6 +85,9 @@ class SimplePermissionChecker(PermissionTemplate, SimpleChangeTracker):
     @declared_attr
     def is_visible(cls):
         return db.Column(db.Boolean, default=True)
+
+    def is_viewable_by_user(self):
+        raise NotImplementedError
 
     def is_owned_by_user(self):
         return self.created_by_id == current_user.id
