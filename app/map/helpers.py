@@ -9,16 +9,6 @@ from os import path
 from sqlalchemy import and_, not_, or_
 from werkzeug import secure_filename
 
-# @map_admin_required decorater, use AFTER login_required
-def map_admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not current_user.is_map_admin():
-            flash("You need to be a map admin to perform this action.", "danger")
-            return redirect(url_for("index"))
-        return f(*args, **kwargs)
-    return decorated_function
-
 # find the best available file name for a map node type image
 def map_node_filename(filename_from_form):
     orig_filename = secure_filename(filename_from_form)
@@ -44,35 +34,25 @@ def gen_node_type_choices():
     return choices
 
 # generate choices for the submap field
-def gen_submap_choices(zerochoice="*no submap*"):
+def gen_submap_choices(zerochoice="*no submap*", ensure=None):
     choices = [(0, zerochoice)]
 
     maps = Map.query.all()
 
     for map_ in maps:
-        if map_.is_visible:
+        if map_.is_viewable_by_user() or (ensure != None and map_ == ensure):
             choices.append((map_.id, map_.name))
-        else:
-            choices.append((map_.id, "(invisible) {0}".format(map_.name)))
 
     return choices
 
 # get all nodes that are visible for the current user
 def get_visible_nodes(map_id):
-    if current_user.has_admin_role():
-        nodes = MapNode.query
-    else:
-        nodes = MapNode.query.filter(or_(MapNode.is_visible == True, MapNode.created_by_id == current_user.id))
-
+    nodes = MapNode.get_query_for_visible_items(include_hidden_for_user=True)
     return nodes.filter_by(on_map=map_id).all()
 
 # get all nodes that are associated with the specified wiki article
 def get_nodes_by_wiki_id(w_id):
-    if current_user.has_admin_role():
-        nodes = MapNode.query
-    else:
-        nodes = MapNode.query.filter(or_(MapNode.is_visible == True, MapNode.created_by_id == current_user.id))
-
+    nodes = MapNode.get_query_for_visible_items(include_hidden_for_user=True)
     nodes = nodes.filter_by(wiki_entry_id = w_id).all()
 
     return nodes

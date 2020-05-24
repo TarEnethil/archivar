@@ -1,5 +1,5 @@
 from app import db
-from app.helpers import page_title, flash_no_permission, urlfriendly, deny_access, moderator_required
+from app.helpers import page_title, urlfriendly, deny_access, moderator_required
 from app.map.helpers import get_nodes_by_wiki_id
 from app.wiki import bp
 from app.wiki.forms import WikiEntryForm, WikiSettingsForm, WikiSearchForm, WikiMoveCategoryForm

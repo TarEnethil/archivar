@@ -24,9 +24,11 @@ makeDatatable("map-table");
 {% endif %}
 </h1>
 
+{% if current_user.is_admin() %}
 {{ navbar_start() }}
     {{ button_nav(url=url_for('map.create'), text="Add Map", icon="plus") }}
 {{ navbar_end() }}
+{% endif %}
 
 <p>
     This page lists all maps.
@@ -43,11 +45,17 @@ makeDatatable("map-table");
 
     <tbody>
     {% for map in maps %}
+    {% if map.is_visible %}
         <tr>
-            <td> {{ map.name }}</td>
+    {% else %}
+        <tr class="invisible_item">
+    {% endif %}
+            <td>{{ map.name }}</td>
             <td>
                 {{ map.view_button() }}
+                {% if map.is_editable_by_user() %}
                 {{ map.settings_button() }}
+                {% endif %}
             </td>
         </tr>
     {% endfor %}
