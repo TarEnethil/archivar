@@ -27,17 +27,19 @@
     {{ prev.view_button_nav(text="Previous Session", icon="arrow-left") }}
 {% endif %}
 
-{% if current_user.has_char_in_session(session) or current_user.has_admin_role() or current_user.is_dm_of(session.campaign) %}
+{% if session.is_editable_by_user() %}
     {{ session.edit_button_nav(text="Edit Session") }}
 {% endif %}
 
 {% if next %}
     {{ next.view_button_nav(text="Next Session", icon="arrow-right", classes="nav-link", swap=True) }}
-{% elif current_user.has_admin_role() or current_user.is_dm_of(session.campaign) %}
+{% endif %}
+
+{% if session.campaign.is_editable_by_user() %}
     {{ button_nav(url=url_for('session.create_with_campaign', id=session.campaign_id), text="Add Follow-Up Session", icon="plus") }}
 {% endif %}
 
-{% if event.is_deletable_by_user() %}
+{% if session.is_deletable_by_user() %}
     {{ session.delete_button_nav() }}
 {% endif %}
 {{ navbar_end() }}

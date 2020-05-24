@@ -113,7 +113,7 @@ makeDatatable("sessions-table");
             </td>
             <td>
                 {{ session.view_button() }}
-                {% if current_user.has_char_in_session(session) or current_user.has_admin_role() %}
+                {% if session.is_editable_by_user() %}
                 {{ session.edit_button() }}
                 {% endif %}
             </td>
