@@ -1,6 +1,6 @@
 from app import db, login
 from app.helpers import Role
-from app.mixins import LinkGenerator
+from app.mixins import LinkGenerator, PermissionTemplate
 from datetime import datetime
 from flask import url_for, current_app
 from flask_login import UserMixin, current_user
@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 def load_user(id):
     return User.query.get(int(id))
 
-class User(UserMixin, db.Model, LinkGenerator):
+class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -100,6 +100,12 @@ class User(UserMixin, db.Model, LinkGenerator):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+    #####
+    # Permissions
+    #####
+    def is_editable_by_user(self):
+        return current_user.is_admin() or current_user.id == self.id
 
     #####
     # LinkGenerator functions
