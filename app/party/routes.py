@@ -1,6 +1,6 @@
 from app import db
 from app.character.models import Character
-from app.helpers import page_title, admin_required, admin_or_party_required
+from app.helpers import page_title, admin_required, deny_access
 from app.party import bp
 from app.party.forms import PartyForm
 from app.party.helpers import gen_party_members_choices
@@ -21,7 +21,7 @@ def create():
     if form.validate_on_submit():
         members = Character.query.filter(Character.id.in_(form.members.data)).all()
 
-        new_party = Party(name=form.name.data, description=form.description.data, dm_notes=form.dm_notes.data, members=members)
+        new_party = Party(name=form.name.data, description=form.description.data, members=members)
 
         db.session.add(new_party)
         db.session.commit()
@@ -33,10 +33,13 @@ def create():
 
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-@admin_or_party_required(no_perm_url)
 def edit(id, name=None):
     party = Party.query.filter_by(id=id).first_or_404()
-    is_admin = current_user.has_admin_role()
+
+    if not party.is_editable_by_user():
+        return deny_access(no_perm_url)
+
+    is_admin = current_user.is_admin()
 
     form = PartyForm()
     form.submit.label.text = "Save Party"
@@ -45,14 +48,12 @@ def edit(id, name=None):
         form.members.choices = gen_party_members_choices(ensure=party.members)
     else:
         del form.members
-        del form.dm_notes
 
     if form.validate_on_submit():
         party.name = form.name.data
         party.description = form.description.data
 
         if is_admin:
-            party.dm_notes = form.dm_notes.data
             members = Character.query.filter(Character.id.in_(form.members.data)).all()
             party.members = members
 
@@ -65,8 +66,6 @@ def edit(id, name=None):
         form.description.data = party.description
 
         if is_admin:
-            form.dm_notes.data = party.dm_notes
-
             members = []
 
             for m in party.members:
@@ -86,9 +85,11 @@ def view(id, name=None):
 
 @bp.route("/delete/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-@admin_required(no_perm_url)
 def delete(id, name=None):
     party = Party.query.filter_by(id=id).first_or_404()
+
+    if not party.is_deletable_by_user():
+        return deny_access(no_perm_url)
 
     db.session.delete(party)
     db.session.commit()
