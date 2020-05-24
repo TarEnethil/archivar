@@ -1,14 +1,23 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleChangeTracker
+from app.mixins import LinkGenerator, SimpleChangeTracker, PermissionTemplate
 from flask import url_for
+from flask_login import current_user
 
-class Party(db.Model, SimpleChangeTracker, LinkGenerator):
+class Party(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
     __tablename__ = "parties"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     description = db.Column(db.Text)
-    dm_notes = db.Column(db.Text)
+
+    #####
+    # Permissions
+    #####
+    def is_editable_by_user(self):
+        return current_user.is_admin() or current_user.has_char_in_party(self)
+
+    def is_deletable_by_user(self):
+        return current_user.is_admin()
 
     #####
     # LinkGenerator functions

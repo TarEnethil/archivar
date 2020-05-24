@@ -56,7 +56,7 @@ makeDatatable("parties-table", 5);
             <td> {{ party.members|length }}</td>
             <td>
                 {{ party.view_button() }}
-                {% if current_user.has_char_in_party(party) or current_user.has_admin_role() %}
+                {% if party.is_editable_by_user() %}
                 {{ party.edit_button() }}
                 {% endif %}
             </td>
