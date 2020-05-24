@@ -45,27 +45,6 @@ def moderator_required(url="index"):
         return decorated_function
     return decorator
 
-# @admin_or_party_required decorator, use AFTER login_required
-# url must contain 'id'-param which is assumed to be a party id
-def admin_or_party_required(url="index"):
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            from app.party.models import Party
-
-            if not 'id' in kwargs:
-                flash("@admin_or_party_required was used incorrectly, contact the administrator", "danger")
-                return redirect(url_for(url))
-
-            party = Party.query.filter_by(id=kwargs['id']).first_or_404()
-
-            if not current_user.has_admin_role() and not current_user.has_char_in_party(party):
-                flash("You need to be admin or have a character in this party to perform this action.", "danger")
-                return redirect(url_for(url))
-            return f(*args, **kwargs)
-        return decorated_function
-    return decorator
-
 # @admin_dm_or_session_required decorator, use AFTER login_required
 # url must contain 'id'-param which is assumed to be a session id
 def admin_dm_or_session_required(url="index"):

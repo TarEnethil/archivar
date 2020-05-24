@@ -1,14 +1,15 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleChangeTracker
+from app.mixins import LinkGenerator, SimpleChangeTracker, PermissionTemplate
 from flask import url_for
+from flask_login import current_user
 from sqlalchemy import and_
 
 session_character_assoc = db.Table("session_character_assoc",
                     db.Column("session_id", db.Integer, db.ForeignKey("sessions.id")),
                     db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
 
-class Session(db.Model, SimpleChangeTracker, LinkGenerator):
+class Session(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
     __tablename__ = "sessions"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
@@ -19,6 +20,15 @@ class Session(db.Model, SimpleChangeTracker, LinkGenerator):
     campaign_id = db.Column(db.Integer, db.ForeignKey("campaigns.id"))
     campaign = db.relationship("Campaign", backref="sessions")
     session_number = db.Column(db.Integer)
+
+    #####
+    # Permissions
+    #####
+    def is_editable_by_user(self):
+        return current_user.is_admin() or current_user.is_dm_of(self.campaign) or current_user.has_char_in_session(self)
+
+    def is_deletable_by_user(self):
+        return current_user.is_admin() or current_user.is_dm_of(self.campaign)
 
     #####
     # LinkGenerator functions
