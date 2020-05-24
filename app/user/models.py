@@ -26,8 +26,6 @@ class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
 
     dateformat = db.Column(db.String(25), default="LLL")
     editor_height = db.Column(db.Integer, default=500)
-    use_direct_links = db.Column(db.Boolean, default=True)
-    use_embedded_images = db.Column(db.Boolean, default=True)
     markdown_phb_style = db.Column(db.Boolean, default=False)
     quicklinks = db.Column(db.Text)
 

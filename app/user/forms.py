@@ -30,8 +30,6 @@ class EditProfileForm(FlaskForm):
 class SettingsForm(FlaskForm):
     dateformat = SelectField("Date format", choices=gen_date_string_choices(), validators=[InputRequired()])
     editor_height = IntegerField("Height of markdown editor (px)", validators=[InputRequired()])
-    use_direct_links = BooleanField("Media sidebar: Use direct links")
-    use_embedded_images = BooleanField("Media sidebar: Embed images")
     markdown_phb_style = BooleanField("Use PHB-Style for markdown")
     quicklinks = TextAreaField("Quicklinks", render_kw={"rows": 7})
 
