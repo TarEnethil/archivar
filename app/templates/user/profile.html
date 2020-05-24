@@ -20,9 +20,11 @@
 
 {% block app_content %}
     <h1>User Profile for {{ user.username }}</h1>
-    {% if user == current_user or current_user.has_admin_role() %}
+    {% if user == current_user or user.is_editable_by_user() %}
     {{ navbar_start() }}
+        {% if user.is_editable_by_user() %}
         {{ user.edit_button_nav() }}
+        {% endif %}
 
         {% if user == current_user  %}
             {{ button_nav(url=url_for('user.settings'), text="Settings", icon="cog") }}
