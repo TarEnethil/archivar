@@ -54,7 +54,7 @@ class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
         if current_user.id == self.id:
             return self.characters
         else:
-            return list(filter(lambda x: x.is_visible, self.characters))
+            return list(filter(lambda x: x.is_viewable_by_user(), self.characters))
 
     # TODO: could be more efficient with a query
     def has_char_in_party(self, party):

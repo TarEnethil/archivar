@@ -39,6 +39,7 @@ makeDatatable("map-table");
     <thead>
         <tr>
             <th>Name</th>
+            <th>Locations</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -51,6 +52,7 @@ makeDatatable("map-table");
         <tr class="invisible_item">
     {% endif %}
             <td>{{ map.name }}</td>
+            <td>{{ map.get_nodes()|length }}</td>
             <td>
                 {{ map.view_button() }}
                 {% if map.is_editable_by_user() %}

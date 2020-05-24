@@ -34,6 +34,9 @@ class Map(db.Model, SimplePermissionChecker, LinkGenerator):
 
         return dic
 
+    def get_nodes(self):
+        return (list(filter(lambda x: x.is_viewable_by_user(), self.nodes)))
+
     #####
     # Permissions
     #####
@@ -97,7 +100,7 @@ class MapNode(db.Model, SimplePermissionChecker):
     wiki_entry_id = db.Column(db.Integer, db.ForeignKey("wiki_entries.id"), default=0)
     wiki_entry = db.relationship("WikiEntry", foreign_keys=[wiki_entry_id])
     on_map = db.Column(db.Integer, db.ForeignKey("maps.id"))
-    parent_map = db.relationship("Map", foreign_keys=[on_map])
+    parent_map = db.relationship("Map", foreign_keys=[on_map], backref="nodes")
     submap = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
     sub_map = db.relationship("Map", foreign_keys=[submap])
 
