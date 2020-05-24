@@ -29,7 +29,7 @@ class EditProfileForm(FlaskForm):
 
 class SettingsForm(FlaskForm):
     dateformat = SelectField("Date format", choices=gen_date_string_choices(), validators=[InputRequired()])
-    editor_height = IntegerField("Height of markdown editor (px)", validators=[InputRequired()])
+    editor_height = IntegerField("Min-Height of markdown editor (px)", validators=[InputRequired()])
     markdown_phb_style = BooleanField("Use PHB-Style for markdown")
     quicklinks = TextAreaField("Quicklinks", render_kw={"rows": 7})
 
