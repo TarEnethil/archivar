@@ -47,9 +47,15 @@ $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Const
 } });
 
 $(function() {
+    /* update date val from UTC to local
+     * note that we use the server-side form data instead of the client side input-field-value,
+     * so that refreshing the form does not apply this function multiple times (resulting in a date shift every refresh) */
+    $("#date").val(moment.utc("{{ form.date.data }}").local().format(dateformat_string));
+
     $("#datetimepicker_session").datetimepicker({
-        format: dateformat_string
-    })
+        format: dateformat_string,
+    });
+
 });
 
 $("form").submit(function(e) {
