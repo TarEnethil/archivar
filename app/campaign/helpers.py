@@ -17,7 +17,7 @@ def gen_dm_choices():
 def gen_campaign_choices_dm():
     choices = []
 
-    campaigns = Campaign.campaigns
+    campaigns = current_user.campaigns
 
     for campaign in campaigns:
         choices.append((campaign.id, campaign.name))
