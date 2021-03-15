@@ -11,11 +11,11 @@
 
 <script>
 {% if chars %}
-makeDatatable("char-table", 15, 15);
+makeDatatable("char-table", { threshold: 15, items_per_page: 15 });
 {% endif %}
 
 {% if parties %}
-makeDatatable("parties-table", 5);
+makeDatatable("parties-table", { threshold: 5 });
 {% endif %}
 </script>
 {% endblock %}

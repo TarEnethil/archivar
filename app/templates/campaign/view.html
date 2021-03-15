@@ -11,7 +11,7 @@
 
 <script>
 {% if campaign.sessions %}
-makeDatatable("sessions-table");
+makeDatatable("sessions-table", { has_dates: true });
 {% endif %}
 </script>
 {% endblock %}
