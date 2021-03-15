@@ -119,39 +119,18 @@ Players can then enter events to define how the world was shaped.
 Upload and categorize additional media like images (for wiki / character pages etc.) or additional documents like homebrew or house rules.
 
 # Roles
-## Admin / DM
-Admin is the highest role available and has all privileges.
-Use with caution, as anyone with this role has insight into every hidden map location, hidden wiki articles and all DM notes.
-Admins can also create users and manage their roles.
-The admin account created by the install process can't have the admin role taken from him, even from other admins.
-The terms admin and Dungeon Master (DM) may be used interchangeably.
-
-## Map admin
-Map admins can change the map settings and add new location types.
-They can also see hidden locations created by normal users or other map admins.
-Hidden locations created by an admin can't be seen by map admins.
-This role was introduced to have some trusted people help with the world building aspect without giving away all GM secrets.
-
-## Wiki admin
-Wiki admins can change the visibility of wiki articles created by users or other wiki admins as well as edit the wiki settings.
-As with the map, hidden articles by admins are not visible to this role.
-They dont see the hidden GM notes on articles.
-This role allows for someone to help with the worldbuilding without giving away all GM secrets.
-
-## Event admin
-As with Map and Wiki admins, this role can toggle the visibility of articles created by users and other event admins, but not the ones created by admins.
-This role is intended as a curator for the history of the world.
-
-## Media admin
-Can hide/unhide/delete media.
-
-## Special
-_Reserved. No function as of yet._
+The permission management is currently very simple.
+There are only three roles: Admin, Moderator, User.
+See [ROLES.md](ROLES.md) for information on who can do what.
 
 # Used tools and libraries
 * Backend is [Flask](http://flask.pocoo.org/) (Python), current Database is [SQLite](https://www.sqlite.org/index.html) (for used python libraries and flask extensions refer to requirements.txt)
-* Frontend with [Bootstrap 3.3](https://getbootstrap.com/docs/3.3/)
-* JavaScript framework is [jQuery](https://jquery.com/) (used by bootstrap), additional scripts: [multiselect](http://loudev.com/) (select characters for session), [bootstrap-select](https://developer.snapappointments.com/bootstrap-select/), [quicksearch](https://deuxhuithuit.github.io/quicksearch/)
+* Frontend with [Bootstrap 4.4](https://getbootstrap.com/docs/4.4/)
+* JavaScript framework is [jQuery](https://jquery.com/) (used by bootstrap), additional scripts:
+    * [multiselect](http://loudev.com/): select characters for session and parties
+    * [bootstrap-select](https://developer.snapappointments.com/bootstrap-select/): filtering in selects
+    * [quicksearch](https://deuxhuithuit.github.io/quicksearch/): filtering in multiselects
+    * [tempus dominus](https://github.com/tempusdominus/bootstrap-4): date time picker
 * Map built with [leaflet.js](https://leafletjs.com/)
 * Markdown done with [easyMDE](https://easymde.tk/) (WYSIWYG editor) and Flask-Misaka (on-server rendering)
 * Thanks to the [Flask Mega Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) by Miguel Grinberg for getting me started with Flask
