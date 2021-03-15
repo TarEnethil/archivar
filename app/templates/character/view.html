@@ -25,11 +25,11 @@
     {% endif %}
 
     {% if char.parties %}
-    makeDatatable("parties-table", 5);
+    makeDatatable("parties-table", { threshold: 5 });
     {% endif %}
 
     {% if char.sessions %}
-    makeDatatable("sessions-table")
+    makeDatatable("sessions-table", { has_dates: true });
     {% endif %}
 
     {% if journals %}

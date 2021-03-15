@@ -11,11 +11,11 @@
 
 <script>
 {% if sessions_future %}
-makeDatatable("future-sessions-table")
+makeDatatable("future-sessions-table", { has_dates: true });
 {% endif %}
 
 {% if sessions_past %}
-makeDatatable("past-sessions-table");
+makeDatatable("past-sessions-table", { has_dates: true });
 {% endif %}
 
 {% if form %}
