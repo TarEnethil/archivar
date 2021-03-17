@@ -1,4 +1,5 @@
 from app import db
+from app.helpers import unique_filename
 from app.map.models import Map, MapNodeType, MapNode
 from app.user.models import User
 from datetime import datetime
@@ -7,20 +8,10 @@ from flask_login import current_user
 from functools import wraps
 from os import path
 from sqlalchemy import and_, not_, or_
-from werkzeug import secure_filename
 
 # find the best available file name for a map node type image
 def map_node_filename(filename_from_form):
-    orig_filename = secure_filename(filename_from_form)
-    filename = orig_filename
-
-    counter = 1
-    while path.isfile(path.join(current_app.config["MAPNODES_DIR"], filename)):
-        # fancy duplication avoidance (tm)
-        filename = "{}-{}".format(counter, orig_filename)
-        counter += 1
-
-    return filename
+    return unique_filename(current_app.config["MAPNODES_DIR"], filename_from_form)
 
 # generate choices for the node type SelectField
 def gen_node_type_choices():

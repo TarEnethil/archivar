@@ -6,7 +6,10 @@ from flask_login import current_user
 from functools import wraps
 from hashlib import md5
 from jinja2 import Markup
+from os import path
+from PIL import Image
 from sqlalchemy import func
+from werkzeug import secure_filename
 from wtforms.validators import ValidationError
 
 # flash generic error message
@@ -72,6 +75,36 @@ def stretch_color(color):
 # make a COUNT(id) query for a db object
 def count_rows(db_class):
     return db.session.query(func.count(db_class.id)).scalar()
+
+def unique_filename(path_, initial_filename):
+    orig_filename = secure_filename(initial_filename)
+    filename = orig_filename
+
+    counter = 1
+    while path.isfile(path.join(path_, filename)):
+        # fancy duplication avoidance (tm)
+        filename = "{}-{}".format(counter, orig_filename)
+        counter += 1
+
+    return filename
+
+# generate thumbnail for an already existing image
+def generate_thumbnail(path_, filename, height, width):
+    filepath_orig = path.join(path_, filename)
+    filepath_thumb = path.join(path_, "thumbnails", filename)
+
+    try:
+        image = Image.open(filepath_orig)
+        image.thumbnail((height, width))
+
+        success = True
+
+        image.save(filepath_thumb)
+    except Exception as err:
+        flash("Could not generate the thumbnail: {}".format(err), "error")
+        success = False
+
+    return success
 
 # validate that a form field contains {x}, {y} and {z}
 class XYZ_Validator(object):
