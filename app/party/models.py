@@ -1,10 +1,11 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleChangeTracker, PermissionTemplate
+from app.mixins import LinkGenerator, SimpleChangeTracker, PermissionTemplate, ProfilePicture
 from flask import url_for
 from flask_login import current_user
+from jinja2 import contextfunction
 
-class Party(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
+class Party(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate, ProfilePicture):
     __tablename__ = "parties"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -33,3 +34,26 @@ class Party(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
 
     def delete_url(self):
         return url_for('party.delete', id=self.id, name=urlfriendly(self.name))
+
+
+    #####
+    # ProfilePicture functions
+    #####
+    @contextfunction
+    def infobox(self, context):
+        body = f'<a href="{self.view_url()}" class="stretched-link">{ self.name }</a> \
+                 <span class="text-muted d-block">Members: { len(self.members) }</span>';
+
+        return self.infobox_(context, body)
+
+    def profile_picture_url(self):
+        if (self.profile_picture):
+            return url_for('media.profile_picture', filename=self.profile_picture)
+        else:
+            return url_for('static', filename="no_profile.png")
+
+    def profile_thumbnail_url(self):
+        if (self.profile_picture):
+            return url_for('media.profile_picture_thumb', filename=self.profile_picture)
+        else:
+            return url_for('static', filename="no_profile.png")

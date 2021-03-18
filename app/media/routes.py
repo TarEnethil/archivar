@@ -273,3 +273,11 @@ def serve_file(filename):
 @bp.route("/serve-thumb/<filename>")
 def serve_thumbnail(filename):
     return send_from_directory(path.join(current_app.config["MEDIA_DIR"], "thumbnails"), filename)
+
+@bp.route("/profile-picture/<filename>")
+def profile_picture(filename):
+    return send_from_directory(current_app.config["PROFILE_PICTURE_DIR"], filename)
+
+@bp.route("/profile-picture-thumb/<filename>")
+def profile_picture_thumb(filename):
+    return send_from_directory(path.join(current_app.config["PROFILE_PICTURE_DIR"], "thumbnails"), filename)

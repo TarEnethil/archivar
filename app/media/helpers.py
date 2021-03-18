@@ -1,7 +1,7 @@
 from app.helpers import generate_thumbnail as gen_thumb
 from app.helpers import unique_filename
 from app.media.models import MediaItem, MediaCategory
-from flask import redirect, url_for, flash, current_app
+from flask import current_app
 from flask_login import current_user
 from functools import wraps
 

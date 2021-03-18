@@ -169,3 +169,33 @@ class LinkGenerator(object):
     # needs to be overridden by base class
     def delete_url(self):
         raise NotImplementedError
+
+class ProfilePicture(object):
+    profile_picture = db.Column(db.String(100))
+
+    def infobox_(self, context, body):
+        out = '\
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 infobox"> \
+            <div class="media position-relative p-3 border m-1"> \
+                <div class="infobox-img-container align-self-center"> \
+                    <img src="{0}" class="align-self-center"> \
+                </div> \
+                <div class="media-body text-truncate"> \
+                    {1} \
+                </div> \
+            </div> \
+        </div>'.format(self.profile_thumbnail_url(), body);
+
+        return Markup(Template(out).render(context))
+
+    # needs to be overridden by base class
+    def infobox(self):
+        raise NotImplementedError
+
+    # needs to be overridden by base class
+    def profile_picture_url(self):
+        raise NotImplementedError
+
+    # needs to be overridden by base class
+    def profile_thumbnail_url(self):
+        return NotImplementedError

@@ -15,7 +15,7 @@ makeDatatable("char-table", { threshold: 15, items_per_page: 15 });
 {% endif %}
 
 {% if parties %}
-makeDatatable("parties-table", { threshold: 5 });
+makeDatatable("parties-table", { threshold: 5, items_per_page: 5 });
 {% endif %}
 </script>
 {% endblock %}
@@ -43,6 +43,7 @@ makeDatatable("parties-table", { threshold: 5 });
 <table class="table table-hover table-striped" id="parties-table">
     <thead>
         <tr>
+            <th>Logo</th>
             <th>Name</th>
             <th>#Members</th>
             <th>Actions</th>
@@ -52,6 +53,7 @@ makeDatatable("parties-table", { threshold: 5 });
     <tbody>
     {% for party in parties %}
         <tr>
+            <td class="text-center"><img src="{{ party.profile_thumbnail_url() }}" class="table-thumbnail" /></td>
             <td> {{ party.name }}</td>
             <td> {{ party.members|length }}</td>
             <td>
