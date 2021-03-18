@@ -22,7 +22,7 @@ Mako==1.0.7
 Markdown==3.1
 MarkupSafe==1.0
 misaka==2.1.1
-Pillow==7.1.1
+Pillow==8.1.1
 pycparser==2.19
 pyinfo==1.0.1
 python-dateutil==2.7.3
