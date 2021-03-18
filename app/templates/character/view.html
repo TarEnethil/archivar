@@ -61,7 +61,7 @@
 
     <h2>Info</h2>
 
-     <dl class="row ml-5">
+    <dl class="row ml-5">
         <dt class="col-sm-1">Name</dt>
         <dd class="col-sm-11">{{ char.name }}</dd>
         <dt class="col-sm-1">Race</dt>
@@ -72,6 +72,18 @@
         <dd class="col-sm-11">{{ char.player.view_link() }}</dd>
     </dl>
 
+    {% if char.parties %}
+    <h2>Parties ({{ char.parties|length }})</h2>
+
+    <div class="row mb-5">
+        {% for party in char.parties %}
+            {{ party.infobox() }}
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>{{ char.name }} is in no parties.</p>
+    {% endif %}
+
     {% if char.description %}
     {% if current_user.markdown_phb_style %}
         <div class="custom-markdown phb-style">
@@ -80,37 +92,6 @@
     {% endif %}
 {{ char.description|markdown }}
     </div>
-    {% endif %}
-
-    {% if char.parties %}
-    <h2>Parties ({{ char.parties|length }})</h2>
-
-    <table class="table table-hover table-striped" id="parties-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>#Members</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-
-        <tbody>
-        {% for party in char.parties %}
-            <tr>
-                <td>{{ party.name }}</td>
-                <td>{{ party.members|length }}</td>
-                <td>
-                    {{ party.view_button() }}
-                    {% if party.is_editable_by_user() %}
-                    {{ party.edit_button() }}
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>{{ char.name }} is in no parties.</p>
     {% endif %}
 
     {% if char.sessions %}

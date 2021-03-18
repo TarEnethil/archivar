@@ -35,6 +35,29 @@
 {{ navbar_end() }}
 {% endif %}
 
+<div class="card p-3 mb-3">
+    <div class="row align-items-center">
+        <div class="col-sm-3 text-center">
+            <figure class="figure">
+                <img class="thumbnail img-thumbnail" src="{{ party.profile_picture_url() }}" />
+            </figure>
+        </div>
+        <div class="col-md-9">
+            {% if party.members %}
+            <ul class="list-unstyled">
+                {% for member in party.members %}
+                <li>
+                    {{ member.view_link() }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>This party has no members.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
 {% if party.description %}
 {% if current_user.markdown_phb_style %}
     <div class="custom-markdown phb-style">
@@ -45,19 +68,6 @@
     </div>
 {% else %}
 <p>No description.</p>
-{% endif %}
-
-<h2>Members</h2>
-{% if party.members %}
-<ul class="list-unstyled">
-    {% for member in party.members %}
-    <li>
-        {{ member.view_link() }}
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No members.</p>
 {% endif %}
 
 {{ party.print_info() }}

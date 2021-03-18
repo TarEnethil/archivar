@@ -20,3 +20,4 @@ class DefaultConfig(object):
     MEDIA_DIR = os.path.join(basedir, 'data/media/')
     WELCOME_MD = os.path.join(basedir, "Welcome.md")
     CHANGELOG = os.path.join(basedir, "CHANGELOG")
+    PROFILE_PICTURE_DIR = os.path.join(basedir, 'data/logos')
