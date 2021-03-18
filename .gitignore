@@ -21,6 +21,11 @@ data/mapnodes/*
 !data/mapnodes/quest.png
 !data/mapnodes/note.png
 !data/mapnodes/ruins.png
+data/logos/*
+!data/logos/.gitkeep
+data/logos/thumbnails/*
+!data/logos/thumbnails
+!data/logos/thumbnails/.gitkeep
 __pycache__
 config/user_config.py
 config/debug_config.py

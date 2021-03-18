@@ -372,3 +372,26 @@ tr.invisible_item,
     height:100%;
     background:rgba(0,0,0,0.6);
 }
+
+.infobox {
+
+}
+
+.infobox-img-container {
+    margin-right:10px;
+    flex: 0 0 48px;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.infobox-img-container img {
+    max-width:48px;
+    max-height:48px;
+}
+
+.table-thumbnail {
+     max-height:30px;
+     max-width:30px;
+}

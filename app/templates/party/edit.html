@@ -15,6 +15,12 @@
 makeMarkdownEditor("description");
 
 makeMultiSelect("members", "Non-party character", "Party members", "partymember-select");
+
+{% if party.profile_picture %}
+$(document).ready(function() {
+    $("label[for=profile_picture]").after('<img src="{{ party.profile_thumbnail_url() }}" class="img-thumbnail d-block" />');
+});
+{% endif %}
 </script>
 {% endblock %}
 

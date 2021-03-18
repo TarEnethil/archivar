@@ -3,10 +3,11 @@ from app.character.models import Character
 from app.helpers import page_title, admin_required, deny_access
 from app.party import bp
 from app.party.forms import PartyForm
-from app.party.helpers import gen_party_members_choices
+from app.party.helpers import gen_party_members_choices, picture_filename, generate_thumbnail
 from app.party.models import Party
-from flask import render_template, flash, redirect, url_for, request, jsonify
+from flask import render_template, flash, redirect, url_for, request, jsonify, current_app
 from flask_login import login_required, current_user
+from os import path
 
 no_perm_url = "character.list"
 
@@ -20,13 +21,26 @@ def create():
 
     if form.validate_on_submit():
         members = Character.query.filter(Character.id.in_(form.members.data)).all()
-
         new_party = Party(name=form.name.data, description=form.description.data, members=members)
+
+        msg = "Party was created."
+        level = "success"
+
+        if form.profile_picture.data:
+            filename = picture_filename(form.profile_picture.data.filename)
+
+            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
+            form.profile_picture.data.save(filepath)
+            new_party.profile_picture = filename
+
+            if generate_thumbnail(filename) == False:
+                msg = "Party was created, but there were errors."
+                level = "warning"
 
         db.session.add(new_party)
         db.session.commit()
 
-        flash("Party was created.", "success")
+        flash(msg, level)
         return redirect(new_party.view_url())
 
     return render_template("party/create.html", form=form, title=page_title("Add Party"))
@@ -57,8 +71,27 @@ def edit(id, name=None):
             members = Character.query.filter(Character.id.in_(form.members.data)).all()
             party.members = members
 
+        msg = "Party was changed."
+        level = "success"
+
+        if form.profile_picture.data:
+            # override old file if it exists
+            # TODO: may be better to delete & use new name?
+            if party.profile_picture:
+                filename = party.profile_picture
+            else:
+                filename = picture_filename(form.profile_picture.data.filename)
+
+            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
+            form.profile_picture.data.save(filepath)
+            party.profile_picture = filename
+
+            if generate_thumbnail(filename) == False:
+                msg = "File was edited, but there were errors."
+                level = "warning"
+
         db.session.commit()
-        flash("Party was changed.", "success")
+        flash(msg, level)
         return redirect(party.view_url())
 
     elif request.method == "GET":
@@ -73,7 +106,7 @@ def edit(id, name=None):
 
             form.members.data = members
 
-    return render_template("party/edit.html", form=form, title=page_title("Edit Party '{}'".format(party.name)))
+    return render_template("party/edit.html", form=form, party=party, title=page_title("Edit Party '{}'".format(party.name)))
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
