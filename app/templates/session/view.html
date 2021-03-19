@@ -50,52 +50,39 @@
 </p>
 {% endif %}
 
-<h2>Summary</h2>
-{% if session.summary %}
-{% if current_user.markdown_phb_style %}
-    <div class="custom-markdown phb-style">
-{% else %}
-    <div class="custom-markdown">
-{% endif %}
-{{ session.summary|markdown }}
-    </div>
-{% else %}
-<p>No summary.</p>
-{% endif %}
-
-{% if current_user.is_dm_of(session.campaign) %}
-    {% if session.dm_notes %}
-    <hr>
-    <h2>DM Notes</h2>
-{% if current_user.markdown_phb_style %}
-    <div class="custom-markdown phb-style">
-{% else %}
-    <div class="custom-markdown">
-{% endif %}
-{{ session.dm_notes|markdown }}
-    </div>
-    {% endif %}
-{% endif %}
-
-<h2>Participants</h2>
+<h2>
+Participants
 {% if session.participants %}
-<ul class="list-unstyled">
+({{ session.participants|length }})
+{% endif %}
+</h2>
+{% if session.participants %}
+<div class="row">
     {% for member in session.participants %}
-    <li>
-        {% if member.journal_is_creatable_by_user() %}
-        {{ member.view_link(classes="own-char") }} (<a href="{{ url_for('character.journal_create', c_id=member.id, c_name=member.name|urlfriendly, session=session.id) }}">write Journal</a>)
-        {% else %}
-        {{ member.view_link() }}
-        {% endif %}
-    </li>
+        {{ member.infobox() }}
     {% endfor %}
-</ul>
+</div>
 {% else %}
 <p>No participants.</p>
 {% endif %}
 
-{% if session.journals %}
+{% if current_user.has_char_in_session(session) or session.journals %}
 <h2>Journals</h2>
+{% endif %}
+
+{% if current_user.has_char_in_session(session) %}
+<ul class="list-unstyled">
+{% for member in session.participants %}
+    <li>
+        {% if member.journal_is_creatable_by_user() %}
+        <a href="{{ url_for('character.journal_create', c_id=member.id, c_name=member.name|urlfriendly, session=session.id) }}">write Journal</a> for {{ member.name }}
+        {% endif %}
+    </li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if session.journals %}
 <ul class="list-unstyled">
     {% for journal in session.journals %}
     {% if journal.is_viewable_by_user() %}
@@ -118,6 +105,32 @@
     {% endfor %}
     <li></li>
 </ul>
+{% endif %}
+
+<h2>Summary</h2>
+{% if session.summary %}
+{% if current_user.markdown_phb_style %}
+    <div class="custom-markdown phb-style">
+{% else %}
+    <div class="custom-markdown">
+{% endif %}
+{{ session.summary|markdown }}
+    </div>
+{% else %}
+<p>No summary.</p>
+{% endif %}
+
+{% if current_user.is_dm_of(session.campaign) %}
+    {% if session.dm_notes %}
+    <h2>DM Notes</h2>
+{% if current_user.markdown_phb_style %}
+    <div class="custom-markdown phb-style">
+{% else %}
+    <div class="custom-markdown">
+{% endif %}
+{{ session.dm_notes|markdown }}
+    </div>
+    {% endif %}
 {% endif %}
 
 {{ session.print_info() }}
