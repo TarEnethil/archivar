@@ -37,6 +37,7 @@ makeDatatable("campaigns-table");
     <table class="table table-hover table-striped" id="campaigns-table">
         <thead>
             <tr>
+                <th></th>
                 <th>Title</th>
                 <th>DM</th>
                 <th>Sessions</th>
@@ -47,6 +48,7 @@ makeDatatable("campaigns-table");
         <tbody>
         {% for campaign in campaigns %}
             <tr style="border-left:7px solid {{ campaign.color }}">
+                <td class="text-center"><img src="{{ campaign.profile_thumbnail_url() }}" class="table-thumbnail" /></td>
                 <td>{{ campaign.name }}</td>
                 <td>{{ campaign.dm.view_link() }}</td>
                 {# <td>{{ moment(session.date).format(current_user.dateformat) }} ({{ moment(session.date).fromNow() }})</td>#}

@@ -72,16 +72,25 @@
     </div>
     {% endif %}
 
+
+    <h2>Campaigns</h2>
     {% if user.campaigns %}
-    <h2>Campaigns ({{ user.campaigns|length }})</h2>
-    <p>
-        {{ user.username }} is DM of the following campaigns:
-    </p>
-    <ul class="list-unstyled">
+    <h3>As DM</h3>
+    <div class="row mb-3">
         {% for campaign in user.campaigns %}
-        <li>{{ campaign.view_link() }}</li>
+            {{ campaign.infobox() }}
         {% endfor %}
-    </ul>
+    </div>
+    {% endif %}
+
+    {% set pcampaigns = user.participated_campaigns() %}
+    {% if pcampaigns|length > 0 %}
+    <h3>As a Player</h3>
+    <div class="row">
+        {% for campaign in pcampaigns|sort(attribute='id') %}
+            {{ campaign.infobox() }}
+        {% endfor %}
+    </div>
     {% endif %}
 
     <hr>

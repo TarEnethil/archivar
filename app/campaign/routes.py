@@ -3,10 +3,10 @@ from app.character.models import Character
 from app.campaign import bp
 from app.campaign.models import Campaign
 from app.campaign.forms import CampaignCreateForm, CampaignEditForm
-from app.campaign.helpers import gen_dm_choices
+from app.campaign.helpers import gen_dm_choices, picture_filename, generate_thumbnail
 from app.helpers import page_title, admin_required, stretch_color, deny_access
 from app.session.helpers import gen_participant_choices
-from flask import render_template, flash, redirect, url_for, request, jsonify
+from flask import render_template, flash, redirect, url_for, request, jsonify, current_app
 from flask_login import login_required, current_user
 
 no_perm_url = "campaign.index"
@@ -31,10 +31,24 @@ def create():
 
         new_campaign = Campaign(name=form.name.data, dm_id=form.dm.data, description=form.description.data, default_participants=default_members, color=stretch_color(form.color.data.hex))
 
+        msg = "Campaign was created."
+        level = "success"
+
+        if form.profile_picture.data:
+            filename = picture_filename(form.profile_picture.data.filename)
+
+            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
+            form.profile_picture.data.save(filepath)
+            new_campaign.profile_picture = filename
+
+            if generate_thumbnail(filename) == False:
+                msg = "Campaign was created, but there were errors."
+                level = "warning"
+
         db.session.add(new_campaign)
         db.session.commit()
 
-        flash("Campaign was created.", "success")
+        flash(msg, level)
         return redirect(url_for("campaign.index"))
 
     return render_template("campaign/create.html", form=form, title=page_title("Add Campaign"))
@@ -71,6 +85,25 @@ def edit(id, name=None):
             campaign.dm_id = form.dm.data
         if is_dm:
             campaign.dm_notes = form.dm_notes.data
+
+        msg = "Campaign was changed."
+        level = "success"
+
+        if form.profile_picture.data:
+            # override old file if it exists
+            # TODO: may be better to delete & use new name?
+            if campaign.profile_picture:
+                filename = campaign.profile_picture
+            else:
+                filename = picture_filename(form.profile_picture.data.filename)
+
+            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
+            form.profile_picture.data.save(filepath)
+            campaign.profile_picture = filename
+
+            if generate_thumbnail(filename) == False:
+                msg = "Campaign was changed, but there were errors."
+                level = "warning"
 
         db.session.commit()
         flash("Campaign was changed.", "success")
