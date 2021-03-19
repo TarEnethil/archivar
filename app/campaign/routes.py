@@ -3,8 +3,8 @@ from app.character.models import Character
 from app.campaign import bp
 from app.campaign.models import Campaign
 from app.campaign.forms import CampaignCreateForm, CampaignEditForm
-from app.campaign.helpers import gen_dm_choices, picture_filename, generate_thumbnail
-from app.helpers import page_title, admin_required, stretch_color, deny_access
+from app.campaign.helpers import gen_dm_choices
+from app.helpers import page_title, admin_required, stretch_color, deny_access, upload_profile_picture
 from app.session.helpers import gen_participant_choices
 from flask import render_template, flash, redirect, url_for, request, jsonify, current_app
 from flask_login import login_required, current_user
@@ -36,13 +36,11 @@ def create():
         level = "success"
 
         if form.profile_picture.data:
-            filename = picture_filename(form.profile_picture.data.filename)
+            success, filename = upload_profile_picture(form.profile_picture.data)
 
-            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
-            form.profile_picture.data.save(filepath)
             new_campaign.profile_picture = filename
 
-            if generate_thumbnail(filename) == False:
+            if success == False:
                 msg = "Campaign was created, but there were errors."
                 level = "warning"
 
@@ -94,15 +92,13 @@ def edit(id, name=None):
             # override old file if it exists
             # TODO: may be better to delete & use new name?
             if campaign.profile_picture:
-                filename = campaign.profile_picture
+                success, filename = upload_profile_picture(form.profile_picture.data, campaign.profile_picture)
             else:
-                filename = picture_filename(form.profile_picture.data.filename)
+                success, filename = upload_profile_picture(form.profile_picture.data)
 
-            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
-            form.profile_picture.data.save(filepath)
             campaign.profile_picture = filename
 
-            if generate_thumbnail(filename) == False:
+            if success == False:
                 msg = "Campaign was changed, but there were errors."
                 level = "warning"
 

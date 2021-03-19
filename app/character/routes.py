@@ -1,9 +1,9 @@
 from app import db
 from app.character import bp
 from app.character.forms import CreateCharacterForm, EditCharacterForm, JournalForm
-from app.character.helpers import gen_session_choices, picture_filename, generate_thumbnail
+from app.character.helpers import gen_session_choices
 from app.character.models import Character, Journal
-from app.helpers import page_title, deny_access
+from app.helpers import page_title, deny_access, upload_profile_picture
 from app.party.models import Party
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, jsonify, request, current_app
@@ -24,13 +24,11 @@ def create():
         level = "success"
 
         if form.profile_picture.data:
-            filename = picture_filename(form.profile_picture.data.filename)
+            success, filename = upload_profile_picture(form.profile_picture.data)
 
-            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
-            form.profile_picture.data.save(filepath)
             char.profile_picture = filename
 
-            if generate_thumbnail(filename) == False:
+            if success == False:
                 msg = "Character was created, but there were errors."
                 level = "warning"
 
@@ -92,15 +90,13 @@ def edit(id, name=None):
             # override old file if it exists
             # TODO: may be better to delete & use new name?
             if char.profile_picture:
-                filename = char.profile_picture
+                success, filename = upload_profile_picture(form.profile_picture.data, filename=char.profile_picture)
             else:
-                filename = picture_filename(form.profile_picture.data.filename)
+                success, filename = upload_profile_picture(form.profile_picture.data)
 
-            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
-            form.profile_picture.data.save(filepath)
             char.profile_picture = filename
 
-            if generate_thumbnail(filename) == False:
+            if success == False:
                 msg = "Character was changed, but there were errors."
                 level = "warning"
 

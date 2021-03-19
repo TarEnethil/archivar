@@ -1,9 +1,9 @@
 from app import db
 from app.character.models import Character
-from app.helpers import page_title, admin_required, deny_access
+from app.helpers import page_title, admin_required, deny_access, upload_profile_picture
 from app.party import bp
 from app.party.forms import PartyForm
-from app.party.helpers import gen_party_members_choices, picture_filename, generate_thumbnail
+from app.party.helpers import gen_party_members_choices
 from app.party.models import Party
 from flask import render_template, flash, redirect, url_for, request, jsonify, current_app
 from flask_login import login_required, current_user
@@ -27,13 +27,11 @@ def create():
         level = "success"
 
         if form.profile_picture.data:
-            filename = picture_filename(form.profile_picture.data.filename)
+            success, filename = upload_profile_picture(form.profile_picture.data)
 
-            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
-            form.profile_picture.data.save(filepath)
             new_party.profile_picture = filename
 
-            if generate_thumbnail(filename) == False:
+            if success == False:
                 msg = "Party was created, but there were errors."
                 level = "warning"
 
@@ -78,15 +76,13 @@ def edit(id, name=None):
             # override old file if it exists
             # TODO: may be better to delete & use new name?
             if party.profile_picture:
-                filename = party.profile_picture
+                success, filename = upload_profile_picture(form.profile_picture.data, filename=party.profile_picture)
             else:
-                filename = picture_filename(form.profile_picture.data.filename)
+                success, filename = upload_profile_picture(form.profile_picture.data)
 
-            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
-            form.profile_picture.data.save(filepath)
             party.profile_picture = filename
 
-            if generate_thumbnail(filename) == False:
+            if success == False:
                 msg = "Party was edited, but there were errors."
                 level = "warning"
 
