@@ -61,33 +61,15 @@
     {% endif %}
 
     {% if characters %}
-    <table class="table table-hover table-striped" id="char-table">
-        <thead>
-            <tr>
-                <th>Character</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-
-        <tbody>
+    <div class="row">
         {% for char in characters %}
             {% if char.is_visible %}
-            <tr>
+                {{ char.infobox() }}
             {% else %}
-            <tr class="invisible_item">
+                {{ char.infobox(add_classes="invisible_item") }}
             {% endif %}
-                <td>{{ char.name }} ({{ char.race}} {{ char.class_ }})</td>
-                <td>
-                    {{ char.view_button() }}
-
-                    {% if char.is_editable_by_user() %}
-                    {{ char.edit_button() }}
-                    {% endif %}
-                </td>
-            </tr>
         {% endfor %}
-        </tbody>
-    </table>
+    </div>
     {% endif %}
 
     {% if user.campaigns %}

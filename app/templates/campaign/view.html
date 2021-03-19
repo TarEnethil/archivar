@@ -36,6 +36,22 @@ makeDatatable("sessions-table", { has_dates: true });
     <dd class="col-sm-10"><span style="color:{{ campaign.color }};">█</span></dd>
 </dl>
 
+<h2>
+Default Participants
+{% if campaign.default_participants %}
+({{ campaign.default_participants|length }})
+{% endif %}
+</h2>
+{% if campaign.default_participants %}
+<div class="row mb-4">
+    {% for member in campaign.default_participants %}
+        {{ member.infobox() }}
+    {% endfor %}
+</div>
+{% else %}
+<p>No default participants.</p>
+{% endif %}
+
 {% if campaign.description %}
 <h2>Description</h2>
 {% if current_user.markdown_phb_style %}
@@ -61,17 +77,6 @@ makeDatatable("sessions-table", { has_dates: true });
 {{ campaign.dm_notes|markdown }}
     </div>
     {% endif %}
-{% endif %}
-
-<h2>Default Participants</h2>
-{% if campaign.default_participants %}
-<ul class="list-unstyled">
-    {% for member in campaign.default_participants %}
-    <li>{{ member.view_link() }}</li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No default participants.</p>
 {% endif %}
 
 <h2>Sessions

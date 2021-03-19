@@ -1,13 +1,14 @@
 from app import db
 from app.character import bp
 from app.character.forms import CreateCharacterForm, EditCharacterForm, JournalForm
-from app.character.helpers import gen_session_choices
+from app.character.helpers import gen_session_choices, picture_filename, generate_thumbnail
 from app.character.models import Character, Journal
 from app.helpers import page_title, deny_access
 from app.party.models import Party
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, jsonify, request
+from flask import render_template, flash, redirect, url_for, jsonify, request, current_app
 from flask_login import current_user, login_required
+from os import path
 
 no_perm_url = "main.index"
 
@@ -19,9 +20,23 @@ def create():
     if form.validate_on_submit():
         char = Character(name=form.name.data, race=form.race.data, class_=form.class_.data, description=form.description.data, private_notes=form.private_notes.data, user_id=current_user.id, is_visible=form.is_visible.data)
 
+        msg = "Character was created."
+        level = "success"
+
+        if form.profile_picture.data:
+            filename = picture_filename(form.profile_picture.data.filename)
+
+            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
+            form.profile_picture.data.save(filepath)
+            char.profile_picture = filename
+
+            if generate_thumbnail(filename) == False:
+                msg = "Character was created, but there were errors."
+                level = "warning"
+
         db.session.add(char)
         db.session.commit()
-        flash("Character was created.", "success")
+        flash(msg, level)
 
         return redirect(char.view_url())
     else:
@@ -70,8 +85,27 @@ def edit(id, name=None):
         if char.is_hideable_by_user():
             char.is_visible = form.is_visible.data
 
+        msg = "Character was changed."
+        level = "success"
+
+        if form.profile_picture.data:
+            # override old file if it exists
+            # TODO: may be better to delete & use new name?
+            if char.profile_picture:
+                filename = char.profile_picture
+            else:
+                filename = picture_filename(form.profile_picture.data.filename)
+
+            filepath = path.join(current_app.config["PROFILE_PICTURE_DIR"], filename)
+            form.profile_picture.data.save(filepath)
+            char.profile_picture = filename
+
+            if generate_thumbnail(filename) == False:
+                msg = "Character was changed, but there were errors."
+                level = "warning"
+
         db.session.commit()
-        flash("Character changes have been saved.", "success")
+        flash(msg, level)
         return redirect(char.view_url())
     else:
         form.name.data = char.name
@@ -85,7 +119,7 @@ def edit(id, name=None):
         if char.is_hideable_by_user():
             form.is_visible.data = char.is_visible
 
-        return render_template("character/edit.html", form=form, title=page_title("Edit character '{}'".format(char.name)))
+        return render_template("character/edit.html", form=form, char=char, title=page_title("Edit character '{}'".format(char.name)))
 
 @bp.route("/list", methods=["GET"])
 @login_required

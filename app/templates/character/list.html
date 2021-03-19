@@ -43,7 +43,7 @@ makeDatatable("parties-table", { threshold: 5, items_per_page: 5 });
 <table class="table table-hover table-striped" id="parties-table">
     <thead>
         <tr>
-            <th>Logo</th>
+            <th></th>
             <th>Name</th>
             <th>#Members</th>
             <th>Actions</th>
@@ -87,6 +87,7 @@ makeDatatable("parties-table", { threshold: 5, items_per_page: 5 });
 <table class="table table-hover table-striped" id="char-table">
     <thead>
         <tr>
+            <th></th>
             <th>Name</th>
             <th>Race</th>
             <th>Class</th>
@@ -102,6 +103,7 @@ makeDatatable("parties-table", { threshold: 5, items_per_page: 5 });
     {% else %}
         <tr class="invisible_item">
     {% endif %}
+            <td class="text-center"><img src="{{ char.profile_thumbnail_url() }}" class="table-thumbnail" /></td>
             <td> {{ char.name }} </td>
             <td> {{ char.race }}</td>
             <td> {{ char.class_ }}</td>

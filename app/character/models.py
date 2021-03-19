@@ -1,14 +1,15 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimplePermissionChecker
+from app.mixins import LinkGenerator, SimplePermissionChecker, ProfilePicture
 from flask import url_for
 from flask_login import current_user
+from jinja2 import contextfunction
 
 character_party_assoc = db.Table("character_party_assoc",
                     db.Column("character_id", db.Integer, db.ForeignKey("characters.id")),
                     db.Column("party_id", db.Integer, db.ForeignKey("parties.id")))
 
-class Character(db.Model, SimplePermissionChecker, LinkGenerator):
+class Character(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture):
     __tablename__ = "characters"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -61,6 +62,28 @@ class Character(db.Model, SimplePermissionChecker, LinkGenerator):
     def delete_url(self):
         return url_for('character.delete', id=self.id, name=urlfriendly(self.name))
 
+    #####
+    # ProfilePicture functions
+    #####
+    @contextfunction
+    def infobox(self, context, add_classes=""):
+        body = f'<a href="{self.view_url()}" class="stretched-link {add_classes}">{ self.name }</a> \
+                 <span class="text-muted d-block">{ self.race } { self.class_ }</span>';
+
+        return self.infobox_(context, body)
+
+    def profile_picture_url(self):
+        if (self.profile_picture):
+            return url_for('media.profile_picture', filename=self.profile_picture)
+        else:
+            return url_for('static', filename="no_profile.png")
+
+    def profile_thumbnail_url(self):
+        if (self.profile_picture):
+            return url_for('media.profile_picture_thumb', filename=self.profile_picture)
+        else:
+            return url_for('static', filename="no_profile.png")
+
 class Journal(db.Model, SimplePermissionChecker, LinkGenerator):
     __tablename__ = "journal"
 
@@ -89,6 +112,7 @@ class Journal(db.Model, SimplePermissionChecker, LinkGenerator):
     def is_owned_by_user(self):
         return self.character.user_id == current_user.id
 
+    #####
     # LinkGenerator functions
     #####
     def view_text(self):

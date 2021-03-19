@@ -16,6 +16,12 @@ $(document).ready(function() {
     makeMarkdownEditor("description");
     makeMarkdownEditor("private_notes");
 });
+
+{% if char.profile_picture %}
+$(document).ready(function() {
+    $("label[for=profile_picture]").after('<img src="{{ char.profile_thumbnail_url() }}" class="img-thumbnail d-block" />');
+});
+{% endif %}
 </script>
 {% endblock %}
 
