@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import FileField, StringField, TextAreaField, SubmitField, BooleanField, SelectField
+from flask_wtf.file import FileField
+from wtforms import StringField, TextAreaField, SubmitField, BooleanField, SelectField
 from wtforms_components import SelectField as OptGroupSelectField
 from wtforms.validators import Length, InputRequired
 

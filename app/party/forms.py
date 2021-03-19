@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import FileField, StringField, TextAreaField, SubmitField, SelectMultipleField
+from flask_wtf.file import FileField
+from wtforms import StringField, TextAreaField, SubmitField, SelectMultipleField
 from wtforms.validators import Length, InputRequired
 
 class PartyForm(FlaskForm):
