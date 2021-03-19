@@ -61,6 +61,7 @@ def upload():
 
         new_media = MediaItem(name=form.name.data, filename=filename, filesize=size, is_visible=form.is_visible.data, category_id=form.category.data)
 
+        # TODO: make this fail the same way as profile picture (char, party, campaign)
         msg = "Upload successful."
         level = "success"
 

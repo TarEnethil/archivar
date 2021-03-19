@@ -26,20 +26,18 @@ def create():
         msg = "Party was created."
         level = "success"
 
+        success = True
         if form.profile_picture.data:
             success, filename = upload_profile_picture(form.profile_picture.data)
-
             new_party.profile_picture = filename
 
-            if success == False:
-                msg = "Party was created, but there were errors."
-                level = "warning"
-
-        db.session.add(new_party)
-        db.session.commit()
-
-        flash(msg, level)
-        return redirect(new_party.view_url())
+        if success == False:
+            flash("Error while creating party.", "error")
+        else:
+            db.session.add(new_party)
+            db.session.commit()
+            flash("Party was created.", "success")
+            return redirect(new_party.view_url())
 
     return render_template("party/create.html", form=form, title=page_title("Add Party"))
 
@@ -69,9 +67,7 @@ def edit(id, name=None):
             members = Character.query.filter(Character.id.in_(form.members.data)).all()
             party.members = members
 
-        msg = "Party was changed."
-        level = "success"
-
+        success = True
         if form.profile_picture.data:
             # override old file if it exists
             # TODO: may be better to delete & use new name?
@@ -82,14 +78,13 @@ def edit(id, name=None):
 
             party.profile_picture = filename
 
-            if success == False:
-                msg = "Party was edited, but there were errors."
-                level = "warning"
+        if success == False:
+            flash("Error while editing party.", "error")
+        else:
+            db.session.commit()
+            flash("Party was edited.", "success")
 
-        db.session.commit()
-        flash(msg, level)
         return redirect(party.view_url())
-
     elif request.method == "GET":
         form.name.data = party.name
         form.description.data = party.description

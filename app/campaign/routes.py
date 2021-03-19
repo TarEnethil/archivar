@@ -32,23 +32,19 @@ def create():
 
         new_campaign = Campaign(name=form.name.data, dm_id=form.dm.data, description=form.description.data, default_participants=default_members, color=stretch_color(form.color.data.hex))
 
-        msg = "Campaign was created."
-        level = "success"
-
+        success = True
         if form.profile_picture.data:
             success, filename = upload_profile_picture(form.profile_picture.data)
 
             new_campaign.profile_picture = filename
 
-            if success == False:
-                msg = "Campaign was created, but there were errors."
-                level = "warning"
-
-        db.session.add(new_campaign)
-        db.session.commit()
-
-        flash(msg, level)
-        return redirect(url_for("campaign.index"))
+        if success == False:
+            flash("Error while creating campaign.", "error")
+        else:
+            db.session.add(new_campaign)
+            db.session.commit()
+            flash("Campaign was created.", "success")
+            return redirect(url_for("campaign.index"))
 
     return render_template("campaign/create.html", form=form, title=page_title("Add Campaign"))
 
@@ -85,9 +81,7 @@ def edit(id, name=None):
         if is_dm:
             campaign.dm_notes = form.dm_notes.data
 
-        msg = "Campaign was changed."
-        level = "success"
-
+        success = True
         if form.profile_picture.data:
             # override old file if it exists
             # TODO: may be better to delete & use new name?
@@ -98,14 +92,13 @@ def edit(id, name=None):
 
             campaign.profile_picture = filename
 
-            if success == False:
-                msg = "Campaign was changed, but there were errors."
-                level = "warning"
+        if success == False:
+            flash("Error while editing campaign.", "error")
+        else:
+            db.session.commit()
+            flash("Campaign was edited.", "success")
 
-        db.session.commit()
-        flash("Campaign was changed.", "success")
         return redirect(campaign.view_url())
-
     elif request.method == "GET":
         form.name.data = campaign.name
         form.description.data = campaign.description
