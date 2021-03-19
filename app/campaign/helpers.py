@@ -1,5 +1,6 @@
 from app.helpers import generate_thumbnail as gen_thumb
 from app.helpers import unique_filename
+from flask import current_app
 from flask_login import current_user
 from app.campaign.models import Campaign
 from app.user.models import User
