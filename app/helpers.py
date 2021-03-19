@@ -106,6 +106,17 @@ def generate_thumbnail(path_, filename, height, width):
 
     return success
 
+def upload_profile_picture(filedata, filename=None):
+    path_ = current_app.config["PROFILE_PICTURE_DIR"]
+
+    if filename == None:
+        filename = unique_filename(path_, filedata.filename)
+
+    filepath = path.join(path_, filename)
+    filedata.save(filepath)
+
+    return generate_thumbnail(path_, filename, 100, 100), filename
+
 # validate that a form field contains {x}, {y} and {z}
 class XYZ_Validator(object):
     def __call__(self, form, field):
