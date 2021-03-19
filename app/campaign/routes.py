@@ -8,6 +8,7 @@ from app.helpers import page_title, admin_required, stretch_color, deny_access
 from app.session.helpers import gen_participant_choices
 from flask import render_template, flash, redirect, url_for, request, jsonify, current_app
 from flask_login import login_required, current_user
+from os import path
 
 no_perm_url = "campaign.index"
 
