@@ -87,7 +87,7 @@ def edit(id, name=None):
             party.profile_picture = filename
 
             if generate_thumbnail(filename) == False:
-                msg = "File was edited, but there were errors."
+                msg = "Party was edited, but there were errors."
                 level = "warning"
 
         db.session.commit()

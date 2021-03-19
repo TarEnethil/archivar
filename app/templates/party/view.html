@@ -42,15 +42,11 @@
                 <img class="thumbnail img-thumbnail" src="{{ party.profile_picture_url() }}" />
             </figure>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 row">
             {% if party.members %}
-            <ul class="list-unstyled">
                 {% for member in party.members %}
-                <li>
-                    {{ member.view_link() }}
-                </li>
+                    {{ member.infobox() }}
                 {% endfor %}
-            </ul>
             {% else %}
             <p>This party has no members.</p>
             {% endif %}

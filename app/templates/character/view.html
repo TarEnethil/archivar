@@ -24,10 +24,6 @@
     });
     {% endif %}
 
-    {% if char.parties %}
-    makeDatatable("parties-table", { threshold: 5 });
-    {% endif %}
-
     {% if char.sessions %}
     makeDatatable("sessions-table", { has_dates: true });
     {% endif %}
@@ -59,18 +55,25 @@
         {% endif %}
     {{ navbar_end() }}
 
-    <h2>Info</h2>
-
-    <dl class="row ml-5">
-        <dt class="col-sm-1">Name</dt>
-        <dd class="col-sm-11">{{ char.name }}</dd>
-        <dt class="col-sm-1">Race</dt>
-        <dd class="col-sm-11">{{ char.race }}</dd>
-        <dt class="col-sm-1">Class</dt>
-        <dd class="col-sm-11">{{ char.class_ }}</dd>
-        <dt class="col-sm-1">Player</dt>
-        <dd class="col-sm-11">{{ char.player.view_link() }}</dd>
-    </dl>
+    <div class="card p-3 mb-3">
+        <div class="row align-items-center">
+            <div class="col-sm-3 text-center">
+                <figure class="figure">
+                    <img class="thumbnail img-thumbnail" src="{{ char.profile_picture_url() }}" />
+                </figure>
+            </div>
+            <dl class="row col-sm-9">
+                <dt class="col-sm-3">Name</dt>
+                <dd class="col-sm-9">{{ char.name }}</dd>
+                <dt class="col-sm-3">Race</dt>
+                <dd class="col-sm-9">{{ char.race }}</dd>
+                <dt class="col-sm-3">Class</dt>
+                <dd class="col-sm-9">{{ char.class_ }}</dd>
+                <dt class="col-sm-3">Player</dt>
+                <dd class="col-sm-9">{{ char.player.view_link() }}</dd>
+            </dl>
+        </div>
+    </div>
 
     {% if char.parties %}
     <h2>Parties ({{ char.parties|length }})</h2>
