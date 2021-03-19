@@ -20,25 +20,20 @@ def create():
     if form.validate_on_submit():
         char = Character(name=form.name.data, race=form.race.data, class_=form.class_.data, description=form.description.data, private_notes=form.private_notes.data, user_id=current_user.id, is_visible=form.is_visible.data)
 
-        msg = "Character was created."
-        level = "success"
-
+        success = True
         if form.profile_picture.data:
             success, filename = upload_profile_picture(form.profile_picture.data)
-
             char.profile_picture = filename
 
-            if success == False:
-                msg = "Character was created, but there were errors."
-                level = "warning"
+        if success == False:
+            flash("Error while creating character.", "error")
+        else:
+            db.session.add(char)
+            db.session.commit()
+            flash("Character was created.", "success")
+            return redirect(char.view_url())
 
-        db.session.add(char)
-        db.session.commit()
-        flash(msg, level)
-
-        return redirect(char.view_url())
-    else:
-        return render_template("character/create.html", form=form, title=page_title("Add Character"))
+    return render_template("character/create.html", form=form, title=page_title("Add Character"))
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
@@ -83,9 +78,7 @@ def edit(id, name=None):
         if char.is_hideable_by_user():
             char.is_visible = form.is_visible.data
 
-        msg = "Character was changed."
-        level = "success"
-
+        success = True
         if form.profile_picture.data:
             # override old file if it exists
             # TODO: may be better to delete & use new name?
@@ -96,12 +89,12 @@ def edit(id, name=None):
 
             char.profile_picture = filename
 
-            if success == False:
-                msg = "Character was changed, but there were errors."
-                level = "warning"
+        if success == False:
+            flash("Error while editing character.", "error")
+        else:
+            flash("Character was edited.", "success")
+            db.session.commit()
 
-        db.session.commit()
-        flash(msg, level)
         return redirect(char.view_url())
     else:
         form.name.data = char.name
