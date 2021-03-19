@@ -26,15 +26,23 @@ makeDatatable("sessions-table", { has_dates: true });
 {{ navbar_end() }}
 {% endif %}
 
-<h2>Info</h2>
-<dl class="row ml-5">
-    <dt class="col-sm-2">DM</dt>
-    <dd class="col-sm-10">{{ campaign.dm.view_link() }}</dd>
-    <dt class="col-sm-2">Sessions</dt>
-    <dd class="col-sm-10">{{ campaign.sessions|length }}</dd>
-    <dt class="col-sm-2">Color</dt>
-    <dd class="col-sm-10"><span style="color:{{ campaign.color }};">█</span></dd>
-</dl>
+<div class="card p-3 mb-3">
+    <div class="row align-items-center">
+        <div class="col-sm-3 text-center">
+            <figure class="figure">
+                <img class="thumbnail img-thumbnail" src="{{ campaign.profile_picture_url() }}" />
+            </figure>
+        </div>
+        <dl class="row col-sm-9">
+            <dt class="col-sm-3">DM</dt>
+            <dd class="col-sm-9">{{ campaign.dm.view_link() }}</dd>
+            <dt class="col-sm-3">Sessions</dt>
+            <dd class="col-sm-9">{{ campaign.sessions|length }}</dd>
+            <dt class="col-sm-3">Color</dt>
+            <dd class="col-sm-9"><span style="color:{{ campaign.color }};">█</span></dd>
+        </dl>
+    </div>
+</div>
 
 <h2>
 Default Participants

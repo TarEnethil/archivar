@@ -78,6 +78,16 @@ class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
     def is_dm_of_anything(self):
         return len(self.campaigns) > 0
 
+    # TODO: could be sped up
+    def participated_campaigns(self):
+        sessions = []
+        for char in self.characters:
+            sessions += char.sessions
+
+        campaigns = set([x.campaign for x in sessions])
+
+        return campaigns
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
