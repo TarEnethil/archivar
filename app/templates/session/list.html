@@ -75,6 +75,7 @@ $(document).ready(function() {
     <table class="table table-hover table-striped" id="future-sessions-table" style="border-collapse:collapse !important;">
         <thead>
             <tr>
+                <th></th>
                 <th>Title</th>
                 <th>Date</th>
                 <th>Participants</th>
@@ -89,6 +90,7 @@ $(document).ready(function() {
             {% else %}
             <tr>
             {% endif %}
+                <td class="text-center"><img src="{{ session.campaign.profile_thumbnail_url() }}" class="table-thumbnail" /></td>
                 <td>{{ session.view_text() }}</td>
                 <td>{{ moment(session.date).format(current_user.dateformat) }} ({{ moment(session.date).fromNow() }})</td>
                 <td>
@@ -130,6 +132,7 @@ $(document).ready(function() {
     <table class="table table-hover table-striped" id="past-sessions-table" style="border-collapse:collapse !important;">
         <thead>
             <tr>
+                <th></th>
                 <th>Title</th>
                 <th>Date</th>
                 <th>Participants</th>
@@ -144,6 +147,7 @@ $(document).ready(function() {
             {% else %}
             <tr>
             {% endif %}
+                <td class="text-center"><img src="{{ session.campaign.profile_thumbnail_url() }}" class="table-thumbnail" /></td>
                 <td>{{ session.view_text() }}</td>
                 <td>{{ moment(session.date).format(current_user.dateformat) }}</td>
                 <td>
