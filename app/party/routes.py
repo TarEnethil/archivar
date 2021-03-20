@@ -1,6 +1,6 @@
 from app import db
 from app.character.models import Character
-from app.helpers import page_title, admin_required, deny_access, upload_profile_picture
+from app.helpers import page_title, admin_required, deny_access, upload_profile_picture, delete_profile_picture
 from app.party import bp
 from app.party.forms import PartyForm
 from app.party.helpers import gen_party_members_choices
@@ -69,12 +69,10 @@ def edit(id, name=None):
 
         success = True
         if form.profile_picture.data:
-            # override old file if it exists
-            # TODO: may be better to delete & use new name?
-            if party.profile_picture:
-                success, filename = upload_profile_picture(form.profile_picture.data, filename=party.profile_picture)
-            else:
-                success, filename = upload_profile_picture(form.profile_picture.data)
+            success, filename = upload_profile_picture(form.profile_picture.data)
+
+            if success:
+                delete_profile_picture(party.profile_picture)
 
             party.profile_picture = filename
 

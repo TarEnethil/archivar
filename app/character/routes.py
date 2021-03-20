@@ -3,7 +3,7 @@ from app.character import bp
 from app.character.forms import CreateCharacterForm, EditCharacterForm, JournalForm
 from app.character.helpers import gen_session_choices
 from app.character.models import Character, Journal
-from app.helpers import page_title, deny_access, upload_profile_picture
+from app.helpers import page_title, deny_access, upload_profile_picture, delete_profile_picture
 from app.party.models import Party
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, jsonify, request, current_app
@@ -80,12 +80,10 @@ def edit(id, name=None):
 
         success = True
         if form.profile_picture.data:
-            # override old file if it exists
-            # TODO: may be better to delete & use new name?
-            if char.profile_picture:
-                success, filename = upload_profile_picture(form.profile_picture.data, filename=char.profile_picture)
-            else:
-                success, filename = upload_profile_picture(form.profile_picture.data)
+            success, filename = upload_profile_picture(form.profile_picture.data)
+
+            if success:
+                delete_profile_picture(char.profile_picture)
 
             char.profile_picture = filename
 
