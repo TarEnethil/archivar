@@ -125,6 +125,11 @@ def delete_profile_picture(filename):
     except:
         flash(f"Could not delete old picture {filename}", "warning")
 
+    try:
+        remove(path.join(current_app.config["PROFILE_PICTURE_DIR"], "thumbnails", filename))
+    except:
+        flash(f"Could not delete thumbnail of old picture {filename}", "warning")
+
 # upload picture to profile dir
 def upload_profile_picture(filedata, filename=None):
     path_ = current_app.config["PROFILE_PICTURE_DIR"]
