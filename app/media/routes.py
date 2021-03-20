@@ -2,7 +2,7 @@ from app import db
 from app.helpers import page_title, deny_access, moderator_required
 from app.media import bp
 from app.media.forms import SettingsForm, MediaItemCreateForm, MediaItemEditForm, CategoryForm
-from app.media.helpers import get_media, gen_media_category_choices, media_filename, generate_thumbnail
+from app.media.helpers import get_media, gen_media_category_choices, upload_media_file, generate_media_thumbnail
 from app.media.models import MediaSetting, MediaItem, MediaCategory
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory, current_app
 from flask_login import login_required, current_user
@@ -52,37 +52,32 @@ def upload():
     ajax = request.args.get("ajax") != None
 
     if form.validate_on_submit():
-        filename = media_filename(form.file.data.filename)
-
-        filepath = path.join(current_app.config["MEDIA_DIR"], filename)
-        form.file.data.save(filepath)
-
-        size = stat(filepath).st_size
-
+        success, filename, size = upload_media_file(form.file.data)
         new_media = MediaItem(name=form.name.data, filename=filename, filesize=size, is_visible=form.is_visible.data, category_id=form.category.data)
 
-        # TODO: make this fail the same way as profile picture (char, party, campaign)
-        msg = "Upload successful."
-        level = "success"
-
         if new_media.is_image():
-            if generate_thumbnail(filename) == False:
-                msg = "Upload successful, but there were errors."
-                level = "warning"
+            success = success and generate_media_thumbnail(filename)
 
-        db.session.add(new_media)
-        db.session.commit()
+        if success == False:
+            flash("Error while creating media file.", "error")
 
-        flash(msg, level)
-
-        # uploaded succeeded, send back info about new media
-        if ajax:
-            return jsonify(data={'success' : True,
-                                'html' : render_template("media/upload_success.html", item=new_media),
-                                'media_info' : new_media.sidebar_info()
-                                })
+            if ajax:
+                return jsonify(data={'success' : False, 'html': render_template("media/upload_raw.html", ajax=ajax, form=form, max_filesize=current_app.config["MAX_CONTENT_LENGTH"]) })
+            # else: fallthrough to bottom
         else:
-            return redirect(new_media.view_url())
+            db.session.add(new_media)
+            db.session.commit()
+
+            flash("Upload successful", "success")
+
+            # uploaded succeeded, send back info about new media
+            if ajax:
+                return jsonify(data={'success' : True,
+                                    'html' : render_template("media/upload_success.html", item=new_media),
+                                    'media_info' : new_media.sidebar_info()
+                                    })
+            else:
+                return redirect(new_media.view_url())
 
     elif ajax and request.method == "POST":
         # the form validation failed, send back the form with displayed errors
@@ -106,7 +101,7 @@ def upload():
     if ajax:
         template = "media/upload_raw.html"
 
-    return render_template(template, form=form, max_filesize=current_app.config["MAX_CONTENT_LENGTH"], title=page_title("Upload File"))
+    return render_template(template, form=form, max_filesize=current_app.config["MAX_CONTENT_LENGTH"], ajax=ajax, title=page_title("Upload File"))
 
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
@@ -131,31 +126,24 @@ def edit(id, name=None):
         if item.is_hideable_by_user():
             item.is_visible = form.is_visible.data
 
-        msg = "File was edited."
-        level = "success"
-
         if form.file.data:
-            filepath = path.join(current_app.config["MEDIA_DIR"], item.filename)
-
             # see github issue #47
             if item.get_file_ext() != form.file.data.filename.split(".", 1)[-1]:
                 flash("Due to current technical limitations, the old and new file need to have the same file type. As a workaround, you can upload a new file instead.", "danger")
                 return render_template("media/edit.html", form=form, title=page_title("Edit File '{}'".format(item.name)))
 
-            # overrides former file
-            form.file.data.save(filepath)
+            success, filename, size = upload_media_file(form.file.data, item.filename)
 
-            item.filesize = stat(filepath).st_size
+            item.filesize = size
 
             if item.is_image():
-                # overrides former thumbnail
-                if generate_thumbnail(item.filename) == False:
-                    msg = "File was edited, but there were errors."
-                    level = "warning"
+                success = success and generate_media_thumbnail(filename)
 
-        db.session.commit()
-
-        flash(msg, level)
+        if success == False:
+            flash("Error while uploading the new file.", "error")
+        else:
+            db.session.commit()
+            flash("File was edited.", "success")
 
         return redirect(item.view_url())
     elif request.method == "GET":

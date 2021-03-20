@@ -1,9 +1,9 @@
-from app.helpers import generate_thumbnail as gen_thumb
-from app.helpers import unique_filename
+from app.helpers import upload_file, generate_thumbnail
 from app.media.models import MediaItem, MediaCategory
 from flask import current_app
 from flask_login import current_user
 from functools import wraps
+from os import stat, path
 
 # generate choices for the media category SelectField
 def gen_media_category_choices():
@@ -16,12 +16,19 @@ def gen_media_category_choices():
 
     return choices
 
-# get best available file name for an uploaded media item
-def media_filename(initial_filename):
-    return unique_filename(current_app.config["MEDIA_DIR"], initial_filename)
+def upload_media_file(filedata, filename=None):
+    path_ = current_app.config["MEDIA_DIR"]
+    success, filename = upload_file(filedata, path_, filename)
 
-def generate_thumbnail(filename):
-    return gen_thumb(current_app.config["MEDIA_DIR"], filename, 200, 200)
+    if False ==  success:
+        return False, filename, 0
+
+    size = stat(path.join(path_, filename)).st_size
+
+    return True, filename, size
+
+def generate_media_thumbnail(filename):
+    return generate_thumbnail(current_app.config["MEDIA_DIR"], filename, 200, 200)
 
 # get all media visible to the user, can be filtered by category
 def get_media(filter_category=None):

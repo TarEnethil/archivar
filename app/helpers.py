@@ -97,23 +97,37 @@ def generate_thumbnail(path_, filename, height, width):
         image = Image.open(filepath_orig)
         image.thumbnail((height, width))
 
-        success = True
-
         image.save(filepath_thumb)
     except Exception as err:
         flash("Could not generate the thumbnail: {}".format(err), "error")
-        success = False
+        return False
 
-    return success
+    return True
+
+def upload_file(filedata, filepath, filename=None):
+    if filename == None:
+        filename = unique_filename(filepath, filedata.filename)
+
+    try:
+        filepath = path.join(filepath, filename)
+        filedata.save(filepath)
+    except Exception as err:
+        flash("Could not upload file: {}".format(err), "error")
+        return False, filename
+
+    return True, filename
+
+# TODO implement
+def delete_profile_picture(filename):
+    raise NotImplementedError
 
 def upload_profile_picture(filedata, filename=None):
     path_ = current_app.config["PROFILE_PICTURE_DIR"]
 
-    if filename == None:
-        filename = unique_filename(path_, filedata.filename)
+    success, filename = upload_file(filedata, path_, filename)
 
-    filepath = path.join(path_, filename)
-    filedata.save(filepath)
+    if False == success:
+        return False, filename
 
     return generate_thumbnail(path_, filename, 100, 100), filename
 
