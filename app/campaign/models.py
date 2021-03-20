@@ -51,15 +51,3 @@ class Campaign(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate,
                  <span class="text-muted d-block">DM: { self.dm.username } | Sessions: { len(self.sessions) }</span>';
 
         return self.infobox_(context, body)
-
-    def profile_picture_url(self):
-        if (self.profile_picture):
-            return url_for('media.profile_picture', filename=self.profile_picture)
-        else:
-            return url_for('static', filename="no_profile.png")
-
-    def profile_thumbnail_url(self):
-        if (self.profile_picture):
-            return url_for('media.profile_picture_thumb', filename=self.profile_picture)
-        else:
-            return url_for('static', filename="no_profile.png")

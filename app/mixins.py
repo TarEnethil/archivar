@@ -1,7 +1,7 @@
 from app import db
 from app.helpers import urlfriendly, link as link_fkt, button as button_fkt, button_nav as button_nav_fkt
 from datetime import datetime
-from flask import current_app
+from flask import current_app, url_for
 from flask_login import current_user
 from jinja2 import Markup, Template, contextfunction
 from sqlalchemy import or_
@@ -192,10 +192,14 @@ class ProfilePicture(object):
     def infobox(self):
         raise NotImplementedError
 
-    # needs to be overridden by base class
     def profile_picture_url(self):
-        raise NotImplementedError
+        if (self.profile_picture):
+            return url_for('media.profile_picture', filename=self.profile_picture)
+        else:
+            return url_for('static', filename="no_profile.png")
 
-    # needs to be overridden by base class
     def profile_thumbnail_url(self):
-        return NotImplementedError
+        if (self.profile_picture):
+            return url_for('media.profile_picture_thumb', filename=self.profile_picture)
+        else:
+            return url_for('static', filename="no_profile.png")

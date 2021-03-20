@@ -77,6 +77,7 @@ def stretch_color(color):
 def count_rows(db_class):
     return db.session.query(func.count(db_class.id)).scalar()
 
+# ensure unique and secure filename
 def unique_filename(path_, initial_filename):
     orig_filename = secure_filename(initial_filename)
     filename = "{}-{}".format(uuid4().hex[:16], orig_filename)
@@ -103,6 +104,7 @@ def generate_thumbnail(path_, filename, height, width):
 
     return True
 
+# upload file to a given path
 def upload_file(filedata, filepath, filename=None):
     if filename == None:
         filename = unique_filename(filepath, filedata.filename)
@@ -116,12 +118,14 @@ def upload_file(filedata, filepath, filename=None):
 
     return True, filename
 
+# delete picture in profile dir
 def delete_profile_picture(filename):
     try:
         remove(path.join(current_app.config["PROFILE_PICTURE_DIR"], filename))
     except:
         flash(f"Could not delete old picture {filename}", "warning")
 
+# upload picture to profile dir
 def upload_profile_picture(filedata, filename=None):
     path_ = current_app.config["PROFILE_PICTURE_DIR"]
 
