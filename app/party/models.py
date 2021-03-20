@@ -35,7 +35,6 @@ class Party(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate, Pr
     def delete_url(self):
         return url_for('party.delete', id=self.id, name=urlfriendly(self.name))
 
-
     #####
     # ProfilePicture functions
     #####
@@ -45,15 +44,3 @@ class Party(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate, Pr
                  <span class="text-muted d-block">Members: { len(self.members) }</span>';
 
         return self.infobox_(context, body)
-
-    def profile_picture_url(self):
-        if (self.profile_picture):
-            return url_for('media.profile_picture', filename=self.profile_picture)
-        else:
-            return url_for('static', filename="no_profile.png")
-
-    def profile_thumbnail_url(self):
-        if (self.profile_picture):
-            return url_for('media.profile_picture_thumb', filename=self.profile_picture)
-        else:
-            return url_for('static', filename="no_profile.png")
