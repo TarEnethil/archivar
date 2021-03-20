@@ -63,10 +63,12 @@
     {% if characters %}
     <div class="row">
         {% for char in characters %}
-            {% if char.is_visible %}
-                {{ char.infobox() }}
-            {% else %}
-                {{ char.infobox(add_classes="invisible_item") }}
+            {% if char.is_viewable_by_user() %}
+                {% if char.is_visible %}
+                    {{ char.infobox() }}
+                {% else %}
+                    {{ char.infobox(add_classes="invisible_item") }}
+                {% endif %}
             {% endif %}
         {% endfor %}
     </div>
