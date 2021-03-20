@@ -9,6 +9,7 @@ from jinja2 import Markup
 from os import path, remove
 from PIL import Image
 from sqlalchemy import func
+from uuid import uuid4
 from werkzeug import secure_filename
 from wtforms.validators import ValidationError
 
@@ -78,13 +79,11 @@ def count_rows(db_class):
 
 def unique_filename(path_, initial_filename):
     orig_filename = secure_filename(initial_filename)
-    filename = orig_filename
+    filename = "{}-{}".format(uuid4().hex[:16], orig_filename)
 
-    counter = 1
     while path.isfile(path.join(path_, filename)):
         # fancy duplication avoidance (tm)
-        filename = "{}-{}".format(counter, orig_filename)
-        counter += 1
+        filename = "{}-{}".format(uuid4().hex[:16], orig_filename)
 
     return filename
 
