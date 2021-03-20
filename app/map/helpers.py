@@ -1,17 +1,35 @@
 from app import db
-from app.helpers import unique_filename
+from app.helpers import upload_file
 from app.map.models import Map, MapNodeType, MapNode
 from app.user.models import User
 from datetime import datetime
 from flask import flash, redirect, url_for, current_app
 from flask_login import current_user
 from functools import wraps
-from os import path
+from os import path, remove
 from sqlalchemy import and_, not_, or_
+from PIL import Image
 
-# find the best available file name for a map node type image
-def map_node_filename(filename_from_form):
-    return unique_filename(current_app.config["MAPNODES_DIR"], filename_from_form)
+def upload_node_icon(filedata, filename=None):
+    path_ = current_app.config["MAPNODES_DIR"]
+    success, filename = upload_file(filedata, path_, filename)
+
+    if False ==  success:
+        return False, filename, 0, 0
+
+    try:
+        width, height = Image.open(path.join(path_, filename)).size
+    except:
+        flash("Error while getting icon size", "error")
+        return False, filename, 0, 0
+
+    return True, filename, width, height
+
+def delete_node_icon(filename):
+    try:
+        remove(path.join(current_app.config["MAPNODES_DIR"], filename))
+    except:
+        flash(f"Could not delete old icon {filename}", "warning")
 
 # generate choices for the node type SelectField
 def gen_node_type_choices():

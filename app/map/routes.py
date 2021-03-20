@@ -2,15 +2,13 @@ from app import db
 from app.helpers import page_title, admin_required, moderator_required, deny_access
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
-from app.map.helpers import map_node_filename, gen_node_type_choices, get_visible_nodes, map_changed, gen_submap_choices
+from app.map.helpers import upload_node_icon, delete_node_icon, gen_node_type_choices, get_visible_nodes, map_changed, gen_submap_choices
 from app.map.models import Map, MapNodeType, MapSetting, MapNode
 from app.wiki.helpers import gen_wiki_entry_choices
 from app.wiki.models import WikiEntry
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory, current_app
 from flask_login import current_user, login_required
-from os import path, remove
-from PIL import Image
 
 no_perm_url = "main.index"
 
@@ -299,20 +297,17 @@ def node_type_create():
     form = MapNodeTypeCreateForm()
 
     if form.validate_on_submit():
-        filename = map_node_filename(form.icon.data.filename)
-        filepath = path.join(current_app.config["MAPNODES_DIR"], filename)
-        form.icon.data.save(filepath)
-
-        icon = Image.open(filepath)
-        width, height = icon.size
+        success, filename, width, height = upload_node_icon(form.icon.data)
 
         new_map_node_type = MapNodeType(name=form.name.data, description=form.description.data, icon_file=filename, icon_width=width, icon_height=height)
 
-        db.session.add(new_map_node_type)
-        db.session.commit()
-
-        flash("'{}' was successfully created.".format(form.name.data), "success")
-        return redirect(url_for('map.settings'))
+        if False == success:
+            flash("Error while creating node type.", "error")
+        else:
+            db.session.add(new_map_node_type)
+            db.session.commit()
+            flash("'{}' was successfully created.".format(form.name.data), "success")
+            return redirect(url_for('map.settings'))
 
     return render_template("map/node_type_create.html", form=form, title=page_title("Create location type"))
 
@@ -327,23 +322,23 @@ def node_type_edit(id):
         node.name = form.name.data
         node.description = form.description.data
 
+        success = True
         if form.icon.data:
-            new_filename = map_node_filename(form.icon.data.filename)
-            filepath = path.join(current_app.config["MAPNODES_DIR"], new_filename)
-            form.icon.data.save(filepath)
+            success, filename, width, height = upload_node_icon(form.icon.data)
 
-            icon = Image.open(filepath)
-            width, height = icon.size
+            if success:
+                delete_node_icon(node.icon_file)
 
-            remove(path.join(current_app.config["MAPNODES_DIR"], node.icon_file))
-
-            node.icon_file = new_filename
+            node.icon_file = filename
             node.icon_width = width
             node.icon_height = height
 
-        db.session.commit()
-        flash("'{}' was successfully edited.".format(form.name.data), "success")
-        return redirect(url_for('map.settings'))
+        if False == success:
+            flash("Error while editing node type.", "error")
+        else:
+            db.session.commit()
+            flash("'{}' was successfully edited.".format(form.name.data), "success")
+            return redirect(url_for('map.settings'))
     elif request.method == "GET":
         form.name.data = node.name
         form.description.data = node.description
