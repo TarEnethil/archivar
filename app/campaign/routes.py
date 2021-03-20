@@ -4,7 +4,7 @@ from app.campaign import bp
 from app.campaign.models import Campaign
 from app.campaign.forms import CampaignCreateForm, CampaignEditForm
 from app.campaign.helpers import gen_dm_choices
-from app.helpers import page_title, admin_required, stretch_color, deny_access, upload_profile_picture
+from app.helpers import page_title, admin_required, stretch_color, deny_access, upload_profile_picture, delete_profile_picture
 from app.session.helpers import gen_participant_choices
 from flask import render_template, flash, redirect, url_for, request, jsonify, current_app
 from flask_login import login_required, current_user
@@ -83,12 +83,10 @@ def edit(id, name=None):
 
         success = True
         if form.profile_picture.data:
-            # override old file if it exists
-            # TODO: may be better to delete & use new name?
-            if campaign.profile_picture:
-                success, filename = upload_profile_picture(form.profile_picture.data, campaign.profile_picture)
-            else:
-                success, filename = upload_profile_picture(form.profile_picture.data)
+            success, filename = upload_profile_picture(form.profile_picture.data)
+
+            if success:
+                delete_profile_picture(campaign.profile_picture)
 
             campaign.profile_picture = filename
 

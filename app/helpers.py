@@ -6,7 +6,7 @@ from flask_login import current_user
 from functools import wraps
 from hashlib import md5
 from jinja2 import Markup
-from os import path
+from os import path, remove
 from PIL import Image
 from sqlalchemy import func
 from werkzeug import secure_filename
@@ -117,9 +117,11 @@ def upload_file(filedata, filepath, filename=None):
 
     return True, filename
 
-# TODO implement
 def delete_profile_picture(filename):
-    raise NotImplementedError
+    try:
+        remove(path.join(current_app.config["PROFILE_PICTURE_DIR"], filename))
+    except:
+        flash(f"Could not delete old picture {filename}", "warning")
 
 def upload_profile_picture(filedata, filename=None):
     path_ = current_app.config["PROFILE_PICTURE_DIR"]
