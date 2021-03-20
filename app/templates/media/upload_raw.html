@@ -1,7 +1,9 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 {% import 'bootstrap/utils.html' as utils %}
 
+{% if ajax %}
 {{ utils.flashed_messages(dismissible=True) }}
+{% endif %}
 
 <p>
     The maximum file size is {{ max_filesize|filesizeformat(True) }}.
