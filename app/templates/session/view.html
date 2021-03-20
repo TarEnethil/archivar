@@ -83,28 +83,17 @@ Participants
 {% endif %}
 
 {% if session.journals %}
-<ul class="list-unstyled">
+<div class="row">
     {% for journal in session.journals %}
-    {% if journal.is_viewable_by_user() %}
-    <li>
-        {% if journal.is_visible %}
-        "{{ journal.view_link() }}"
-        {% else %}
-        "{{ journal.view_link(classes="invisible_item") }}"
+        {% if journal.is_viewable_by_user() %}
+            {% if journal.is_visible %}
+                {{ journal.infobox() }}
+            {% else %}
+                {{ journal.infobox(add_classes="invisible_item") }}
+            {% endif %}
         {% endif %}
-
-        by
-
-        {{ journal.character.name }}
-
-        {% if journal.is_editable_by_user() %}
-        ({{ journal.edit_link(text="edit") }})
-        {% endif %}
-    </li>
-    {% endif %}
     {% endfor %}
-    <li></li>
-</ul>
+</div>
 {% endif %}
 
 <h2>Summary</h2>
