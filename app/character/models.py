@@ -72,8 +72,10 @@ class Character(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture
 
         return self.infobox_(context, body)
 
-class Journal(db.Model, SimplePermissionChecker, LinkGenerator):
+class Journal(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture):
     __tablename__ = "journal"
+    # we just want the functions, not the field
+    profile_picture = None
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
@@ -114,3 +116,21 @@ class Journal(db.Model, SimplePermissionChecker, LinkGenerator):
 
     def delete_url(self):
         return url_for('character.journal_delete', c_id=self.character.id, c_name=urlfriendly(self.character.name), j_id=self.id, j_name=urlfriendly(self.title))
+
+    #####
+    # ProfilePicture functions
+    #####
+    @contextfunction
+    def infobox(self, context, add_classes=""):
+        body = f'<a href="{self.view_url()}" class="stretched-link {add_classes}">{ self.title }</a> \
+                 <span class="text-muted d-block">by {self.character.name}</span>';
+
+        return self.infobox_(context, body)
+
+    # return character portrait instead
+    def profile_picture_url(self):
+        return self.character.profile_picture_url()
+
+    # return character thumbnail instead
+    def profile_thumbnail_url(self):
+        return self.character.profile_thumbnail_url()
