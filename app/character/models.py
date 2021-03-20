@@ -72,18 +72,6 @@ class Character(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture
 
         return self.infobox_(context, body)
 
-    def profile_picture_url(self):
-        if (self.profile_picture):
-            return url_for('media.profile_picture', filename=self.profile_picture)
-        else:
-            return url_for('static', filename="no_profile.png")
-
-    def profile_thumbnail_url(self):
-        if (self.profile_picture):
-            return url_for('media.profile_picture_thumb', filename=self.profile_picture)
-        else:
-            return url_for('static', filename="no_profile.png")
-
 class Journal(db.Model, SimplePermissionChecker, LinkGenerator):
     __tablename__ = "journal"
 
