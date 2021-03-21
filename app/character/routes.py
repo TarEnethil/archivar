@@ -82,7 +82,7 @@ def edit(id, name=None):
         if form.profile_picture.data:
             success, filename = upload_profile_picture(form.profile_picture.data)
 
-            if success:
+            if success and char.profile_picture:
                 delete_profile_picture(char.profile_picture)
 
             char.profile_picture = filename
