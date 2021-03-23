@@ -45,6 +45,22 @@ makeDatatable("sessions-table", { has_dates: true });
 </div>
 
 <h2>
+Associated Parties
+{% if campaign.associated_parties %}
+({{ campaign.associated_parties|length }})
+{% endif %}
+</h2>
+{% if campaign.associated_parties %}
+<div class="row mb-4">
+    {% for party in campaign.associated_parties %}
+        {{ party.infobox() }}
+    {% endfor %}
+</div>
+{% else %}
+<p>No associated parties.</p>
+{% endif %}
+
+<h2>
 Default Participants
 {% if campaign.default_participants %}
 ({{ campaign.default_participants|length }})

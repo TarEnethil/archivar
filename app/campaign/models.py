@@ -10,6 +10,10 @@ campaign_character_assoc = db.Table("campaign_character_assoc",
                     db.Column("campaign_id", db.Integer, db.ForeignKey("campaigns.id")),
                     db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
 
+campaign_party_assoc = db.Table("campaign_party_assoc",
+                    db.Column("campaign_id", db.Integer, db.ForeignKey("campaigns.id")),
+                    db.Column("party_id", db.Integer, db.ForeignKey("parties.id")))
+
 class Campaign(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate, ProfilePicture):
     __tablename__ = "campaigns"
 
@@ -23,6 +27,7 @@ class Campaign(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate,
     dm_notes = db.Column(db.Text)
 
     default_participants = db.relationship("Character", secondary=campaign_character_assoc, backref="default_participants")
+    associated_parties = db.relationship("Party", secondary=campaign_party_assoc, backref="associated_campaigns")
 
     #####
     # Permissions

@@ -35,20 +35,31 @@
 {{ navbar_end() }}
 {% endif %}
 
-<div class="card p-3 mb-3">
+<div class="card p-3 mb-5">
     <div class="row align-items-center">
         <div class="col-sm-3 text-center">
             <figure class="figure">
                 <img class="thumbnail img-thumbnail" src="{{ party.profile_picture_url() }}" />
             </figure>
         </div>
-        <div class="col-md-9 row">
-            {% if party.members %}
-                {% for member in party.members %}
-                    {{ member.infobox() }}
-                {% endfor %}
-            {% else %}
-            <p>This party has no members.</p>
+        <div class="col-md-9">
+            <div class="row">
+                {% if party.members %}
+                    {% for member in party.members %}
+                        {{ member.infobox() }}
+                    {% endfor %}
+                {% else %}
+                <p>This party has no members.</p>
+                {% endif %}
+            </div>
+
+            {% if party.associated_campaigns %}
+            <hr />
+            <div class="row">
+            {% for campaign in party.associated_campaigns %}
+                {{ campaign.infobox() }}
+            {% endfor %}
+            </div>
             {% endif %}
         </div>
     </div>
