@@ -88,6 +88,17 @@ class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
 
         return campaigns
 
+    # TODO: could be sped up
+    def is_assoc_dm_of_party(self, party):
+        """ checks if the user is a DM of the party
+            by intersecting the users campaigns
+            with the campaigns associated with the party
+        """
+        a = set(party.associated_campaigns)
+        b = set(self.campaigns)
+
+        return 0 < len(a.intersection(b))
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
