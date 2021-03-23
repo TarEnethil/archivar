@@ -5,6 +5,8 @@ from app.campaign.models import Campaign
 from app.campaign.forms import CampaignCreateForm, CampaignEditForm
 from app.campaign.helpers import gen_dm_choices
 from app.helpers import page_title, admin_required, stretch_color, deny_access, upload_profile_picture, delete_profile_picture
+from app.party.helpers import gen_party_choices
+from app.party.models import Party
 from app.session.helpers import gen_participant_choices
 from flask import render_template, flash, redirect, url_for, request, jsonify, current_app
 from flask_login import login_required, current_user
@@ -25,12 +27,14 @@ def index():
 def create():
     form = CampaignCreateForm()
     form.dm.choices = gen_dm_choices()
+    form.associated_parties.choices = gen_party_choices()
     form.default_participants.choices = gen_participant_choices()
 
     if form.validate_on_submit():
+        associated_parties = Party.query.filter(Party.id.in_(form.associated_parties.data)).all()
         default_members = Character.query.filter(Character.id.in_(form.default_participants.data)).all()
 
-        new_campaign = Campaign(name=form.name.data, dm_id=form.dm.data, description=form.description.data, default_participants=default_members, color=stretch_color(form.color.data.hex))
+        new_campaign = Campaign(name=form.name.data, dm_id=form.dm.data, description=form.description.data, associated_parties=associated_parties, default_participants=default_members, color=stretch_color(form.color.data.hex))
 
         success = True
         if form.profile_picture.data:
@@ -60,6 +64,7 @@ def edit(id, name=None):
     is_dm = current_user.is_dm_of(campaign)
 
     form = CampaignEditForm()
+    form.associated_parties.choices = gen_party_choices()
     form.default_participants.choices = gen_participant_choices(ensure=campaign.default_participants)
 
     if not is_admin:
@@ -73,6 +78,7 @@ def edit(id, name=None):
     if form.validate_on_submit():
         campaign.name = form.name.data
         campaign.description = form.description.data
+        campaign.associated_parties = Party.query.filter(Party.id.in_(form.associated_parties.data)).all()
         campaign.default_participants = Character.query.filter(Character.id.in_(form.default_participants.data)).all()
         campaign.color = stretch_color(form.color.data.hex)
 
@@ -101,6 +107,8 @@ def edit(id, name=None):
         form.name.data = campaign.name
         form.description.data = campaign.description
         form.color.data = campaign.color
+
+        form.associated_parties.data = [p.id for p in campaign.associated_parties]
 
         participants = []
         for p in campaign.default_participants:

@@ -15,7 +15,7 @@ class Party(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate, Pr
     # Permissions
     #####
     def is_editable_by_user(self):
-        return current_user.is_admin() or current_user.has_char_in_party(self)
+        return current_user.is_admin() or current_user.has_char_in_party(self) or current_user.is_assoc_dm_of_party(self)
 
     def is_deletable_by_user(self):
         return current_user.is_admin()

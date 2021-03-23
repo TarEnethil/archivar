@@ -10,7 +10,8 @@ class CampaignCreateForm(FlaskForm):
     profile_picture = FileField("Logo")
     color = ColorField("Color")
     description = TextAreaField("Description", render_kw={"rows": 15})
-    default_participants = SelectMultipleField("Default participants for sessions",coerce=int)
+    associated_parties = SelectMultipleField("Associated Parties",coerce=int)
+    default_participants = SelectMultipleField("Default Participants for Sessions",coerce=int)
 
     submit = SubmitField("Create Campaign")
 
@@ -21,6 +22,7 @@ class CampaignEditForm(FlaskForm):
     color = ColorField("Color")
     description = TextAreaField("Description", render_kw={"rows": 15})
     dm_notes = TextAreaField("DM notes", render_kw={"rows": 15})
+    associated_parties = SelectMultipleField("Associated Parties",coerce=int)
     default_participants = SelectMultipleField("Default participants for sessions",coerce=int)
 
     submit = SubmitField("Save Campaign")
