@@ -14,8 +14,43 @@
 {% include "sidebars.js" %}
 makeMarkdownEditor("description");
 
-makeMultiSelect("associated_parties", "Available", "Parties", "partymember-select");
-makeMultiSelect("default_participants", "Available", "Participants", "partymember-select");
+var parties_select;
+var member_select;
+
+function onSelectParty(id) {
+    var name = $("#associated_parties option[value=" + id + "]").text();
+
+    if (name) {
+        var unselected_members = $("#default_participants optgroup[label='" + name + "'] option").not(":selected");
+
+        if (unselected_members.length > 0) {
+            if (confirm("Do you want to add the party members of '" + name + "' to the default participants?")) {
+                $(unselected_members).each(function() {
+                    member_select.multiSelect('select', $(this).attr("value"));
+                });
+            }
+        }
+    }
+}
+
+function onDeselectParty(id) {
+    var name = $("#associated_parties option[value=" + id + "]").text();
+
+    if (name) {
+        var selected_members = $("#default_participants optgroup[label='" + name + "'] option:selected");
+
+        if (selected_members.length > 0) {
+            if (confirm("Do you want to remove the party members of '" + name + "' from the default participants?")) {
+                $(selected_members).each(function() {
+                    member_select.multiSelect('deselect', $(this).attr("value"));
+                });
+            }
+        }
+    }
+}
+
+parties_select = makeMultiSelect("associated_parties", "Available", "Parties", "partymember-select", onSelectParty, onDeselectParty);
+member_select = makeMultiSelect("default_participants", "Available", "Participants", "partymember-select");
 </script>
 {% endblock %}
 
