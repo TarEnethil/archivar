@@ -1,7 +1,7 @@
-function makeMultiSelect(id, selectableHeading, selectionHeading, cssCls) {
+function makeMultiSelect(id, selectableHeading, selectionHeading, cssCls, onSelectFunc=undefined, onDelectFunc=undefined) {
 var filter = $('<input type="text" class="search-filter" autocomplete="off" placeholder="filter">')
 filter.insertAfter("label[for=" + id + "]");
-$("#" + id).multiSelect({
+var s = $("#" + id).multiSelect({
     keepOrder: true,
     selectableHeader: selectableHeading,
     selectionHeader: selectionHeading,
@@ -12,11 +12,21 @@ $("#" + id).multiSelect({
         searchString += ', #' + this.$container.attr('id')+' .ms-elem-selection.ms-selected';
         this.filt = filter.quicksearch(searchString)
     },
-    afterSelect: function(){
+    afterSelect: function(value) {
         this.filt.cache();
+
+        if (onSelectFunc != undefined) {
+            onSelectFunc(value);
+        }
     },
-    afterDeselect: function(){
+    afterDeselect: function(value) {
         this.filt.cache();
+
+        if (onDelectFunc != undefined) {
+            onDelectFunc(value);
+        }
     }
 });
+
+return s;
 }
