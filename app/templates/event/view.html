@@ -4,18 +4,12 @@
 {% block scripts %}
 {{ super() }}
 
-{{ include_js(['moment']) }}
+{{ include_js(['moment', 'util']) }}
 
 {% if event.is_deletable_by_user() %}
 <script>
     $(document).ready(function() {
-        $("#delete-link").click(function(e) {
-            var p = confirm("Are you sure you want to delete '{{ event.name }}'?");
-
-            if (!p) {
-                e.preventDefault();
-            }
-        });
+        makeDeleteLink("delete-link", "{{ event.name }}");
     });
 </script>
 {% endif %}

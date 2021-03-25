@@ -8,14 +8,18 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['bootstrap-select']) }}
+{{ include_js(['bootstrap-select', 'bootbox']) }}
 <script>
 $(".finalize-btn").click(function(e) {
-    var sure = confirm("Are you sure you want to finalize the calendar? After doing so, you can only change the names, abbreviations and descriptions of epochs, months and days.");
-
-    if (sure == false) {
-        e.preventDefault();
-    }
+    e.preventDefault();
+    var button = $(this);
+    var msg = "Are you sure you want to finalize the calendar? After doing so, you can only change the names, abbreviations and descriptions of epochs, months and days.";
+    bootbox.confirm(msg, function(result) {
+        if (true == result) {
+            $(button).unbind('click');
+            e.currentTarget.click();
+        }
+    });
 });
 
 $("#phase-button").click(function(e) {

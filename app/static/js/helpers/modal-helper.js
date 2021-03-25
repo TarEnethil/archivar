@@ -331,13 +331,13 @@ class AsyncCategoryLoader {
       var sure = true;
 
       if (_this.get_active_elements().length > 0) {
-        sure = confirm("If you refresh, your current selection will be lost. Continue?");
-      }
-
-      if (sure) {
-        _this.loaded = false;
-        $("#" + _this.modal_id + " .modal-body").empty();
-        _this.open_modal();
+        bootbox.confirm("If you refresh, your current selection will be lost. Continue?", function(result) {
+          if (result) {
+            _this.loaded = false;
+            $("#" + _this.modal_id + " .modal-body").empty();
+            _this.open_modal();
+          }
+        });
       }
     });
 

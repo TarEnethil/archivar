@@ -2,18 +2,12 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['moment']) }}
+{{ include_js(['moment', 'util']) }}
 
 <script type="text/javascript">
 {% if session.is_deletable_by_user() %}
     $(document).ready(function() {
-        $("#delete-link").click(function(e) {
-            var p = confirm("Are you sure you want to delete '{{ session.title }}'?");
-
-            if (!p) {
-                e.preventDefault();
-            }
-        });
+        makeDeleteLink("delete-link", "{{ session.title }}");
     });
 {% endif %}
 </script>

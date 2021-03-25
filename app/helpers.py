@@ -361,8 +361,25 @@ def include_js(scripts):
         "quicksearch" : {
             "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/jquery.quicksearch/2.4.0/jquery.quicksearch.min.js"],
             "local" : ["{}js/jquery.quicksearch.min.js".format(local_url)]
+        },
+        "bootbox" : {
+            "cdn" : ["https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"],
+            "local" : ["{}js/bootbox.min.js".format(local_url)],
+            "helper" : ["{}js/helpers/bootbox-helper.js".format(local_url)]
+        },
+        "util" : {
+            "cdn" : [],
+            "local" : [],
+            "helper" : ["{}js/helpers/util.js".format(local_url)]
         }
     }
+
+    # TODO: better way for dependencies between scripts
+    # markdown-editor includes the modals, which in turn use a confirm box
+    # util uses bootbox too
+    if "markdown-editor" in scripts or "util" in scripts:
+        if not "bootbox" in scripts:
+            scripts.append("bootbox")
 
     for script in scripts:
         if script in s:

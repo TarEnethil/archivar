@@ -8,7 +8,7 @@
 
 {% block scripts %}
 {{ super() }}
-{{ include_js(['markdown-editor', 'multi-select', 'quicksearch']) }}
+{{ include_js(['markdown-editor', 'multi-select', 'quicksearch', 'bootbox']) }}
 
 <script>
 {% include "sidebars.js" %}
@@ -24,11 +24,13 @@ function onSelectParty(id) {
         var unselected_members = $("#default_participants optgroup[label='" + name + "'] option").not(":selected");
 
         if (unselected_members.length > 0) {
-            if (confirm("Do you want to add the party members of '" + name + "' to the default participants?")) {
-                $(unselected_members).each(function() {
-                    member_select.multiSelect('select', $(this).attr("value"));
-                });
-            }
+            bootbox.confirm("Do you want to add the party members of '" + name + "' to the default participants?", function(result) {
+                if (result) {
+                    $(unselected_members).each(function() {
+                        member_select.multiSelect('select', $(this).attr("value"));
+                    });
+                }
+            });
         }
     }
 }
@@ -40,15 +42,16 @@ function onDeselectParty(id) {
         var selected_members = $("#default_participants optgroup[label='" + name + "'] option:selected");
 
         if (selected_members.length > 0) {
-            if (confirm("Do you want to remove the party members of '" + name + "' from the default participants?")) {
-                $(selected_members).each(function() {
-                    member_select.multiSelect('deselect', $(this).attr("value"));
-                });
-            }
+            bootbox.confirm("Do you want to remove the party members of '" + name + "' from the default participants?", function(result) {
+                if (result) {
+                    $(selected_members).each(function() {
+                        member_select.multiSelect('deselect', $(this).attr("value"));
+                    });
+                }
+            });
         }
     }
 }
-
 parties_select = makeMultiSelect("associated_parties", "Available", "Parties", "partymember-select", onSelectParty, onDeselectParty);
 member_select = makeMultiSelect("default_participants", "Available", "Participants", "partymember-select");
 </script>
