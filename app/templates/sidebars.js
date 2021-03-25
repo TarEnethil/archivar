@@ -379,7 +379,7 @@ function makeMarkdownEditor(id, withHeading=true) {
   new EasyMDE(generateMarkdownConfig(id, withHeading))
 }
 
-/* stacking multiple modals does not work well, as the backgrops all have the same z-index.
+/* stacking multiple modals does not work well, as the backdrops all have the same z-index.
 this piece of code adjust the z-indexes of the backdrops whenever a modal is closed or opened
 taken from https://stackoverflow.com/questions/51547165/multiple-modals-in-bootstrap4-not-working/61305365#61305365 */
 $(document).ready(function() {
