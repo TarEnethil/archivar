@@ -1,6 +1,74 @@
 # Changelog
 
 
+## Version 0.6.1 (released 2021-03-26)
+
+Version 0.6.1 took some time due to a pause in development, but things should be back on track now.
+Besides many bugfixes, the overhaul of the permission system is probably the biggest single change.
+There are now only 3 roles: Admin, Moderator and User.
+What each of these roles can do is documented in ROLES.md, although I am not satisfied with the role system yet.
+Characters, Parties and Sessions now have a profile picture, we have some nicer prompt-Windows thanks to bootbox.js and DMs can now edit parties they DM for.
+
+* Campaign: refactor javascript
+* Template: use nicer confirm boxes
+* Campaign: optionally add/del participants on party (de)select
+* Multi: associate Parties with Campaigns
+* Multi: only delete old profile pictures if present
+* DB: fix migration with new Character model
+* Base: also delete profile picture thumbnail
+* Journal: add infobox where possible
+* User: fix char visibility on profile
+* Base: misc comments, code style
+* Base: improve filename duplication avoidance
+* Multi: don't reuse profile picture names
+* MapNodeType: use refactored upload functions
+* Media: use refactored upload functions
+* Multi: Fail create/edit on failed image operation
+* Base: refactor profile picture upload
+* Forms: use correct FileField
+* Campaign: fix profile picture upload
+* Bump jinja2 from 2.10.1 to 2.11.3
+* Campaign: add profile picture
+* Character: add profile picture
+* Bump pillow from 7.1.1 to 8.1.1
+* Party: add profile picture
+* Base: refactor filenames and thumbnail generation
+* Docs: update README, add ROLES
+* JS: Fix momentjs with datatable pagination
+* Base: update datatables statics
+* Session: fix date for session.edit
+* Base: update momentjs
+* Fix Session page for multi-campaign dms
+* update requirements.txt
+* Map: only use javascript log in debug mode
+* Mixins: move is_viewable to SimplePermissionChecker
+* Map: add number of locations to map list
+* User: improve markdown-editor-height handling
+* User: remove media sidebar settings
+* Base: cleanups from role adjustments
+* Map: adjust to new roles
+* Wiki: adjust to new roles
+* User: adjust to new roles
+* Session: adjust to new roles
+* Party: adjust to new roles
+* Main: move page title from GeneralSettings to UserConfig
+* Main: adjust to new roles
+* Events: ajdust to new roles
+* Journal: adjust to new roles
+* Character: adjust to new roles + add visibility
+* Campaign: adjust to new roles
+* Calendar: adjust to new roles
+* Media: more permission overhaul
+* Sidebars: improve AsyncCategoryLoader
+* Media: simplify permission handling
+* Mixins: Add SimplePermissionChecker
+* Base: simplify roles
+* Devtools: add master-branch check to make_release.sh
+* Media: fix file editing
+* Media: only delete files if they exist
+* Media: remove fake button from Template
+
+
 ## Version 0.6.0 (released 2020-05-13)
 
 The main focus on this release was the upgrade from Bootstrap 3 to Bootstrap 4.
