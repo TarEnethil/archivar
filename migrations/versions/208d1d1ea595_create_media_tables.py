@@ -1,4 +1,4 @@
-"""empty message
+"""create media tables
 
 Revision ID: 208d1d1ea595
 Revises: 4b73dd610f13

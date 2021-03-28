@@ -23,7 +23,7 @@ depends_on = None
 def upgrade():
     print("generating thumbnails for existing images")
 
-    files = MediaItem.query.all()
+    files = MediaItem.query.with_entities(MediaItem.filename).all()
 
     correct = 0
     exceptions = 0
@@ -31,8 +31,7 @@ def upgrade():
     skipped_no_file = 0
 
     for f in files:
-
-        if f.is_image():
+        if (f.split(".")[-1]).lower() in current_app.config["MAPNODES_FILE_EXT"]:
             filepath = path.join(current_app.config["MEDIA_DIR"], f.filename)
             if path.isfile(filepath):
                 try:
@@ -51,11 +50,12 @@ def upgrade():
             skipped_no_image += 1
             print("skipping {} as it is not an image".format(f.filename))
 
-    print("proceseed {} files".format(len(files)))
-    print("skipped {} as they weren't images".format(skipped_no_image))
-    print("skipped {} because the file did not exist".format(skipped_no_file))
-    print("error occured on {} images".format(exceptions))
-    print("generated {} thumbnails".format(correct))
+    if len(files) > 0:
+        print("proceseed {} files".format(len(files)))
+        print("skipped {} as they weren't images".format(skipped_no_image))
+        print("skipped {} because the file did not exist".format(skipped_no_file))
+        print("error occured on {} images".format(exceptions))
+        print("generated {} thumbnails".format(correct))
 
 def downgrade():
     pass

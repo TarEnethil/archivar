@@ -1,4 +1,4 @@
-"""empty message
+"""add media filesize column
 
 Revision ID: 3f69e0990764
 Revises: 208d1d1ea595

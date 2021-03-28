@@ -1,6 +1,6 @@
 alembic==1.0.0
 blinker==1.4
-cffi==1.12.2
+cffi==1.14.5
 click==6.7
 colour==0.1.5
 decorator==4.3.0
@@ -20,7 +20,7 @@ itsdangerous==0.24
 Jinja2==2.11.3
 Mako==1.0.7
 Markdown==3.1
-MarkupSafe==1.0
+MarkupSafe==1.1.1
 misaka==2.1.1
 Pillow==8.1.1
 pycparser==2.19

@@ -1,4 +1,4 @@
-"""empty message
+"""drop max filesize
 
 Revision ID: cac89e217f3e
 Revises: ee193fa91c72

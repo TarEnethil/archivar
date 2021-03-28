@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  archivar:
+    image: archivar:latest
+    container_name: archivar
+    restart: unless-stopped
+    ports:
+      - 8000:5000
+    volumes:
+      - ./data/:/opt/data/
