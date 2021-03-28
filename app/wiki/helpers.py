@@ -67,10 +67,19 @@ def prepare_wiki_nav():
 
     # nested touples for categories
     for entry in entries:
-        if entry[0] not in cat_dict:
-            cat_dict[entry[0]] = []
+        # don't include main page, it is added statically
+        if entry[1] == 1:
+            continue
 
-        cat_dict[entry[0]].append(entry[1:4])
+        if entry[0] == None:
+            cat = ""
+        else:
+            cat = entry[0]
+
+        if cat not in cat_dict:
+            cat_dict[cat] = []
+
+        cat_dict[cat].append(entry[1:4])
 
     return OrderedDict(sorted(cat_dict.items(), key=lambda t: t[0]))
 

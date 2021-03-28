@@ -21,7 +21,7 @@ function reset() {
     echo "rolling back changes"
 
     rm $1/CHANGELOG.tmp
-    git checkout $1/CHANGELOG
+    git checkout $1/CHANGELOG.md
     git checkout $1/app/version.py
     git checkout $1/requirements.txt
 }
@@ -57,7 +57,7 @@ function make_changelog() {
 
     echo "    found previous tag $last_tag"
 
-    CLOG=$1/CHANGELOG
+    CLOG=$1/CHANGELOG.md
 
     if [[ ! -f "$CLOG" ]]; then
         err "could not find changelog at $CLOG"
@@ -110,7 +110,7 @@ function make_commit() {
     echo "making commit for $2"
     msg="Increase Version to $2, add Changelog"
     git add $1/app/version.py
-    git add $1/CHANGELOG
+    git add $1/CHANGELOG.md
     git add $1/requirements.txt
     git commit -sm "$msg"
 
@@ -155,10 +155,10 @@ if [[ "$#" -ne 1 ]]; then
     exit 1
 fi
 
-# check runpath by trying to find CHANGELOG
+# check runpath by trying to find CHANGELOG.md
 # only running this tool from the project root or ./devtools works
-if [[ ! -f CHANGELOG ]]; then
-    if [[ -f ../CHANGELOG ]]; then
+if [[ ! -f CHANGELOG.md ]]; then
+    if [[ -f ../CHANGELOG.md ]]; then
         P=..
     else
         err "could not determine run-path"

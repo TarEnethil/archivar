@@ -13,7 +13,7 @@ flask db upgrade
 flask run
 ```
 
-Be sure to work on your own branch(es), preferably branched from the next*-branch for the upcoming version.
+Be sure to work on your own branch(es).
 
 ## Changes to the database
 

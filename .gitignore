@@ -4,6 +4,7 @@ app/*.pyc
 app.db*
 *.sh
 !devtools/*.sh
+!entrypoint.sh
 venv/
 data/map/*
 !data/map/.gitkeep
@@ -13,14 +14,7 @@ data/media/*
 data/media/thumbnails/*
 !data/media/thumbnails/.gitkeep
 data/mapnodes/*
-!data/mapnodes/village.png
-!data/mapnodes/town.png
-!data/mapnodes/city.png
-!data/mapnodes/capital.png
-!data/mapnodes/poi.png
-!data/mapnodes/quest.png
-!data/mapnodes/note.png
-!data/mapnodes/ruins.png
+!data/mapnodes/.gitkeep
 data/logos/*
 !data/logos/.gitkeep
 data/logos/thumbnails/*

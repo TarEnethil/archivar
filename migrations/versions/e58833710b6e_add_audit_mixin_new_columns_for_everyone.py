@@ -1,4 +1,4 @@
-"""Add audit mixin -> new columns for everyone!
+"""Add audit mixin
 
 Revision ID: e58833710b6e
 Revises: 77e07482a0b4

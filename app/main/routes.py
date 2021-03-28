@@ -15,8 +15,10 @@ from app.user.models import User
 from app.wiki.models import WikiSetting, WikiEntry
 from collections import OrderedDict
 from datetime import datetime
+from distutils.dir_util import copy_tree
 from flask import render_template, flash, redirect, url_for, request, send_from_directory, current_app
 from flask_login import current_user, login_user, login_required, logout_user
+from os import path
 from app.version import version
 from werkzeug.urls import url_parse
 
@@ -130,7 +132,7 @@ def settings():
 
         db.session.commit()
     else:
-        form.world_name.data =  settings.world_name
+        form.world_name.data = settings.world_name
         form.welcome_page.data = settings.welcome_page
         form.quicklinks.data = settings.quicklinks
 
@@ -148,18 +150,14 @@ def install():
                 for line in markdown_file:
                     welcome_msg += line
 
-            setting = GeneralSetting(title="My Page", welcome_page=welcome_msg)
+            settings = GeneralSetting(welcome_page=welcome_msg)
+            db.session.add(settings)
 
             calendar_setting = CalendarSetting(finalized=False)
             map_setting = MapSetting(icon_anchor=0)
-            wiki_setting = WikiSetting(default_visible=False)
-            event_setting = EventSetting(default_visible=False)
-            media_setting = MediaSetting(default_visible=False)
-
-            event_cat = EventCategory(name="Default", color="#000000")
-            media_cat = MediaCategory(name="Default")
-            db.session.add(event_cat)
-            db.session.add(media_cat)
+            wiki_setting = WikiSetting()
+            event_setting = EventSetting()
+            media_setting = MediaSetting()
 
             db.session.add(calendar_setting)
             db.session.add(map_setting)
@@ -167,7 +165,11 @@ def install():
             db.session.add(event_setting)
             db.session.add(media_setting)
 
-            # TODO: maybe remove the default icons as well
+            event_cat = EventCategory(name="Default", color="#000000")
+            media_cat = MediaCategory(name="Default")
+            db.session.add(event_cat)
+            db.session.add(media_cat)
+
             if form.default_mapnodes.data:
                 village = MapNodeType(name="Village", description="A small village with not more than 1000 inhabitants", icon_file="village.png", icon_height=35, icon_width=35)
                 town = MapNodeType(name="Town", description="Towns usually have up to 5000 people living in them", icon_file="town.png", icon_height=35, icon_width=35)
@@ -177,6 +179,10 @@ def install():
                 quest = MapNodeType(name="Quest", description="An old school quest marker", icon_file="quest.png", icon_height=35, icon_width=35)
                 ruins = MapNodeType(name="Ruins", description="Forgotten and abandoned ruins", icon_file="ruins.png", icon_height=35, icon_width=35)
                 note = MapNodeType(name="Note", description="For additional information", icon_file="note.png", icon_height=35, icon_width=35)
+
+                # copy files from install dir
+                # TODO: catch exceptions
+                copy_tree(path.join(current_app.config["ROOT_DIR"], "install", "mapnodes"), current_app.config["MAPNODES_DIR"])
 
                 db.session.add(village)
                 db.session.add(town)
@@ -202,7 +208,7 @@ def install():
 
             db.session.commit()
 
-            wiki_home = WikiEntry(title="Wiki index page", content="Feel free to edit this...", dm_content="wiki entries have dm-only notes as well!", is_visible=True)
+            wiki_home = WikiEntry(title="Wiki index page", content="Feel free to edit this...", is_visible=True)
             db.session.add(wiki_home)
             db.session.commit()
 
