@@ -11,6 +11,7 @@ from werkzeug import check_password_hash
 
 no_perm_url = "main.index"
 
+
 @bp.route("/<username>")
 @login_required
 def profile(username):
@@ -18,9 +19,11 @@ def profile(username):
 
     return render_template("user/profile.html", user=user, title=page_title("View User '%s'" % user.username))
 
+
+# TODO: Fix C901
 @bp.route("/<username>/edit", methods=["GET", "POST"])
 @login_required
-def edit(username):
+def edit(username):  # noqa: C901
     user = User.query.filter_by(username=username).first_or_404()
 
     if not user.is_editable_by_user():
@@ -75,6 +78,7 @@ def edit(username):
 
     return render_template("user/edit.html", form=form, user=user, title=page_title("Edit User '%s'" % user.username))
 
+
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 @admin_required(no_perm_url)
@@ -87,7 +91,7 @@ def create():
         new_user = User(username=form.username.data)
         new_user.set_password(form.password.data)
 
-        new_user_role = form.role.data
+        new_user.role = form.role.data
         new_user.created = datetime.utcnow()
 
         db.session.add(new_user)
@@ -97,6 +101,7 @@ def create():
         return redirect(new_user.view_url())
     else:
         return render_template("user/create.html", form=form, title=page_title("Add User"))
+
 
 @bp.route("/password", methods=["GET", "POST"])
 @login_required
@@ -117,6 +122,7 @@ def password():
 
     return render_template("user/password.html", form=form, title=page_title("Change Password"))
 
+
 @bp.route("/list")
 @login_required
 @admin_required(no_perm_url)
@@ -124,6 +130,7 @@ def list():
     users = User.query.all()
 
     return render_template("user/list.html", users=users, title=page_title("User List"))
+
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
