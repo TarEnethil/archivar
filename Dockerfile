@@ -12,7 +12,7 @@ ENV PYTHONUNBUFFERED 1
 
 # mostly dependencies for building Pillow
 RUN apk update && \
-    apk add --no-cache build-base gcc jpeg-dev libffi-dev python3-dev zlib-dev
+    apk add --no-cache build-base gcc git jpeg-dev libffi-dev python3-dev zlib-dev
 
 # lint with flake8
 RUN pip install --upgrade pip
