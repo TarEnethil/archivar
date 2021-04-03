@@ -5,11 +5,11 @@ from app.party import bp
 from app.party.forms import PartyForm
 from app.party.helpers import gen_party_members_choices
 from app.party.models import Party
-from flask import render_template, flash, redirect, url_for, request, jsonify, current_app
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
-from os import path
 
 no_perm_url = "character.list"
+
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
@@ -23,15 +23,12 @@ def create():
         members = Character.query.filter(Character.id.in_(form.members.data)).all()
         new_party = Party(name=form.name.data, description=form.description.data, members=members)
 
-        msg = "Party was created."
-        level = "success"
-
         success = True
         if form.profile_picture.data:
             success, filename = upload_profile_picture(form.profile_picture.data)
             new_party.profile_picture = filename
 
-        if success == False:
+        if success is False:
             flash("Error while creating party.", "error")
         else:
             db.session.add(new_party)
@@ -41,9 +38,11 @@ def create():
 
     return render_template("party/create.html", form=form, title=page_title("Add Party"))
 
+
+# TODO: Fix C901
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-def edit(id, name=None):
+def edit(id, name=None):  # noqa: C901
     party = Party.query.filter_by(id=id).first_or_404()
 
     if not party.is_editable_by_user():
@@ -76,7 +75,7 @@ def edit(id, name=None):
 
             party.profile_picture = filename
 
-        if success == False:
+        if success is False:
             flash("Error while editing party.", "error")
         else:
             db.session.commit()
@@ -95,7 +94,9 @@ def edit(id, name=None):
 
             form.members.data = members
 
-    return render_template("party/edit.html", form=form, party=party, title=page_title("Edit Party '{}'".format(party.name)))
+    return render_template("party/edit.html", form=form, party=party,
+                           title=page_title("Edit Party '{}'".format(party.name)))
+
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
@@ -104,6 +105,7 @@ def view(id, name=None):
     party = Party.query.filter_by(id=id).first_or_404()
 
     return render_template("party/view.html", party=party, title=page_title("View Party '{}'".format(party.name)))
+
 
 @bp.route("/delete/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
@@ -120,9 +122,10 @@ def delete(id, name=None):
 
     return redirect(url_for("character.list"))
 
+
 @bp.route("/sidebar", methods=["GET"])
 @login_required
 def sidebar():
-    party = Party.query.with_entities(Party.id, Party.name).order_by(Party.name.asc()).all();
+    party = Party.query.with_entities(Party.id, Party.name).order_by(Party.name.asc()).all()
 
-    return jsonify(party);
+    return jsonify(party)

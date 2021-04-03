@@ -2,7 +2,9 @@ from app import db
 from app.calendar import bp
 from app.calendar.forms import EpochForm, MonthForm, DayForm, MoonForm
 from app.calendar.models import CalendarSetting, Epoch, Month, Day, Moon
-from app.calendar.helpers import get_next_epoch_order, get_next_month_order, get_next_day_order, calendar_sanity_check, gen_calendar_preview_data, gen_calendar_stats, get_years_in_epoch, get_epochs, gen_epoch_choices, gen_month_choices, gen_day_choices
+from app.calendar.helpers import get_next_epoch_order, get_next_month_order, get_next_day_order, \
+    calendar_sanity_check, gen_calendar_preview_data, gen_calendar_stats, get_years_in_epoch, get_epochs, \
+    gen_epoch_choices, gen_month_choices, gen_day_choices
 from app.event.forms import EventForm
 from app.event.helpers import get_event_categories
 from app.helpers import page_title, admin_required, stretch_color, moderator_required, deny_access
@@ -11,13 +13,14 @@ from flask_login import login_required, current_user
 
 no_perm_url = "main.index"
 
+
 @bp.route("/settings", methods=["GET"])
 @login_required
 @moderator_required(no_perm_url)
 def settings():
     cset = CalendarSetting.query.get(1)
 
-    if cset.finalized == False:
+    if cset.finalized is False:
         if current_user.is_moderator():
             return deny_access(no_perm_url, "A Moderator can only edit the Calendar after it has been finalized.")
 
@@ -26,7 +29,9 @@ def settings():
     days = Day.query.order_by(Day.order.asc()).all()
     moons = Moon.query.order_by(Moon.name.asc()).all()
 
-    return render_template("calendar/settings.html", settings=cset, epochs=epochs, months=months, days=days, moons=moons, title=page_title("Calendar Settings"))
+    return render_template("calendar/settings.html", settings=cset, epochs=epochs, months=months, days=days,
+                           moons=moons, title=page_title("Calendar Settings"))
+
 
 @bp.route("/", methods=["GET"])
 @login_required
@@ -34,7 +39,7 @@ def index():
     cset = CalendarSetting.query.get(1)
     calendar = None
 
-    if cset.finalized == True:
+    if cset.finalized is True:
         calendar = gen_calendar_stats()
     elif current_user.is_admin():
         flash("The calendar has not been finalized, you have been redirected to the calendar setup.", "warning")
@@ -48,7 +53,9 @@ def index():
 
     categories = get_event_categories()
 
-    return render_template("calendar/index.html", settings=cset, calendar=calendar, epochs=epochs, years=years, categories=categories, title=page_title("Calendar"))
+    return render_template("calendar/index.html", settings=cset, calendar=calendar, epochs=epochs, years=years,
+                           categories=categories, title=page_title("Calendar"))
+
 
 @bp.route("/view", methods=["GET"])
 @login_required
@@ -56,41 +63,43 @@ def view():
     cset = CalendarSetting.query.get(1)
     stats = None
 
-    if cset.finalized == True:
+    if cset.finalized is True:
         stats = gen_calendar_stats()
 
     return render_template("calendar/view.html", settings=cset, stats=stats, title=page_title("View Calendar"))
+
 
 @bp.route("/check", methods=["GET"])
 @login_required
 @admin_required(no_perm_url)
 def check():
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
-            flash("Calendar has already been finalized, check not possible.", "danger")
-            return redirect(url_for('calendar.index'))
+    if cset.finalized is True:
+        flash("Calendar has already been finalized, check not possible.", "danger")
+        return redirect(url_for('calendar.index'))
 
     status = calendar_sanity_check()
 
-    if status == True:
+    if status is True:
         flash("All checks have passed. The calendar works with this configuration.", "success")
     else:
         flash("There were errors checking the calendar. See the other messages for more details.", "danger")
 
     return redirect(url_for("calendar.settings"))
 
+
 @bp.route("/preview", methods=["GET"])
 @login_required
 @admin_required(no_perm_url)
 def preview():
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("Calendar has already been finalized, preview not possible.", "danger")
         return redirect(url_for('calendar.index'))
 
     status = calendar_sanity_check()
 
-    if status == False:
+    if status is False:
         flash("There were errors previewing the calendar. See the other messages for more details.", "danger")
         return redirect(url_for("calendar.settings"))
     else:
@@ -110,20 +119,22 @@ def preview():
     preview_form.month.choices = gen_month_choices()
     preview_form.day.choices = gen_day_choices(1)
 
-    return render_template("calendar/preview.html", calendar=stats, form=preview_form, title=page_title("Preview Calendar"))
+    return render_template("calendar/preview.html", calendar=stats, form=preview_form,
+                           title=page_title("Preview Calendar"))
+
 
 @bp.route("/finalize", methods=["GET"])
 @login_required
 @admin_required(no_perm_url)
 def finalize():
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
-            flash("Calendar has already been finalized.", "danger")
-            return redirect(url_for('calendar.index'))
+    if cset.finalized is True:
+        flash("Calendar has already been finalized.", "danger")
+        return redirect(url_for('calendar.index'))
 
     status = calendar_sanity_check()
 
-    if status == False:
+    if status is False:
         flash("There were errors finalizing the calendar. See the other messages for more details.", "danger")
         return redirect(url_for("calendar.settings"))
 
@@ -135,12 +146,13 @@ def finalize():
     flash("The calendar was finalized.", "success")
     return redirect(url_for('calendar.settings'))
 
+
 @bp.route("/epoch/create", methods=["GET", "POST"])
 @login_required
 @admin_required(no_perm_url)
 def epoch_create():
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't add new epochs.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -151,7 +163,12 @@ def epoch_create():
     if form.validate_on_submit():
         order_num = get_next_epoch_order()
 
-        new_epoch = Epoch(name=form.name.data, abbreviation=form.abbreviation.data, description=form.description.data, years=form.years.data, circa=form.circa.data, order=order_num)
+        new_epoch = Epoch(name=form.name.data,
+                          abbreviation=form.abbreviation.data,
+                          description=form.description.data,
+                          years=form.years.data,
+                          circa=form.circa.data,
+                          order=order_num)
 
         db.session.add(new_epoch)
         db.session.commit()
@@ -160,6 +177,7 @@ def epoch_create():
         return redirect(url_for("calendar.settings"))
 
     return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Add Epoch"))
+
 
 @bp.route("/epoch/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
@@ -170,7 +188,7 @@ def epoch_edit(id, name=None):
     form.submit.label.text = "Save Epoch"
 
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         del form.years
         del form.circa
     else:
@@ -184,7 +202,7 @@ def epoch_edit(id, name=None):
         epoch.abbreviation = form.abbreviation.data
         epoch.description = form.description.data
 
-        if cset.finalized == False:
+        if cset.finalized is False:
             epoch.years = form.years.data
             epoch.circa = form.circa.data
 
@@ -197,18 +215,20 @@ def epoch_edit(id, name=None):
         form.abbreviation.data = epoch.abbreviation
         form.description.data = epoch.description
 
-        if cset.finalized == False:
+        if cset.finalized is False:
             form.years.data = epoch.years
             form.circa.data = epoch.circa
 
-    return render_template("calendar/form.html", item=epoch, form=form, heading=heading, title=page_title("Edit Epoch '{}'".format(epoch.name)))
+    return render_template("calendar/form.html", item=epoch, form=form, heading=heading,
+                           title=page_title("Edit Epoch '{}'".format(epoch.name)))
+
 
 @bp.route("/epoch/delete/<int:id>/<string:name>", methods=["GET"])
 @login_required
 @admin_required(no_perm_url)
 def epoch_delete(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't delete epochs.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -226,7 +246,7 @@ def epoch_delete(id, name=None):
 @admin_required(no_perm_url)
 def epoch_up(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't change the order of epochs.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -248,12 +268,13 @@ def epoch_up(id, name=None):
     flash("Order of '{}' and '{}' has been swapped.".format(epoch_to_up.name, epoch_to_down.name), "success")
     return redirect(url_for("calendar.settings"))
 
+
 @bp.route("/epoch/down/<int:id>/<string:name>", methods=["GET"])
 @login_required
 @admin_required(no_perm_url)
 def epoch_down(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't change the order of epochs.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -275,12 +296,13 @@ def epoch_down(id, name=None):
     flash("Order of '{}' and '{}' has been swapped.".format(epoch_to_down.name, epoch_to_up.name), "success")
     return redirect(url_for("calendar.settings"))
 
+
 @bp.route("/month/create", methods=["GET", "POST"])
 @login_required
 @admin_required(no_perm_url)
 def month_create():
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't add new months.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -291,7 +313,11 @@ def month_create():
     if form.validate_on_submit():
         order_num = get_next_month_order()
 
-        new_month = Month(name=form.name.data, abbreviation=form.abbreviation.data, description=form.description.data, days=form.days.data, order=order_num)
+        new_month = Month(name=form.name.data,
+                          abbreviation=form.abbreviation.data,
+                          description=form.description.data,
+                          days=form.days.data,
+                          order=order_num)
 
         db.session.add(new_month)
         db.session.commit()
@@ -300,6 +326,7 @@ def month_create():
         return redirect(url_for("calendar.settings"))
 
     return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Add Month"))
+
 
 @bp.route("/month/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
@@ -310,7 +337,7 @@ def month_edit(id, name=None):
     form.submit.label.text = "Save Month"
 
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         del form.days
     else:
         if current_user.is_moderator():
@@ -323,7 +350,7 @@ def month_edit(id, name=None):
         month.abbreviation = form.abbreviation.data
         month.description = form.description.data
 
-        if cset.finalized == False:
+        if cset.finalized is False:
             month.days = form.days.data
 
         db.session.commit()
@@ -335,17 +362,19 @@ def month_edit(id, name=None):
         form.abbreviation.data = month.abbreviation
         form.description.data = month.description
 
-        if cset.finalized == False:
+        if cset.finalized is False:
             form.days.data = month.days
 
-    return render_template("calendar/form.html", item=month, form=form, heading=heading, title=page_title("Edit Month '{}'".format(month.name)))
+    return render_template("calendar/form.html", item=month, form=form, heading=heading,
+                           title=page_title("Edit Month '{}'".format(month.name)))
+
 
 @bp.route("/month/delete/<int:id>/<string:name>", methods=["GET"])
 @login_required
 @admin_required(no_perm_url)
 def month_delete(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't deletet months.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -363,7 +392,7 @@ def month_delete(id, name=None):
 @admin_required(no_perm_url)
 def month_up(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't change the order of months.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -385,12 +414,13 @@ def month_up(id, name=None):
     flash("Order of '{}' and '{}' has been swapped.".format(month_to_up.name, month_to_down.name), "success")
     return redirect(url_for("calendar.settings"))
 
+
 @bp.route("/month/down/<int:id>/<string:name>", methods=["GET"])
 @login_required
 @admin_required(no_perm_url)
 def month_down(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't change the order of months.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -412,12 +442,13 @@ def month_down(id, name=None):
     flash("Order of '{}' and '{}' has been swapped.".format(month_to_down.name, month_to_up.name), "success")
     return redirect(url_for("calendar.settings"))
 
+
 @bp.route("/day/create", methods=["GET", "POST"])
 @login_required
 @admin_required(no_perm_url)
 def day_create():
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't add new days.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -428,7 +459,10 @@ def day_create():
     if form.validate_on_submit():
         order_num = get_next_day_order()
 
-        new_day = Day(name=form.name.data, abbreviation=form.abbreviation.data, description=form.description.data, order=order_num)
+        new_day = Day(name=form.name.data,
+                      abbreviation=form.abbreviation.data,
+                      description=form.description.data,
+                      order=order_num)
 
         db.session.add(new_day)
         db.session.commit()
@@ -438,12 +472,13 @@ def day_create():
 
     return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Add Day"))
 
+
 @bp.route("/day/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
 @moderator_required(no_perm_url)
 def day_edit(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == False:
+    if cset.finalized is False:
         if current_user.is_moderator():
             return deny_access(no_perm_url, "A Moderator can only edit the Calendar after it has been finalized.")
 
@@ -467,14 +502,16 @@ def day_edit(id, name=None):
         form.abbreviation.data = day.abbreviation
         form.description.data = day.description
 
-    return render_template("calendar/form.html", item=day, form=form, heading=heading, title=page_title("Edit Day '{}'".format(day.name)))
+    return render_template("calendar/form.html", item=day, form=form, heading=heading,
+                           title=page_title("Edit Day '{}'".format(day.name)))
+
 
 @bp.route("/day/delete/<int:id>/<string:name>", methods=["GET"])
 @login_required
 @admin_required(no_perm_url)
 def day_delete(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't delete days.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -492,7 +529,7 @@ def day_delete(id, name=None):
 @admin_required(no_perm_url)
 def day_up(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't change the order of days.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -514,12 +551,13 @@ def day_up(id, name=None):
     flash("Order of '{}' and '{}' has been swapped.".format(day_to_up.name, day_to_down.name), "success")
     return redirect(url_for("calendar.settings"))
 
+
 @bp.route("/day/down/<int:id>/<string:name>", methods=["GET"])
 @login_required
 @admin_required(no_perm_url)
 def day_down(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't change the order of days.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -541,12 +579,13 @@ def day_down(id, name=None):
     flash("Order of '{}' and '{}' has been swapped.".format(day_to_down.name, day_to_up.name), "success")
     return redirect(url_for("calendar.settings"))
 
+
 @bp.route("/moon/create", methods=["GET", "POST"])
 @login_required
 @admin_required(no_perm_url)
 def moon_create():
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't add new moons.", "danger")
         return redirect(url_for('calendar.settings'))
 
@@ -555,7 +594,12 @@ def moon_create():
     form.submit.label.text = "Create Moon"
 
     if form.validate_on_submit():
-        new_moon = Moon(name=form.name.data, description=form.description.data, phase_length=form.phase_length.data, phase_offset=form.phase_offset.data, waxing_color=stretch_color(form.waxing_color.data.hex), waning_color=stretch_color(form.waning_color.data.hex))
+        new_moon = Moon(name=form.name.data,
+                        description=form.description.data,
+                        phase_length=form.phase_length.data,
+                        phase_offset=form.phase_offset.data,
+                        waxing_color=stretch_color(form.waxing_color.data.hex),
+                        waning_color=stretch_color(form.waning_color.data.hex))
 
         db.session.add(new_moon)
         db.session.commit()
@@ -565,12 +609,13 @@ def moon_create():
 
     return render_template("calendar/form.html", form=form, heading=heading, title=page_title("Add Moon"))
 
+
 @bp.route("/moon/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
 @moderator_required(no_perm_url)
 def moon_edit(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == False:
+    if cset.finalized is False:
         if current_user.is_moderator():
             return deny_access(no_perm_url, "A Moderator can only edit the Calendar after it has been finalized.")
 
@@ -599,14 +644,16 @@ def moon_edit(id, name=None):
         form.waxing_color.data = moon.waxing_color
         form.waning_color.data = moon.waning_color
 
-    return render_template("calendar/form.html", item=moon, form=form, heading=heading, title=page_title("Edit Moon '{}'".format(moon.name)))
+    return render_template("calendar/form.html", item=moon, form=form, heading=heading,
+                           title=page_title("Edit Moon '{}'".format(moon.name)))
+
 
 @bp.route("/moon/delete/<int:id>/<string:name>", methods=["GET"])
 @login_required
 @admin_required(no_perm_url)
 def moon_delete(id, name=None):
     cset = CalendarSetting.query.get(1)
-    if cset.finalized == True:
+    if cset.finalized is True:
         flash("The calendar is finalized. You can't delete days.", "danger")
         return redirect(url_for('calendar.settings'))
 

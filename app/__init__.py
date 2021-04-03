@@ -25,6 +25,7 @@ bootstrap = Bootstrap()
 markdown = Misaka(tables=True, fenced_code=True, escape=True)
 moment = Moment()
 
+
 def create_app(config=UserConfig):
     app = Flask(__name__)
     app.config.from_object(config)
@@ -41,24 +42,24 @@ def create_app(config=UserConfig):
     moment.init_app(app)
 
     # enable debugging options if set
-    if app.config.get("DEBUG") == True:
+    if app.config.get("DEBUG") is True:
         # enable Flask-DebugToolbar
-        if app.config.get("ENABLE_TOOLBAR") == True:
+        if app.config.get("ENABLE_TOOLBAR") is True:
             print("Enabling Flask-DebugToolbar")
             from flask_debugtoolbar import DebugToolbarExtension
-            toolbar = DebugToolbarExtension(app)
+            DebugToolbarExtension(app)
 
             for tup in app.config.get("TOOLBAR_OPTIONS"):
                 print("Setting Flask-Toolbar option: {} = {}".format(tup[0], tup[1]))
                 app.config["DEBUG_TB_{}".format(tup[0])] = tup[1]
 
         # enable SQLAlchemy query logging to stderr
-        if app.config.get("LOG_SQL_QUERIES") == True:
+        if app.config.get("LOG_SQL_QUERIES") is True:
             print("Enabling SQL-logging to stderr")
             app.config["SQLALCHEMY_ECHO"] = True
 
         # trace the count and length of queries for each request
-        if app.config.get("TRACE_SQL_QUERIES") == True:
+        if app.config.get("TRACE_SQL_QUERIES") is True:
             print("Enabling SQL-Tracing")
             app.config["SQLALCHEMY_RECORD_QUERIES"] = True
 
@@ -97,14 +98,15 @@ def create_app(config=UserConfig):
 
     return app
 
-from app.calendar import models
-from app.campaign import models
-from app.character import models
-from app.event import models
-from app.main import models
-from app.map import models
-from app.media import models
-from app.party import models
-from app.session import models
-from app.user import models
-from app.wiki import models
+
+from app.calendar import models as calendar_models
+from app.campaign import models as campaign_models
+from app.character import models as character_models
+from app.event import models as event_models
+from app.main import models as main_models
+from app.map import models as map_models
+from app.media import models as media_models
+from app.party import models as party_models
+from app.session import models as session_models
+from app.user import models as user_models
+from app.wiki import models as wiki_models

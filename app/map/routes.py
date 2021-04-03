@@ -2,15 +2,15 @@ from app import db
 from app.helpers import page_title, admin_required, moderator_required, deny_access
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
-from app.map.helpers import upload_node_icon, delete_node_icon, gen_node_type_choices, get_visible_nodes, map_changed, gen_submap_choices
+from app.map.helpers import upload_node_icon, delete_node_icon, gen_node_type_choices, get_visible_nodes, \
+    map_changed, gen_submap_choices
 from app.map.models import Map, MapNodeType, MapSetting, MapNode
 from app.wiki.helpers import gen_wiki_entry_choices
-from app.wiki.models import WikiEntry
-from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory, current_app
 from flask_login import current_user, login_required
 
 no_perm_url = "main.index"
+
 
 @bp.route("/")
 @login_required
@@ -33,6 +33,7 @@ def index():
 
     return redirect(indexmap.view_url())
 
+
 @bp.route("/<int:id>/<string:name>")
 @bp.route("/<int:id>")
 @login_required
@@ -44,6 +45,7 @@ def view(id, name=None):
         return deny_access(no_perm_url)
 
     return render_template("map/index.html", settings=settings, map_=map_, title=page_title(map_.name))
+
 
 @bp.route("<int:id>/<string:m_name>/node/<int:n_id>/<string:n_name>")
 @bp.route("<int:id>/node/<int:n_id>")
@@ -60,7 +62,9 @@ def view_with_node(id, n_id, m_name=None, n_name=None):
         flash("Map node {0} could not be found on this map".format(node.id), "danger")
         return redirect(map_.view_url())
 
-    return render_template("map/index.html", settings=mapsettings, map_=map_, jump_to_node=node.id, title=page_title(map_.name))
+    return render_template("map/index.html", settings=mapsettings, map_=map_, jump_to_node=node.id,
+                           title=page_title(map_.name))
+
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
@@ -72,14 +76,20 @@ def create():
     if form.validate_on_submit():
         maps = Map.query.all()
 
-        new_map = Map(name=form.name.data, no_wrap=form.no_wrap.data, external_provider=form.external_provider.data, tiles_path=form.tiles_path.data, min_zoom=form.min_zoom.data, max_zoom=form.max_zoom.data, default_zoom=form.default_zoom.data)
+        new_map = Map(name=form.name.data,
+                      no_wrap=form.no_wrap.data,
+                      external_provider=form.external_provider.data,
+                      tiles_path=form.tiles_path.data,
+                      min_zoom=form.min_zoom.data,
+                      max_zoom=form.max_zoom.data,
+                      default_zoom=form.default_zoom.data)
 
         db.session.add(new_map)
 
         if not maps:
             mset = MapSetting.query.get(1)
             mset.default_map = new_map.id
-            flash("This map was automatically selected as the default map. To change this, please visit the map settings.", "info")
+            flash("This map was automatically selected as the default map.", "info")
 
         db.session.commit()
 
@@ -87,6 +97,7 @@ def create():
         return redirect(new_map.view_url())
 
     return render_template("map/create.html", form=form, title=page_title("Add Map"))
+
 
 # map specific settings
 @bp.route("/<int:id>/<string:name>/settings", methods=["GET", "POST"])
@@ -123,7 +134,9 @@ def map_settings(id, name=None):
         form.default_zoom.data = map_.default_zoom
         form.is_visible.data = map_.is_visible
 
-        return render_template("map/edit.html", map=map_, form=form, title=page_title("Edit Map '{}'".format(map_.name)))
+        return render_template("map/edit.html", map=map_, form=form,
+                               title=page_title("Edit Map '{}'".format(map_.name)))
+
 
 # global map settings
 @bp.route("/settings", methods=["GET", "POST"])
@@ -153,7 +166,9 @@ def settings():
 
     node_types = MapNodeType.query.all()
 
-    return render_template("map/settings.html", form=form, settings=settings, node_types=node_types, title=page_title("Map Settings"))
+    return render_template("map/settings.html", form=form, settings=settings, node_types=node_types,
+                           title=page_title("Map Settings"))
+
 
 @bp.route("/list")
 @login_required
@@ -161,6 +176,7 @@ def list():
     maps = Map.get_visible_items(include_hidden_for_user=True)
 
     return render_template("map/list.html", maps=maps, title=page_title("List of Maps"))
+
 
 @bp.route("/node/create/<int:map_id>/<x>/<y>", methods=["GET", "POST"])
 @login_required
@@ -183,7 +199,12 @@ def node_create(map_id, x, y):
     form.wiki_entry.choices = gen_wiki_entry_choices()
 
     if form.validate_on_submit():
-        new_node = MapNode(name=form.name.data, description=form.description.data, node_type=form.node_type.data, coord_x=form.coord_x.data, coord_y=form.coord_y.data, on_map=map_id)
+        new_node = MapNode(name=form.name.data,
+                           description=form.description.data,
+                           node_type=form.node_type.data,
+                           coord_x=form.coord_x.data,
+                           coord_y=form.coord_y.data,
+                           on_map=map_id)
 
         new_node.is_visible = form.is_visible.data
         new_node.submap = form.submap.data
@@ -198,13 +219,14 @@ def node_create(map_id, x, y):
 
         message = "The Location was added."
 
-        return jsonify(data={'success' : True, 'message': message})
+        return jsonify(data={'success': True, 'message': message})
     elif request.method == "POST":
-        return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors})
+        return jsonify(data={'success': False, 'message': "Form validation error", 'errors': form.errors})
     else:
         form.is_visible.data = True
 
     return render_template("map/node_create.html", form=form, x=x, y=y)
+
 
 @bp.route("/node/edit/<id>", methods=["GET", "POST"])
 @login_required
@@ -250,9 +272,9 @@ def node_edit(id):
         db.session.commit()
         map_changed(node.on_map)
 
-        return jsonify(data={'success' : True, 'message': "Location was edited."})
+        return jsonify(data={'success': True, 'message': "Location was edited."})
     elif request.method == "POST":
-        return jsonify(data={'success' : False, 'message': "Form validation error", 'errors': form.errors})
+        return jsonify(data={'success': False, 'message': "Form validation error", 'errors': form.errors})
 
     form.name.data = node.name
     form.description.data = node.description
@@ -269,6 +291,7 @@ def node_edit(id):
     form.submap.data = node.submap
 
     return render_template("map/node_edit.html", form=form, node=node)
+
 
 @bp.route("/node/delete/<id>", methods=["POST"])
 @login_required
@@ -290,6 +313,7 @@ def node_delete(id):
 
     return jsonify(data={"success": True, 'message': "Location was deleted."})
 
+
 @bp.route("/node_type/create", methods=["GET", "POST"])
 @login_required
 @moderator_required(no_perm_url)
@@ -299,9 +323,13 @@ def node_type_create():
     if form.validate_on_submit():
         success, filename, width, height = upload_node_icon(form.icon.data)
 
-        new_map_node_type = MapNodeType(name=form.name.data, description=form.description.data, icon_file=filename, icon_width=width, icon_height=height)
+        new_map_node_type = MapNodeType(name=form.name.data,
+                                        description=form.description.data,
+                                        icon_file=filename,
+                                        icon_width=width,
+                                        icon_height=height)
 
-        if False == success:
+        if success is False:
             flash("Error while creating node type.", "error")
         else:
             db.session.add(new_map_node_type)
@@ -310,6 +338,7 @@ def node_type_create():
             return redirect(url_for('map.settings'))
 
     return render_template("map/node_type_create.html", form=form, title=page_title("Create location type"))
+
 
 @bp.route("/node_type/edit/<id>", methods=["GET", "POST"])
 @login_required
@@ -333,7 +362,7 @@ def node_type_edit(id):
             node.icon_width = width
             node.icon_height = height
 
-        if False == success:
+        if success is False:
             flash("Error while editing node type.", "error")
         else:
             db.session.commit()
@@ -343,7 +372,9 @@ def node_type_edit(id):
         form.name.data = node.name
         form.description.data = node.description
 
-    return render_template("map/node_type_edit.html", form=form, node_type=node, title=("Edit location type '{}'".format(node.name)))
+    return render_template("map/node_type_edit.html", form=form, node_type=node,
+                           title=("Edit location type '{}'".format(node.name)))
+
 
 @bp.route("/node_type/json")
 @login_required
@@ -357,6 +388,7 @@ def node_type_json():
 
     return jsonify(all_types_dict)
 
+
 @bp.route("<int:id>/node/json")
 @login_required
 def node_json(id):
@@ -369,20 +401,24 @@ def node_json(id):
 
     return jsonify(nodes_dict)
 
+
 @bp.route("/node_type/icon/<filename>")
 def node_type_icon(filename):
     return send_from_directory(current_app.config["MAPNODES_DIR"], filename)
+
 
 @bp.route("/<int:id>/last_change")
 @login_required
 def last_change(id):
     mset = Map.query.filter_by(id=id).first_or_404()
 
-    return jsonify({'last_change' : str(mset.last_change) })
+    return jsonify({'last_change': str(mset.last_change)})
+
 
 @bp.route("/tile/<path:filename>")
 def tile(filename):
     return send_from_directory(current_app.config["MAPTILES_DIR"], filename)
+
 
 @bp.route("/sidebar/<int:m_id>", methods=["GET"])
 @login_required
@@ -391,9 +427,10 @@ def sidebar(m_id):
 
     d = {}
     for n in nodes:
-        d[n.id] = n.sidebar_dict();
+        d[n.id] = n.sidebar_dict()
 
     return jsonify(d)
+
 
 @bp.route("/sidebar/maps", methods=["GET"])
 @login_required
@@ -405,4 +442,4 @@ def sidebar_maps():
     for c in cats:
         d[c.id] = c.to_dict()
 
-    return jsonify(d);
+    return jsonify(d)

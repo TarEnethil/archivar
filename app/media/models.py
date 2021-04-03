@@ -4,9 +4,11 @@ from app.mixins import LinkGenerator, SimpleChangeTracker, SimplePermissionCheck
 from flask import url_for, current_app
 from flask_login import current_user
 
+
 class MediaSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "media_settings"
     id = db.Column(db.Integer, primary_key=True)
+
 
 class MediaCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "media_categories"
@@ -15,11 +17,9 @@ class MediaCategory(db.Model, SimpleChangeTracker, LinkGenerator):
 
     def sidebar_info(self):
         return {
-            "id" : self.id,
-            "name" : self.name
+            "id": self.id,
+            "name": self.name
         }
-
-        return dic
 
     #####
     # LinkGenerator functions
@@ -32,6 +32,7 @@ class MediaCategory(db.Model, SimpleChangeTracker, LinkGenerator):
 
     def edit_url(self):
         return url_for('media.category_edit', id=self.id, name=urlfriendly(self.name))
+
 
 class MediaItem(db.Model, SimplePermissionChecker, LinkGenerator):
     __tablename__ = "media"
@@ -61,16 +62,16 @@ class MediaItem(db.Model, SimplePermissionChecker, LinkGenerator):
 
     def sidebar_info(self):
         return {
-            'name' : self.name,
-            'filename' : self.filename,
-            'view-url' : self.view_url(),
-            'serve-url' : self.serve_url(),
-            'thumbnail-url' : self.thumbnail_url(),
-            'is-image' : self.is_image(),
-            "is-visible" : self.is_visible,
-            "file-ext": self.get_file_ext(),
-            "icon" : self.get_icon_str(),
-            "category" : self.category_id
+            'name': self.name,
+            'filename': self.filename,
+            'view-url': self.view_url(),
+            'serve-url': self.serve_url(),
+            'thumbnail-url': self.thumbnail_url(),
+            'is-image': self.is_image(),
+            'is-visible': self.is_visible,
+            'file-ext': self.get_file_ext(),
+            'icon': self.get_icon_str(),
+            'category': self.category_id
         }
 
     #####

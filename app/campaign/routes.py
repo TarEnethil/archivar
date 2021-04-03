@@ -4,15 +4,16 @@ from app.campaign import bp
 from app.campaign.models import Campaign
 from app.campaign.forms import CampaignCreateForm, CampaignEditForm
 from app.campaign.helpers import gen_dm_choices
-from app.helpers import page_title, admin_required, stretch_color, deny_access, upload_profile_picture, delete_profile_picture
+from app.helpers import page_title, admin_required, stretch_color, deny_access, upload_profile_picture, \
+    delete_profile_picture
 from app.party.helpers import gen_party_choices
 from app.party.models import Party
 from app.session.helpers import gen_participant_choices
-from flask import render_template, flash, redirect, url_for, request, jsonify, current_app
+from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
-from os import path
 
 no_perm_url = "campaign.index"
+
 
 @bp.route("/", methods=["GET"])
 @login_required
@@ -20,6 +21,7 @@ def index():
     campaigns = Campaign.query.all()
 
     return render_template("campaign/list.html", campaigns=campaigns, title=page_title("Campaigns"))
+
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
@@ -34,7 +36,12 @@ def create():
         associated_parties = Party.query.filter(Party.id.in_(form.associated_parties.data)).all()
         default_members = Character.query.filter(Character.id.in_(form.default_participants.data)).all()
 
-        new_campaign = Campaign(name=form.name.data, dm_id=form.dm.data, description=form.description.data, associated_parties=associated_parties, default_participants=default_members, color=stretch_color(form.color.data.hex))
+        new_campaign = Campaign(name=form.name.data,
+                                dm_id=form.dm.data,
+                                description=form.description.data,
+                                associated_parties=associated_parties,
+                                default_participants=default_members,
+                                color=stretch_color(form.color.data.hex))
 
         success = True
         if form.profile_picture.data:
@@ -42,7 +49,7 @@ def create():
 
             new_campaign.profile_picture = filename
 
-        if success == False:
+        if success is False:
             flash("Error while creating campaign.", "error")
         else:
             db.session.add(new_campaign)
@@ -52,9 +59,11 @@ def create():
 
     return render_template("campaign/create.html", form=form, title=page_title("Add Campaign"))
 
+
+# TODO: Fix C901 (too complex)
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-def edit(id, name=None):
+def edit(id, name=None):  # noqa: C901
     campaign = Campaign.query.filter_by(id=id).first_or_404()
 
     if not campaign.is_editable_by_user():
@@ -96,7 +105,7 @@ def edit(id, name=None):
 
             campaign.profile_picture = filename
 
-        if success == False:
+        if success is False:
             flash("Error while editing campaign.", "error")
         else:
             db.session.commit()
@@ -121,14 +130,17 @@ def edit(id, name=None):
         if is_dm:
             form.dm_notes.data = campaign.dm_notes
 
-    return render_template("campaign/edit.html", form=form, campaign=campaign, title=page_title("Edit Campaign '{}'".format(campaign.name)))
+    return render_template("campaign/edit.html", form=form, campaign=campaign,
+                           title=page_title("Edit Campaign '{}'".format(campaign.name)))
+
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @login_required
 def view(id, name=None):
     campaign = Campaign.query.filter_by(id=id).first_or_404()
 
-    return render_template("campaign/view.html", campaign=campaign, title=page_title("View Campaign '{}'".format(campaign.name)))
+    return render_template("campaign/view.html", campaign=campaign,
+                           title=page_title("View Campaign '{}'".format(campaign.name)))
 
 # @bp.route("/delete/<int:id>", methods=["GET", "POST"])
 # @login_required
@@ -148,4 +160,4 @@ def view(id, name=None):
 # def sidebar():
 #     party = Party.query.with_entities(Party.id, Party.name).order_by(Party.name.asc()).all();
 
-#     return jsonify(party);
+#     return jsonify(party)

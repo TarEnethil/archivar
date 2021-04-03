@@ -3,24 +3,25 @@ from app.calendar.models import CalendarSetting
 from app.campaign.models import Campaign
 from app.character.models import Character, Journal
 from app.event.models import Event, EventSetting, EventCategory
-from app.helpers import page_title, count_rows, admin_required, moderator_required, debug_mode_required, Role
+from app.helpers import page_title, count_rows, moderator_required, debug_mode_required, Role
 from app.main import bp
 from app.main.forms import LoginForm, SettingsForm, InstallForm
 from app.main.models import GeneralSetting
-from app.map.models import  Map, MapNode, MapSetting, MapNodeType
+from app.map.models import Map, MapNode, MapSetting, MapNodeType
 from app.media.models import MediaItem, MediaSetting, MediaCategory
-from app.party.models import  Party
+from app.party.models import Party
 from app.session.models import Session
 from app.user.models import User
 from app.wiki.models import WikiSetting, WikiEntry
 from collections import OrderedDict
 from datetime import datetime
 from distutils.dir_util import copy_tree
-from flask import render_template, flash, redirect, url_for, request, send_from_directory, current_app
+from flask import render_template, flash, redirect, url_for, request, current_app
 from flask_login import current_user, login_user, login_required, logout_user
 from os import path
 from app.version import version
 from werkzeug.urls import url_parse
+
 
 @bp.before_app_request
 def before_request():
@@ -40,6 +41,7 @@ def before_request():
             flash("You must change your password before proceeding.", "warning")
             return redirect(password_url)
 
+
 @bp.route("/index")
 @bp.route("/")
 def index():
@@ -49,9 +51,11 @@ def index():
     settings = GeneralSetting.query.get(1)
     return render_template("index.html", settings=settings, version=version(), title=page_title("Home"))
 
+
 @bp.route("/about")
 def about():
     return render_template("about.html", title=page_title("About Archivar"))
+
 
 @bp.route("/changelog")
 def changelog():
@@ -59,6 +63,7 @@ def changelog():
         changelog = markdown_file.read()
 
     return render_template("changelog.html", changelog=changelog, title=page_title("Changelog"))
+
 
 @bp.route("/statistics")
 @login_required
@@ -81,6 +86,7 @@ def statistics():
     stats["Media Categories"] = count_rows(MediaCategory)
 
     return render_template("statistics.html", stats=stats, title=page_title("Statistics"))
+
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -111,10 +117,12 @@ def login():
 
     return render_template("login.html", title=page_title("Login"), form=form)
 
+
 @bp.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for("main.index"))
+
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
@@ -137,6 +145,7 @@ def settings():
         form.quicklinks.data = settings.quicklinks
 
     return render_template("settings.html", settings=settings, form=form, title=page_title("General Settings"))
+
 
 @bp.route("/__install__", methods=["GET", "POST"])
 def install():
@@ -171,18 +180,27 @@ def install():
             db.session.add(media_cat)
 
             if form.default_mapnodes.data:
-                village = MapNodeType(name="Village", description="A small village with not more than 1000 inhabitants", icon_file="village.png", icon_height=35, icon_width=35)
-                town = MapNodeType(name="Town", description="Towns usually have up to 5000 people living in them", icon_file="town.png", icon_height=35, icon_width=35)
-                city = MapNodeType(name="City", description="Cities can have up to 10000 residents", icon_file="city.png", icon_height=35, icon_width=35)
-                capital = MapNodeType(name="Capital", description="Capital city of a country or region", icon_file="capital.png", icon_height=35, icon_width=35)
-                poi = MapNodeType(name="PoI", description="A particular point of interest", icon_file="poi.png", icon_height=35, icon_width=35)
-                quest = MapNodeType(name="Quest", description="An old school quest marker", icon_file="quest.png", icon_height=35, icon_width=35)
-                ruins = MapNodeType(name="Ruins", description="Forgotten and abandoned ruins", icon_file="ruins.png", icon_height=35, icon_width=35)
-                note = MapNodeType(name="Note", description="For additional information", icon_file="note.png", icon_height=35, icon_width=35)
+                village = MapNodeType(name="Village", description="A small village with not more than 1000 inhabitants",
+                                      icon_file="village.png", icon_height=35, icon_width=35)
+                town = MapNodeType(name="Town", description="Towns usually have up to 5000 people living in them",
+                                   icon_file="town.png", icon_height=35, icon_width=35)
+                city = MapNodeType(name="City", description="Cities can have up to 10000 residents",
+                                   icon_file="city.png", icon_height=35, icon_width=35)
+                capital = MapNodeType(name="Capital", description="Capital city of a country or region",
+                                      icon_file="capital.png", icon_height=35, icon_width=35)
+                poi = MapNodeType(name="PoI", description="A particular point of interest",
+                                  icon_file="poi.png", icon_height=35, icon_width=35)
+                quest = MapNodeType(name="Quest", description="An old school quest marker",
+                                    icon_file="quest.png", icon_height=35, icon_width=35)
+                ruins = MapNodeType(name="Ruins", description="Forgotten and abandoned ruins",
+                                    icon_file="ruins.png", icon_height=35, icon_width=35)
+                note = MapNodeType(name="Note", description="For additional information",
+                                   icon_file="note.png", icon_height=35, icon_width=35)
 
                 # copy files from install dir
                 # TODO: catch exceptions
-                copy_tree(path.join(current_app.config["ROOT_DIR"], "install", "mapnodes"), current_app.config["MAPNODES_DIR"])
+                copy_tree(path.join(current_app.config["ROOT_DIR"], "install", "mapnodes"),
+                          current_app.config["MAPNODES_DIR"])
 
                 db.session.add(village)
                 db.session.add(town)
@@ -221,6 +239,7 @@ def install():
         flash("Setup was already executed.", "danger")
         return redirect(url_for("main.index"))
 
+
 @bp.route("/debuginfo", methods=["GET"])
 @login_required
 @debug_mode_required
@@ -230,6 +249,7 @@ def debug_info():
     pynf = pyinfo.info_as_text()
 
     return render_template("debuginfo.html", pynf=pynf, title=page_title("Debug Info"))
+
 
 @bp.after_app_request
 def debug_trace_queries(response):
@@ -246,13 +266,16 @@ def debug_trace_queries(response):
 
     return response
 
+
 @bp.app_errorhandler(404)
 def not_found_error(error):
     return render_template("404.html", info=request.path, title="404"), 404
 
+
 @bp.app_errorhandler(500)
 def internal_error(error):
     return render_template("500.html", info=request.path, title="500"), 500
+
 
 @bp.app_errorhandler(413)
 def request_entity_too_large(error):

@@ -6,12 +6,14 @@ from flask import url_for
 from flask_login import current_user
 from jinja2 import Markup
 
+
 class EventSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "event_settings"
     id = db.Column(db.Integer, primary_key=True)
     default_category = db.Column(db.Integer, db.ForeignKey("event_categories.id"))
     default_epoch = db.Column(db.Integer, db.ForeignKey("epochs.id"))
     default_year = db.Column(db.Integer)
+
 
 class EventCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     __tablename__ = "event_categories"
@@ -34,6 +36,7 @@ class EventCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     def edit_url(self):
         return url_for('event.category_edit', id=self.id, name=urlfriendly(self.name))
 
+
 class Event(db.Model, SimplePermissionChecker, LinkGenerator):
     __tablename__ = "events"
     id = db.Column(db.Integer, primary_key=True)
@@ -50,7 +53,8 @@ class Event(db.Model, SimplePermissionChecker, LinkGenerator):
     timestamp = db.Column(db.Integer)
     duration = db.Column(db.Integer)
 
-    def format_date(self, epoch, year, month, day, timestamp, use_abbr, with_link=False, use_epoch=True, use_year=True, with_weekday=False):
+    def format_date(self, epoch, year, month, day, timestamp, use_abbr,
+                    with_link=False, use_epoch=True, use_year=True, with_weekday=False):
         from app.helpers import urlfriendly
         day_str = str(day)
 
@@ -58,9 +62,18 @@ class Event(db.Model, SimplePermissionChecker, LinkGenerator):
             day_str = "{}, {}".format(self.day_of_the_week(timestamp), day_str)
 
         month_str = month.abbreviation if use_abbr and month.abbreviation else month.name
-        year_str = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch_year', e_id=epoch.id, year=year, e_name=urlfriendly(epoch.name)), year) if with_link else str(year)
+
+        if with_link:
+            url = url_for('event.list_epoch_year', e_id=epoch.id, year=year, e_name=urlfriendly(epoch.name))
+            year_str = f'<a href="{url}">{year}</a>'
+        else:
+            year_str = str(year)
+
         epoch_str = epoch.abbreviation if use_abbr and epoch.abbreviation else epoch.name
-        epoch_str = '<a href="{0}">{1}</a>'.format(url_for('event.list_epoch', e_id=epoch.id, e_name=urlfriendly(epoch.name)), epoch_str) if with_link else epoch_str
+
+        if with_link:
+            url = url_for('event.list_epoch', e_id=epoch.id, e_name=urlfriendly(epoch.name))
+            epoch_str = f'<a href="{url}">{epoch_str}</a>'
 
         if use_epoch and use_year:
             return '{0}. {1} {2}, {3}'.format(day_str, month_str, year_str, epoch_str)
@@ -70,7 +83,8 @@ class Event(db.Model, SimplePermissionChecker, LinkGenerator):
         return '{0}. {1}'.format(day_str, month_str)
 
     def start_date(self, use_abbr, with_link=False, use_epoch=True, use_year=True, with_weekday=False):
-        return self.format_date(self.epoch, self.year, self.month, self.day, self.timestamp, use_abbr, with_link, use_epoch, use_year, with_weekday)
+        return self.format_date(self.epoch, self.year, self.month, self.day, self.timestamp,
+                                use_abbr, with_link, use_epoch, use_year, with_weekday)
 
     def end_date(self, use_abbr, with_link=False, use_epoch=True, use_year=True, with_weekday=False):
         # timestamp of end-date
@@ -108,15 +122,16 @@ class Event(db.Model, SimplePermissionChecker, LinkGenerator):
         # find day
         day = days_into_year - month.days_before
 
-        return self.format_date(epoch, year, month, day, timestamp, use_abbr, with_link, use_epoch, use_year, with_weekday)
+        return self.format_date(epoch, year, month, day, timestamp, use_abbr, with_link, use_epoch, use_year,
+                                with_weekday)
 
     def day_of_the_week(self, timestamp=None):
         wd = Day.query.order_by(Day.order.asc()).all()
 
-        if timestamp == None:
+        if timestamp is None:
             return wd[(self.timestamp % len(wd)) - 1].name
         else:
-            return wd[(timestamp % len(wd)) -1].name
+            return wd[(timestamp % len(wd)) - 1].name
 
     #####
     # Permissions

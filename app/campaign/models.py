@@ -7,12 +7,13 @@ from jinja2 import Markup
 from jinja2 import contextfunction
 
 campaign_character_assoc = db.Table("campaign_character_assoc",
-                    db.Column("campaign_id", db.Integer, db.ForeignKey("campaigns.id")),
-                    db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
+                                    db.Column("campaign_id", db.Integer, db.ForeignKey("campaigns.id")),
+                                    db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
 
 campaign_party_assoc = db.Table("campaign_party_assoc",
-                    db.Column("campaign_id", db.Integer, db.ForeignKey("campaigns.id")),
-                    db.Column("party_id", db.Integer, db.ForeignKey("parties.id")))
+                                db.Column("campaign_id", db.Integer, db.ForeignKey("campaigns.id")),
+                                db.Column("party_id", db.Integer, db.ForeignKey("parties.id")))
+
 
 class Campaign(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate, ProfilePicture):
     __tablename__ = "campaigns"
@@ -26,7 +27,8 @@ class Campaign(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate,
     dm = db.relationship("User", backref="campaigns", foreign_keys=[dm_id])
     dm_notes = db.Column(db.Text)
 
-    default_participants = db.relationship("Character", secondary=campaign_character_assoc, backref="default_participants")
+    default_participants = db.relationship("Character", secondary=campaign_character_assoc,
+                                           backref="default_participants")
     associated_parties = db.relationship("Party", secondary=campaign_party_assoc, backref="associated_campaigns")
 
     #####
@@ -53,6 +55,6 @@ class Campaign(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate,
     @contextfunction
     def infobox(self, context):
         body = f'<a href="{self.view_url()}" class="stretched-link">{ self.view_text() }</a> \
-                 <span class="text-muted d-block">DM: { self.dm.username } | Sessions: { len(self.sessions) }</span>';
+                 <span class="text-muted d-block">DM: { self.dm.username } | Sessions: { len(self.sessions) }</span>'
 
         return self.infobox_(context, body)

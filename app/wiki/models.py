@@ -4,9 +4,11 @@ from app.mixins import LinkGenerator, SimpleChangeTracker, SimplePermissionCheck
 from flask import url_for
 from flask_login import current_user
 
+
 class WikiSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "wiki_settings"
     id = db.Column(db.Integer, primary_key=True)
+
 
 class WikiEntry(db.Model, SimplePermissionChecker, LinkGenerator):
     __tablename__ = "wiki_entries"

@@ -2,8 +2,7 @@ from app import db
 from app.campaign.helpers import gen_campaign_choices_dm, gen_campaign_choices_admin
 from app.campaign.models import Campaign
 from app.character.models import Character
-from app.helpers import page_title, admin_required, count_rows, deny_access
-from app.party.models import Party
+from app.helpers import page_title, count_rows, deny_access
 from app.session import bp
 from app.session.forms import SessionForm, CampaignSelectForm
 from app.session.helpers import gen_participant_choices, get_previous_session, get_next_session, recalc_session_numbers
@@ -13,6 +12,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 
 no_perm_url = "session.index"
+
 
 @bp.route("/", methods=["GET"])
 @login_required
@@ -42,7 +42,9 @@ def index():
     elif current_user.is_dm_of_anything() and len(current_user.campaigns) == 1:
         url = url_for('session.create_with_campaign', id=current_user.campaigns[0].id)
 
-    return render_template("session/list.html", sessions_past=sessions_past, sessions_future=sessions_future, form=form, url=url, title=page_title("Sessions"))
+    return render_template("session/list.html", sessions_past=sessions_past, sessions_future=sessions_future,
+                           form=form, url=url, title=page_title("Sessions"))
+
 
 # currently just a backup, actual handling is done via in-page form (session.list)
 @bp.route("/create", methods=["GET", "POST"])
@@ -71,6 +73,7 @@ def create():
 
     return render_template("session/choose_campaign.html", form=form, title=page_title("Choose a Campaign"))
 
+
 @bp.route("/create/for-campaign/<int:id>", methods=["GET", "POST"])
 @login_required
 def create_with_campaign(id):
@@ -93,7 +96,8 @@ def create_with_campaign(id):
         if current_user.is_dm_of(campaign):
             dm_notes = form.dm_notes.data
 
-        new_session = Session(title=form.title.data, campaign_id=form.campaign.data, summary=form.summary.data, dm_notes=dm_notes, date=form.date.data, participants=participants)
+        new_session = Session(title=form.title.data, campaign_id=form.campaign.data, summary=form.summary.data,
+                              dm_notes=dm_notes, date=form.date.data, participants=participants)
 
         db.session.add(new_session)
         db.session.commit()
@@ -114,9 +118,11 @@ def create_with_campaign(id):
 
     return render_template("session/create.html", form=form, campaign=campaign, title=page_title("Add Session"))
 
+
+# TODO: Fix C901
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-def edit(id, name=None):
+def edit(id, name=None):  # noqa: C901
     session = Session.query.filter_by(id=id).first_or_404()
 
     if not session.is_editable_by_user():
@@ -175,7 +181,9 @@ def edit(id, name=None):
         if is_dm:
             form.dm_notes.data = session.dm_notes
 
-    return render_template("session/edit.html", form=form, campaign=session.campaign, title=page_title("Edit Session '{}'".format(session.title)))
+    return render_template("session/edit.html", form=form, campaign=session.campaign,
+                           title=page_title("Edit Session '{}'".format(session.title)))
+
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
@@ -187,7 +195,9 @@ def view(id, name=None):
 
     session.participants.sort(key=lambda x: x.name)
 
-    return render_template("session/view.html", session=session, prev=prev_session, next=next_session, title=page_title("View Session '{}'".format(session.title)))
+    return render_template("session/view.html", session=session, prev=prev_session, next=next_session,
+                           title=page_title("View Session '{}'".format(session.title)))
+
 
 @bp.route("/delete/<int:id>/<string:name>")
 @login_required
@@ -208,6 +218,7 @@ def delete(id, name=None):
     flash("Session was deleted.", "success")
     return redirect(url_for("session.index"))
 
+
 @bp.route("/sidebar", methods=["GET"])
 @login_required
 def sidebar():
@@ -215,6 +226,6 @@ def sidebar():
     sessions = []
 
     for session in sessions_db:
-        sessions.append({ 0: session.id, 1: session.view_text() })
+        sessions.append({0: session.id, 1: session.view_text()})
 
     return jsonify(sessions)

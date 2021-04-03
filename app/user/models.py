@@ -2,13 +2,15 @@ from app import db, login
 from app.helpers import Role
 from app.mixins import LinkGenerator, PermissionTemplate
 from datetime import datetime
-from flask import url_for, current_app
+from flask import url_for
 from flask_login import UserMixin, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
 
 class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
     __tablename__ = "users"

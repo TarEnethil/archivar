@@ -6,6 +6,7 @@ from flask import url_for
 from flask_login import current_user
 from flask_misaka import markdown
 
+
 class MapSetting(db.Model, SimpleChangeTracker):
     __tablename__ = "map_settings"
     id = db.Column(db.Integer, primary_key=True)
@@ -13,6 +14,7 @@ class MapSetting(db.Model, SimpleChangeTracker):
     default_visible = db.Column(db.Boolean, default=False)
     check_interval = db.Column(db.Integer, default=30)
     default_map = db.Column(db.Integer, db.ForeignKey("maps.id"), default=0)
+
 
 class Map(db.Model, SimplePermissionChecker, LinkGenerator):
     __tablename__ = "maps"
@@ -28,8 +30,8 @@ class Map(db.Model, SimplePermissionChecker, LinkGenerator):
 
     def to_dict(self):
         dic = {
-            "id" : self.id,
-            "name" : self.name,
+            "id": self.id,
+            "name": self.name,
         }
 
         return dic
@@ -68,6 +70,7 @@ class Map(db.Model, SimplePermissionChecker, LinkGenerator):
         url = self.settings_url()
         return self.button(url=url, text="Settings", icon="cog", ids=None, classes=classes)
 
+
 class MapNodeType(db.Model, SimpleChangeTracker):
     __tablename__ = "map_node_types"
     id = db.Column(db.Integer, primary_key=True)
@@ -79,15 +82,16 @@ class MapNodeType(db.Model, SimpleChangeTracker):
 
     def to_dict(self):
         dic = {
-            "id" : self.id,
-            "name" : self.name,
-            "description" : self.description,
-            "icon_file" : url_for("map.node_type_icon", filename=self.icon_file),
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "icon_file": url_for("map.node_type_icon", filename=self.icon_file),
             "icon_width": self.icon_width,
             "icon_height": self.icon_height
         }
 
         return dic
+
 
 class MapNode(db.Model, SimplePermissionChecker):
     __tablename__ = "map_nodes"
@@ -106,34 +110,34 @@ class MapNode(db.Model, SimplePermissionChecker):
 
     def to_dict(self):
         dic = {
-            "id" : self.id,
-            "x" : self.coord_x,
-            "y" : self.coord_y,
-            "name" : self.name,
-            "desc" : markdown(self.description, tables=True, fenced_code=True, escape=True),
-            "node_type" : self.node_type,
-            "visible" : self.is_visible,
-            "created" : self.created,
-            "created_by" : self.created_by.username,
-            "wiki_id" : self.wiki_entry_id,
-            "submap" : self.submap,
-            "is_editable" : self.is_editable_by_user(),
-            "is_deletable" : self.is_deletable_by_user()
+            "id": self.id,
+            "x": self.coord_x,
+            "y": self.coord_y,
+            "name": self.name,
+            "desc": markdown(self.description, tables=True, fenced_code=True, escape=True),
+            "node_type": self.node_type,
+            "visible": self.is_visible,
+            "created": self.created,
+            "created_by": self.created_by.username,
+            "wiki_id": self.wiki_entry_id,
+            "submap": self.submap,
+            "is_editable": self.is_editable_by_user(),
+            "is_deletable": self.is_deletable_by_user()
         }
 
         if self.edited_by:
             # do update here because otherwise, this lands in a list of length one for some reason
             dic.update({
-                "edited" : self.edited,
-                "edited_by" : self.edited_by.username
+                "edited": self.edited,
+                "edited_by": self.edited_by.username
             })
 
         return dic
 
     def sidebar_dict(self):
         dic = {
-            "id" : self.id,
-            "name" : self.name,
+            "id": self.id,
+            "name": self.name,
             "visible": self.is_visible
         }
 
@@ -149,7 +153,8 @@ class MapNode(db.Model, SimplePermissionChecker):
         return ((self.is_visible or self.is_owned_by_user()) and self.parent_map.is_viewable_by_user())
 
     def is_deletable_by_user(self):
-        return (((self.is_visible and current_user.is_at_least_moderator()) or self.is_owned_by_user()) and self.parent_map.is_viewable_by_user())
+        return ((self.is_visible and current_user.is_at_least_moderator()) or self.is_owned_by_user()) \
+               and self.parent_map.is_viewable_by_user()
 
     def is_hideable_by_user(self):
         return self.is_owned_by_user()

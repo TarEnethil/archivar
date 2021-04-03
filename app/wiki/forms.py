@@ -2,8 +2,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, BooleanField, RadioField, SelectField
 from wtforms.validators import Length, InputRequired
 
+
 class WikiEntryForm(FlaskForm):
-    title = StringField("Title", validators=[InputRequired(),Length(min=0, max=255)])
+    title = StringField("Title", validators=[InputRequired(), Length(min=0, max=255)])
     category = StringField("Category", validators=[Length(min=0, max=100)], render_kw={"list": "category-list"})
     content = TextAreaField("Content", render_kw={"rows": 15})
     tags = StringField("Tags", validators=[Length(min=0, max=255)])
@@ -11,10 +12,12 @@ class WikiEntryForm(FlaskForm):
 
     submit = SubmitField("Submit")
 
+
 class WikiSettingsForm(FlaskForm):
     default_visible = BooleanField("New wiki entries are visible by default")
 
     submit = SubmitField("Save settings")
+
 
 class WikiSearchForm(FlaskForm):
     searchterm = StringField("", validators=[InputRequired()])
@@ -22,8 +25,9 @@ class WikiSearchForm(FlaskForm):
 
     submit = SubmitField("Search")
 
+
 class WikiMoveCategoryForm(FlaskForm):
-    old_category = SelectField("Category to be renamed",validators=[InputRequired()])
+    old_category = SelectField("Category to be renamed", validators=[InputRequired()])
     new_category = StringField("New name", validators=[Length(min=0, max=100)])
 
     # different name because we have two forms on the same page

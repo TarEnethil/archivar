@@ -15,6 +15,12 @@ flask run
 
 Be sure to work on your own branch(es).
 
+## Linting
+
+You can setup automatic code linting as a git pre-commit hook using `./setup-pre-commit-hook.sh`.
+You may need to install flake8 via `pip install flake8`.
+If you want to integrate the linting into your IDE, toplevel has a .flake8 config file that can be used.
+
 ## Changes to the database
 
 To make changes to the database, adjust the member elements of one or more of the model classes. Then run:
