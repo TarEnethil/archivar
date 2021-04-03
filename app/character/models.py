@@ -6,8 +6,9 @@ from flask_login import current_user
 from jinja2 import contextfunction
 
 character_party_assoc = db.Table("character_party_assoc",
-                    db.Column("character_id", db.Integer, db.ForeignKey("characters.id")),
-                    db.Column("party_id", db.Integer, db.ForeignKey("parties.id")))
+                                 db.Column("character_id", db.Integer, db.ForeignKey("characters.id")),
+                                 db.Column("party_id", db.Integer, db.ForeignKey("parties.id")))
+
 
 class Character(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture):
     __tablename__ = "characters"
@@ -68,9 +69,10 @@ class Character(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture
     @contextfunction
     def infobox(self, context, add_classes=""):
         body = f'<a href="{self.view_url()}" class="stretched-link {add_classes}">{ self.name }</a> \
-                 <span class="text-muted d-block">{ self.race } { self.class_ }</span>';
+                 <span class="text-muted d-block">{ self.race } { self.class_ }</span>'
 
         return self.infobox_(context, body)
+
 
 class Journal(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture):
     __tablename__ = "journal"
@@ -109,13 +111,16 @@ class Journal(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture):
         return self.title
 
     def view_url(self):
-        return url_for('character.journal_view', c_id=self.character.id, c_name=urlfriendly(self.character.name), j_id=self.id, j_name=urlfriendly(self.title))
+        return url_for('character.journal_view', c_id=self.character.id, c_name=urlfriendly(self.character.name),
+                       j_id=self.id, j_name=urlfriendly(self.title))
 
     def edit_url(self):
-        return url_for('character.journal_edit', c_id=self.character.id, c_name=urlfriendly(self.character.name), j_id=self.id, j_name=urlfriendly(self.title))
+        return url_for('character.journal_edit', c_id=self.character.id, c_name=urlfriendly(self.character.name),
+                       j_id=self.id, j_name=urlfriendly(self.title))
 
     def delete_url(self):
-        return url_for('character.journal_delete', c_id=self.character.id, c_name=urlfriendly(self.character.name), j_id=self.id, j_name=urlfriendly(self.title))
+        return url_for('character.journal_delete', c_id=self.character.id, c_name=urlfriendly(self.character.name),
+                       j_id=self.id, j_name=urlfriendly(self.title))
 
     #####
     # ProfilePicture functions
@@ -123,7 +128,7 @@ class Journal(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture):
     @contextfunction
     def infobox(self, context, add_classes=""):
         body = f'<a href="{self.view_url()}" class="stretched-link {add_classes}">{ self.title }</a> \
-                 <span class="text-muted d-block">by {self.character.name}</span>';
+                 <span class="text-muted d-block">by {self.character.name}</span>'
 
         return self.infobox_(context, body)
 

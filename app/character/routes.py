@@ -6,11 +6,11 @@ from app.character.models import Character, Journal
 from app.helpers import page_title, deny_access, upload_profile_picture, delete_profile_picture
 from app.party.models import Party
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, jsonify, request, current_app
+from flask import render_template, flash, redirect, jsonify, request
 from flask_login import current_user, login_required
-from os import path
 
 no_perm_url = "main.index"
+
 
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
@@ -18,14 +18,20 @@ def create():
     form = CreateCharacterForm()
 
     if form.validate_on_submit():
-        char = Character(name=form.name.data, race=form.race.data, class_=form.class_.data, description=form.description.data, private_notes=form.private_notes.data, user_id=current_user.id, is_visible=form.is_visible.data)
+        char = Character(name=form.name.data,
+                         race=form.race.data,
+                         class_=form.class_.data,
+                         description=form.description.data,
+                         private_notes=form.private_notes.data,
+                         user_id=current_user.id,
+                         is_visible=form.is_visible.data)
 
         success = True
         if form.profile_picture.data:
             success, filename = upload_profile_picture(form.profile_picture.data)
             char.profile_picture = filename
 
-        if success == False:
+        if success is False:
             flash("Error while creating character.", "error")
         else:
             db.session.add(char)
@@ -34,6 +40,7 @@ def create():
             return redirect(char.view_url())
 
     return render_template("character/create.html", form=form, title=page_title("Add Character"))
+
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
@@ -44,14 +51,16 @@ def view(id, name=None):
     if not char.is_viewable_by_user():
         return deny_access(no_perm_url)
 
-    if char.is_visible == False:
+    if char.is_visible is False:
         flash("This Character is only visible to you.", "warning")
 
     return render_template("character/view.html", char=char, title=page_title("View Character '{}'".format(char.name)))
 
+
+# TODO Fix C901
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
-def edit(id, name=None):
+def edit(id, name=None):  # noqa: C901
     char = Character.query.filter_by(id=id).first_or_404()
 
     if not char.is_editable_by_user():
@@ -87,7 +96,7 @@ def edit(id, name=None):
 
             char.profile_picture = filename
 
-        if success == False:
+        if success is False:
             flash("Error while editing character.", "error")
         else:
             flash("Character was edited.", "success")
@@ -106,7 +115,9 @@ def edit(id, name=None):
         if char.is_hideable_by_user():
             form.is_visible.data = char.is_visible
 
-        return render_template("character/edit.html", form=form, char=char, title=page_title("Edit character '{}'".format(char.name)))
+        return render_template("character/edit.html", form=form, char=char,
+                               title=page_title("Edit character '{}'".format(char.name)))
+
 
 @bp.route("/list", methods=["GET"])
 @login_required
@@ -114,7 +125,9 @@ def list():
     chars = Character.get_visible_items(include_hidden_for_user=True)
     parties = Party.query.all()
 
-    return render_template("character/list.html", chars=chars, parties=parties, title=page_title("Characters and Parties"))
+    return render_template("character/list.html", chars=chars, parties=parties,
+                           title=page_title("Characters and Parties"))
+
 
 @bp.route("/delete/<int:id>/<string:name>")
 @login_required
@@ -132,21 +145,26 @@ def delete(id, name=None):
     flash("Character was deleted.", "success")
     return redirect(player.view_url())
 
+
 @bp.route("/sidebar", methods=["GET"])
 @login_required
 def sidebar():
-    chars = Character.get_query_for_visible_items(include_hidden_for_user=True).with_entities(Character.id, Character.name).order_by(Character.name.asc()).all()
+    chars = Character.get_query_for_visible_items(include_hidden_for_user=True) \
+            .with_entities(Character.id, Character.name).order_by(Character.name.asc()).all()
 
     return jsonify(chars)
+
 
 @bp.route("<int:c_id>/<string:c_name>/journal/", methods=["GET"])
 @login_required
 def journal_list(c_id, c_name=None):
     char = Character.query.filter_by(id=c_id).first_or_404()
 
-    journals = Journal.get_query_for_visible_items(include_hidden_for_user=True).filter_by(character_id = c_id).all()
+    journals = Journal.get_query_for_visible_items(include_hidden_for_user=True).filter_by(character_id=c_id).all()
 
-    return render_template("character/journal_list.html", char=char, journals=journals, title=page_title("Journals for '{}'".format(char.name)))
+    return render_template("character/journal_list.html", char=char, journals=journals,
+                           title=page_title("Journals for '{}'".format(char.name)))
+
 
 @bp.route("<int:c_id>/<string:c_name>/journal/create", methods=["GET", "POST"])
 @login_required
@@ -163,7 +181,10 @@ def journal_create(c_id, c_name=None):
     form.submit.label.text = "Create Journal Entry"
 
     if form.validate_on_submit():
-        journal_entry = Journal(title=form.title.data, content=form.content.data, is_visible=form.is_visible.data, character_id=c_id)
+        journal_entry = Journal(title=form.title.data,
+                                content=form.content.data,
+                                is_visible=form.is_visible.data,
+                                character_id=c_id)
 
         if (form.session.data != 0):
             journal_entry.session_id = form.session.data
@@ -185,10 +206,12 @@ def journal_create(c_id, c_name=None):
         if session_id:
             try:
                 form.session.data = int(session_id)
-            except:
+            except ValueError:
                 pass
 
-        return render_template("character/journal_form.html", heading=heading, form=form, title=page_title("Add Journal Entry for '{}'".format(char.name)))
+        return render_template("character/journal_form.html", heading=heading, form=form,
+                               title=page_title("Add Journal Entry for '{}'".format(char.name)))
+
 
 @bp.route("<int:c_id>/<string:c_name>/journal/edit/<int:j_id>/<string:j_name>", methods=["GET", "POST"])
 @login_required
@@ -228,7 +251,9 @@ def journal_edit(c_id, j_id, c_name=None, j_name=None):
         form.content.data = journal.content
         form.session.data = journal.session_id
 
-        return render_template("character/journal_form.html", heading=heading, form=form, title=page_title("Edit Journal Entry '{}'".format(journal.title)))
+        return render_template("character/journal_form.html", heading=heading, form=form,
+                               title=page_title("Edit Journal Entry '{}'".format(journal.title)))
+
 
 @bp.route("<int:c_id>/<string:c_name>/journal/view/<int:j_id>/<string:j_name>", methods=["GET"])
 @login_required
@@ -243,10 +268,12 @@ def journal_view(c_id, j_id, c_name=None, j_name=None):
     if journal not in char.journals:
         return deny_access(no_perm_url, "Journal does not belong to this character.")
 
-    if journal.is_visible == False:
+    if journal.is_visible is False:
         flash("This Journal is only visible to you.", "warning")
 
-    return render_template("character/journal_view.html", char=char, journal=journal, title=page_title("View Journal Entry '{}'".format(journal.title)))
+    return render_template("character/journal_view.html", char=char, journal=journal,
+                           title=page_title("View Journal Entry '{}'".format(journal.title)))
+
 
 @bp.route("<int:c_id>/<string:c_name>/journal/delete/<int:j_id>/<string:j_name>", methods=["GET"])
 @login_required

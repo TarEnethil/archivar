@@ -1,11 +1,12 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
-from wtforms import StringField, TextAreaField, SubmitField, BooleanField, SelectField
+from wtforms import StringField, TextAreaField, SubmitField, BooleanField
 from wtforms_components import SelectField as OptGroupSelectField
 from wtforms.validators import Length, InputRequired
 
+
 class CreateCharacterForm(FlaskForm):
-    name = StringField("Name", validators=[Length(min=0, max=100),InputRequired()])
+    name = StringField("Name", validators=[Length(min=0, max=100), InputRequired()])
     race = StringField("Race", validators=[InputRequired()])
     class_ = StringField("Class", validators=[InputRequired()])
     profile_picture = FileField("Logo")
@@ -15,8 +16,9 @@ class CreateCharacterForm(FlaskForm):
 
     submit = SubmitField("Create Character")
 
+
 class EditCharacterForm(FlaskForm):
-    name = StringField("Name", validators=[Length(min=0, max=100),InputRequired()])
+    name = StringField("Name", validators=[Length(min=0, max=100), InputRequired()])
     race = StringField("Race", validators=[InputRequired()])
     class_ = StringField("Class", validators=[InputRequired()])
     profile_picture = FileField("Logo")
@@ -26,8 +28,9 @@ class EditCharacterForm(FlaskForm):
 
     submit = SubmitField("Save Character")
 
+
 class JournalForm(FlaskForm):
-    title = StringField("Name", validators=[Length(min=0, max=100),InputRequired()])
+    title = StringField("Name", validators=[Length(min=0, max=100), InputRequired()])
     is_visible = BooleanField("Is publicly visible")
     content = TextAreaField("Description", render_kw={"rows": 15})
     session = OptGroupSelectField("Belongs to Session", coerce=int)
