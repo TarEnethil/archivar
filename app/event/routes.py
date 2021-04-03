@@ -7,10 +7,10 @@ from app.event.helpers import update_timestamp, get_events, gen_event_category_c
 from app.event.models import EventSetting, Event, EventCategory
 from app.helpers import page_title, stretch_color, deny_access, moderator_required
 from flask import render_template, flash, redirect, url_for, request, jsonify
-from flask_login import login_required, current_user
-from sqlalchemy import not_, and_, or_
+from flask_login import login_required
 
 no_perm_url = "calendar.index"
+
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
 @bp.route("/view/<int:id>", methods=["GET"])
@@ -22,10 +22,12 @@ def view(id, name=None):
     if not event.is_viewable_by_user():
         return deny_access(no_perm_url)
 
-    if event.is_visible == False:
+    if event.is_visible is False:
         flash("This Event is only visible to you.", "warning")
 
-    return render_template("event/view.html", event=event, moons=moons, title=page_title("View Event '{}'".format(event.name)))
+    return render_template("event/view.html", event=event, moons=moons,
+                           title=page_title("View Event '{}'".format(event.name)))
+
 
 @bp.route("/list", methods=["GET"])
 @login_required
@@ -35,6 +37,7 @@ def list():
 
     return render_template("event/list.html", events=events, heading=title, title=page_title("View All Events"))
 
+
 @bp.route("/list/epoch-<int:e_id>/<string:e_name>", methods=["GET"])
 @login_required
 def list_epoch(e_id, e_name=None):
@@ -42,7 +45,9 @@ def list_epoch(e_id, e_name=None):
     events = get_events(e_id)
     title = "All Events for {}".format(e.name)
 
-    return render_template("event/list.html", events=events, epoch_flag=True, heading=title, title=page_title("View Events in Epoch '{}'".format(e.name)))
+    return render_template("event/list.html", events=events, epoch_flag=True, heading=title,
+                           title=page_title("View Events in Epoch '{}'".format(e.name)))
+
 
 @bp.route("/list/epoch-<int:e_id>/<string:e_name>/year-<int:year>", methods=["GET"])
 @login_required
@@ -51,7 +56,9 @@ def list_epoch_year(e_id, year, e_name=None):
     events = get_events(e_id, year)
     title = "All events for year {}, {}".format(year, e.name)
 
-    return render_template("event/list.html", events=events, epoch_year_flag=True, heading=title, title=page_title("View Events in Year {}, epoch '{}'".format(year, e.name)))
+    return render_template("event/list.html", events=events, epoch_year_flag=True, heading=title,
+                           title=page_title("View Events in Year {}, epoch '{}'".format(year, e.name)))
+
 
 @bp.route("/list/category-<int:c_id>/<string:c_name>", methods=["GET"])
 @login_required
@@ -60,11 +67,14 @@ def list_category(c_id, c_name=None):
     events = get_events_by_category(c_id)
     title = "All Events in Category {}".format(c.name)
 
-    return render_template("event/list.html", events=events, category_flag=True, heading=title, title=page_title("View Events in Category '{}'".format(c.name)))
+    return render_template("event/list.html", events=events, category_flag=True, heading=title,
+                           title=page_title("View Events in Category '{}'".format(c.name)))
 
+
+# TODO Fix C901
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
-def create():
+def create():  # noqa: C901
     settings = EventSetting.query.get(1)
     form = EventForm()
     form.submit.label.text = "Create Event"
@@ -86,7 +96,15 @@ def create():
             form.year.data = settings.default_year
 
     if form.validate_on_submit():
-        new_event = Event(name=form.name.data, category_id=form.category.data, description=form.description.data, epoch_id=form.epoch.data, year=form.year.data, month_id=form.month.data, day=form.day.data, duration=form.duration.data)
+        new_event = Event(name=form.name.data,
+                          category_id=form.category.data,
+                          description=form.description.data,
+                          epoch_id=form.epoch.data,
+                          year=form.year.data,
+                          month_id=form.month.data,
+                          day=form.day.data,
+                          duration=form.duration.data)
+
         new_event.is_visible = form.is_visible.data
 
         db.session.add(new_event)
@@ -106,25 +124,26 @@ def create():
         if epoch_id:
             try:
                 form.epoch.data = int(epoch_id)
-            except:
+            except ValueError:
                 pass
 
         # will do nothing if var is not an int or not in choices
         if year:
             try:
                 form.year.data = int(year)
-            except:
+            except ValueError:
                 pass
 
         # will do nothing if var is not an int or not in choices
         if category_id:
             try:
                 form.category.data = int(category_id)
-            except:
+            except ValueError:
                 pass
 
     calendar_helper = gen_calendar_stats()
     return render_template("event/create.html", form=form, calendar=calendar_helper, title=page_title("Add Event"))
+
 
 @bp.route("/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
@@ -182,7 +201,9 @@ def edit(id, name=None):
             form.is_visible.data = event.is_visible
 
     calendar_helper = gen_calendar_stats()
-    return render_template("event/edit.html", form=form, calendar=calendar_helper, title=page_title("Edit Event '{}'".format(event.name)))
+    return render_template("event/edit.html", form=form, calendar=calendar_helper,
+                           title=page_title("Edit Event '{}'".format(event.name)))
+
 
 @bp.route("/delete/<int:id>/<string:name>")
 @login_required
@@ -197,6 +218,7 @@ def delete(id, name=None):
 
     flash("Event was deleted", "success")
     return redirect(url_for("calendar.index"))
+
 
 @bp.route("/category/create", methods=["GET", "POST"])
 @login_required
@@ -216,6 +238,7 @@ def category_create():
         return redirect(url_for("event.settings"))
 
     return render_template("event/category.html", form=form, heading=heading, title=page_title(heading))
+
 
 @bp.route("/category/edit/<int:id>/<string:name>", methods=["GET", "POST"])
 @login_required
@@ -239,7 +262,9 @@ def category_edit(id, name=None):
         form.name.data = category.name
         form.color.data = category.color
 
-    return render_template("event/category.html", category=category, form=form, heading=heading, title=page_title(heading))
+    return render_template("event/category.html", category=category, form=form, heading=heading,
+                           title=page_title(heading))
+
 
 @bp.route("/settings", methods=["GET", "POST"])
 @login_required
@@ -265,7 +290,9 @@ def settings():
 
     categories = EventCategory.query.all()
 
-    return render_template("event/settings.html", settings=settings, categories=categories, form=form, title=page_title("Event Settings"))
+    return render_template("event/settings.html", settings=settings, categories=categories, form=form,
+                           title=page_title("Event Settings"))
+
 
 @bp.route("/sidebar", methods=["GET"])
 @login_required
