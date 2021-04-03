@@ -2,6 +2,7 @@ from app import db
 from app.calendar.models import CalendarSetting, Day, Epoch, Month, Moon
 from flask import flash
 
+
 # get highest order num for newly created epoch
 def get_next_epoch_order():
     q = Epoch.query.order_by(Epoch.order.desc()).limit(1).first()
@@ -10,6 +11,7 @@ def get_next_epoch_order():
         return q.order + 1
     else:
         return 1
+
 
 # get highest order num for newly created month
 def get_next_month_order():
@@ -20,6 +22,7 @@ def get_next_month_order():
     else:
         return 1
 
+
 # def get highest order num for newly created day
 def get_next_day_order():
     q = Day.query.order_by(Day.order.desc()).limit(1).first()
@@ -28,6 +31,7 @@ def get_next_day_order():
         return q.order + 1
     else:
         return 1
+
 
 # check constraints
 # contraints:
@@ -38,7 +42,7 @@ def calendar_sanity_check():
 
     cset = CalendarSetting.query.get(1)
 
-    if cset.finalized == True:
+    if cset.finalized is True:
         tests_passed = False
         flash("The calendar is already finalized.", "danger")
 
@@ -59,7 +63,7 @@ def calendar_sanity_check():
         for epoch in all_other_epochs:
             if epoch.years == 0:
                 tests_passed = False
-                flash("All epochs except the current one need a duration > 0. '{}' violates that constraint.".format(epoch.name) , "danger")
+                flash(f"All epochs except the current one need a duration > 0. ('{epoch.name}').", "danger")
 
     months = Month.query.all()
 
@@ -75,11 +79,10 @@ def calendar_sanity_check():
 
     return tests_passed
 
+
 # generate dict containing all info for the calendar preview
 # can be used to commit to database
 def gen_calendar_preview_data(commit=False):
-    from app.event.models import Event, EventCategory
-
     epochs = Epoch.query.order_by(Epoch.order.asc()).all()
     months = Month.query.order_by(Month.order.asc()).all()
     days = Day.query.order_by(Day.order.asc()).all()
@@ -93,7 +96,7 @@ def gen_calendar_preview_data(commit=False):
         if i > 0:
             month.days_before = months[i - 1].days_before + months[i - 1].days
 
-    if commit == True:
+    if commit is True:
         db.session.commit()
     else:
         preview_info = {}
@@ -110,9 +113,10 @@ def gen_calendar_preview_data(commit=False):
 
         return preview_info
 
+
 # generate dict containing all info for the calendar
 def gen_calendar_stats():
-    from app.event.models import Event, EventCategory
+    from app.event.models import EventCategory
 
     epochs = Epoch.query.order_by(Epoch.order.asc()).all()
     months = Month.query.order_by(Month.order.asc()).all()
@@ -135,22 +139,26 @@ def gen_calendar_stats():
 
     return stats
 
+
 # generate choices for epoch SelectField
 def gen_epoch_choices():
     return [(e.id, e.name) for e in Epoch.query.order_by(Epoch.order.asc()).all()]
+
 
 # generate choices for month SelectField
 def gen_month_choices():
     return [(m.id, m.name) for m in Month.query.order_by(Month.order.asc()).all()]
 
+
 # generate choices for the days of a specified month
 def gen_day_choices(month_id):
     m = Month.query.filter_by(id=month_id).first()
 
-    if m == None:
+    if m is None:
         return ([0, "ERROR month not found"])
 
     return [(n, n) for n in range(1, m.days + 1)]
+
 
 # get all epochs by order
 def get_epochs():
@@ -158,10 +166,12 @@ def get_epochs():
 
     return e
 
+
 # get all years in an epoch that have events
 def get_years_in_epoch(e_id):
     from app.event.models import Event
 
-    q = Event.get_query_for_visible_items(include_hidden_for_user=True).with_entities(Event.year).filter_by(epoch_id=e_id).group_by(Event.year).order_by(Event.year.asc()).all()
+    q = Event.get_query_for_visible_items(include_hidden_for_user=True).with_entities(Event.year) \
+        .filter_by(epoch_id=e_id).group_by(Event.year).order_by(Event.year.asc()).all()
 
     return q
