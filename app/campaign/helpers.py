@@ -1,7 +1,7 @@
-from flask import current_app
 from flask_login import current_user
 from app.campaign.models import Campaign
 from app.user.models import User
+
 
 # generate choices for dungeon masters (=users)
 def gen_dm_choices():
@@ -14,6 +14,7 @@ def gen_dm_choices():
 
     return choices
 
+
 # generate choices for campaigns (for session form)
 def gen_campaign_choices_dm():
     choices = []
@@ -24,6 +25,7 @@ def gen_campaign_choices_dm():
         choices.append((campaign.id, campaign.name))
 
     return choices
+
 
 def gen_campaign_choices_admin():
     choices = []
