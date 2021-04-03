@@ -10,11 +10,13 @@ dbg_profiler_enabled = False
 
 true_vals = ["1", "true", "yes", "y", "t"]
 
-"""
-Default Config Class
-DO NOT EDIT --- USE user_config.py INSTEAD!
-"""
+
 class DefaultConfig(object):
+    """
+    Default Config Class
+    DO NOT EDIT --- USE user_config.py INSTEAD!
+    """
+
     # static configuration
     ROOT_DIR = rootdir
     DATA_DIR = os.path.join(data_basedir, "data")
@@ -53,7 +55,9 @@ class DefaultConfig(object):
     if os.environ.get("PROFILER_ENABLED"):
         dbg_profiler_enabled = os.environ.get("PROFILER_ENABLED").lower() in true_vals
 
-    TOOLBAR_OPTIONS = [("INTERCEPT_REDIRECTS", dbg_intercept_redirects), ("TEMPLATE_EDITOR_ENABLED", dbg_template_editor), ("PROFILER_ENABLED", dbg_profiler_enabled)]
+    TOOLBAR_OPTIONS = [("INTERCEPT_REDIRECTS", dbg_intercept_redirects),
+                       ("TEMPLATE_EDITOR_ENABLED", dbg_template_editor),
+                       ("PROFILER_ENABLED", dbg_profiler_enabled)]
 
     if os.environ.get("LOG_SQL_QUERIES"):
         LOG_SQL_QUERIES = os.environ.get("LOG_SQL_QUERIES").lower() in true_vals
