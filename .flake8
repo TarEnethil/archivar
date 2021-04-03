@@ -1,0 +1,7 @@
+[flake8]
+exclude = .git,.github,__pycache__,migrations,venv,user_config.py,debug_config.py
+max-line-length = 120
+max-complexity = 10
+per-file-ignores =
+    # allow (unused) imports at end of file (import of routes) in __init__.py
+    __init__.py: E402, F401
