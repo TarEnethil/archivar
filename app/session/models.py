@@ -3,11 +3,11 @@ from app.helpers import urlfriendly
 from app.mixins import LinkGenerator, SimpleChangeTracker, PermissionTemplate
 from flask import url_for
 from flask_login import current_user
-from sqlalchemy import and_
 
 session_character_assoc = db.Table("session_character_assoc",
-                    db.Column("session_id", db.Integer, db.ForeignKey("sessions.id")),
-                    db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
+                                   db.Column("session_id", db.Integer, db.ForeignKey("sessions.id")),
+                                   db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
+
 
 class Session(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
     __tablename__ = "sessions"
