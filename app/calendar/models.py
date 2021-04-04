@@ -166,10 +166,10 @@ class Moon(db.Model, SimpleChangeTracker, LinkGenerator):
         half_moon_div = '<span class="half-moon" style="background:{0};width:{1}px;{2};{3};"></span>'
 
         if print_name:
-            name = '<span class="moon-text">{0}</span>'.format(self.name)
+            name = f'<span class="moon-text">{self.name}</span>'
 
         if print_phase:
-            phase_name_span = '<span class="moon-text">{0}</span>'.format(phase_name)
+            phase_name_span = f'<span class="moon-text">{phase_name}</span>'
 
         # defaults for falling moon
         transform = 0
@@ -185,8 +185,8 @@ class Moon(db.Model, SimpleChangeTracker, LinkGenerator):
             # exactly half moon
             if 75 - self.delta <= (phase_percent * 100) <= 75 + self.delta:
                 size = moon_size - 4  # moon_size - 2 * padding
-                border1 = "border-top-right-radius:{0}px".format(size)
-                border2 = "border-bottom-right-radius:{0}px".format(size)
+                border1 = f"border-top-right-radius:{size}px"
+                border2 = f"border-bottom-right-radius:{size}px"
                 moon_div = half_moon_div.format(self.waxing_color, size / 2, border1, border2)
                 align = "text-align:right;"
             else:  # every other rising moon
@@ -207,8 +207,8 @@ class Moon(db.Model, SimpleChangeTracker, LinkGenerator):
             # exactly half moon
             if 25 - self.delta <= (phase_percent * 100) <= 25 + self.delta:
                 size = moon_size - 4  # moon_size - 2 * padding
-                border1 = "border-top-left-radius:{0}px".format(size)
-                border2 = "border-bottom-left-radius:{0}px".format(size)
+                border1 = f"border-top-left-radius:{size}px"
+                border2 = f"border-bottom-left-radius:{size}px"
                 moon_div = half_moon_div.format(self.waning_color, size / 2, border1, border2)
                 align = "text-align:left;"
             else:  # every other falling moon
@@ -231,7 +231,7 @@ class Moon(db.Model, SimpleChangeTracker, LinkGenerator):
     def print_phases(self, moon_size=50, print_name=False, print_phase=False):
         out = ""
         for x in range(self.phase_length):
-            out += "{}\n".format(self.print_phase(x + 1, moon_size, print_name, print_phase))
+            out += f"{self.print_phase(x + 1, moon_size, print_name, print_phase)}\n"
 
         return out
 

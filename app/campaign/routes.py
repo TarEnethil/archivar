@@ -131,7 +131,7 @@ def edit(id, name=None):  # noqa: C901
             form.dm_notes.data = campaign.dm_notes
 
     return render_template("campaign/edit.html", form=form, campaign=campaign,
-                           title=page_title("Edit Campaign '{}'".format(campaign.name)))
+                           title=page_title(f"Edit Campaign '{campaign.name}'"))
 
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
@@ -140,7 +140,7 @@ def view(id, name=None):
     campaign = Campaign.query.filter_by(id=id).first_or_404()
 
     return render_template("campaign/view.html", campaign=campaign,
-                           title=page_title("View Campaign '{}'".format(campaign.name)))
+                           title=page_title(f"View Campaign '{campaign.name}'"))
 
 # @bp.route("/delete/<int:id>", methods=["GET", "POST"])
 # @login_required

@@ -262,7 +262,7 @@ def debug_trace_queries(response):
         for query in queries:
             dur += query.duration
 
-        print("processed {} queries in {}".format(len(queries), dur))
+        print(f"processed {len(queries)} queries in {dur}")
 
     return response
 

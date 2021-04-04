@@ -59,7 +59,7 @@ def view_with_node(id, n_id, m_name=None, n_name=None):
         return deny_access(no_perm_url)
 
     if node.on_map != map_.id:
-        flash("Map node {0} could not be found on this map".format(node.id), "danger")
+        flash(f"Map node '{node.id}' could not be found on this map", "danger")
         return redirect(map_.view_url())
 
     return render_template("map/index.html", settings=mapsettings, map_=map_, jump_to_node=node.id,
@@ -135,7 +135,7 @@ def map_settings(id, name=None):
         form.is_visible.data = map_.is_visible
 
         return render_template("map/edit.html", map=map_, form=form,
-                               title=page_title("Edit Map '{}'".format(map_.name)))
+                               title=page_title(f"Edit Map '{map_.name}'"))
 
 
 # global map settings
@@ -334,7 +334,7 @@ def node_type_create():
         else:
             db.session.add(new_map_node_type)
             db.session.commit()
-            flash("'{}' was successfully created.".format(form.name.data), "success")
+            flash(f"'{form.name.data}' was successfully created.", "success")
             return redirect(url_for('map.settings'))
 
     return render_template("map/node_type_create.html", form=form, title=page_title("Create location type"))
@@ -366,14 +366,14 @@ def node_type_edit(id):
             flash("Error while editing node type.", "error")
         else:
             db.session.commit()
-            flash("'{}' was successfully edited.".format(form.name.data), "success")
+            flash(f"'{form.name.data}' was successfully edited.", "success")
             return redirect(url_for('map.settings'))
     elif request.method == "GET":
         form.name.data = node.name
         form.description.data = node.description
 
     return render_template("map/node_type_edit.html", form=form, node_type=node,
-                           title=("Edit location type '{}'".format(node.name)))
+                           title=(f"Edit location type '{node.name}'"))
 
 
 @bp.route("/node_type/json")

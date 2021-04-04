@@ -95,7 +95,7 @@ def edit(id, name=None):  # noqa: C901
             form.members.data = members
 
     return render_template("party/edit.html", form=form, party=party,
-                           title=page_title("Edit Party '{}'".format(party.name)))
+                           title=page_title(f"Edit Party '{party.name}'"))
 
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
@@ -104,7 +104,7 @@ def edit(id, name=None):  # noqa: C901
 def view(id, name=None):
     party = Party.query.filter_by(id=id).first_or_404()
 
-    return render_template("party/view.html", party=party, title=page_title("View Party '{}'".format(party.name)))
+    return render_template("party/view.html", party=party, title=page_title(f"View Party '{party.name}'"))
 
 
 @bp.route("/delete/<int:id>/<string:name>", methods=["GET", "POST"])

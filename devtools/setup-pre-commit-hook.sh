@@ -18,7 +18,7 @@ set -e
 
 cat <<EOT > ${HOOKFILE}
 TOPLEVEL=\$(git rev-parse --show-toplevel)
-STAGED_FILES=\$(git diff --cached --name-only | grep -P "\.py$")
+STAGED_FILES=\$(git diff --cached --name-only -- . ':!migrations' | grep -P "\.py$")
 UNSTAGED_FILES=\$(git diff --name-only)
 
 errs=0

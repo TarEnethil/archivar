@@ -41,7 +41,7 @@ class Campaign(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate,
     # LinkGenerator functions
     #####
     def view_text(self):
-        return Markup('<span style="color:{};">█</span> {}'.format(self.color, self.name))
+        return Markup(f'<span style="color:{self.color};">█</span> {self.name}')
 
     def view_url(self):
         return url_for('campaign.view', id=self.id, name=urlfriendly(self.name))

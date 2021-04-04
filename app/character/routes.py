@@ -54,7 +54,7 @@ def view(id, name=None):
     if char.is_visible is False:
         flash("This Character is only visible to you.", "warning")
 
-    return render_template("character/view.html", char=char, title=page_title("View Character '{}'".format(char.name)))
+    return render_template("character/view.html", char=char, title=page_title(f"View Character '{char.name}'"))
 
 
 # TODO Fix C901
@@ -116,7 +116,7 @@ def edit(id, name=None):  # noqa: C901
             form.is_visible.data = char.is_visible
 
         return render_template("character/edit.html", form=form, char=char,
-                               title=page_title("Edit character '{}'".format(char.name)))
+                               title=page_title(f"Edit character '{char.name}'"))
 
 
 @bp.route("/list", methods=["GET"])
@@ -163,7 +163,7 @@ def journal_list(c_id, c_name=None):
     journals = Journal.get_query_for_visible_items(include_hidden_for_user=True).filter_by(character_id=c_id).all()
 
     return render_template("character/journal_list.html", char=char, journals=journals,
-                           title=page_title("Journals for '{}'".format(char.name)))
+                           title=page_title(f"Journals for '{char.name}'"))
 
 
 @bp.route("<int:c_id>/<string:c_name>/journal/create", methods=["GET", "POST"])
@@ -174,7 +174,7 @@ def journal_create(c_id, c_name=None):
     if not char.journal_is_creatable_by_user():
         return deny_access(no_perm_url)
 
-    heading = "Create Journal Entry for {}".format(char.name)
+    heading = f"Create Journal Entry for {char.name}"
 
     form = JournalForm()
     form.session.choices = gen_session_choices(char)
@@ -210,7 +210,7 @@ def journal_create(c_id, c_name=None):
                 pass
 
         return render_template("character/journal_form.html", heading=heading, form=form,
-                               title=page_title("Add Journal Entry for '{}'".format(char.name)))
+                               title=page_title(f"Add Journal Entry for '{char.name}'"))
 
 
 @bp.route("<int:c_id>/<string:c_name>/journal/edit/<int:j_id>/<string:j_name>", methods=["GET", "POST"])
@@ -226,7 +226,7 @@ def journal_edit(c_id, j_id, c_name=None, j_name=None):
     if journal not in char.journals:
         return deny_access(no_perm_url, "Journal does not belong to this character.")
 
-    heading = "Edit Journal Entry for {}".format(char.name)
+    heading = f"Edit Journal Entry for {char.name}"
 
     form = JournalForm()
     form.session.choices = gen_session_choices(char)
@@ -252,7 +252,7 @@ def journal_edit(c_id, j_id, c_name=None, j_name=None):
         form.session.data = journal.session_id
 
         return render_template("character/journal_form.html", heading=heading, form=form,
-                               title=page_title("Edit Journal Entry '{}'".format(journal.title)))
+                               title=page_title(f"Edit Journal Entry '{journal.title}'"))
 
 
 @bp.route("<int:c_id>/<string:c_name>/journal/view/<int:j_id>/<string:j_name>", methods=["GET"])
@@ -272,7 +272,7 @@ def journal_view(c_id, j_id, c_name=None, j_name=None):
         flash("This Journal is only visible to you.", "warning")
 
     return render_template("character/journal_view.html", char=char, journal=journal,
-                           title=page_title("View Journal Entry '{}'".format(journal.title)))
+                           title=page_title(f"View Journal Entry '{journal.title}'"))
 
 
 @bp.route("<int:c_id>/<string:c_name>/journal/delete/<int:j_id>/<string:j_name>", methods=["GET"])

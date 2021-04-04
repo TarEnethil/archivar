@@ -34,7 +34,7 @@ class Session(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
     # LinkGenerator functions
     #####
     def view_text(self):
-        return "#{} {}".format(self.session_number, self.title)
+        return f"#{self.session_number} {self.title}"
 
     def view_url(self):
         return url_for('session.view', id=self.id, name=urlfriendly(self.title))

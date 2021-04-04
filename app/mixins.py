@@ -50,10 +50,10 @@ class SimpleChangeTracker(object):
             out += "<li>Created"
 
             if self.created_by:
-                out += ' by {}'.format(self.created_by.view_link())
+                out += f' by {self.created_by.view_link()}'
 
             if self.created:
-                out += " on {}".format(current_app.extensions["moment"](self.created).format(current_user.dateformat))
+                out += f' on {current_app.extensions["moment"](self.created).format(current_user.dateformat)}'
 
             out += "</li>"
 
@@ -61,10 +61,10 @@ class SimpleChangeTracker(object):
             out += "<li>Edited"
 
             if self.edited_by:
-                out += ' by {}'.format(self.edited_by.view_link())
+                out += f' by {self.edited_by.view_link()}'
 
             if self.edited:
-                out += " on {}".format(current_app.extensions["moment"](self.edited).format(current_user.dateformat))
+                out += f' on {current_app.extensions["moment"](self.edited).format(current_user.dateformat)}'
 
             out += "</li>"
 
