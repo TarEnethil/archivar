@@ -28,7 +28,7 @@ class EventCategory(db.Model, SimpleChangeTracker, LinkGenerator):
     # LinkGenerator functions
     #####
     def view_text(self):
-        return Markup('<span style="color:{};">█</span> {}'.format(self.color, self.name))
+        return Markup(f'<span style="color:{self.color};">█</span> {self.name}')
 
     def view_url(self):
         return url_for('event.list_category', c_id=self.id, c_name=urlfriendly(self.name))
@@ -59,7 +59,7 @@ class Event(db.Model, SimplePermissionChecker, LinkGenerator):
         day_str = str(day)
 
         if with_weekday:
-            day_str = "{}, {}".format(self.day_of_the_week(timestamp), day_str)
+            day_str = f"{self.day_of_the_week(timestamp)}, {day_str}"
 
         month_str = month.abbreviation if use_abbr and month.abbreviation else month.name
 
@@ -76,11 +76,11 @@ class Event(db.Model, SimplePermissionChecker, LinkGenerator):
             epoch_str = f'<a href="{url}">{epoch_str}</a>'
 
         if use_epoch and use_year:
-            return '{0}. {1} {2}, {3}'.format(day_str, month_str, year_str, epoch_str)
+            return f'{day_str}. {month_str} {year_str}, {epoch_str}'
         elif use_year and not use_epoch:
-            return '{0}. {1} {2}'.format(day_str, month_str, year_str)
+            return f'{day_str}. {month_str} {year_str}'
 
-        return '{0}. {1}'.format(day_str, month_str)
+        return f'{day_str}. {month_str}'
 
     def start_date(self, use_abbr, with_link=False, use_epoch=True, use_year=True, with_weekday=False):
         return self.format_date(self.epoch, self.year, self.month, self.day, self.timestamp,

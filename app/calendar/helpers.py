@@ -56,7 +56,7 @@ def calendar_sanity_check():
 
         if current_epoch.years != 0:
             tests_passed = False
-            flash("The current epoch ({}) needs a duration of 0.".format(current_epoch.name), "danger")
+            flash(f"The current epoch '{current_epoch.name}' needs a duration of 0.", "danger")
 
         all_other_epochs = Epoch.query.filter(Epoch.id != current_epoch.id).all()
 

@@ -22,7 +22,7 @@ def gen_wiki_entry_choices(ensure=None):
             name = entry.title
 
             if entry.is_visible is False:
-                name = "{} (invisible)".format(name)
+                name = f"{name} (invisible)"
             cat_dict[cat].append([entry.id, name])
 
     ordered = OrderedDict(sorted(cat_dict.items(), key=lambda t: t[0]))

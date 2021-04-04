@@ -86,7 +86,7 @@ def edit(id, name=None):
             form.is_visible.data = wikientry.is_visible
 
     return render_template("wiki/edit.html", form=form, nav=(prepare_wiki_nav(), WikiSearchForm()), cats=cats,
-                           entry=wikientry, title=page_title("Edit Wiki Article '{}'".format(wikientry.title)))
+                           entry=wikientry, title=page_title(f"Edit Wiki Article '{wikientry.title}'"))
 
 
 @bp.route("/view/<int:id>/<string:name>", methods=["GET"])
@@ -104,7 +104,7 @@ def view(id, name=None):
     map_nodes = get_nodes_by_wiki_id(id)
 
     return render_template("wiki/view.html", entry=wikientry, nav=(prepare_wiki_nav(), WikiSearchForm()),
-                           map_nodes=map_nodes, title=page_title("View Wiki Article '{}'".format(wikientry.title)))
+                           map_nodes=map_nodes, title=page_title(f"View Wiki Article '{wikientry.title}'"))
 
 
 @bp.route("/delete/<int:id>/<string:name>", methods=["GET"])
@@ -152,7 +152,7 @@ def search_text(text):
     results = prepare_search_result(text, results)
 
     return render_template("wiki/search_text.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results,
-                           term=text, title=page_title("Search for '{}'".format(text)))
+                           term=text, title=page_title(f"Search for '{text}'"))
 
 
 @bp.route("/tag/<string:tag>", methods=["GET"])
@@ -161,7 +161,7 @@ def search_tag(tag):
     results = search_wiki_tag(tag)
 
     return render_template("wiki/search_tag.html", nav=(prepare_wiki_nav(), WikiSearchForm()), results=results,
-                           tag=tag, title=page_title("Search for Tag '{}'".format(tag)))
+                           tag=tag, title=page_title(f"Search for Tag '{tag}'"))
 
 
 @bp.route("/recent", methods=["GET"])

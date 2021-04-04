@@ -53,7 +53,7 @@ def gen_submap_choices(zerochoice="*no submap*", ensure=None):
             name = map_.name
 
             if map_.is_visible is False:
-                name = "{} (invisible)".format(name)
+                name = f"{name} (invisible)"
 
             choices.append((map_.id, name))
 

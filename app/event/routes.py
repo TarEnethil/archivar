@@ -26,7 +26,7 @@ def view(id, name=None):
         flash("This Event is only visible to you.", "warning")
 
     return render_template("event/view.html", event=event, moons=moons,
-                           title=page_title("View Event '{}'".format(event.name)))
+                           title=page_title(f"View Event '{event.name}'"))
 
 
 @bp.route("/list", methods=["GET"])
@@ -43,10 +43,10 @@ def list():
 def list_epoch(e_id, e_name=None):
     e = Epoch.query.filter_by(id=e_id).first_or_404()
     events = get_events(e_id)
-    title = "All Events for {}".format(e.name)
+    title = f"All Events for {e.name}"
 
     return render_template("event/list.html", events=events, epoch_flag=True, heading=title,
-                           title=page_title("View Events in Epoch '{}'".format(e.name)))
+                           title=page_title(f"View Events in Epoch '{e.name}'"))
 
 
 @bp.route("/list/epoch-<int:e_id>/<string:e_name>/year-<int:year>", methods=["GET"])
@@ -54,10 +54,10 @@ def list_epoch(e_id, e_name=None):
 def list_epoch_year(e_id, year, e_name=None):
     e = Epoch.query.filter_by(id=e_id).first_or_404()
     events = get_events(e_id, year)
-    title = "All events for year {}, {}".format(year, e.name)
+    title = f"All events for year {year}, {e.name}"
 
     return render_template("event/list.html", events=events, epoch_year_flag=True, heading=title,
-                           title=page_title("View Events in Year {}, epoch '{}'".format(year, e.name)))
+                           title=page_title(f"View Events in Year {year}, epoch '{e.name}'"))
 
 
 @bp.route("/list/category-<int:c_id>/<string:c_name>", methods=["GET"])
@@ -65,10 +65,10 @@ def list_epoch_year(e_id, year, e_name=None):
 def list_category(c_id, c_name=None):
     c = EventCategory.query.filter_by(id=c_id).first_or_404()
     events = get_events_by_category(c_id)
-    title = "All Events in Category {}".format(c.name)
+    title = f"All Events in Category {c.name}"
 
     return render_template("event/list.html", events=events, category_flag=True, heading=title,
-                           title=page_title("View Events in Category '{}'".format(c.name)))
+                           title=page_title(f"View Events in Category '{c.name}'"))
 
 
 # TODO Fix C901
@@ -202,7 +202,7 @@ def edit(id, name=None):
 
     calendar_helper = gen_calendar_stats()
     return render_template("event/edit.html", form=form, calendar=calendar_helper,
-                           title=page_title("Edit Event '{}'".format(event.name)))
+                           title=page_title(f"Edit Event '{event.name}'"))
 
 
 @bp.route("/delete/<int:id>/<string:name>")
@@ -248,7 +248,7 @@ def category_edit(id, name=None):
     form.submit.label.text = "Edit Category"
 
     category = EventCategory.query.filter_by(id=id).first_or_404()
-    heading = "Edit Event Category '{}'".format(category.name)
+    heading = f"Edit Event Category '{category.name}'"
 
     if form.validate_on_submit():
         category.name = form.name.data

@@ -43,7 +43,7 @@ def list_by_cat(c_id, c_name=None):
     files = get_media(c_id)
 
     return render_template("media/list.html", media=files, cat=m,
-                           title=page_title("View Files in Category '{}'".format(m.name)))
+                           title=page_title(f"View Files in Category '{m.name}'"))
 
 
 # TODO: Fix C901
@@ -145,7 +145,7 @@ def edit(id, name=None):  # noqa: C901
                 flash("Due to current technical limitations, the old and new file need to have the same file type. \
                     As a workaround, you can upload a new file instead.", "danger")
                 return render_template("media/edit.html", form=form,
-                                       title=page_title("Edit File '{}'".format(item.name)))
+                                       title=page_title(f"Edit File '{item.name}'"))
 
             success, filename, size = upload_media_file(form.file.data, item.filename)
 
@@ -168,7 +168,7 @@ def edit(id, name=None):  # noqa: C901
         if item.is_hideable_by_user():
             form.is_visible.data = item.is_visible
 
-    return render_template("media/edit.html", form=form, title=page_title("Edit File '{}'".format(item.name)))
+    return render_template("media/edit.html", form=form, title=page_title(f"Edit File '{item.name}'"))
 
 
 @bp.route("/delete/<int:id>/<string:name>", methods=["GET"])

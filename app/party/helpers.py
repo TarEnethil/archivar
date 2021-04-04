@@ -10,7 +10,7 @@ def gen_party_members_choices(ensure=None):
 
     for char in characters:
         if char.is_visible or (ensure is not None and char in ensure):
-            choices.append((char.id, "{} ({})".format(char.name, char.player.username)))
+            choices.append((char.id, f"{char.name} ({char.player.username})"))
 
     return choices
 

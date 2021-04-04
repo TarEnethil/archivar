@@ -38,24 +38,25 @@ def upgrade():
                     generate_thumbnail(f.filename)
                 except Exception as err:
                     exceptions += 1
-                    print("could not generate thumbnail for {}: {}".format(f.filename, err))
+                    print(f"could not generate thumbnail for {f.filename}: {err}")
                 else:
                     correct += 1
-                    print("generated thumbnail for {}".format(f.filename))
+                    print(f"generated thumbnail for {f.filename}")
 
             else:
                 skipped_no_file += 1
-                print("skipping {} as the file does not exist".format(f.filename))
+                print(f"skipping {f.filename} as the file does not exist")
         else:
             skipped_no_image += 1
-            print("skipping {} as it is not an image".format(f.filename))
+            print(f"skipping {f.filename} as it is not an image")
 
     if len(files) > 0:
-        print("proceseed {} files".format(len(files)))
-        print("skipped {} as they weren't images".format(skipped_no_image))
-        print("skipped {} because the file did not exist".format(skipped_no_file))
-        print("error occured on {} images".format(exceptions))
-        print("generated {} thumbnails".format(correct))
+        print(f"proceseed {len(files)} files")
+        print(f"skipped {skipped_no_image} as they weren't images")
+        print(f"skipped {skipped_no_file} because the file did not exist")
+        print(f"error occured on {exceptions} images")
+        print(f"generated {correct} thumbnails")
+
 
 def downgrade():
     pass

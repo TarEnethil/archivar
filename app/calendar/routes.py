@@ -220,7 +220,7 @@ def epoch_edit(id, name=None):
             form.circa.data = epoch.circa
 
     return render_template("calendar/form.html", item=epoch, form=form, heading=heading,
-                           title=page_title("Edit Epoch '{}'".format(epoch.name)))
+                           title=page_title(f"Edit Epoch '{epoch.name}'"))
 
 
 @bp.route("/epoch/delete/<int:id>/<string:name>", methods=["GET"])
@@ -265,7 +265,7 @@ def epoch_up(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '{}' and '{}' has been swapped.".format(epoch_to_up.name, epoch_to_down.name), "success")
+    flash(f"Order of '{epoch_to_up.name}' and '{epoch_to_down.name}' has been swapped.", "success")
     return redirect(url_for("calendar.settings"))
 
 
@@ -293,7 +293,7 @@ def epoch_down(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '{}' and '{}' has been swapped.".format(epoch_to_down.name, epoch_to_up.name), "success")
+    flash(f"Order of '{epoch_to_down.name}' and '{epoch_to_up}' has been swapped.", "success")
     return redirect(url_for("calendar.settings"))
 
 
@@ -366,7 +366,7 @@ def month_edit(id, name=None):
             form.days.data = month.days
 
     return render_template("calendar/form.html", item=month, form=form, heading=heading,
-                           title=page_title("Edit Month '{}'".format(month.name)))
+                           title=page_title(f"Edit Month '{month.name}'"))
 
 
 @bp.route("/month/delete/<int:id>/<string:name>", methods=["GET"])
@@ -411,7 +411,7 @@ def month_up(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '{}' and '{}' has been swapped.".format(month_to_up.name, month_to_down.name), "success")
+    flash(f"Order of '{month_to_up.name}' and '{month_to_down.name}' has been swapped.", "success")
     return redirect(url_for("calendar.settings"))
 
 
@@ -439,7 +439,7 @@ def month_down(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '{}' and '{}' has been swapped.".format(month_to_down.name, month_to_up.name), "success")
+    flash("Order of '{month_to_down.name}' and '{month_to_up.name}' has been swapped.", "success")
     return redirect(url_for("calendar.settings"))
 
 
@@ -503,7 +503,7 @@ def day_edit(id, name=None):
         form.description.data = day.description
 
     return render_template("calendar/form.html", item=day, form=form, heading=heading,
-                           title=page_title("Edit Day '{}'".format(day.name)))
+                           title=page_title("Edit Day '{day.name}'"))
 
 
 @bp.route("/day/delete/<int:id>/<string:name>", methods=["GET"])
@@ -548,7 +548,7 @@ def day_up(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '{}' and '{}' has been swapped.".format(day_to_up.name, day_to_down.name), "success")
+    flash(f"Order of '{day_to_up.name}' and '{day_to_down.name}' has been swapped.", "success")
     return redirect(url_for("calendar.settings"))
 
 
@@ -576,7 +576,7 @@ def day_down(id, name=None):
 
     db.session.commit()
 
-    flash("Order of '{}' and '{}' has been swapped.".format(day_to_down.name, day_to_up.name), "success")
+    flash(f"Order of '{day_to_down.name}' and '{day_to_up.name}' has been swapped.", "success")
     return redirect(url_for("calendar.settings"))
 
 
@@ -645,7 +645,7 @@ def moon_edit(id, name=None):
         form.waning_color.data = moon.waning_color
 
     return render_template("calendar/form.html", item=moon, form=form, heading=heading,
-                           title=page_title("Edit Moon '{}'".format(moon.name)))
+                           title=page_title(f"Edit Moon '{moon.name}'"))
 
 
 @bp.route("/moon/delete/<int:id>/<string:name>", methods=["GET"])

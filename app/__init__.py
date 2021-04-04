@@ -50,8 +50,8 @@ def create_app(config=UserConfig):
             DebugToolbarExtension(app)
 
             for tup in app.config.get("TOOLBAR_OPTIONS"):
-                print("Setting Flask-Toolbar option: {} = {}".format(tup[0], tup[1]))
-                app.config["DEBUG_TB_{}".format(tup[0])] = tup[1]
+                print(f"Setting Flask-Toolbar option: {tup[0]} = {tup[1]}")
+                app.config[f"DEBUG_TB_{tup[0]}"] = tup[1]
 
         # enable SQLAlchemy query logging to stderr
         if app.config.get("LOG_SQL_QUERIES") is True:

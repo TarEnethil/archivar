@@ -28,8 +28,8 @@ def upgrade():
     with op.batch_alter_table('users', schema=None) as batch_op:
         batch_op.add_column(sa.Column('role', sa.Integer(), nullable=True))
 
-    op.execute("UPDATE users SET role = {0}".format(Role.User.value))
-    op.execute("UPDATE users SET role = {0} WHERE id = 1".format(Role.Admin.value))
+    op.execute(f"UPDATE users SET role = {Role.User.value}")
+    op.execute(f"UPDATE users SET role = {Role.Admin.value} WHERE id = 1")
     # ### end Alembic commands ###
 
 

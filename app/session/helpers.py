@@ -19,7 +19,7 @@ def gen_participant_choices(ensure=None):
 
         for member in party.members:
             if member.is_visible or (ensure is not None and member in ensure):
-                members.append((member.id, "{} ({})".format(member.name, member.player.username)))
+                members.append((member.id, f"{member.name} ({member.player.username})"))
 
         choices.append((party.name, members))
 
@@ -30,7 +30,7 @@ def gen_participant_choices(ensure=None):
 
         for char in no_party_chars:
             if char.is_visible or (ensure is not None and char in ensure):
-                members.append((char.id, "{} ({})".format(char.name, char.player.username)))
+                members.append((char.id, f"{char.name} ({char.player.usernname})"))
 
         choices.append(("No Party", members))
 

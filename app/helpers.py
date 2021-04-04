@@ -71,7 +71,7 @@ def page_title(prefix):
     if prefix is None or prefix == "":
         raise UserWarning("No title prefix provided")
 
-    return "{} {}".format(prefix, current_app.config["PAGE_TITLE_SUFFIX"])
+    return f'{prefix} {current_app.config["PAGE_TITLE_SUFFIX"]}'
 
 
 # stretch color code from #xxx to #xxxxxx if needed
@@ -89,11 +89,11 @@ def count_rows(db_class):
 # ensure unique and secure filename
 def unique_filename(path_, initial_filename):
     orig_filename = secure_filename(initial_filename)
-    filename = "{}-{}".format(uuid4().hex[:16], orig_filename)
+    filename = f"{uuid4().hex[:16]}-{orig_filename}"
 
     while path.isfile(path.join(path_, filename)):
         # fancy duplication avoidance (tm)
-        filename = "{}-{}".format(uuid4().hex[:16], orig_filename)
+        filename = f"{uuid4().hex[:16]}-{orig_filename}"
 
     return filename
 
@@ -109,7 +109,7 @@ def generate_thumbnail(path_, filename, height, width):
 
         image.save(filepath_thumb)
     except Exception as err:
-        flash("Could not generate the thumbnail: {}".format(err), "error")
+        flash(f"Could not generate the thumbnail: {err}", "error")
         return False
 
     return True
@@ -124,7 +124,7 @@ def upload_file(filedata, filepath, filename=None):
         filepath = path.join(filepath, filename)
         filedata.save(filepath)
     except Exception as err:
-        flash("Could not upload file: {}".format(err), "error")
+        flash(f"Could not upload file: {err}", "error")
         return False, filename
 
     return True, filename
@@ -171,11 +171,11 @@ class LessThanOrEqual(object):
         other_field = form._fields.get(self.comp_value_field_name)
 
         if other_field is None:
-            raise Exception('No field named {} in form'.format(self.comp_value_field_name))
+            raise Exception(f'No field named {self.comp_value_field_name} in form')
 
         if other_field.data and field.data:
             if field.data > other_field.data:
-                raise ValidationError("Value must be less than or equal to {}".format(self.comp_value_field_name))
+                raise ValidationError(f"Value must be less than or equal to {self.comp_value_field_name}")
 
 
 # validate that a form field contains a value that is >= that of another field
@@ -187,11 +187,11 @@ class GreaterThanOrEqual(object):
         other_field = form._fields.get(self.comp_value_field_name)
 
         if other_field is None:
-            raise Exception('No field named {} in form'.format(self.comp_value_field_name))
+            raise Exception(f'No field named {self.comp_value_field_name} in form')
 
         if other_field.data and field.data:
             if field.data < other_field.data:
-                raise ValidationError("Value must be greater than or equal to {}".format(self.comp_value_field_name))
+                raise ValidationError(f"Value must be greater than or equal to {self.comp_value_field_name}")
 
 
 # validate that a form field contains a year that is valid for a given epoch
@@ -210,7 +210,7 @@ class YearPerEpochValidator(object):
             raise ValidationError("Unknown epoch.")
 
         if ep.years != 0 and (field.data < 1 or field.data > ep.years):
-            raise ValidationError("Year {} is invalid for this epoch.".format(field.data))
+            raise ValidationError(f"Year {field.data} is invalid for this epoch.")
 
 
 # validate that a form field contains a valid day for a given month
@@ -293,44 +293,44 @@ def include_css(styles):
     s = {
         "bootstrap": {
             "cdn": ["https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"],
-            "local": ["{}css/bootstrap.min.css".format(local_url)]
+            "local": [f"{local_url}css/bootstrap.min.css"]
         },
         "fontawesome": {
             "cdn": ["https://use.fontawesome.com/releases/v5.3.1/css/fontawesome.css",
                     "https://use.fontawesome.com/releases/v5.3.1/css/solid.css"],
-            "local": ["{}css/fontawesome.min.css".format(local_url),
-                      "{}css/solid.min.css".format(local_url)]
+            "local": [f"{local_url}css/fontawesome.min.css",
+                      f"{local_url}css/solid.min.css"]
         },
         "markdown-editor": {
             "cdn": ["https://unpkg.com/easymde/dist/easymde.min.css"],
-            "local": ["{}css/easymde.min.css".format(local_url)]
+            "local": [f"{local_url}css/easymde.min.css"]
         },
         "bootstrap-select": {
             "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css"],
-            "local": ["{}css/bootstrap-select.min.css".format(local_url)]
+            "local": [f"{local_url}css/bootstrap-select.min.css"]
         },
         "multi-select": {
             "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.min.css"],
-            "local": ["{}css/multi-select.min.css".format(local_url)]
+            "local": [f"{local_url}css/multi-select.min.css"]
         },
         "leaflet": {
             "cdn": ["https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"],
-            "local": ["{}css/leaflet.css".format(local_url)]
+            "local": [f"{local_url}css/leaflet.css"]
         },
         "bootstrap-datetimepicker": {
             "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"],  # noqa: E501
-            "local": ["{}css/tempusdominus.min.css".format(local_url)]
+            "local": [f"{local_url}css/tempusdominus.min.css"]
         },
         "datatables": {
             "cdn": ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"],
-            "local": ["{}css/dataTables.bootstrap.min.css".format(local_url)]
+            "local": [f"{local_url}css/dataTables.bootstrap.min.css"]
         }
     }
 
     for style in styles:
         if style in s:
             for url in s[style][source]:
-                out += '<link rel="stylesheet" href="{}">\n'.format(url)
+                out += f'<link rel="stylesheet" href="{url}">\n'
 
     return Markup(out)
 
@@ -350,56 +350,56 @@ def include_js(scripts):  # noqa: C901
             "cdn": ["https://code.jquery.com/jquery-3.4.1.slim.min.js",
                     "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js",
                     "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"],
-            "local": ["{}js/jquery-3.4.1.min.js".format(local_url),
-                      "{}js/popper.min.js".format(local_url),
-                      "{}js/bootstrap.min.js".format(local_url)]
+            "local": [f"{local_url}js/jquery-3.4.1.min.js",
+                      f"{local_url}js/popper.min.js",
+                      f"{local_url}js/bootstrap.min.js"]
         },
         "markdown-editor": {
             "cdn": ["https://unpkg.com/easymde/dist/easymde.min.js"],
-            "local": ["{}js/easymde.min.js".format(local_url)],
-            "helper": ["{}js/helpers/media-uploader.js".format(local_url),
-                       "{}js/helpers/modal-helper.js".format(local_url)]
+            "local": [f"{local_url}js/easymde.min.js"],
+            "helper": [f"{local_url}js/helpers/media-uploader.js",
+                       f"{local_url}js/helpers/modal-helper.js"]
         },
         "bootstrap-select": {
             "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"],
-            "local": ["{}js/bootstrap-select.min.js".format(local_url)]
+            "local": [f"{local_url}js/bootstrap-select.min.js"]
         },
         "multi-select": {
             "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js"],
-            "local": ["{}js/jquery.multi-select.min.js".format(local_url)],
-            "helper": ["{}js/helpers/multi-select.js".format(local_url)]
+            "local": [f"{local_url}js/jquery.multi-select.min.js"],
+            "helper": [f"{local_url}js/helpers/multi-select.js"]
         },
         "leaflet": {
             "cdn": ["https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"],
-            "local": ["{}js/leaflet.js".format(local_url)]
+            "local": [f"{local_url}js/leaflet.js"]
         },
         "bootstrap-datetimepicker": {
             "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"],  # noqa: E501
-            "local": ["{}js/tempusdominus.min.js".format(local_url)]
+            "local": [f"{local_url}js/tempusdominus.min.js"]
         },
         "datatables": {
             "cdn": ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"],
-            "local": ["{}js/dataTables.bootstrap.min.js".format(local_url)],
-            "helper": ["{}js/helpers/datatables.js".format(local_url)]
+            "local": [f"{local_url}js/dataTables.bootstrap.min.js"],
+            "helper": [f"{local_url}js/helpers/datatables.js"]
         },
         "quicksearch": {
             "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/jquery.quicksearch/2.4.0/jquery.quicksearch.min.js"],
-            "local": ["{}js/jquery.quicksearch.min.js".format(local_url)]
+            "local": [f"{local_url}js/jquery.quicksearch.min.js"]
         },
         "bootbox": {
             "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"],
-            "local": ["{}js/bootbox.min.js".format(local_url)],
-            "helper": ["{}js/helpers/bootbox-helper.js".format(local_url)]
+            "local": [f"{local_url}js/bootbox.min.js"],
+            "helper": [f"{local_url}js/helpers/bootbox-helper.js"]
         },
         "util": {
             "cdn": [],
             "local": [],
-            "helper": ["{}js/helpers/util.js".format(local_url)]
+            "helper": [f"{local_url}js/helpers/util.js"]
         },
         "lightbox": {
             "cdn": [],
             "local": [],
-            "helper": ["{}js/helpers/lightbox.js".format(local_url)]
+            "helper": [f"{local_url}js/helpers/lightbox.js"]
         }
     }
 
@@ -413,11 +413,11 @@ def include_js(scripts):  # noqa: C901
     for script in scripts:
         if script in s:
             for url in s[script][source]:
-                out += '<script src="{}"></script>\n'.format(url)
+                out += f'<script src="{url}"></script>\n'
 
             if "helper" in s[script]:
                 for url in s[script]["helper"]:
-                    out += '<script src="{}"></script>\n'.format(url)
+                    out += f'<script src="{url}"></script>\n'
 
     # special rules for moment.js, include first because it must be before datetimepicker
     if "moment" in scripts:
@@ -427,7 +427,7 @@ def include_js(scripts):  # noqa: C901
             loc_url = f"{local_url}js/moment-with-locales.min.js\n"
             moment = current_app.extensions['moment'].include_moment(local_js=loc_url)
 
-        out = "{}\n{}".format(moment, out)
+        out = f"{moment}\n{out}"
 
     return Markup(out)
 
@@ -457,7 +457,7 @@ def urlfriendly(text):
 
 
 def icon_fkt(name, text_class=""):
-    return Markup('<span class="fas fa-{} {}" aria-hidden="true"></span>'.format(name, text_class))
+    return Markup(f'<span class="fas fa-{name} {text_class}" aria-hidden="true"></span>')
 
 
 def navbar_start(no_margin=False):
@@ -475,12 +475,12 @@ def link(url, text, classes=None, ids=None):
     attrs = ""
 
     if classes is not None:
-        attrs += 'class="{}"'.format(classes)
+        attrs += f'class="{classes}"'
 
     if ids is not None:
-        attrs += 'id="{}"'.format(ids)
+        attrs += f'id="{ids}"'
 
-    return Markup('<a href="{}" {}>{}</a>'.format(url, attrs, text))
+    return Markup(f'<a href="{url}" {attrs}>{text}</a>')
 
 
 def button_internal(url, text, icon=None, classes=None, ids=None, swap=False, icon_text_class=""):
@@ -490,15 +490,15 @@ def button_internal(url, text, icon=None, classes=None, ids=None, swap=False, ic
         icon = ""
 
     if swap is False:
-        text = "{}\n{}".format(icon, text)
+        text = f"{icon}\n{text}"
     else:
-        text = "{}\n{}".format(text, icon)
+        text = f"{text}\n{icon}"
 
     return link(url, text, classes, ids)
 
 
 def button(url, text, icon=None, classes="btn-secondary", ids=None, swap=False, icon_text_class=""):
-    return button_internal(url, text, icon, "btn {}".format(classes), ids, swap, icon_text_class=icon_text_class)
+    return button_internal(url, text, icon, f"btn {classes}", ids, swap, icon_text_class=icon_text_class)
 
 
 def button_nav(url, text, icon=None, classes="", ids=None, swap=False, icon_text_class="", li_classes=""):
@@ -536,7 +536,7 @@ def register_processors_and_filters(app):
 
     @app.template_filter()
     def hash(text):
-        return "{}-{}".format(urlfriendly(text), md5(text.encode('utf-8')).hexdigest()[:3])
+        return f"{urlfriendly(text)}-{md5(text.encode('utf-8')).hexdigest()[:3]}"
 
     @app.template_filter()
     def urlfriendly(text):

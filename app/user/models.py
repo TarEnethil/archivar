@@ -102,7 +102,7 @@ class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
         return 0 < len(a.intersection(b))
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return f'<User {self.username}>'
 
     #####
     # Permissions

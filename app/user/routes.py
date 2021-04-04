@@ -17,7 +17,7 @@ no_perm_url = "main.index"
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
 
-    return render_template("user/profile.html", user=user, title=page_title("View User '%s'" % user.username))
+    return render_template("user/profile.html", user=user, title=page_title(f"View User '{user.username}'"))
 
 
 # TODO: Fix C901
@@ -76,7 +76,7 @@ def edit(username):  # noqa: C901
         if current_user.is_admin():
             form.role.data = user.role
 
-    return render_template("user/edit.html", form=form, user=user, title=page_title("Edit User '%s'" % user.username))
+    return render_template("user/edit.html", form=form, user=user, title=page_title(f"Edit User '{user.username}'"))
 
 
 @bp.route("/create", methods=["GET", "POST"])
