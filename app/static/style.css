@@ -395,3 +395,17 @@ tr.invisible_item,
      max-height:30px;
      max-width:30px;
 }
+
+.lightbox-img:hover {
+    cursor: pointer;
+}
+
+#lightbox .modal-body {
+    max-height:calc(100vh - 121px);
+}
+
+#lightbox .modal-body img {
+  max-height:calc(100vh - 153px);
+  margin:0 auto;
+  display:block;
+}
