@@ -395,6 +395,11 @@ def include_js(scripts):  # noqa: C901
             "cdn": [],
             "local": [],
             "helper": ["{}js/helpers/util.js".format(local_url)]
+        },
+        "lightbox": {
+            "cdn": [],
+            "local": [],
+            "helper": ["{}js/helpers/lightbox.js".format(local_url)]
         }
     }
 
