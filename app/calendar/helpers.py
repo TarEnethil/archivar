@@ -155,7 +155,7 @@ def gen_day_choices(month_id):
     m = Month.query.filter_by(id=month_id).first()
 
     if m is None:
-        return ([0, "ERROR month not found"])
+        raise LookupError(f"No month for id {month_id}")
 
     return [(n, n) for n in range(1, m.days + 1)]
 

@@ -166,7 +166,7 @@
     </table>
     {% endif %}
 
-    {% if char.player.id == current_user.id %}
+    {% if char.player.id == current_user.id and char.private_notes %}
     <hr>
     <h2>Private Notes</h2>
 {% if current_user.markdown_phb_style %}

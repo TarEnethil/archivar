@@ -110,6 +110,9 @@ class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
     def is_editable_by_user(self):
         return current_user.is_admin() or current_user.id == self.id
 
+    def is_hideable_by_user(self):
+        raise NotImplementedError
+
     #####
     # LinkGenerator functions
     #####

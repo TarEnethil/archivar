@@ -1,5 +1,5 @@
 from app.version import version
-from flask import current_app, url_for
+from flask import current_app, url_for, flash
 from flask_login import current_user
 from hashlib import md5
 from jinja2 import Markup
@@ -87,6 +87,8 @@ def include_css(styles):
         if style in s:
             for url in s[style][source]:
                 out += f'<link rel="stylesheet" href="{url}">\n'
+        else:
+            flash(f"Unknown css-include requested: {style}", "warning")
 
     return Markup(out)
 
@@ -156,6 +158,10 @@ def include_js(scripts):  # noqa: C901
             "cdn": [],
             "local": [],
             "helper": [f"{local_url}js/helpers/lightbox.js"]
+        },
+        "moment": {  # need key to prevent warning for unknown script, but actual include is special case (see below)
+            "cdn": [],
+            "local": []
         }
     }
 
@@ -174,6 +180,8 @@ def include_js(scripts):  # noqa: C901
             if "helper" in s[script]:
                 for url in s[script]["helper"]:
                     out += f'<script src="{url}"></script>\n'
+        else:
+            flash(f"Unknown javascript-include requested: {script}", "warning")
 
     # special rules for moment.js, include first because it must be before datetimepicker
     if "moment" in scripts:

@@ -59,7 +59,7 @@ class Event(db.Model, SimplePermissionChecker, LinkGenerator):
         day_str = str(day)
 
         if with_weekday:
-            day_str = f"{self.day_of_the_week(timestamp)}, {day_str}"
+            day_str = f"{self.day_of_the_week(timestamp, use_abbr)}, {day_str}"
 
         month_str = month.abbreviation if use_abbr and month.abbreviation else month.name
 
@@ -125,13 +125,15 @@ class Event(db.Model, SimplePermissionChecker, LinkGenerator):
         return self.format_date(epoch, year, month, day, timestamp, use_abbr, with_link, use_epoch, use_year,
                                 with_weekday)
 
-    def day_of_the_week(self, timestamp=None):
+    def day_of_the_week(self, timestamp=None, use_abbr=False):
         wd = Day.query.order_by(Day.order.asc()).all()
 
         if timestamp is None:
-            return wd[(self.timestamp % len(wd)) - 1].name
+            idx = (self.timestamp % len(wd)) - 1
         else:
-            return wd[(timestamp % len(wd)) - 1].name
+            idx = (timestamp % len(wd)) - 1
+
+        return wd[idx].abbreviation if use_abbr and wd[idx].abbreviation else wd[idx].name
 
     #####
     # Permissions

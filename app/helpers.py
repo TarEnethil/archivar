@@ -139,6 +139,9 @@ def urlfriendly(text):
         if idx >= max_len:
             text = text[:idx]
 
+        if idx == -1:
+            text = text[:max_len]
+
     return text
 
 
