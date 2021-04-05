@@ -62,8 +62,8 @@ def gen_wiki_category_choices():
 def prepare_wiki_nav():
     # get all visible wiki entries for current user
     entries = WikiEntry.get_query_for_visible_items(include_hidden_for_user=True) \
-              .entries.with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title, WikiEntry.is_visible) \
-              .entries.order_by(WikiEntry.title.asc()).all()
+              .with_entities(WikiEntry.category, WikiEntry.id, WikiEntry.title, WikiEntry.is_visible) \
+              .order_by(WikiEntry.title.asc()).all()
 
     cat_dict = {}
 
@@ -88,7 +88,7 @@ def prepare_wiki_nav():
 
 # get all visible wiki entries for the current user containing the search text
 def search_wiki_text(text):
-    entries = WikiEntry.query.filter(or_(WikiEntry.is_visible is True, WikiEntry.created_by_id == current_user.id),
+    entries = WikiEntry.query.filter(or_(WikiEntry.is_visible.is_(True), WikiEntry.created_by_id == current_user.id),
                                      WikiEntry.content.contains(text))
     entries = entries.with_entities(WikiEntry.id, WikiEntry.title, WikiEntry.content).order_by(WikiEntry.edited.desc())
 
@@ -97,13 +97,13 @@ def search_wiki_text(text):
 
 # generate a text snipped from the whole text
 def get_search_context(term, entry_text):
-    pos = entry_text.find(term)
+    pos = entry_text.lower().find(term.lower())
 
     if pos == -1:
         return "ERROR, SHOULD NOT HAPPEN"
 
     left = max(0, pos - 25)
-    right = min(pos + 25, len(entry_text))
+    right = min(pos + len(term) + 25, len(entry_text))
 
     return entry_text[left:right]
 
@@ -113,7 +113,7 @@ def prepare_search_result(term, entries):
     results = []
 
     for entry in entries:
-        if term in entry[2]:
+        if term.lower() in entry[2].lower():
             results.append((entry[0], entry[1], get_search_context(term, entry[2])))
 
     return results
@@ -121,7 +121,7 @@ def prepare_search_result(term, entries):
 
 # search the tags of all visible entries for current user for specified tag
 def search_wiki_tag(tag):
-    entries = WikiEntry.query.filter(or_(WikiEntry.is_visible is True, WikiEntry.created_by_id == current_user.id),
+    entries = WikiEntry.query.filter(or_(WikiEntry.is_visible.is_(True), WikiEntry.created_by_id == current_user.id),
                                      WikiEntry.tags.contains(tag))
     entries = entries.with_entities(WikiEntry.id, WikiEntry.title).order_by(WikiEntry.edited.desc()).all()
 
@@ -131,7 +131,7 @@ def search_wiki_tag(tag):
 # get the last 5 created articles that are visible for the user
 def get_recently_created():
     entries = WikiEntry.get_query_for_visible_items(include_hidden_for_user=True) \
-              .entries.join(User, WikiEntry.created_by_id == User.id) \
+              .join(User, WikiEntry.created_by_id == User.id) \
               .with_entities(WikiEntry.id, WikiEntry.title, WikiEntry.created, User.username) \
               .order_by(WikiEntry.created.desc()).limit(5).all()
 
@@ -141,7 +141,7 @@ def get_recently_created():
 # get the last 5 edited articles that are visible for the user
 def get_recently_edited():
     entries = WikiEntry.get_query_for_visible_items(include_hidden_for_user=True) \
-              .entries.join(User, WikiEntry.edited_by_id == User.id) \
+              .join(User, WikiEntry.edited_by_id == User.id) \
               .with_entities(WikiEntry.id, WikiEntry.title, WikiEntry.edited, User.username) \
               .order_by(WikiEntry.edited.desc()).limit(5).all()
 

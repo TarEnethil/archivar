@@ -3,7 +3,7 @@ from app.decorators import admin_required, moderator_required
 from app.helpers import page_title, deny_access
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
-from app.map.helpers import upload_node_icon, delete_node_icon, gen_node_type_choices, get_visible_nodes, \
+from app.map.helpers import upload_node_icon, delete_node_icon, gen_node_type_choices,\
     map_changed, gen_submap_choices
 from app.map.models import Map, MapNodeType, MapSetting, MapNode
 from app.wiki.helpers import gen_wiki_entry_choices
@@ -393,7 +393,8 @@ def node_type_json():
 @bp.route("<int:id>/node/json")
 @login_required
 def node_json(id):
-    nodes = get_visible_nodes(id)
+    map_ = Map.query.filter_by(id=id).first_or_404()
+    nodes = map_.get_nodes()
 
     nodes_dict = {}
 
@@ -424,7 +425,8 @@ def tile(filename):
 @bp.route("/sidebar/<int:m_id>", methods=["GET"])
 @login_required
 def sidebar(m_id):
-    nodes = get_visible_nodes(m_id)
+    map_ = Map.query.filter_by(id=id).first_or_404()
+    nodes = map_.get_nodes()
 
     d = {}
     for n in nodes:

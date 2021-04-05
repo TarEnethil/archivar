@@ -21,18 +21,25 @@ def gen_participant_choices(ensure=None):
             if member.is_visible or (ensure is not None and member in ensure):
                 members.append((member.id, f"{member.name} ({member.player.username})"))
 
-        choices.append((party.name, members))
+        if len(members) > 0:
+            choices.append((party.name, members))
 
-    no_party_chars = Character.query.filter(Character.parties is None).all()
+    # this used to be filter(Character.parties == None), which worked but is but not PEP compliant
+    # with filter(Character.parties is None) it didn't work
+    # so we use a negated any() to check for empty collections
+    # see https://docs.sqlalchemy.org/en/14/orm/internals.html#sqlalchemy.orm.RelationshipProperty.Comparator.any
+    # side note: this was the first bug found by unit tests :-)
+    no_party_chars = Character.query.filter(~Character.parties.any()).all()
 
     if len(no_party_chars) > 0:
         members = []
 
         for char in no_party_chars:
             if char.is_visible or (ensure is not None and char in ensure):
-                members.append((char.id, f"{char.name} ({char.player.usernname})"))
+                members.append((char.id, f"{char.name} ({char.player.username})"))
 
-        choices.append(("No Party", members))
+        if len(members) > 0:
+            choices.append(("No Party", members))
 
     return choices
 

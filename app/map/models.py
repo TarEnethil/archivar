@@ -157,4 +157,5 @@ class MapNode(db.Model, SimplePermissionChecker):
                and self.parent_map.is_viewable_by_user()
 
     def is_hideable_by_user(self):
-        return self.is_owned_by_user()
+        return ((self.is_visible and current_user.is_at_least_moderator()) or self.is_owned_by_user()) \
+               and self.parent_map.is_viewable_by_user()

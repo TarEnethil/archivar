@@ -5,7 +5,7 @@ from functools import wraps
 
 
 # @admin_required decorater, use AFTER login_required
-def admin_required(url="index"):
+def admin_required(url="main.index"):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -18,7 +18,7 @@ def admin_required(url="index"):
 
 
 # @moderator decorater, use AFTER login_required
-def moderator_required(url="index"):
+def moderator_required(url="main.index"):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):

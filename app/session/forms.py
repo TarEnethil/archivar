@@ -7,7 +7,7 @@ from wtforms.validators import Length, InputRequired
 
 class SessionForm(FlaskForm):
     title = StringField("Title", validators=[InputRequired(), Length(min=0, max=100)])
-    campaign = HiddenField("Campaign", validators=[InputRequired(), IsDMValidator("campaign")])
+    campaign = HiddenField("Campaign", validators=[InputRequired(), IsDMValidator()])
     summary = TextAreaField("Summary", render_kw={"rows": 15})
     dm_notes = TextAreaField("DM Notes", render_kw={"rows": 15})
     date = DateTimeField("Date", validators=[InputRequired()], format="%Y-%m-%d %H:%M")
@@ -17,6 +17,6 @@ class SessionForm(FlaskForm):
 
 
 class CampaignSelectForm(FlaskForm):
-    campaigns = SelectField("Campaign", validators=[InputRequired(), IsDMValidator("campaigns")], coerce=int)
+    campaigns = SelectField("Campaign", validators=[InputRequired(), IsDMValidator()], coerce=int)
 
     submit = SubmitField("Create Session")

@@ -137,7 +137,7 @@ class Moon(db.Model, SimpleChangeTracker, LinkGenerator):
             return "New Moon"
 
         if phase <= 0 + self.delta:
-            return "Full moon"
+            return "Full Moon"
         elif phase < 25 - self.delta:
             return "Waning gibbous"
         elif phase <= 25 + self.delta:
@@ -151,7 +151,7 @@ class Moon(db.Model, SimpleChangeTracker, LinkGenerator):
         elif phase < 100 - self.delta:
             return "Waxing gibbous"
         else:
-            return "Full moon"
+            return "Full Moon"
 
     # this was a nice and elegant functions once
     def print_phase(self, timestamp, moon_size=50, print_name=False, print_phase=False):

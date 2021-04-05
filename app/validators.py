@@ -56,7 +56,10 @@ class YearPerEpochValidator(object):
         if ep is None:
             raise ValidationError("Unknown epoch.")
 
-        if ep.years != 0 and (field.data < 1 or field.data > ep.years):
+        if field.data < 1:
+            raise ValidationError(f"Year {field.data} is invalid for this epoch.")
+
+        if ep.years != 0 and field.data > ep.years:
             raise ValidationError(f"Year {field.data} is invalid for this epoch.")
 
 
@@ -80,13 +83,9 @@ class DayPerMonthValidator(object):
 
 # validate that a user is a DM of the campaign he wants to create a session for
 class IsDMValidator(object):
-    def __init__(self, campaign_field_name):
-        self.campaign_field = campaign_field_name
-
     def __call__(self, form, field):
         from app.campaign.models import Campaign
-        campaign_id = form._fields.get(self.campaign_field).data
-
+        campaign_id = field.data
         campaign = Campaign.query.filter_by(id=campaign_id).first()
 
         if campaign is None:

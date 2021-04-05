@@ -3,9 +3,10 @@ blinker==1.4
 cffi==1.14.5
 click==6.7
 colour==0.1.5
+coverage==5.5
 decorator==4.3.0
 dominate==2.3.1
-Flask==1.0.2
+Flask==1.1.2
 Flask-Bootstrap4==4.0.2
 Flask-DebugToolbar==0.11.0
 Flask-Login==0.4.1
@@ -13,6 +14,7 @@ Flask-Migrate==2.2.1
 Flask-Misaka==1.0.0
 Flask-Moment==0.6.0
 Flask-SQLAlchemy==2.3.2
+flask-unittest==0.1.1
 Flask-WTF==0.14.2
 infinity==1.4
 intervals==0.8.1

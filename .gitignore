@@ -23,3 +23,5 @@ data/logos/thumbnails/*
 __pycache__
 config/user_config.py
 config/debug_config.py
+htmlcov/
+.coverage

@@ -15,7 +15,8 @@ def upload_node_icon(filedata, filename=None):
         return False, filename, 0, 0
 
     try:
-        width, height = Image.open(path.join(path_, filename)).size
+        with Image.open(path.join(path_, filename)) as img:
+            width, height = img.size
     except Exception:
         flash("Error while getting icon size", "error")
         return False, filename, 0, 0
@@ -58,12 +59,6 @@ def gen_submap_choices(zerochoice="*no submap*", ensure=None):
             choices.append((map_.id, name))
 
     return choices
-
-
-# get all nodes that are visible for the current user
-def get_visible_nodes(map_id):
-    nodes = MapNode.get_query_for_visible_items(include_hidden_for_user=True)
-    return nodes.filter_by(on_map=map_id).all()
 
 
 # get all nodes that are associated with the specified wiki article

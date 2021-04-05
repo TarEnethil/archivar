@@ -39,6 +39,11 @@ class SimpleChangeTracker(object):
 
     @contextfunction
     def print_info(self, context, create=True, edit=True, hr=True):
+        if current_user.is_authenticated:
+            dateformat = current_user.dateformat
+        else:
+            dateformat = "LLL"
+
         out = ""
 
         if hr is True:
@@ -53,7 +58,7 @@ class SimpleChangeTracker(object):
                 out += f' by {self.created_by.view_link()}'
 
             if self.created:
-                out += f' on {current_app.extensions["moment"](self.created).format(current_user.dateformat)}'
+                out += f' on {current_app.extensions["moment"](self.created).format(dateformat)}'
 
             out += "</li>"
 
@@ -64,7 +69,7 @@ class SimpleChangeTracker(object):
                 out += f' by {self.edited_by.view_link()}'
 
             if self.edited:
-                out += f' on {current_app.extensions["moment"](self.edited).format(current_user.dateformat)}'
+                out += f' on {current_app.extensions["moment"](self.edited).format(dateformat)}'
 
             out += "</li>"
 
@@ -100,10 +105,16 @@ class SimplePermissionChecker(PermissionTemplate, SimpleChangeTracker):
 
     @classmethod
     def get_query_for_visible_items(cls, include_hidden_for_user=False):
-        if include_hidden_for_user:
-            return cls.query.filter(or_(cls.is_visible is True, cls.created_by_id == current_user.id))
+        """
+        is_visible == True works too, but is not PEP-compliant
+        is_visible is True does not work correctly
+        -> use is_visible.is_(True)
+        found via unit testing
+        """
+        if include_hidden_for_user and current_user.is_authenticated:
+            return cls.query.filter(or_(cls.is_visible.is_(True), cls.created_by_id == current_user.id))
         else:
-            return cls.query.filter(cls.is_visible is True)
+            return cls.query.filter(cls.is_visible.is_(True))
 
     @classmethod
     def get_visible_items(cls, include_hidden_for_user=False):
