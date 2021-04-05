@@ -93,7 +93,7 @@ Link with caution!
 
 # Party
 * Add: Admin
-* Edit: Admin, User (when Character in Party)
+* Edit: Admin, User (when Character in Party), User (when DM of a linked Campaign)
 * Hide: not hideable
 * Delete: Admin
 
