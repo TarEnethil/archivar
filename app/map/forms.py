@@ -1,4 +1,4 @@
-from app.helpers import LessThanOrEqual, GreaterThanOrEqual, XYZ_Validator
+from app.validators import LessThanOrEqual, GreaterThanOrEqual, XYZ_Validator
 from flask import current_app
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired

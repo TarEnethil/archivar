@@ -7,7 +7,8 @@ from app.calendar.helpers import get_next_epoch_order, get_next_month_order, get
     gen_epoch_choices, gen_month_choices, gen_day_choices
 from app.event.forms import EventForm
 from app.event.helpers import get_event_categories
-from app.helpers import page_title, admin_required, stretch_color, moderator_required, deny_access
+from app.decorators import admin_required, moderator_required
+from app.helpers import page_title, stretch_color, deny_access
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 

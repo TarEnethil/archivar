@@ -4,7 +4,8 @@ from app.campaign import bp
 from app.campaign.models import Campaign
 from app.campaign.forms import CampaignCreateForm, CampaignEditForm
 from app.campaign.helpers import gen_dm_choices
-from app.helpers import page_title, admin_required, stretch_color, deny_access, upload_profile_picture, \
+from app.decorators import admin_required
+from app.helpers import page_title, stretch_color, deny_access, upload_profile_picture, \
     delete_profile_picture
 from app.party.helpers import gen_party_choices
 from app.party.models import Party
