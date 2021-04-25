@@ -1,6 +1,7 @@
 from app import db
 from app.character.models import Character
-from app.helpers import page_title, admin_required, deny_access, upload_profile_picture, delete_profile_picture
+from app.decorators import admin_required
+from app.helpers import page_title, deny_access, upload_profile_picture, delete_profile_picture
 from app.party import bp
 from app.party.forms import PartyForm
 from app.party.helpers import gen_party_members_choices

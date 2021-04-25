@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from app.helpers import IsDMValidator
+from app.validators import IsDMValidator
 from wtforms import StringField, TextAreaField, SubmitField, DateTimeField, SelectField, HiddenField
 from wtforms_components import SelectMultipleField
 from wtforms.validators import Length, InputRequired

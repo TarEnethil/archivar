@@ -1,5 +1,5 @@
 from app import create_app
-from app.helpers import register_processors_and_filters
+from app.processors import register_processors_and_filters
 from os import environ
 
 if environ.get("FLASK_ENV") == "development":

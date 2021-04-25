@@ -1,4 +1,4 @@
-from app.helpers import YearPerEpochValidator, DayPerMonthValidator
+from app.validators import YearPerEpochValidator, DayPerMonthValidator
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, IntegerField, BooleanField, SelectField, widgets
 from wtforms_components import ColorField

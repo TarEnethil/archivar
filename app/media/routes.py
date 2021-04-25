@@ -1,5 +1,6 @@
 from app import db
-from app.helpers import page_title, deny_access, moderator_required
+from app.decorators import moderator_required
+from app.helpers import page_title, deny_access
 from app.media import bp
 from app.media.forms import MediaItemCreateForm, MediaItemEditForm, CategoryForm
 from app.media.helpers import get_media, gen_media_category_choices, upload_media_file, generate_media_thumbnail

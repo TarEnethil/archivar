@@ -5,7 +5,8 @@ from app.event import bp
 from app.event.forms import SettingsForm, EventForm, CategoryForm
 from app.event.helpers import update_timestamp, get_events, gen_event_category_choices, get_events_by_category
 from app.event.models import EventSetting, Event, EventCategory
-from app.helpers import page_title, stretch_color, deny_access, moderator_required
+from app.decorators import moderator_required
+from app.helpers import page_title, stretch_color, deny_access
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required
 

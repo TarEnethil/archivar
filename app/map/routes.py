@@ -1,5 +1,6 @@
 from app import db
-from app.helpers import page_title, admin_required, moderator_required, deny_access
+from app.decorators import admin_required, moderator_required
+from app.helpers import page_title, deny_access
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
 from app.map.helpers import upload_node_icon, delete_node_icon, gen_node_type_choices, get_visible_nodes, \

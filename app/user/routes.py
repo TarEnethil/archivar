@@ -1,5 +1,6 @@
 from app import db
-from app.helpers import page_title, admin_required, Role, deny_access
+from app.decorators import admin_required
+from app.helpers import page_title, Role, deny_access
 from app.user import bp
 from app.user.forms import CreateUserForm, EditProfileForm, SettingsForm, PasswordOnlyForm
 from app.user.helpers import gen_role_choices

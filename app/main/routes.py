@@ -3,7 +3,8 @@ from app.calendar.models import CalendarSetting
 from app.campaign.models import Campaign
 from app.character.models import Character, Journal
 from app.event.models import Event, EventSetting, EventCategory
-from app.helpers import page_title, count_rows, moderator_required, debug_mode_required, Role
+from app.decorators import moderator_required, debug_mode_required
+from app.helpers import page_title, count_rows, Role
 from app.main import bp
 from app.main.forms import LoginForm, SettingsForm, InstallForm
 from app.main.models import GeneralSetting
