@@ -160,6 +160,9 @@ class JournalModelTest(BaseTestCase):
         self.set_up_characters()
         self.set_up_journals()
 
+    def test_anchor_text(self, app, client):
+        self.assertTrue("journal-" in self.journal_admin.anchor_text())
+
     def test_permissions(self, app, client):
         """
         Test that permissions for this class are working as expected.

@@ -25,6 +25,8 @@
     {{ session.edit_button_nav(text="Edit Session") }}
 {% endif %}
 
+{{ button_nav(url=url_for('campaign.timeline', id=session.campaign_id, name=session.campaign.name|urlfriendly, _anchor=session.anchor_text()), text="View in Timeline", icon="stream") }}
+
 {% if next %}
     {{ next.view_button_nav(text="Next Session", icon="arrow-right", classes="nav-link", swap=True) }}
 {% endif %}

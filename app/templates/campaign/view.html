@@ -19,12 +19,13 @@ makeDatatable("sessions-table", { has_dates: true });
 {% block app_content %}
 <h1>{{ campaign.name }}</h1>
 
-{% if campaign.is_editable_by_user() %}
 {{ navbar_start() }}
+    {{ button_nav(url=url_for('campaign.timeline', id=campaign.id, name=campaign.name|urlfriendly), text="View Timeline", icon="stream") }}
+{% if campaign.is_editable_by_user() %}
     {{ button_nav(url=url_for('session.create', base=campaign.id), text="Add Session", icon="plus") }}
     {{ campaign.edit_button_nav(text="Edit Campaign") }}
-{{ navbar_end() }}
 {% endif %}
+{{ navbar_end() }}
 
 <div class="card p-3 mb-3">
     <div class="row align-items-center">
@@ -151,7 +152,7 @@ Default Participants
     </tbody>
 </table>
 {% else %}
-<p>No upcoming sessions.</p>
+<p>No sessions in this campaign yet.</p>
 {% endif %}
 
 {{ campaign.print_info() }}

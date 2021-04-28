@@ -21,6 +21,9 @@ class Session(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
     campaign = db.relationship("Campaign", backref="sessions")
     session_number = db.Column(db.Integer)
 
+    def anchor_text(self):
+        return urlfriendly(f"session-{self.session_number}")
+
     #####
     # Permissions
     #####

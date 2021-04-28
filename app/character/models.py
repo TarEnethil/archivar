@@ -89,6 +89,9 @@ class Journal(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture):
     session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
     session = db.relationship("Session", backref="journals", foreign_keys=[session_id])
 
+    def anchor_text(self):
+        return urlfriendly(f"journal-{self.id}")
+
     #####
     # Permissions
     #####

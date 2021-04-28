@@ -1,3 +1,4 @@
+from flask import url_for
 from tests import SmokeWrapper
 
 
@@ -10,7 +11,10 @@ class CampaignSmokeTest(SmokeWrapper.SmokeTestCase):
         self.set_up_campaigns()
 
     def set_up_common_urls(self):
-        self.common_urls = [self.campaign1.view_url(), self.campaign2.view_url(), self.campaign3.view_url()]
+        self.common_urls = [self.campaign1.view_url(), self.campaign2.view_url(), self.campaign3.view_url(),
+                            url_for("campaign.timeline", id=self.campaign1.id, name="x"),
+                            url_for("campaign.timeline", id=self.campaign2.id, name="x"),
+                            url_for("campaign.timeline", id=self.campaign3.id, name="x")]
         self.common_endpoints = ["campaign.index"]
 
     def test_reachability_admin(self, app, client):

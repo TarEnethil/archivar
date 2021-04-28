@@ -143,6 +143,15 @@ def view(id, name=None):
     return render_template("campaign/view.html", campaign=campaign,
                            title=page_title(f"View Campaign '{campaign.name}'"))
 
+
+@bp.route("/timeline/<int:id>/<string:name>", methods=["GET"])
+@login_required
+def timeline(id, name=None):
+    campaign = Campaign.query.filter_by(id=id).first_or_404()
+
+    return render_template("campaign/timeline.html", campaign=campaign,
+                           title=page_title(f"Timeline for Campaign '{campaign.name}'"))
+
 # @bp.route("/delete/<int:id>", methods=["GET", "POST"])
 # @login_required
 # @admin_required(no_perm_url)
