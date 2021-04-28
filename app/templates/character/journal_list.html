@@ -27,16 +27,26 @@
 
 {% if journals %}
 {% for journal in journals|reverse %}
+    {% if loop.index != 1 %}
     <hr>
-    {% if journal.is_visible %}
-    <h2>{{ journal.title }}</h2>
-    {% else %}
-    <h2 class="invisible_item">{{ journal.title }}</h2>
     {% endif %}
-    {{ journal.view_link(text="View") }}
-    {% if journal.is_editable_by_user() %}
-    &bullet; {{ journal.edit_link() }}
-    {% endif %}
+
+    <div class="row">
+        {% if journal.is_visible %}
+        <h3 class="col-9 mt-0">
+        {% else %}
+        <h3 class="col-9 mt-0 invisible_item">
+        {% endif %}
+        {{ journal.title }}
+        </h3>
+
+        <div class="col-3 text-right">
+        {{ journal.view_button(text="View", classes="btn-outline-secondary") }}
+        {% if journal.is_editable_by_user() %}
+            {{ journal.edit_button(text="Edit", classes="btn-outline-secondary") }}
+        {% endif %}
+        </div>
+    </div>
 
     {% if journal.content %}
     {% if current_user.markdown_phb_style %}
