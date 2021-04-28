@@ -18,8 +18,12 @@ $(document).ready(function() {
 {% block app_content %}
 <h1>{{ journal.title }}</h1>
 
-{% if journal.is_editable_by_user() or journal.is_deletable_by_user() %}
+{% if journal.is_editable_by_user() or journal.is_deletable_by_user() or journal.session %}
 {{ navbar_start() }}
+{% if journal.session %}
+{{ button_nav(url=url_for('campaign.timeline', id=journal.session.campaign_id, name=journal.session.campaign.name|urlfriendly, _anchor=journal.anchor_text()), text="View in Timeline", icon="stream") }}
+{% endif %}
+
 {% if journal.is_editable_by_user() %}
     {{ journal.edit_button_nav() }}
 {% endif %}

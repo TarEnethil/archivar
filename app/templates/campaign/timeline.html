@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+{% endblock %}
+
+{% block scripts %}
+{{ super () }}
+{{ include_js(['moment']) }}
+
+<script>
+{% if campaign.sessions %}
+makeDatatable("sessions-table", { has_dates: true });
+{% endif %}
+</script>
+{% endblock %}
+
+{% block app_content %}
+<h1>Timeline for {{ campaign.name }}</h1>
+
+{% if campaign.is_editable_by_user() %}
+{{ navbar_start() }}
+    {{ button_nav(url=url_for('session.create', base=campaign.id), text="Add Session", icon="plus") }}
+    {{ campaign.edit_button_nav(text="Edit Campaign") }}
+{{ navbar_end() }}
+{% endif %}
+
+{% if campaign.sessions %}
+    {% for session in campaign.sessions %}
+        {% if loop.index != 1 %}
+        <hr />
+        <div class="vertical-divider"></div>
+        <hr />
+        {% endif %}
+
+        <span class="anchor" id="{{ session.anchor_text() }}"></span>
+        <div class="row">
+            <h2 class="col-9 mt-0">
+                {{ session.view_text() }}
+                ({{ moment(session.date).format(current_user.dateformat) }})
+            </h2>
+            <div class="col-3 text-right">
+                {{ session.view_button(text="View", classes="btn-outline-secondary") }}
+                {% if session.is_editable_by_user() %}
+                    {{ session.edit_button(text="Edit", classes="btn-outline-secondary") }}
+                {% endif %}
+            </div>
+        </div>
+        {# only show participants if they differ from previous session #}
+        {% if not loop.previtem or loop.previtem.participants|sort(attribute="id") != session.participants|sort(attribute="id") %}
+            {% if session.participants %}
+            <div class="row mb-4">
+                {% for member in session.participants %}
+                    {{ member.infobox() }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endif %}
+        {% if session.summary %}
+            {% if current_user.markdown_phb_style %}
+        <div class="custom-markdown mb-4 phb-style">
+            {% else %}
+        <div class="custom-markdown mb-4">
+            {% endif %}
+        {{ session.summary|markdown }}
+        </div>
+        {% else %}
+        <p>No description.</p>
+        {% endif %}
+
+        {% for journal in session.journals %}
+            {% if journal.is_viewable_by_user() %}
+                <span class="anchor" id="{{ journal.anchor_text() }}"></span>
+                <div class="row">
+                    {% if journal.is_visible %}
+                    <h3 class="col-9 mt-0">
+                    {% else %}
+                    <h3 class="col-9 mt-0 invisible_item">
+                    {% endif %}
+                    Journal: {{ journal.title }} by {{ journal.character.name }}
+                    </h3>
+
+                    <div class="col-3 text-right">
+                    {{ journal.view_button(text="View", classes="btn-outline-secondary") }}
+                    {% if journal.is_editable_by_user() %}
+                        {{ journal.edit_button(text="Edit", classes="btn-outline-secondary") }}
+                    {% endif %}
+                    </div>
+                </div>
+
+                {% if journal.content %}
+                {% if current_user.markdown_phb_style %}
+                <div class="custom-markdown mb-4 phb-style">
+                {% else %}
+                <div class="custom-markdown mb-4">
+                {% endif %}
+
+                {{ journal.content|markdown }}
+                </div>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+{% else %}
+<p>No sessions.</p>
+{% endif %}
+{% endblock %}

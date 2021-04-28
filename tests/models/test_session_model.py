@@ -11,6 +11,9 @@ class SessionModelTest(BaseTestCase):
         self.set_up_campaigns()
         self.set_up_sessions()
 
+    def test_anchor_text(self, app, client):
+        self.assertTrue("session-" in self.session1.anchor_text())
+
     def test_permissions(self, app, client):
         """
         Test that permissions for this class are working as expected.

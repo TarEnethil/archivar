@@ -51,10 +51,10 @@ makeDatatable("campaigns-table");
                 <td class="text-center"><img src="{{ campaign.profile_thumbnail_url() }}" class="table-thumbnail" /></td>
                 <td>{{ campaign.name }}</td>
                 <td>{{ campaign.dm.view_link() }}</td>
-                {# <td>{{ moment(session.date).format(current_user.dateformat) }} ({{ moment(session.date).fromNow() }})</td>#}
                 <td>{{ campaign.sessions|length }}</td>
                 <td>
                     {{ campaign.view_button() }}
+                    {{ button(url=url_for('campaign.timeline', id=campaign.id, name=campaign.name|urlfriendly), text="Timeline", icon="stream") }}
                     {% if campaign.is_editable_by_user() %}
                     {{ campaign.edit_button() }}
 

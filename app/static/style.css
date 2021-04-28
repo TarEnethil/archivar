@@ -409,3 +409,18 @@ tr.invisible_item,
   margin:0 auto;
   display:block;
 }
+
+.anchor {
+    margin-top: -60px;
+    height:60px;
+    display:block;
+    visibility:hidden;
+}
+
+.vertical-divider {
+    height:30px;
+    border-left: 1px dashed #cccccc;
+    border-right: 1px dashed #cccccc;
+    width:1px;
+    margin:0 auto;
+}
