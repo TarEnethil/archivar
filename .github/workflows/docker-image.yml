@@ -22,6 +22,35 @@ jobs:
     if: ${{ needs.dup_check.outputs.should_skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repo
+      uses: actions/checkout@v2
+
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag archivar:$(date +%s)
+      run: docker build . --file Dockerfile --tag archivar:ci-latest
+
+    - name: Save Docker image
+      run: |
+        mkdir -p export/
+        docker save archivar:ci-latest > export/archivar.tar
+
+    - name: upload Docker image as artifact
+      uses: actions/upload-artifact@v2
+      with:
+          name: archivar-artifact
+          path: export/
+          retention-days: 1
+  run_test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: download archivar Docker artifact
+      uses: actions/download-artifact@v2
+      with:
+          name: archivar-artifact
+          path: import/
+
+    - name: load archivar Docker image
+      run: docker load < import/archivar.tar
+
+    - name: Run Tests
+      run: docker run --rm -e "RUN_TESTS=1" archivar:ci-latest

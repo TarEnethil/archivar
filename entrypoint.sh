@@ -98,11 +98,24 @@ run() {
     exec gunicorn -b :5000 --access-logfile - --error-logfile - dmcp:app
 }
 
+run_tests() {
+    log "starting unittests"
+
+    exec python3 run_tests.py
+}
+
 set_env
 init_config
-init_datadir
 
+# tests use tempfile / tempdirs and in-memory db and
+# docker container for tests does not get a mount volume
+# so they only need to be initialized on non-test runs
+if [ -z "$RUN_TESTS" ]; then
+init_datadir
 backup_db
 upgrade_db
 
 run
+else
+run_tests
+fi

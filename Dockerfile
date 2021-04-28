@@ -46,7 +46,8 @@ COPY --chown=dungeonmaster:dungeonmaster app ./app
 COPY --chown=dungeonmaster:dungeonmaster config ./config
 COPY --chown=dungeonmaster:dungeonmaster install ./install
 COPY --chown=dungeonmaster:dungeonmaster migrations ./migrations
-COPY --chown=dungeonmaster:dungeonmaster dmcp.py entrypoint.sh CHANGELOG.md ./
+COPY --chown=dungeonmaster:dungeonmaster tests ./tests
+COPY --chown=dungeonmaster:dungeonmaster dmcp.py entrypoint.sh CHANGELOG.md run_tests.py ./
 
 USER dungeonmaster
 
