@@ -33,10 +33,30 @@ makeDatatable("sessions-table", { has_dates: true });
         <hr />
         {% endif %}
 
+        {# only show participants if they differ from previous session #}
+        {% if not loop.previtem or loop.previtem.participants|sort(attribute="id") != session.participants|sort(attribute="id") %}
+            {% if session.participants %}
+                {% if loop.index == 1 %}
+                    <h2>Starting Participants</h2>
+                {% else %}
+                    <h2>Changed Participants</h2>
+                {% endif %}
+
+                <div class="row mb-4">
+                    {% for member in session.participants %}
+                        {{ member.infobox() }}
+                    {% endfor %}
+                </div>
+                <hr />
+                <div class="vertical-divider"></div>
+                <hr />
+            {% endif %}
+        {% endif %}
+
         <span class="anchor" id="{{ session.anchor_text() }}"></span>
         <div class="row">
-            <h2 class="col-9 mt-0">
-                {{ session.view_text() }}
+            <h2 class="col-9 mt-0 text-truncate">
+                Session {{ session.view_text() }}
                 ({{ moment(session.date).format(current_user.dateformat) }})
             </h2>
             <div class="col-3 text-right">
@@ -46,16 +66,6 @@ makeDatatable("sessions-table", { has_dates: true });
                 {% endif %}
             </div>
         </div>
-        {# only show participants if they differ from previous session #}
-        {% if not loop.previtem or loop.previtem.participants|sort(attribute="id") != session.participants|sort(attribute="id") %}
-            {% if session.participants %}
-            <div class="row mb-4">
-                {% for member in session.participants %}
-                    {{ member.infobox() }}
-                {% endfor %}
-            </div>
-            {% endif %}
-        {% endif %}
         {% if session.summary %}
             {% if current_user.markdown_phb_style %}
         <div class="custom-markdown mb-4 phb-style">
@@ -73,9 +83,9 @@ makeDatatable("sessions-table", { has_dates: true });
                 <span class="anchor" id="{{ journal.anchor_text() }}"></span>
                 <div class="row">
                     {% if journal.is_visible %}
-                    <h3 class="col-9 mt-0">
+                    <h3 class="col-9 mt-0 text-truncate">
                     {% else %}
-                    <h3 class="col-9 mt-0 invisible_item">
+                    <h3 class="col-9 mt-0 invisible_item text-truncate">
                     {% endif %}
                     Journal: {{ journal.title }} by {{ journal.character.name }}
                     </h3>
