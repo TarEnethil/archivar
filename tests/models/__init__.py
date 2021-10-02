@@ -12,6 +12,7 @@ def suite():
     from .test_mixins import LinkGeneratorTest, PermissionTemplateTest, ProfilePictureTest, \
         SimpleChangeTrackerTest, SimplePermissionCheckerTest
     from .test_party_model import PartyModelTest
+    from .test_random_model import RandomTableModelTest, RandomTableEntryModelTest
     from .test_session_model import SessionModelTest
     from .test_user_model import UserModelTest
     from .test_wiki_model import WikiModelTest
@@ -39,6 +40,8 @@ def suite():
     suite.addTests(unittest.makeSuite(SimpleChangeTrackerTest))
     suite.addTests(unittest.makeSuite(SimplePermissionCheckerTest))
     suite.addTests(unittest.makeSuite(PartyModelTest))
+    suite.addTests(unittest.makeSuite(RandomTableModelTest))
+    suite.addTests(unittest.makeSuite(RandomTableEntryModelTest))
     suite.addTests(unittest.makeSuite(SessionModelTest))
     suite.addTests(unittest.makeSuite(UserModelTest))
     suite.addTests(unittest.makeSuite(WikiModelTest))

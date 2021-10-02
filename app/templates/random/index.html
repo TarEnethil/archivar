@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+{{ include_css(['datatables']) }}
+{% endblock %}
+
+{% block scripts %}
+{{ super () }}
+{{ include_js(['datatables']) }}
+
+<script>
+{% if tables %}
+makeDatatable("tables-table", { threshold: 15, items_per_page: 15 });
+{% endif %}
+</script>
+{% endblock %}
+
+{% block app_content %}
+<h1>Rollables</h1>
+<p>
+    Pre-made random tables and dice rolls.
+</p>
+
+<h2>Random Tables
+
+{% if tables %}
+({{ tables|length }})
+{% endif %}
+</h2>
+
+{{ navbar_start() }}
+    {{ button_nav(url=url_for('random.table_create'), text="Add Table", icon="plus") }}
+{{ navbar_end() }}
+
+{% if tables %}
+<table class="table table-hover table-striped" id="tables-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Entries</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for table in tables %}
+        <tr>
+            <td> {{ table.name }}</td>
+            <td> {{ table.entries|length }}</td>
+            <td>
+                {{ table.view_button() }}
+                {% if table.entries|length > 0 %}
+                {{ table.roll_button() }}
+                {% endif %}
+                {{ table.edit_button() }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No tables yet.</p>
+{% endif %}
+
+{% endblock %}

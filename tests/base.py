@@ -13,6 +13,7 @@ from app.main.models import GeneralSetting
 from app.map.models import Map, MapNode, MapNodeType
 from app.media.models import MediaItem, MediaCategory
 from app.party.models import Party
+from app.random.models import RandomTable, RandomTableEntry
 from app.session.models import Session
 from app.user.models import User
 from app.wiki.models import WikiEntry
@@ -360,6 +361,31 @@ class BaseTestCase(flask_unittest.AppClientTestCase):
                                  node_type=self.map_node_type2.id, is_visible=False)
 
         self.add_all([self.map_node1, self.map_node2, self.map_node3, self.map_node4, self.map_node5, self.map_node6])
+        self.commit()
+
+    def set_up_random_tables(self):
+        self.random_table1 = RandomTable(name="Table 1", created_by_id=self.admin.id)
+        self.random_table2 = RandomTable(name="Table 2", created_by_id=self.moderator.id)
+        self.random_table3 = RandomTable(name="Table 3", created_by_id=self.user.id)
+
+        self.add_all([self.random_table1, self.random_table2, self.random_table3])
+        self.commit()
+
+        entry1 = RandomTableEntry(title="Entry1", weight=1, table_id=self.random_table1.id,
+                                  created_by_id=self.admin.id)
+        entry2 = RandomTableEntry(title="Entry2", weight=2, table_id=self.random_table1.id,
+                                  created_by_id=self.moderator.id)
+        entry3 = RandomTableEntry(title="Entry3", weight=3, table_id=self.random_table2.id,
+                                  created_by_id=self.admin.id)
+        entry4 = RandomTableEntry(title="Entry4", weight=3, table_id=self.random_table2.id,
+                                  created_by_id=self.user.id)
+        entry5 = RandomTableEntry(title="Entry5", weight=5, table_id=self.random_table2.id,
+                                  created_by_id=self.moderator.id)
+        entry6 = RandomTableEntry(title="Entry6", weight=100, table_id=self.random_table2.id,
+                                  created_by_id=self.admin.id)
+
+        self.random_table_entries = [entry1, entry2, entry3, entry4, entry5, entry6]
+        self.add_all(self.random_table_entries)
         self.commit()
 
 

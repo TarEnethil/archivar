@@ -96,6 +96,9 @@ def create_app(config=UserConfig):
     from app.campaign import bp as campaign_bp
     app.register_blueprint(campaign_bp, url_prefix="/campaign")
 
+    from app.random import bp as random_bp
+    app.register_blueprint(random_bp, url_prefix="/random")
+
     return app
 
 

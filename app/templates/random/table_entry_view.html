@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block scripts %}
+{{ super() }}
+
+{{ include_js(['moment', 'util']) }}
+
+{% if entry.is_deletable_by_user() %}
+<script>
+$(document).ready(function() {
+    makeDeleteLink("delete-link", "{{ entry.title }}");
+});
+
+</script>
+{% endif %}
+{% endblock %}
+
+{% block app_content %}
+<h1>{{ entry.title }}</h1>
+
+{{ navbar_start() }}
+    {{ entry.edit_button_nav() }}
+
+{% if entry.is_deletable_by_user() %}
+    {{ entry.delete_button_nav() }}
+{% endif %}
+{{ navbar_end() }}
+
+<ul class="list-unstyled">
+    <li>Belongs to {{ entry.table.view_link() }}</li>
+    <li>Weight {{ entry.weight }} (approx {{ entry.get_chance() }})</li>
+</ul>
+
+{% if entry.description %}
+{% if current_user.markdown_phb_style %}
+    <div class="custom-markdown phb-style">
+{% else %}
+    <div class="custom-markdown">
+{% endif %}
+    {{ entry.description|markdown }}
+</div>
+{% endif %}
+
+{{ entry.print_info() }}
+{% endblock %}
