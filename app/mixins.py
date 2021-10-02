@@ -19,6 +19,9 @@ class SimpleChangeTracker(object):
     created = db.Column(db.DateTime, default=datetime.utcnow)
     edited = db.Column(db.DateTime, default=None, onupdate=datetime.utcnow)
 
+    def is_owned_by_user(self):
+        return self.created_by_id == current_user.id
+
     @declared_attr
     def created_by_id(cls):
         return db.Column(db.Integer, db.ForeignKey("users.id"), default=current_user_id)
@@ -97,9 +100,6 @@ class SimplePermissionChecker(PermissionTemplate, SimpleChangeTracker):
     def is_viewable_by_user(self):
         raise NotImplementedError
 
-    def is_owned_by_user(self):
-        return self.created_by_id == current_user.id
-
     def is_hideable_by_user(self):
         return self.is_owned_by_user()
 
@@ -127,6 +127,9 @@ class LinkGenerator(object):
 
     def button(self, url, text, icon=None, classes=None, ids=None, swap=False, icon_text_class=""):
         return button_fkt(url, text, icon, classes, ids, swap, icon_text_class)
+
+    def button_nav(self, url, text, icon=None, classes="nav-link", ids=None, swap=False):
+        return button_nav_fkt(url, text, icon, classes, ids, swap)
 
     def view_link(self, text=None, classes=None, ids=None):
         if text is None:

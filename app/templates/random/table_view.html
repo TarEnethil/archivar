@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{ super() }}
+{{ include_css(['datatables']) }}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+{{ include_js(['datatables', 'moment', 'util', 'bootbox']) }}
+
+<script>
+$(document).ready(function() {
+{% if table.is_deletable_by_user() %}
+    makeDeleteLink("delete-link", "{{ table.name }}");
+{% endif %}
+
+    $("#x-times").click(function(e) {
+        e.preventDefault();
+        bootbox.prompt("How many rolls?", function(result) {
+            if  (!result) {
+                return;
+            }
+
+            if (!result.match(/^\d+$/)) {
+                bootbox.alert(result + " is not a valid number");
+                return;
+            }
+
+            var fake_url = "{{ table.roll_url() }}?num_rolls=-1";
+
+            window.location.href = fake_url.replace("-1", result);
+            });
+        });
+    });
+
+{% if entries %}
+    makeDatatable("entries-table", { threshold: 15, items_per_page: 15 });
+{% endif %}
+</script>
+{% endblock %}
+
+{% block app_content %}
+<h1>{{ table.name }}</h1>
+
+{{ navbar_start() }}
+{% if table.entries|length > 0 %}
+    {{ table.roll_button_nav(text="Roll Once") }}
+    {{ table.roll_button_nav(text="Roll X times", ids="x-times") }}
+{% endif %}
+    {{ button_nav(url=url_for('random.table_entry_create', t_id=table.id, t_name=table.name|urlfriendly), text="Add Entry", icon="plus") }}
+    {{ table.edit_button_nav() }}
+
+{% if table.is_deletable_by_user() %}
+    {{ table.delete_button_nav() }}
+{% endif %}
+{{ navbar_end() }}
+
+{% if table.description %}
+{% if current_user.markdown_phb_style %}
+    <div class="custom-markdown phb-style">
+{% else %}
+    <div class="custom-markdown">
+{% endif %}
+    {{ table.description|markdown }}
+</div>
+{% endif %}
+
+<h2>Entries
+
+{% if table.entries %}
+({{ table.entries|length }})
+{% endif %}
+</h2>
+
+{% if table.entries %}
+<table class="table table-hover table-striped" id="entries-table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Weight (approx. Chance)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% set total_weight = table.get_total_weight() %}
+    {% for entry in table.entries %}
+        <tr>
+            <td> {{ entry.title }}</td>
+            <td> {{ entry.weight }} ({{ "{:0.2f}%".format(100.0 * entry.weight / total_weight) }})</td>
+            <td>
+                {{ entry.view_button() }}
+                {{ entry.edit_button() }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No entries yet.</p>
+{% endif %}
+
+{{ table.print_info() }}
+{% endblock %}

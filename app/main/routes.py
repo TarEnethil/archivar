@@ -11,6 +11,7 @@ from app.main.models import GeneralSetting
 from app.map.models import Map, MapNode, MapSetting, MapNodeType
 from app.media.models import MediaItem, MediaSetting, MediaCategory
 from app.party.models import Party
+from app.random.models import RandomTable, RandomTableEntry
 from app.session.models import Session
 from app.user.models import User
 from app.wiki.models import WikiSetting, WikiEntry
@@ -79,12 +80,14 @@ def statistics():
     stats["Sessions"] = count_rows(Session)
     stats["Maps"] = count_rows(Map)
     stats["Map Nodes"] = count_rows(MapNode)
-    stats["Location Tpes"] = count_rows(MapNodeType)
-    stats["Wiki articles"] = count_rows(WikiEntry)
+    stats["Location Types"] = count_rows(MapNodeType)
+    stats["Wiki Articles"] = count_rows(WikiEntry)
     stats["Events"] = count_rows(Event)
-    stats["Event Eategories"] = count_rows(EventCategory)
+    stats["Event Categories"] = count_rows(EventCategory)
     stats["Media Files"] = count_rows(MediaItem)
     stats["Media Categories"] = count_rows(MediaCategory)
+    stats["Random Tables"] = count_rows(RandomTable)
+    stats["Random Table Entries"] = count_rows(RandomTableEntry)
 
     return render_template("statistics.html", stats=stats, title=page_title("Statistics"))
 

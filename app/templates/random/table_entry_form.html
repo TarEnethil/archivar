@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{ super() }}
+{{ include_css(['markdown-editor']) }}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ include_js(['markdown-editor']) }}
+
+<script>
+{% include "sidebars.js" %}
+
+$(document).ready(function() {
+    makeMarkdownEditor("description");
+});
+</script>
+
+{% endblock %}
+
+{% block app_content %}
+    <h1>{{ heading }}</h1>
+
+    {{ wtf.quick_form(form) }}
+{% endblock %}

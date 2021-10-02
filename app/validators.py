@@ -93,3 +93,14 @@ class IsDMValidator(object):
 
         if not current_user.is_dm_of(campaign) and not current_user.is_admin():
             raise ValidationError("You are not the DM of the selected campaign.")
+
+
+# validate that a random table of given ID exists
+class IsRandomTableValidator(object):
+    def __call__(self, form, field):
+        from app.random.models import RandomTable
+        table_id = field.data
+        table = RandomTable.query.filter_by(id=table_id).first()
+
+        if table is None:
+            raise ValidationError("Random Table does not exist.")
