@@ -140,6 +140,8 @@ def edit(id, name=None):  # noqa: C901
         if item.is_hideable_by_user():
             item.is_visible = form.is_visible.data
 
+        success = True
+
         if form.file.data:
             # see github issue #47
             if item.get_file_ext() != form.file.data.filename.split(".", 1)[-1]:
