@@ -224,3 +224,20 @@ class ProfilePicture(object):
             return url_for('media.profile_picture_thumb', filename=self.profile_picture)
         else:
             return url_for('static', filename="no_profile.png")
+
+
+class Rollable(object):
+    def roll_once(self):
+        raise NotImplementedError
+
+    def roll(self, num_rolls):
+        raise NotImplementedError
+
+    def roll_url(self, num_rolls=1):
+        raise NotImplementedError
+
+    def roll_button(self, text="Roll", icon="dice", classes="btn-secondary", ids=None, swap=False):
+        return self.button(self.roll_url(), text, icon, classes, ids, swap)
+
+    def roll_button_nav(self, text="Roll", icon="dice", classes="", ids=None, swap=False):
+        return self.button_nav(self.roll_url(), text, icon, classes, ids, swap)

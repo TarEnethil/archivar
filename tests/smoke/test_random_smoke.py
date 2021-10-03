@@ -2,6 +2,47 @@ from flask import url_for
 from tests import SmokeWrapper
 
 
+class DiceSetSmokeTest(SmokeWrapper.SmokeTestCase):
+    def setUp(self, app, client):
+        super().setUp(app, client)
+
+        self.set_up_random_dice()
+
+    def set_up_common_urls(self):
+        self.common_urls = [self.dice_set1.view_url(),
+                            self.dice_set1.edit_url(),
+                            self.dice_set1.roll_url(),
+                            self.dice_set1.roll_url(num_rolls=5),
+                            self.dice_set2.view_url(),
+                            self.dice_set2.edit_url(),
+                            self.dice_set2.roll_url(),
+                            self.dice_set2.roll_url(num_rolls=5),
+                            self.dice_set3.view_url(),
+                            self.dice_set3.edit_url(),
+                            self.dice_set3.roll_url(),
+                            self.dice_set3.roll_url(num_rolls=5)]
+        self.common_endpoints = ["random.dice_create"]
+
+    def test_reachability_admin(self, app, client):
+        self.login(client, self.admin)
+
+        self.assertHTTPOK(client, self.dice_set1.delete_url(), url=True, follow=True)
+        self.assertHTTPOK(client, self.dice_set2.delete_url(), url=True, follow=True)
+        self.assertHTTPOK(client, self.dice_set3.delete_url(), url=True, follow=True)
+
+    def test_reachability_moderator(self, app, client):
+        self.login(client, self.moderator)
+
+        self.assertHTTPOK(client, self.dice_set1.delete_url(), url=True, follow=True)
+        self.assertHTTPOK(client, self.dice_set2.delete_url(), url=True, follow=True)
+        self.assertHTTPOK(client, self.dice_set3.delete_url(), url=True, follow=True)
+
+    def test_reachability_user(self, app, client):
+        self.login(client, self.user)
+
+        self.assertHTTPOK(client, self.dice_set3.delete_url(), url=True, follow=True)
+
+
 class RandomTableSmokeTest(SmokeWrapper.SmokeTestCase):
     def setUp(self, app, client):
         super().setUp(app, client)

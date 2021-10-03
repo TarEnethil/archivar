@@ -1,12 +1,53 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import SimpleChangeTracker, LinkGenerator, PermissionTemplate
+from app.mixins import SimpleChangeTracker, LinkGenerator, PermissionTemplate, Rollable
+from d20 import roll as d20roll
 from flask import url_for
 from flask_login import current_user
 from random import choices
 
 
-class RandomTable(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
+class DiceSet(db.Model, Rollable, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
+    __tablename__ = "dice_set"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(250))
+    dice_string = db.Column(db.String(100))
+
+    def roll_once(self):
+        return self.roll(1)[0]
+
+    def roll(self, num_rolls):
+        return [d20roll(self.dice_string) for i in range(0, num_rolls)]
+
+    def roll_url(self, num_rolls=1):
+        if num_rolls == 1:
+            return url_for('random.dice_roll', id=self.id, name=urlfriendly(self.name))
+
+        return url_for('random.dice_roll', id=self.id, name=urlfriendly(self.name), num_rolls=num_rolls)
+
+    #####
+    # PermissionTemplate functions
+    #####
+    def is_deletable_by_user(self):
+        return self.is_owned_by_user() or current_user.is_at_least_moderator()
+
+    #####
+    # LinkGenerator functions
+    #####
+    def view_text(self):
+        return self.name
+
+    def view_url(self):
+        return url_for('random.dice_view', id=self.id, name=urlfriendly(self.name))
+
+    def edit_url(self):
+        return url_for('random.dice_edit', id=self.id, name=urlfriendly(self.name))
+
+    def delete_url(self):
+        return url_for('random.dice_delete', id=self.id, name=urlfriendly(self.name))
+
+
+class RandomTable(db.Model, Rollable, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
     __tablename__ = "random_table"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250))
@@ -33,12 +74,6 @@ class RandomTable(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTempla
             return url_for('random.table_roll', id=self.id, name=urlfriendly(self.name))
 
         return url_for('random.table_roll', id=self.id, name=urlfriendly(self.name), num_rolls=num_rolls)
-
-    def roll_button(self, text="Roll", icon="dice", classes="btn-secondary", ids=None, swap=False):
-        return self.button(self.roll_url(), text, icon, classes, ids, swap)
-
-    def roll_button_nav(self, text="Roll", icon="dice", classes="", ids=None, swap=False):
-        return self.button_nav(self.roll_url(), text, icon, classes, ids, swap)
 
     #####
     # PermissionTemplate functions

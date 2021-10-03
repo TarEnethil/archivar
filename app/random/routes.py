@@ -1,7 +1,7 @@
 from app import db
 from app.random import bp
-from app.random.forms import RandomTableForm, RandomTableEntryForm
-from app.random.models import RandomTable, RandomTableEntry
+from app.random.forms import DiceSetForm, RandomTableForm, RandomTableEntryForm
+from app.random.models import DiceSet, RandomTable, RandomTableEntry
 from app.helpers import page_title, deny_access
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required
@@ -12,8 +12,94 @@ no_perm_url = "random.index"
 @bp.route("/", methods=["GET"])
 @login_required
 def index():
+    dice = DiceSet.query.all()
     tables = RandomTable.query.all()
-    return render_template("random/index.html", tables=tables, title=page_title("Random Rolls"))
+    return render_template("random/index.html", dice=dice, tables=tables, title=page_title("Random Rolls"))
+
+
+@bp.route("/dice/create", methods=["GET", "POST"])
+@login_required
+def dice_create():
+    form = DiceSetForm()
+    heading = "Create Dice Set"
+    form.submit.label.text = heading
+
+    if form.validate_on_submit():
+        dice = DiceSet(name=form.name.data, dice_string=form.dice_string.data)
+
+        db.session.add(dice)
+        db.session.commit()
+        flash("Dice Set was created.", "success")
+
+        return redirect(dice.view_url())
+    else:
+        return render_template("random/dice_form.html", heading=heading, form=form, title=page_title(heading))
+
+
+@bp.route("/dice/edit/<int:id>/<string:name>", methods=["GET", "POST"])
+@bp.route("/dice/edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def dice_edit(id, name=None):
+    dice = DiceSet.query.filter_by(id=id).first_or_404()
+    heading = f"Edit Dice Set {dice.name}"
+
+    form = DiceSetForm()
+    form.submit.label.text = "Save Random Table"
+
+    if form.validate_on_submit():
+        dice.name = form.name.data
+        dice.dice_string = form.dice_string.data
+
+        db.session.commit()
+        flash("Dice Set was changed.", "success")
+        return redirect(dice.view_url())
+    else:
+        form.name.data = dice.name
+        form.dice_string.data = dice.dice_string
+        return render_template("random/dice_form.html", heading=heading, form=form, title=page_title(heading))
+
+
+@bp.route("/dice/view/<int:id>/<string:name>", methods=["GET"])
+@bp.route("/dice/view/<int:id>", methods=["GET"])
+@login_required
+def dice_view(id, name=None):
+    dice = DiceSet.query.filter_by(id=id).first_or_404()
+    return render_template("random/dice_view.html", dice=dice, title=page_title(f"View Dice Set '{dice.name}'"))
+
+
+@bp.route("/dice/roll/<int:id>/<string:name>", methods=["GET"])
+@bp.route("/dice/roll/<int:id>", methods=["GET"])
+@login_required
+def dice_roll(id, name=None):
+    dice = DiceSet.query.filter_by(id=id).first_or_404()
+
+    rolls = request.args.get("num_rolls")
+    if rolls:
+        try:
+            rolls = int(rolls)
+        except ValueError:
+            flash(f"{rolls} is not a valid roll number")
+            return redirect(request.referrer)
+    else:
+        rolls = 1
+
+    return render_template("random/dice_roll.html", dice=dice, num_rolls=rolls,
+                           title=page_title(f"Roll on Dice Set '{dice.name}'"))
+
+
+@bp.route("/dice/delete/<int:id>/<string:name>")
+@login_required
+def dice_delete(id, name=None):
+    dice = DiceSet.query.filter_by(id=id).first_or_404()
+
+    if not dice.is_deletable_by_user():
+        return deny_access(no_perm_url)
+
+    db.session.delete(dice)
+    db.session.commit()
+
+    flash("Dice Set was deleted.", "success")
+    return redirect(url_for("random.index"))
 
 
 @bp.route("/table/create", methods=["GET", "POST"])
@@ -87,7 +173,7 @@ def table_roll(id, name=None):
                            title=page_title(f"Roll on Table '{table.name}'"))
 
 
-@bp.route("table/delete/<int:id>/<string:name>")
+@bp.route("/table/delete/<int:id>/<string:name>")
 @login_required
 def table_delete(id, name=None):
     table = RandomTable.query.filter_by(id=id).first_or_404()
@@ -161,7 +247,7 @@ def table_entry_view(t_id, e_id, t_name=None, e_name=None):
                            title=page_title(f"View Table Entry '{entry.title}'"))
 
 
-@bp.route("table/<int:t_id>/<string:t_name>/delete/<int:e_id>/<string:e_name>")
+@bp.route("/table/<int:t_id>/<string:t_name>/delete/<int:e_id>/<string:e_name>")
 @login_required
 def table_entry_delete(t_id, e_id, t_name=None, e_name=None):
     entry = RandomTableEntry.query.filter_by(id=e_id).first_or_404()

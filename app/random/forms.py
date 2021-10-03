@@ -1,7 +1,15 @@
-from app.validators import IsRandomTableValidator
+from app.validators import IsRandomTableValidator, IsValidDiceStringValidator
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, IntegerField, HiddenField
 from wtforms.validators import Length, InputRequired, NumberRange
+
+
+class DiceSetForm(FlaskForm):
+    name = StringField("Name", validators=[Length(min=0, max=100), InputRequired()])
+    dice_string = StringField("Roll Expression",
+                              validators=[Length(min=1, max=100), InputRequired(), IsValidDiceStringValidator()])
+
+    submit = SubmitField("Submit")
 
 
 class RandomTableForm(FlaskForm):

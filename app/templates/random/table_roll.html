@@ -39,6 +39,7 @@ $(document).ready(function() {
     {{ navbar_start() }}
         {{ table.roll_button_nav(text="Roll Once") }}
         {{ table.roll_button_nav(text="Roll X times", ids="x-times") }}
+        {{ table.edit_button_nav() }}
     {{ navbar_end() }}
 
     {% set rolls = table.roll(num_rolls) %}

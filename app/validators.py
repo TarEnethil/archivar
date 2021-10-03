@@ -104,3 +104,11 @@ class IsRandomTableValidator(object):
 
         if table is None:
             raise ValidationError("Random Table does not exist.")
+
+
+# validate that a string is parseable by the r20 dice library
+class IsValidDiceStringValidator(object):
+    def __call__(self, form, field):
+        from app.random.helpers import is_valid_dice_string
+        if is_valid_dice_string(field.data) is False:
+            raise ValidationError(f"{field.data} is not a valid dice string")

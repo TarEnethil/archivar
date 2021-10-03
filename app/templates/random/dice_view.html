@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block scripts %}
+{{ super() }}
+
+{{ include_js(['moment', 'util', 'bootbox']) }}
+
+<script>
+$(document).ready(function() {
+{% if dice.is_deletable_by_user() %}
+    makeDeleteLink("delete-link", "{{ dice.name }}");
+{% endif %}
+
+    $("#x-times").click(function(e) {
+        e.preventDefault();
+        bootbox.prompt("How many rolls?", function(result) {
+            if  (!result) {
+                return;
+            }
+
+            if (!result.match(/^\d+$/)) {
+                bootbox.alert(result + " is not a valid number");
+                return;
+            }
+
+            var fake_url = "{{ dice.roll_url() }}?num_rolls=-1";
+
+            window.location.href = fake_url.replace("-1", result);
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block app_content %}
+<h1>{{ dice.name }}</h1>
+
+{{ navbar_start() }}
+    {{ dice.roll_button_nav(text="Roll Once") }}
+    {{ dice.roll_button_nav(text="Roll X times", ids="x-times") }}
+    {{ dice.edit_button_nav() }}
+
+{% if dice.is_deletable_by_user() %}
+    {{ dice.delete_button_nav() }}
+{% endif %}
+{{ navbar_end() }}
+
+<ul class="list-unstyled">
+    <li>Dice Expression: <span class="text-monospace">{{ dice.dice_string }}</span></li>
+</ul>
+
+{{ dice.print_info() }}
+{% endblock %}

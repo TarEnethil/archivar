@@ -22,7 +22,7 @@ migrate = Migrate()
 login = LoginManager()
 login.login_view = 'login'
 bootstrap = Bootstrap()
-markdown = Misaka(tables=True, fenced_code=True, escape=True)
+markdown = Misaka(tables=True, fenced_code=True, escape=True, strikethrough=True)
 moment = Moment()
 
 
