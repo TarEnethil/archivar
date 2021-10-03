@@ -52,8 +52,8 @@ def include_css(styles):
             "local": [f"{local_url}css/bootstrap.min.css"]
         },
         "fontawesome": {
-            "cdn": ["https://use.fontawesome.com/releases/v5.3.1/css/fontawesome.css",
-                    "https://use.fontawesome.com/releases/v5.3.1/css/solid.css"],
+            "cdn": ["https://use.fontawesome.com/releases/v5.15.4/css/fontawesome.css",
+                    "https://use.fontawesome.com/releases/v5.15.4/css/solid.css"],
             "local": [f"{local_url}css/fontawesome.min.css",
                       f"{local_url}css/solid.min.css"]
         },
