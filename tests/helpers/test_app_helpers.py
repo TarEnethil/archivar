@@ -500,10 +500,10 @@ class AppValidatorsTest(BaseTestCase):
     def setUp(self, app, client):
         super().setUp(app, client)
 
-    def test_XYZ_Validator(self, app, client):
-        from app.validators import XYZ_Validator
+    def test_ContainsXYZ(self, app, client):
+        from app.validators import ContainsXYZ
 
-        xyz = XYZ_Validator()
+        xyz = ContainsXYZ()
 
         with self.assertRaises(ValidationError):
             xyz(None, FakeField("name", "not-even-one-field"))
@@ -516,10 +516,10 @@ class AppValidatorsTest(BaseTestCase):
 
         xyz(None, FakeField("name", "{x} and {y} and {z}"))
 
-    def test_LessThanOrEqual(self, app, client):
-        from app.validators import LessThanOrEqual
+    def test_IsLessOrEqual(self, app, client):
+        from app.validators import IsLessOrEqual
 
-        lte = LessThanOrEqual("other_field")
+        lte = IsLessOrEqual("other_field")
 
         field = FakeField("field", 5)
         other_field = FakeField("other_field", 10)
@@ -537,10 +537,10 @@ class AppValidatorsTest(BaseTestCase):
         with self.assertRaises(ValidationError):
             lte(FakeForm([field, other_field]), field)
 
-    def test_GreaterThanOrEqual(self, app, client):
-        from app.validators import GreaterThanOrEqual
+    def test_IsGreaterOrEqual(self, app, client):
+        from app.validators import IsGreaterOrEqual
 
-        gte = GreaterThanOrEqual("other_field")
+        gte = IsGreaterOrEqual("other_field")
 
         field = FakeField("field", 10)
         other_field = FakeField("other_field", 5)
@@ -558,13 +558,13 @@ class AppValidatorsTest(BaseTestCase):
         with self.assertRaises(ValidationError):
             gte(FakeForm([field, other_field]), field)
 
-    def test_YearPerEpochValidator(self, app, client):
-        from app.validators import YearPerEpochValidator
+    def test_IsValidYearForEpoch(self, app, client):
+        from app.validators import IsValidYearForEpoch
 
         self.set_up_users()
         self.set_up_epochs()
 
-        ype = YearPerEpochValidator("epoch")
+        ype = IsValidYearForEpoch("epoch")
 
         year = FakeField("year", 1)
         epoch = FakeField("epoch", self.epochs[0].id)
@@ -608,12 +608,12 @@ class AppValidatorsTest(BaseTestCase):
         with self.assertRaises(ValidationError):
             ype(FakeForm([year, epoch]), year)
 
-    def test_DayPerMonthValidator(self, app, client):
-        from app.validators import DayPerMonthValidator
+    def test_IsValidDayForMonth(self, app, client):
+        from app.validators import IsValidDayForMonth
         self.set_up_users()
         self.set_up_months()
 
-        dpm = DayPerMonthValidator("month")
+        dpm = IsValidDayForMonth("month")
 
         day = FakeField("day", 1)
         month = FakeField("month", self.months[0].id)
@@ -646,14 +646,14 @@ class AppValidatorsTest(BaseTestCase):
         with self.assertRaises(ValidationError):
             dpm(FakeForm([day, month]), day)
 
-    def test_IsDMValidator(self, app, client):
-        from app.validators import IsDMValidator
+    def test_IsDMForCampaign(self, app, client):
+        from app.validators import IsDMForCampaign
         self.set_up_users()
         self.set_up_characters()
         self.set_up_parties()
         self.set_up_campaigns()
 
-        idm = IsDMValidator()
+        idm = IsDMForCampaign()
 
         # must always validate for admin
         self.login(client, self.admin)
@@ -690,12 +690,12 @@ class AppValidatorsTest(BaseTestCase):
         with self.assertRaises(ValidationError):
             idm(None, FakeField("campaign", self.campaign3.id))
 
-    def test_IsRandomTableValidator(self, app, client):
-        from app.validators import IsRandomTableValidator
+    def test_IsValidRandomTable(self, app, client):
+        from app.validators import IsValidRandomTable
         self.set_up_users()
         self.set_up_random_tables()
 
-        irt = IsRandomTableValidator()
+        irt = IsValidRandomTable()
 
         # id 4 does not exist
         with self.assertRaises(ValidationError):
@@ -705,12 +705,12 @@ class AppValidatorsTest(BaseTestCase):
         irt(None, FakeField("name", 2))
         irt(None, FakeField("name", 3))
 
-    def test_IsValidDiceStringValidator(self, app, client):
-        from app.validators import IsValidDiceStringValidator
+    def test_IsValidDiceString(self, app, client):
+        from app.validators import IsValidDiceString
         self.set_up_users()
         self.set_up_random_dice()
 
-        ivds = IsValidDiceStringValidator()
+        ivds = IsValidDiceString()
 
         with self.assertRaises(ValidationError):
             ivds(None, FakeField("dice_string", "1d6dl1"))

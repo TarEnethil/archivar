@@ -1,4 +1,4 @@
-from app.validators import LessThanOrEqual, GreaterThanOrEqual, XYZ_Validator
+from app.validators import IsLessOrEqual, IsGreaterOrEqual, ContainsXYZ
 from flask import current_app
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
@@ -31,15 +31,15 @@ class MapForm(FlaskForm):
     is_visible = BooleanField("Map is visible")
     external_provider = BooleanField("Use external map provider")
     tiles_path = StringField("Provider pattern (internal: relative to data/map/, external: full url for an \
-                        ¸    {x}{y}{z} map provider)", validators=[InputRequired(), XYZ_Validator()])
+                        ¸    {x}{y}{z} map provider)", validators=[InputRequired(), ContainsXYZ()])
     min_zoom = IntegerField("Min Zoom Level",
-                            validators=[InputRequired(), NumberRange(min=0, max=20), LessThanOrEqual("max_zoom")])
+                            validators=[InputRequired(), NumberRange(min=0, max=20), IsLessOrEqual("max_zoom")])
     max_zoom = IntegerField("Max Zoom Level",
-                            validators=[InputRequired(), NumberRange(min=0, max=20), GreaterThanOrEqual("min_zoom")])
+                            validators=[InputRequired(), NumberRange(min=0, max=20), IsGreaterOrEqual("min_zoom")])
     default_zoom = IntegerField("Default Zoom Level", validators=[InputRequired(),
                                                                   NumberRange(min=0, max=20),
-                                                                  LessThanOrEqual("max_zoom"),
-                                                                  GreaterThanOrEqual("min_zoom")])
+                                                                  IsLessOrEqual("max_zoom"),
+                                                                  IsGreaterOrEqual("min_zoom")])
     no_wrap = BooleanField("Repeat map on x-axis?")
 
     submit = SubmitField("submit")

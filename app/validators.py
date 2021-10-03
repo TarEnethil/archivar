@@ -3,14 +3,14 @@ from wtforms.validators import ValidationError
 
 
 # validate that a form field contains {x}, {y} and {z}
-class XYZ_Validator(object):
+class ContainsXYZ(object):
     def __call__(self, form, field):
         if "{x}" not in field.data or "{y}" not in field.data or "{z}" not in field.data:
             raise ValidationError("The tile provider needs the arguments {x} {y} and {z}")
 
 
 # validate that a form field contains a value that is <= that of another field
-class LessThanOrEqual(object):
+class IsLessOrEqual(object):
     def __init__(self, comp_value_field_name):
         self.comp_value_field_name = comp_value_field_name
 
@@ -26,7 +26,7 @@ class LessThanOrEqual(object):
 
 
 # validate that a form field contains a value that is >= that of another field
-class GreaterThanOrEqual(object):
+class IsGreaterOrEqual(object):
     def __init__(self, comp_value_field_name):
         self.comp_value_field_name = comp_value_field_name
 
@@ -42,7 +42,7 @@ class GreaterThanOrEqual(object):
 
 
 # validate that a form field contains a year that is valid for a given epoch
-class YearPerEpochValidator(object):
+class IsValidYearForEpoch(object):
     def __init__(self, epoch_id_field_name):
         self.epoch_field = epoch_id_field_name
 
@@ -64,7 +64,7 @@ class YearPerEpochValidator(object):
 
 
 # validate that a form field contains a valid day for a given month
-class DayPerMonthValidator(object):
+class IsValidDayForMonth(object):
     def __init__(self, month_id_field_name):
         self.month_field = month_id_field_name
 
@@ -82,7 +82,7 @@ class DayPerMonthValidator(object):
 
 
 # validate that a user is a DM of the campaign he wants to create a session for
-class IsDMValidator(object):
+class IsDMForCampaign(object):
     def __call__(self, form, field):
         from app.campaign.models import Campaign
         campaign_id = field.data
@@ -96,7 +96,7 @@ class IsDMValidator(object):
 
 
 # validate that a random table of given ID exists
-class IsRandomTableValidator(object):
+class IsValidRandomTable(object):
     def __call__(self, form, field):
         from app.random.models import RandomTable
         table_id = field.data
@@ -107,7 +107,7 @@ class IsRandomTableValidator(object):
 
 
 # validate that a string is parseable by the r20 dice library
-class IsValidDiceStringValidator(object):
+class IsValidDiceString(object):
     def __call__(self, form, field):
         from app.random.helpers import is_valid_dice_string
         if is_valid_dice_string(field.data) is False:

@@ -1,4 +1,4 @@
-from app.validators import YearPerEpochValidator, DayPerMonthValidator
+from app.validators import IsValidYearForEpoch, IsValidDayForMonth
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, IntegerField, BooleanField, SelectField, widgets
 from wtforms_components import ColorField
@@ -19,9 +19,9 @@ class EventForm(FlaskForm):
     description = TextAreaField("Description", render_kw={"rows": 15})
     epoch = SelectField("Epoch", coerce=int, validators=[InputRequired()])
     year = IntegerField("Year", widget=widgets.Input(input_type="number"), validators=[InputRequired(),
-                        YearPerEpochValidator("epoch")])
+                        IsValidYearForEpoch("epoch")])
     month = SelectField("Month", coerce=int, validators=[InputRequired()])
-    day = SelectField("Day", coerce=int, validators=[InputRequired(), DayPerMonthValidator("month")])
+    day = SelectField("Day", coerce=int, validators=[InputRequired(), IsValidDayForMonth("month")])
     duration = IntegerField("Duration (days)", default=1, validators=[InputRequired()])
 
     is_visible = BooleanField("Is publicly visible")
