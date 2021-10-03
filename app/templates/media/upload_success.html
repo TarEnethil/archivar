@@ -1,6 +1,6 @@
 {% import 'bootstrap/utils.html' as utils %}
 
-{{ utils.flashed_messages(dismissible=True) }}
+{{ utils.render_messages(dismissible=True, container=True) }}
 
 <div class="row align-items-center">
     <div class="col text-center">

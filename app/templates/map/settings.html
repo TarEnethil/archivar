@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {% block scripts %}
 {{ super() }}
@@ -27,7 +27,7 @@
         "Bottom" means that the bottom center of the image will point to the location, center means that the center of the image is used instead.
     </p>
 
-    {{ wtf.quick_form(form) }}
+    {{ wtf.render_form(form) }}
 
     <hr>
 

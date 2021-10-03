@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {% block styles %}
 {{ super() }}
@@ -20,5 +20,5 @@ makeMarkdownEditor("private_notes");
 {% block app_content %}
     <h1>Create New Character</h1>
 
-    {{ wtf.quick_form(form) }}
+    {{ wtf.render_form(form) }}
 {% endblock %}

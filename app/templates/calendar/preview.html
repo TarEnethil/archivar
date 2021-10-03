@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {% block styles %}
 {{ super() }}
@@ -186,5 +186,5 @@ $("#phase-button").click(function(e) {
     <h2>Form Preview</h2>
     <p>Below is an example of how the datepicker for this calendar will integrate into the Event-form.</p>
 
-    {{ wtf.quick_form(form) }}
+    {{ wtf.render_form(form) }}
 {% endblock %}

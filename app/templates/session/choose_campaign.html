@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {% block app_content %}
     <h1>Choose Campaign</h1>
@@ -9,5 +9,5 @@
         Please choose the campaign for which you want to create a new session.
     </p>
 
-    {{ wtf.quick_form(form) }}
+    {{ wtf.render_form(form) }}
 {% endblock %}

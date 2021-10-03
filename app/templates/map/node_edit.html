@@ -1,4 +1,4 @@
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 <div class="modal-header">
     <h5 class="modal-title">Edit Location</h5>
@@ -9,11 +9,11 @@
 
 <div class="modal-body edit_node_form p-4 pb-5">
     <div id="form_messagebox"></div>
-    {{ wtf.quick_form(form) }}
+    {{ wtf.render_form(form) }}
 </div>
 
 <div class="modal-footer">
-    <!-- TODO: revisit this hack when removing quick_form() -->
+    <!-- TODO: revisit this hack when removing render_form() -->
     {{ button(url="#", text="Save Location", classes="btn-success mr-auto", ids="fake-submit") }}
 
     <a href="#" class="btn btn-secondary" id="btn-move-node" data="{{ node.id }}" class="ml-auto">

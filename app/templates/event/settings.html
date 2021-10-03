@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {% block scripts %}
 {{ super() }}
@@ -17,7 +17,7 @@
 <p>
     Adjust the default values when creating a new event (globally for all users).
 </p>
-{{ wtf.quick_form(form) }}
+{{ wtf.render_form(form) }}
 
 <h2>Categories
 

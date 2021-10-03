@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {% block app_content %}
     <h1>{{ heading }}</h1>
@@ -8,5 +8,5 @@
         Information about the dice syntax can be found <a href="https://d20.readthedocs.io/en/latest/start.html#dice-syntax">here</a>.
     </p>
 
-    {{ wtf.quick_form(form) }}
+    {{ wtf.render_form(form) }}
 {% endblock %}
