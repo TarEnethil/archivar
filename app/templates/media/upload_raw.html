@@ -1,12 +1,12 @@
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 {% import 'bootstrap/utils.html' as utils %}
 
 {% if ajax %}
-{{ utils.flashed_messages(dismissible=True) }}
+{{ utils.render_messages(dismissible=True, container=True) }}
 {% endif %}
 
 <p>
     The maximum file size is {{ max_filesize|filesizeformat(True) }}.
 </p>
 
-{{ wtf.quick_form(form) }}
+{{ wtf.render_form(form) }}

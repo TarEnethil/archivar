@@ -6,7 +6,9 @@ from wtforms.validators import ValidationError
 class ContainsXYZ(object):
     def __call__(self, form, field):
         if "{x}" not in field.data or "{y}" not in field.data or "{z}" not in field.data:
+            print("XXX RAISING THE ERROR")
             raise ValidationError("The tile provider needs the arguments {x} {y} and {z}")
+        print("XXX RAISING NO ERROR")
 
 
 # validate that a form field contains a value that is <= that of another field

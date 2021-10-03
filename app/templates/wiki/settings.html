@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {% block scripts %}
 {{ super() }}
@@ -20,7 +20,7 @@
         <b>Note: If you leave the second field empty, all articles will be moved to the main category!</b>
     </p>
 
-    {{ wtf.quick_form(move_form) }}
+    {{ wtf.render_form(move_form) }}
 
     {{ settings.print_info(create=False) }}
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'bootstrap/base.html' %}
+{% extends 'bootstrap_base.html' %}
 {% import 'bootstrap/utils.html' as utils %}
 
 {% block title %}
@@ -157,7 +157,7 @@ $(document).ready(function() {
 <div class="container-fluid mt-5">
     <div class="row">
         <div class="col-xl-8 mx-auto">
-        {{ utils.flashed_messages(dismissible=True) }}
+        {{ utils.render_messages(dismissible=True, container=True) }}
 
         {% block app_content %}{% endblock %}
         </div>

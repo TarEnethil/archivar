@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {% block scripts %}
 {{ super() }}
@@ -9,7 +9,7 @@
 {% block app_content %}
     <h1>{{ heading }}</h1>
 
-    {{ wtf.quick_form(form) }}
+    {{ wtf.render_form(form) }}
 
     {% if category %}
     {{ category.print_info() }}

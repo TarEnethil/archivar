@@ -51,14 +51,14 @@ $(document).ready(function() {
     {% endif %}
 
     {% if form %}
-        {% import 'bootstrap/wtf.html' as wtf %}
+        {% import 'bootstrap/form.html' as wtf %}
     <div id="add-session-form">
         <p class="alert alert-info">
             You are a DM of multiple campaigns.
             Please choose the campaign for which you want to create a new session.
         </p>
 
-        {{ wtf.quick_form(form) }}
+        {{ wtf.render_form(form) }}
     </div>
     {% endif %}
 

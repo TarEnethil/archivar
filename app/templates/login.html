@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {% block content %}
 <div class="container-fluid mt-5">
@@ -7,9 +7,9 @@
         <div class="col-md-3 mx-auto">
         <h1>Login</h1>
 
-        {{ utils.flashed_messages(dismissible=True) }}
+        {{ utils.render_messages(dismissible=True, container=True) }}
 
-        {{ wtf.quick_form(form) }}
+        {{ wtf.render_form(form) }}
         </div>
     </div>
     {% include "footer.html" %}

@@ -1,5 +1,5 @@
 {% extends "wiki/base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {% block styles %}
 {{ super() }}
@@ -26,5 +26,5 @@ makeMarkdownEditor("content");
         {% endfor %}
     </datalist>
 
-    {{ wtf.quick_form(form) }}
+    {{ wtf.render_form(form) }}
 {% endblock %}

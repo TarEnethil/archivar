@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 {% import 'bootstrap/utils.html' as utils %}
 
 {% block styles %}
@@ -40,7 +40,7 @@ $(document).ready(function() {
             <div class="col-sm-2 pl-2">
                 <div class="p-2 mb-2 wiki-search">
                 {% if nav[1] %}
-                    {{ wtf.quick_form(nav[1]) }}
+                    {{ wtf.render_form(nav[1]) }}
                 {% endif %}
                 </div>
 
@@ -115,7 +115,7 @@ $(document).ready(function() {
 
             <div class="col-xl">
             {% block app_content %}
-                {{ utils.flashed_messages(dismissible=True) }}
+                {{ utils.render_messages(dismissible=True, container=True) }}
             {% endblock %}
 
             </div>
