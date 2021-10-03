@@ -1,7 +1,7 @@
 import tempfile
 import os
 from flask import get_flashed_messages
-from tests import BaseTestCase, FakeFile, FakeField, FakeForm
+from tests import BaseTestCase, FakeFile, FakeField, FakeFileField, FakeForm
 from wtforms.validators import ValidationError
 
 
@@ -724,3 +724,49 @@ class AppValidatorsTest(BaseTestCase):
         ivds(None, FakeField("dice_string", self.dice_set1.dice_string))
         ivds(None, FakeField("dice_string", self.dice_set2.dice_string))
         ivds(None, FakeField("dice_string", self.dice_set3.dice_string))
+
+    def testIsValidImageFile(self, app, client):
+        from app.validators import IsValidImageFile
+        self.set_up_users()
+        self.set_up_random_dice()
+
+        ivif = IsValidImageFile()  # implicit optional=False
+
+        with self.assertRaises(ValidationError):
+            ivif(None, FakeFileField("file", "no_extension"))
+
+        with self.assertRaises(ValidationError):
+            ivif(None, FakeFileField("file", "wrong_extension.txt"))
+
+        ivif(None, FakeFileField("file", "image.JPG"))
+        ivif(None, FakeFileField("file", "image.gif"))
+        ivif(None, FakeFileField("file", "image.PnG"))
+
+        ivif = IsValidImageFile(optional=True)
+
+        # data = None is only tested with optional=True
+        # with optional=False, InputRequired() is needed
+        ivif(None, FakeField("file", None))
+
+    def testHasFileExtension(self, app, client):
+        from app.validators import HasFileExtension
+        self.set_up_users()
+        self.set_up_random_dice()
+
+        hfe = HasFileExtension()  # implicit optional=False
+
+        with self.assertRaises(ValidationError):
+            hfe(None, FakeFileField("file", "no_extension"))
+
+        with self.assertRaises(ValidationError):
+            hfe(None, FakeFileField("file", "weird_extension."))
+
+        hfe(None, FakeFileField("file", "txt.txt.txT"))
+        hfe(None, FakeFileField("file", "image.gif"))
+        hfe(None, FakeFileField("file", "doc.PDf"))
+
+        hfe = HasFileExtension(optional=True)
+
+        # data = None is only tested with optional=True
+        # with optional=False, InputRequired() is needed
+        hfe(None, FakeField("file", None))

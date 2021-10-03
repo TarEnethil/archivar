@@ -6,9 +6,7 @@ from wtforms.validators import ValidationError
 class ContainsXYZ(object):
     def __call__(self, form, field):
         if "{x}" not in field.data or "{y}" not in field.data or "{z}" not in field.data:
-            print("XXX RAISING THE ERROR")
             raise ValidationError("The tile provider needs the arguments {x} {y} and {z}")
-        print("XXX RAISING NO ERROR")
 
 
 # validate that a form field contains a value that is <= that of another field
@@ -114,3 +112,38 @@ class IsValidDiceString(object):
         from app.random.helpers import is_valid_dice_string
         if is_valid_dice_string(field.data) is False:
             raise ValidationError(f"{field.data} is not a valid dice string")
+
+
+# validate that a form field contains a valid day for a given month
+class IsValidImageFile(object):
+    def __init__(self, optional=False):
+        self.is_optional = optional
+
+    def __call__(self, form, field):
+        if self.is_optional is True and field.data is None:
+            return
+
+        from flask import current_app
+
+        if "." not in field.data.filename:
+            raise ValidationError("No file extension found.")
+
+        if not field.data.filename.rsplit(".", 1)[1].lower() in current_app.config["MAPNODES_FILE_EXT"]:
+            raise ValidationError(f"Invalid image extension. File must be one of the following types: \
+                              {current_app.config['MAPNODES_FILE_EXT']}")
+
+
+# validate that a string is a filename with an extension
+class HasFileExtension(object):
+    def __init__(self, optional=False):
+        self.is_optional = optional
+
+    def __call__(self, form, field):
+        if self.is_optional is True and field.data is None:
+            return
+
+        if "." not in field.data.filename:
+            raise ValidationError("No file extension found.")
+
+        if len(field.data.filename.rsplit(".", 1)[1]) == 0:
+            raise ValidationError("Empty file extension.")
