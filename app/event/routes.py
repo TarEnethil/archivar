@@ -298,7 +298,7 @@ def settings():
 @bp.route("/sidebar", methods=["GET"])
 @login_required
 def sidebar():
-    entries = Event.get_query_for_invisible_items(include_hidden_for_user=True)
+    entries = Event.get_query_for_visible_items(include_hidden_for_user=True)
     entries = entries.with_entities(Event.id, Event.name, Event.is_visible).order_by(Event.name.asc()).all()
 
     return jsonify(entries)
