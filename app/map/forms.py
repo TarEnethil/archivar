@@ -1,19 +1,9 @@
-from app.validators import IsLessOrEqual, IsGreaterOrEqual, ContainsXYZ
-from flask import current_app
+from app.validators import IsLessOrEqual, IsGreaterOrEqual, ContainsXYZ, IsValidImageFile
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
 from wtforms import StringField, TextAreaField, SubmitField, SelectField, IntegerField, HiddenField, BooleanField
 from wtforms_components import SelectField as BetterSelectField
-from wtforms.validators import Length, ValidationError, InputRequired, NumberRange, Optional
-
-
-def icon_is_valid(filename):
-    if "." not in filename:
-        raise ValidationError("No file extension found.")
-
-    if not filename.rsplit(".", 1)[1].lower() in current_app.config["MAPNODES_FILE_EXT"]:
-        raise ValidationError(f"Invalid file extension. File must be one of the following types: \
-                              {current_app.config['MAPNODES_FILE_EXT']}")
+from wtforms.validators import Length, InputRequired, NumberRange, Optional
 
 
 class MapSettingsForm(FlaskForm):
@@ -65,21 +55,14 @@ class MapNodeForm(FlaskForm):
 class MapNodeTypeCreateForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(), Length(max=64)])
     description = StringField("Description", validators=[Length(max=256)])
-    icon = FileField("Icon (x by x pixels recommended)", validators=[FileRequired()])
+    icon = FileField("Icon (x by x pixels recommended)", validators=[FileRequired(), IsValidImageFile()])
 
     submit = SubmitField("Create Location Type")
-
-    def validate_icon(self, icon):
-        icon_is_valid(icon.data.filename)
 
 
 class MapNodeTypeEditForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired(), Length(max=64)])
     description = StringField("Description", validators=[Length(max=256)])
-    icon = FileField("Icon (x by x pixels recommended)")
+    icon = FileField("Icon (x by x pixels recommended)", validators=[IsValidImageFile(optional=True)])
 
     submit = SubmitField("Save Location Type")
-
-    def validate_icon(self, icon):
-        if icon.data:
-            icon_is_valid(icon.data.filename)

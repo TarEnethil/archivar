@@ -60,6 +60,15 @@ class FakeField(object):
         self.data = data
 
 
+class FakeFileField(object):
+    """
+    Fake object for a single File form field
+    """
+    def __init__(self, name, filename):
+        self.name = name
+        self.data = FakeFile(filename)
+
+
 class FakeForm(object):
     """
     Fake object for forms (used to test validators)
