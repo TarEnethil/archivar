@@ -50,6 +50,17 @@ $(document).ready(function() {
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('map.index') }}">{{ icon("map-marker-alt") }} Map</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('wiki.index') }}">{{ icon("graduation-cap") }} Wiki</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('calendar.index') }}">{{ icon("calendar-alt") }} Calendar</a></li>
+
+                <li class="dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    {{ icon("plus-square") }} More <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('media.index') }}">{{ icon("images") }} Media</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('random.index') }}">{{ icon("dice") }} Rolls</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('character.list') }}">{{ icon("list") }} Parties & Chars</a></li>
+                    </ul>
+                </li>
                 {% endif %}
 
             </ul>
@@ -91,18 +102,8 @@ $(document).ready(function() {
             {% endif %}
 
             <ul class="navbar-nav ml-auto">
-                {% if current_user.is_authenticated %}
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('media.index') }}">{{ icon("images") }} Media</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('random.index') }}">{{ icon("dice") }} Rolls</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('character.list') }}">{{ icon("list") }} Parties & Chars</a></li>
-                {% endif %}
-
                 {% if current_user.is_authenticated and current_user.is_admin() %}
-                <li class="dropdown">
-                    <a class="nav-link" href="{{ url_for('user.list') }}">
-                    {{ icon("users") }} Users
-                    </a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('user.list') }}">{{ icon("users") }} Users</a></li>
                 {% endif %}
 
                 {% if current_user.is_authenticated and current_user.is_at_least_moderator() %}
