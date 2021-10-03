@@ -391,7 +391,7 @@ class AppProcessorsTest(BaseTestCase):
             self.assertFalse("http" in include_js(["bootstrap"]))
 
             # test multiple-file-include per key
-            self.assertTrue("jquery-" in include_js(["bootstrap"]))
+            self.assertTrue("jquery.min.js" in include_js(["bootstrap"]))
             self.assertTrue("bootstrap.min.js" in include_js(["bootstrap"]))
 
             # test inclusion of "helper" files

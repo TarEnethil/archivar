@@ -109,7 +109,7 @@ def include_js(scripts):  # noqa: C901
 
     s = {
         "bootstrap": {
-            "cdn": ["https://code.jquery.com/jquery-3.5.1.slim.min.js",
+            "cdn": ["https://code.jquery.com/jquery-3.5.1.min.js",
                     "https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js",
                     "https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"],
             "local": [f"{local_url}js/jquery.min.js",
