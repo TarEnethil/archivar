@@ -10,7 +10,7 @@ def suite():
     from .test_map_smoke import MapSmokeTest, MapNodeSmokeTest, MapNodeTypeSmokeTest
     from .test_media_smoke import MediaSmokeTest
     from .test_party_smoke import PartySmokeTest
-    from .test_random_smoke import RandomTableSmokeTest, RandomTableEntrySmokeTest
+    from .test_random_smoke import DiceSetSmokeTest, RandomTableSmokeTest, RandomTableEntrySmokeTest
     from .test_session_smoke import SessionSmokeTest
     from .test_user_smoke import UserSmokeTest
     from .test_wiki_smoke import WikiSmokeTest
@@ -32,6 +32,7 @@ def suite():
     suite.addTests(unittest.makeSuite(MapNodeSmokeTest))
     suite.addTests(unittest.makeSuite(MapNodeTypeSmokeTest))
     suite.addTests(unittest.makeSuite(MediaSmokeTest))
+    suite.addTests(unittest.makeSuite(DiceSetSmokeTest))
     suite.addTests(unittest.makeSuite(RandomTableSmokeTest))
     suite.addTests(unittest.makeSuite(RandomTableEntrySmokeTest))
     suite.addTests(unittest.makeSuite(PartySmokeTest))

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block scripts %}
+{{ super() }}
+{{ include_js(['bootbox']) }}
+
+<script>
+$(document).ready(function() {
+    $("#x-times").click(function(e) {
+        e.preventDefault();
+        bootbox.prompt("How many rolls?", function(result) {
+            if  (!result) {
+                return;
+            }
+
+            if (!result.match(/^\d+$/)) {
+                bootbox.alert(result + " is not a valid number");
+                return;
+            }
+
+            var fake_url = "{{ dice.roll_url() }}?num_rolls=-1";
+
+            window.location.href = fake_url.replace("-1", result);
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block app_content %}
+    {% if num_rolls == 1 %}
+        {% set roll_type = "once" %}
+    {% else %}
+        {% set roll_type = "{} times".format(num_rolls) %}
+    {% endif %}
+
+    <h1>Roll {{ roll_type }} with {{ dice.name }}</h1>
+    {{ navbar_start() }}
+        {{ dice.roll_button_nav(text="Roll Once") }}
+        {{ dice.roll_button_nav(text="Roll X times", ids="x-times") }}
+        {{ dice.edit_button_nav() }}
+    {{ navbar_end() }}
+
+    {% set rolls = dice.roll(num_rolls) %}
+
+    {% if rolls %}
+        {% if current_user.markdown_phb_style %}
+            <div class="custom-markdown phb-style">
+        {% else %}
+            <div class="custom-markdown">
+        {% endif %}
+
+        {% for roll in rolls %}
+            <h2>
+                Roll {{ loop.index }}: {{ roll.total }}
+            </h2>
+            {{ roll|string|markdown }}
+        {% endfor %}
+            </div>
+    {% else %}
+        <p>There was nothing to roll.</p>
+    {% endif %}
+{% endblock %}

@@ -13,7 +13,7 @@ from app.main.models import GeneralSetting
 from app.map.models import Map, MapNode, MapNodeType
 from app.media.models import MediaItem, MediaCategory
 from app.party.models import Party
-from app.random.models import RandomTable, RandomTableEntry
+from app.random.models import DiceSet, RandomTable, RandomTableEntry
 from app.session.models import Session
 from app.user.models import User
 from app.wiki.models import WikiEntry
@@ -386,6 +386,14 @@ class BaseTestCase(flask_unittest.AppClientTestCase):
 
         self.random_table_entries = [entry1, entry2, entry3, entry4, entry5, entry6]
         self.add_all(self.random_table_entries)
+        self.commit()
+
+    def set_up_random_dice(self):
+        self.dice_set1 = DiceSet(name="Dice 1", dice_string="1d6", created_by_id=self.admin.id)
+        self.dice_set2 = DiceSet(name="Dice 2", dice_string="3d6 + 5 [ice]", created_by_id=self.moderator.id)
+        self.dice_set3 = DiceSet(name="Dice 3", dice_string="3d6pl1", created_by_id=self.user.id)
+
+        self.add_all([self.dice_set1, self.dice_set2, self.dice_set3])
         self.commit()
 
 

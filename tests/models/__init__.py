@@ -12,7 +12,7 @@ def suite():
     from .test_mixins import LinkGeneratorTest, PermissionTemplateTest, ProfilePictureTest, \
         SimpleChangeTrackerTest, SimplePermissionCheckerTest
     from .test_party_model import PartyModelTest
-    from .test_random_model import RandomTableModelTest, RandomTableEntryModelTest
+    from .test_random_model import DiceSetModelTest, RandomTableModelTest, RandomTableEntryModelTest
     from .test_session_model import SessionModelTest
     from .test_user_model import UserModelTest
     from .test_wiki_model import WikiModelTest
@@ -23,6 +23,7 @@ def suite():
     suite.addTests(unittest.makeSuite(EpochModelTest))
     suite.addTests(unittest.makeSuite(MonthModelTest))
     suite.addTests(unittest.makeSuite(DayModelTest))
+    suite.addTests(unittest.makeSuite(DiceSetModelTest))
     suite.addTests(unittest.makeSuite(MoonModelTest))
     suite.addTests(unittest.makeSuite(CampaignModelTest))
     suite.addTests(unittest.makeSuite(CharacterModelTest))

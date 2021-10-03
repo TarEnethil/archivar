@@ -11,6 +11,7 @@ def suite():
     from .test_map_helpers import MapHelperTest
     from .test_media_helpers import MediaHelperTest
     from .test_party_helpers import PartyHelperTest
+    from .test_random_helpers import RandomHelperTest
     from .test_session_helpers import SessionHelperTest
     from .test_user_helpers import UserHelperTest
     from .test_wiki_helpers import WikiHelperTest
@@ -30,6 +31,7 @@ def suite():
     suite.addTests(unittest.makeSuite(MapHelperTest))
     suite.addTests(unittest.makeSuite(MediaHelperTest))
     suite.addTests(unittest.makeSuite(PartyHelperTest))
+    suite.addTests(unittest.makeSuite(RandomHelperTest))
     suite.addTests(unittest.makeSuite(SessionHelperTest))
     suite.addTests(unittest.makeSuite(UserHelperTest))
     suite.addTests(unittest.makeSuite(WikiHelperTest))

@@ -11,7 +11,11 @@
 
 <script>
 {% if tables %}
-makeDatatable("tables-table", { threshold: 15, items_per_page: 15 });
+makeDatatable("dice-table", { threshold: 5, items_per_page: 5 });
+{% endif %}
+
+{% if tables %}
+makeDatatable("tables-table", { threshold: 10, items_per_page: 10 });
 {% endif %}
 </script>
 {% endblock %}
@@ -21,6 +25,46 @@ makeDatatable("tables-table", { threshold: 15, items_per_page: 15 });
 <p>
     Pre-made random tables and dice rolls.
 </p>
+
+<h2>Dice Sets
+
+{% if dice %}
+({{ dice|length }})
+{% endif %}
+</h2>
+
+{{ navbar_start() }}
+    {{ button_nav(url=url_for('random.dice_create'), text="Add Dice Set", icon="plus") }}
+{{ navbar_end() }}
+
+{% if dice %}
+<table class="table table-hover table-striped" id="dice-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Expression</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for die in dice %}
+        <tr>
+            <td> {{ die.name }}</td>
+            <td class="text-monospace"> {{ die.dice_string }}</td>
+            <td>
+                {{ die.view_button() }}
+                {{ die.roll_button() }}
+                {{ die.edit_button() }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No dice sets yet.</p>
+{% endif %}
+
 
 <h2>Random Tables
 
