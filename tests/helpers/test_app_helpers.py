@@ -689,3 +689,38 @@ class AppValidatorsTest(BaseTestCase):
             idm(None, FakeField("campaign", self.campaign2.id))
         with self.assertRaises(ValidationError):
             idm(None, FakeField("campaign", self.campaign3.id))
+
+    def test_IsRandomTableValidator(self, app, client):
+        from app.validators import IsRandomTableValidator
+        self.set_up_users()
+        self.set_up_random_tables()
+
+        irt = IsRandomTableValidator()
+
+        # id 4 does not exist
+        with self.assertRaises(ValidationError):
+            irt(None, FakeField("name", 4))
+
+        irt(None, FakeField("name", 1))
+        irt(None, FakeField("name", 2))
+        irt(None, FakeField("name", 3))
+
+    def test_IsValidDiceStringValidator(self, app, client):
+        from app.validators import IsValidDiceStringValidator
+        self.set_up_users()
+        self.set_up_random_dice()
+
+        ivds = IsValidDiceStringValidator()
+
+        with self.assertRaises(ValidationError):
+            ivds(None, FakeField("dice_string", "1d6dl1"))
+
+        with self.assertRaises(ValidationError):
+            ivds(None, FakeField("dice_string", ""))
+
+        with self.assertRaises(ValidationError):
+            ivds(None, FakeField("dice_string", "hello world"))
+
+        ivds(None, FakeField("dice_string", self.dice_set1.dice_string))
+        ivds(None, FakeField("dice_string", self.dice_set2.dice_string))
+        ivds(None, FakeField("dice_string", self.dice_set3.dice_string))
