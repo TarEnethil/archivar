@@ -22,7 +22,7 @@ makeDatatable("sessions-table", { has_dates: true });
 {{ navbar_start() }}
     {{ button_nav(url=url_for('campaign.timeline', id=campaign.id, name=campaign.name|urlfriendly), text="View Timeline", icon="stream") }}
 {% if campaign.is_editable_by_user() %}
-    {{ button_nav(url=url_for('session.create', base=campaign.id), text="Add Session", icon="plus") }}
+    {{ button_nav(url=url_for('session.create_with_campaign', id=campaign.id), text="Add Session", icon="plus") }}
     {{ campaign.edit_button_nav(text="Edit Campaign") }}
 {% endif %}
 {{ navbar_end() }}
