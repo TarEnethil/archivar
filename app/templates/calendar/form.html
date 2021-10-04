@@ -12,7 +12,8 @@
 {{ include_js(['markdown-editor', 'moment']) }}
 
 <script>
-SimpleMDE("description");
+{% include "sidebars.js" %}
+makeMarkdownEditor("description");
 </script>
 {% endblock %}
 
