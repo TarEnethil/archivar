@@ -17,10 +17,21 @@ RUN apk update && \
 # lint with flake8
 RUN pip install --upgrade pip
 RUN pip install flake8
-COPY . /usr/src/archivar-build/
+
+WORKDIR /usr/src/archivar-build
+
+# don't just copy . here, because then the build takes longer when changing
+# stuff like entrypoint.sh
+COPY app ./app
+COPY config ./config
+COPY install ./install
+COPY migrations ./migrations
+COPY tests ./tests
+COPY dmcp.py run_tests.py requirements.txt .flake8 ./
+
 RUN flake8 --config=.flake8
 
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/archivar-build/wheels -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir ./wheels -r requirements.txt
 
 ########
 # Image
