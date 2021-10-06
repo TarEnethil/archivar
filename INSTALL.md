@@ -18,6 +18,7 @@ sudo docker build -t archivar:latest .
 ### Run the Docker container
 Archivar needs a mount where it stores user data (and the database) under the mountpoint `/opt/data/`.
 Other configuration can be done via environment variables, see [config/README.md](config/README.md).
+If the volume directory is owned by a user with uid != 1000, you can override the uid of the internal user in the environment-block using USER_ID=$my-id.
 
 Example docker-compose file:
 

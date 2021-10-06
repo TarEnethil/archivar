@@ -8,6 +8,30 @@ err() {
     echo "entrypoint: ${*}" 1>&2
 }
 
+# override the userid of dungeonmaster with USER_ID if given
+# requires a chown afterwards, so that dungeonmaster owns its
+# home diretory again.
+# this is (a, not the) solution for when the /opt/data mount is not owned
+# by the user with uid 1000, as per default that is what dungeonmaster will get.
+# a later step checks again if the uid of dungeonmaster matches that of the volume.
+# see https://github.com/TarEnethil/archivar/issues/99
+setup_user() {
+    if [ -n "$USER_ID" ]; then
+        log "setting userid for internal user to ${USER_ID}"
+        usermod -u $USER_ID dungeonmaster
+        if [ $? -ne 0 ]; then
+            err "setting userid failed"
+            exit 1
+        fi
+
+        chown -R dungeonmaster /home/dungeonmaster
+        if [ $? -ne 0 ]; then
+            err "chown to new userid failed"
+            exit 1
+        fi
+    fi
+}
+
 set_env() {
     if [ "$FLASK_ENV" = "development" ]; then
         log "debug mode detected"
@@ -46,10 +70,20 @@ init_datadir() {
         exit 1
     fi
 
+    # check that the uid of the mount and our user match;
+    # if not, the database and media dirs are not writetable.
+    # see https://github.com/TarEnethil/archivar/issues/99
+    OWNER=$(stat -c '%u' /opt/data)
+    if [ "${OWNER}" -ne "$(id -u dungeonmaster)" ]; then
+        err "internal user dungeonmaster is not the owner of /opt/data"
+        err "change the owner of the volume or retry using USER_ID=${OWNER}"
+        exit 1
+    fi
+
     dirs="media/thumbnails logos/thumbnails map mapnodes"
 
     for d in ${dirs}; do
-        mkdir -p /opt/data/"$d"
+        su-exec dungeonmaster mkdir -p /opt/data/"$d"
 
         if [ $? -ne 0 ]; then
             err "creating dir ${d} failed"
@@ -83,7 +117,7 @@ restore_db() {
 upgrade_db() {
     log "initializing or upgrading database"
 
-    flask db upgrade
+    su-exec dungeonmaster flask db upgrade
 
     if [ $? -ne 0 ]; then
         err "db upgrade failed"
@@ -95,14 +129,16 @@ upgrade_db() {
 run() {
     log "starting server"
 
-    exec gunicorn -b :5000 --access-logfile - --error-logfile - dmcp:app
+    exec su-exec dungeonmaster gunicorn -b :5000 --access-logfile - --error-logfile - dmcp:app
 }
 
 run_tests() {
     log "starting unittests"
 
-    exec python3 run_tests.py
+    exec su-exec dungeonmaster python3 run_tests.py
 }
+
+setup_user
 
 set_env
 init_config
