@@ -34,7 +34,7 @@ WORKDIR /home/dungeonmaster
 
 # util-linux for uuidgen, rest for Pillow
 RUN apk update && \
-    apk add --no-cache jpeg util-linux zlib
+    apk add --no-cache gnupg jpeg su-exec util-linux shadow zlib
 
 RUN pip install --upgrade pip && pip install gunicorn
 
@@ -49,9 +49,7 @@ COPY --chown=dungeonmaster:dungeonmaster migrations ./migrations
 COPY --chown=dungeonmaster:dungeonmaster tests ./tests
 COPY --chown=dungeonmaster:dungeonmaster dmcp.py entrypoint.sh CHANGELOG.md run_tests.py ./
 
-USER dungeonmaster
-
-RUN chmod u+x entrypoint.sh
+RUN chmod +x entrypoint.sh
 
 ENV FLASK_APP dmcp.py
 
