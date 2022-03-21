@@ -119,7 +119,7 @@ def password():
 
         db.session.commit()
 
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
     return render_template("user/password.html", form=form, title=page_title("Change Password"))
 
