@@ -303,9 +303,9 @@
       });
 
       // filterable dropdown of wiki articles
-      $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
+      $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"}).parent().removeClass("form-select");;
 
-      $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
+      $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"}).parent().removeClass("form-select");;
 
       $('.modal-footer #fake-submit').click(function() {
         $(".create_node_form #submit").click();
@@ -354,10 +354,10 @@
       // filterable dropdown of wiki articles
       var wiki = $("#wiki_entry")
       if (wiki.attr("disabled") != "disabled") {
-        $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
+        $('#wiki_entry').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"}).parent().removeClass("form-select");;
       }
 
-      $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"});
+      $('#submap').selectpicker({liveSearch: true, liveSearchPlaceholder: "filter"}).parent().removeClass("form-select");;
 
       $('.modal-footer #fake-submit').click(function() {
         $(".edit_node_form #submit").click();
@@ -373,7 +373,7 @@
         }
       })
 
-      $('#node_type').selectpicker();
+      $('#node_type').selectpicker().parent().removeClass("form-select");;
     }
 
     // return the anchor point for an icon
