@@ -248,7 +248,7 @@ $(document).ready(function() {
     });
 
     add_category_color();
-    $("#category").selectpicker();
+    $("#category").selectpicker().parent().removeClass("form-select");
     set_category_border(category_colors[$("#category").val()])
     $("button[data-id=category]").css("height", "34px");
 
