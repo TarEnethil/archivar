@@ -59,7 +59,7 @@ makeDatatable("sessions-table", { has_dates: true });
                 Session {{ session.view_text() }}
                 ({{ moment(session.date).format(current_user.dateformat) }})
             </h2>
-            <div class="col-3 text-right">
+            <div class="col-3 text-end">
                 {{ session.view_button(text="View", classes="btn-outline-secondary") }}
                 {% if session.is_editable_by_user() %}
                     {{ session.edit_button(text="Edit", classes="btn-outline-secondary") }}
@@ -90,7 +90,7 @@ makeDatatable("sessions-table", { has_dates: true });
                     Journal: {{ journal.title }} by {{ journal.character.name }}
                     </h3>
 
-                    <div class="col-3 text-right">
+                    <div class="col-3 text-end">
                     {{ journal.view_button(text="View", classes="btn-outline-secondary") }}
                     {% if journal.is_editable_by_user() %}
                         {{ journal.edit_button(text="Edit", classes="btn-outline-secondary") }}

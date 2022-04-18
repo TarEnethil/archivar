@@ -1,5 +1,5 @@
 {% extends 'bootstrap_base.html' %}
-{% import 'bootstrap/utils.html' as utils %}
+{% import 'bootstrap5/utils.html' as utils %}
 
 {% block title %}
     {% if title %}
@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block scripts %}
-{{ include_js(["bootstrap", "lightbox"]) }}
+{{ include_js(["bootstrap", "jquery", "lightbox"]) }}
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -27,7 +27,7 @@ $(document).ready(function() {
 
 {% block navbar %}
     <nav class="navbar navbar-expand-xl sticky-top navbar-light bg-light" id="topnav">
-        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#topnav-navbar" aria-expanded="true" aria-controls="navbar">
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#topnav-navbar" aria-expanded="true" aria-controls="navbar">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse" id="topnav-navbar">
@@ -52,7 +52,7 @@ $(document).ready(function() {
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('calendar.index') }}">{{ icon("calendar-alt") }} Calendar</a></li>
 
                 <li class="dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ icon("plus-square") }} More <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
@@ -77,15 +77,15 @@ $(document).ready(function() {
                 </li>
                     {% elif user_ql|length > 1 %}
                 <li class="nav-item dropdown user-quicklinks mr-5">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ icon("bolt") }} Quicklinks <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         {% for link in user_ql %}
-                        <li class="nav-item"><a class="nav-link pl-3" href="{{ link[0] }}">{{ link[1] }}</a></li>
+                        <li class="nav-item"><a class="nav-link ps-3" href="{{ link[0] }}">{{ link[1] }}</a></li>
                         {% endfor %}
                         <li role="separator" class="dropdown-divider"></li>
-                        <li class="nav-item"><a class="nav-link pl-3" href="{{ url_for('user.settings') }}">
+                        <li class="nav-item"><a class="nav-link ps-3" href="{{ url_for('user.settings') }}">
                             {{ icon("cog") }}
                             Edit quicklinks
                             </a>
@@ -101,32 +101,32 @@ $(document).ready(function() {
                 {% endif %}
             {% endif %}
 
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ms-auto">
                 {% if current_user.is_authenticated and current_user.is_admin() %}
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('user.list') }}">{{ icon("users") }} Users</a></li>
                 {% endif %}
 
                 {% if current_user.is_authenticated and current_user.is_at_least_moderator() %}
                 <li class="dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ icon("cog") }} Settings <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li class="nav-item">
-                            <a class="nav-link pl-3" href="{{ url_for('main.settings') }}">General</a>
-                            <a class="nav-link pl-3" href="{{ url_for('calendar.settings') }}">Calendar</a>
+                            <a class="nav-link ps-3" href="{{ url_for('main.settings') }}">General</a>
+                            <a class="nav-link ps-3" href="{{ url_for('calendar.settings') }}">Calendar</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link pl-3" href="{{ url_for('map.settings') }}">Map</a>
+                            <a class="nav-link ps-3" href="{{ url_for('map.settings') }}">Map</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link pl-3" href="{{ url_for('event.settings') }}">Events</a>
+                            <a class="nav-link ps-3" href="{{ url_for('event.settings') }}">Events</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link pl-3" href="{{ url_for('wiki.settings') }}">Wiki</a>
+                            <a class="nav-link ps-3" href="{{ url_for('wiki.settings') }}">Wiki</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link pl-3" href="{{ url_for('media.settings') }}">Media</a>
+                            <a class="nav-link ps-3" href="{{ url_for('media.settings') }}">Media</a>
                         </li>
                     </ul>
                 </li>
@@ -136,13 +136,13 @@ $(document).ready(function() {
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('main.login') }}">Login</a></li>
                 {% else %}
                 <li class="dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ icon("user") }} {{ current_user.username }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="nav-item">{{ current_user.view_link(classes="nav-link pl-3") }}</li>
-                        <li class="nav-item"><a class="nav-link pl-3" href="{{ url_for('user.settings') }}">Settings</a></li>
-                        <li class="nav-item"><a class="nav-link pl-3" href="{{ url_for('main.logout') }}">Logout</a></li>
+                        <li class="nav-item">{{ current_user.view_link(classes="nav-link ps-3") }}</li>
+                        <li class="nav-item"><a class="nav-link ps-3" href="{{ url_for('user.settings') }}">Settings</a></li>
+                        <li class="nav-item"><a class="nav-link ps-3" href="{{ url_for('main.logout') }}">Logout</a></li>
                     </ul>
                 </li>
                 {% endif %}
@@ -168,9 +168,7 @@ $(document).ready(function() {
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title"></h5>
-              <button type="button" class="close" data-dismiss="modal">
-                <span class="fas fa-times"></span>
-              </button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <img src="#" class="align-self-center img-fluid" />

@@ -60,11 +60,9 @@ class AsyncCategoryLoader {
             </div> \
             <div class="modal-header"> \
               <h5 class="modal-title"></h5> \
-              <form class="form-inline ml-auto"> \
-                <input type="search" placeholder="Search" class="form-control filter-input" /> \
-                <button type="button" class="close" data-dismiss="modal"> \
-                  <span class="fas fa-times"></span> \
-                </button> \
+              <form class="ms-auto inline-form"> \
+                <input type="search" placeholder="Search" class="d-inline-block filter-input" /> \
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button> \
               </form> \
             </div> \
             <div class="modal-body"></div> \
@@ -460,7 +458,7 @@ class MediaModal extends AsyncCategoryLoader {
         _this.media_uploader.open_modal();
       });
 
-      $(this.header + " .form-inline").prepend(upload_button);
+      $(this.header + " .inline-form").prepend(upload_button);
     }
   }
 
@@ -492,7 +490,7 @@ class MediaModal extends AsyncCategoryLoader {
     _this.update_count_for_category(cat);
 
     // button to add the newly uploaded file to the selection
-    var add_button = $('<button/>').attr("type", "button").addClass("btn btn-primary ml-auto").text("Add to Selection");
+    var add_button = $('<button/>').attr("type", "button").addClass("btn btn-primary ms-auto").text("Add to Selection");
 
     add_button.click(function() {
       // "click" on element once to select it

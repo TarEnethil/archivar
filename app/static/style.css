@@ -237,6 +237,7 @@ li.delete-li a:hover {
 
 .picker td {
     text-align:center;
+    padding: 0.75rem;
 }
 
 .picker td[data-val]:hover {
@@ -373,8 +374,10 @@ tr.invisible_item,
     background:rgba(0,0,0,0.6);
 }
 
-.infobox {
-
+.infobox a,
+td a,
+#footer a {
+    text-decoration: none;
 }
 
 .infobox-img-container {

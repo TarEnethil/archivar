@@ -1,6 +1,6 @@
 from config.user_config import UserConfig
 from flask import Flask, url_for
-from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
 from flask_misaka import Misaka
@@ -21,7 +21,7 @@ db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convention))
 migrate = Migrate()
 login = LoginManager()
 login.login_view = 'login'
-bootstrap = Bootstrap()
+bootstrap = Bootstrap5()
 markdown = Misaka(tables=True, fenced_code=True, escape=True, strikethrough=True)
 moment = Moment()
 

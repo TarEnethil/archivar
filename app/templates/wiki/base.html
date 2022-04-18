@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% import 'bootstrap/form.html' as wtf %}
-{% import 'bootstrap/utils.html' as utils %}
+{% import 'bootstrap5/form.html' as wtf %}
+{% import 'bootstrap5/utils.html' as utils %}
 
 {% block styles %}
 {{ super() }}
@@ -37,7 +37,7 @@ $(document).ready(function() {
     <div class="container-fluid mt-5">
        {% include "markdown_editor_sidebar.html" %}
         <div class="row">
-            <div class="col-sm-2 pl-2">
+            <div class="col-sm-2 ps-2">
                 <div class="p-2 mb-2 wiki-search">
                 {% if nav[1] %}
                     {{ wtf.render_form(nav[1]) }}
@@ -46,11 +46,11 @@ $(document).ready(function() {
 
                 <h4 class="mt-3">Static Links</h2>
                 <ul class="nav flex-column flex-nowrap">
-                    <li class="nav-item"><a class="nav-link p-0 pl-2" href="{{ url_for('wiki.create') }}">New Page</a></li>
-                    <li class="nav-item"><a class="nav-link p-0 pl-2" href="{{ url_for('wiki.recent') }}">Recent Changes</a></li>
+                    <li class="nav-item"><a class="nav-link p-0 ps-2" href="{{ url_for('wiki.create') }}">New Page</a></li>
+                    <li class="nav-item"><a class="nav-link p-0 ps-2" href="{{ url_for('wiki.recent') }}">Recent Changes</a></li>
 
                     {% if current_user.is_at_least_moderator() %}
-                    <li class="nav-item"><a class="nav-link p-0 pl-2" href="{{ url_for('wiki.settings') }}">Settings</a></li>
+                    <li class="nav-item"><a class="nav-link p-0 ps-2" href="{{ url_for('wiki.settings') }}">Settings</a></li>
                     {% endif %}
                 </ul>
 
@@ -62,13 +62,13 @@ $(document).ready(function() {
                     <li class="nav-item">
                     {% endif %}
 
-                    <a class="nav-link p-0 pl-2" href="{{ url_for('wiki.view', id=1, name='Main Page'|urlfriendly) }}">Main Page</a></li>
+                    <a class="nav-link p-0 ps-2" href="{{ url_for('wiki.view', id=1, name='Main Page'|urlfriendly) }}">Main Page</a></li>
 
                     {% if nav[0] %}
                         {% for cat in nav[0] %}
                             {% if cat != "" %}
                             <li class="nav-item">
-                                <a class="dropdown-toggle nav-link p-0 pl-2" data-toggle="collapse" data-parent="#stacked-menu" href="#{{cat|hash}}">{{ cat }}</a>
+                                <a class="dropdown-toggle nav-link p-0 ps-2" data-bs-toggle="collapse" data-parent="#stacked-menu" href="#{{cat|hash}}">{{ cat }}</a>
 
                                 {% if entry and entry.category == cat %}
                                 <div class="collapse show" id="{{cat|hash}}">
@@ -76,7 +76,7 @@ $(document).ready(function() {
                                 <div class="collapse" id="{{cat|hash}}">
                                 {% endif %}
 
-                                    <ul class="nav flex-column pl-4">
+                                    <ul class="nav flex-column ps-4">
                                     {% for link in nav[0][cat] %}
                                         {% if entry and entry.id == link[0] and link[2] == False %}
                                         <li class="nav-item active invis">
@@ -107,7 +107,7 @@ $(document).ready(function() {
                             <li class="nav-item">
                             {% endif %}
 
-                            <a class="nav-link p-0 pl-2" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
+                            <a class="nav-link p-0 ps-2" href="{{ url_for('wiki.view', id=link[0], name=link[1]|urlfriendly) }}">{{ link[1] }}</a></li>
                         {% endfor %}
                     {% endif %}
                 </ul>
@@ -125,9 +125,7 @@ $(document).ready(function() {
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title"></h5>
-                <button type="button" class="close" data-dismiss="modal">
-                  <span class="fas fa-times"></span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
               </div>
               <div class="modal-body">
                   <img src="#" class="align-self-center img-fluid" />

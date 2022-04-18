@@ -76,8 +76,8 @@ See [ROLES.md](ROLES.md) for information on who can do what.
 
 # Used tools and libraries
 * Backend is [Flask](http://flask.pocoo.org/) (Python), current Database is [SQLite](https://www.sqlite.org/index.html) (for used python libraries and flask extensions refer to requirements.txt)
-* Frontend with [Bootstrap 4.4](https://getbootstrap.com/docs/4.4/)
-* JavaScript framework is [jQuery](https://jquery.com/) (used by bootstrap), additional scripts:
+* Frontend with [Bootstrap 5.1.3](https://getbootstrap.com/docs/5.1/)
+* JavaScript framework is [jQuery](https://jquery.com/), additional scripts:
     * [multiselect](http://loudev.com/): select characters for session and parties
     * [bootstrap-select](https://developer.snapappointments.com/bootstrap-select/): filtering in selects
     * [quicksearch](https://deuxhuithuit.github.io/quicksearch/): filtering in multiselects

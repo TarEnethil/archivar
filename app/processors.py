@@ -50,7 +50,7 @@ def include_css(styles):
 
     s = {
         "bootstrap": {
-            "cdn": ["https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"],
+            "cdn": ["https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"],
             "local": [f"{local_url}css/bootstrap.min.css"]
         },
         "fontawesome": {
@@ -64,7 +64,7 @@ def include_css(styles):
             "local": [f"{local_url}css/easymde.min.css"]
         },
         "bootstrap-select": {
-            "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css"],
+            "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css"],  # noqa: E501
             "local": [f"{local_url}css/bootstrap-select.min.css"]
         },
         "multi-select": {
@@ -80,7 +80,7 @@ def include_css(styles):
             "local": [f"{local_url}css/tempusdominus.min.css"]
         },
         "datatables": {
-            "cdn": ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"],
+            "cdn": ["https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.css"],
             "local": [f"{local_url}css/dataTables.bootstrap.min.css"]
         }
     }
@@ -109,12 +109,12 @@ def include_js(scripts):  # noqa: C901
 
     s = {
         "bootstrap": {
-            "cdn": ["https://code.jquery.com/jquery-3.5.1.min.js",
-                    "https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js",
-                    "https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"],
-            "local": [f"{local_url}js/jquery.min.js",
-                      f"{local_url}js/popper.min.js",
-                      f"{local_url}js/bootstrap.min.js"]
+            "cdn": ["https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"],
+            "local": [f"{local_url}js/bootstrap.bundle.min.js"]
+        },
+        "jquery": {
+            "cdn": ["https://code.jquery.com/jquery-3.5.1.min.js"],
+            "local": [f"{local_url}js/jquery.min.js"]
         },
         "markdown-editor": {
             "cdn": ["https://unpkg.com/easymde/dist/easymde.min.js"],
@@ -123,7 +123,7 @@ def include_js(scripts):  # noqa: C901
                        f"{local_url}js/helpers/modal-helper.js"]
         },
         "bootstrap-select": {
-            "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"],
+            "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"],
             "local": [f"{local_url}js/bootstrap-select.min.js"]
         },
         "multi-select": {
@@ -140,7 +140,7 @@ def include_js(scripts):  # noqa: C901
             "local": [f"{local_url}js/tempusdominus.min.js"]
         },
         "datatables": {
-            "cdn": ["https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"],
+            "cdn": ["https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.js"],
             "local": [f"{local_url}js/dataTables.bootstrap.min.js"],
             "helper": [f"{local_url}js/helpers/datatables.js"]
         },

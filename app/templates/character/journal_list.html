@@ -40,7 +40,7 @@
         {{ journal.title }}
         </h3>
 
-        <div class="col-3 text-right">
+        <div class="col-3 text-end">
         {{ journal.view_button(text="View", classes="btn-outline-secondary") }}
         {% if journal.is_editable_by_user() %}
             {{ journal.edit_button(text="Edit", classes="btn-outline-secondary") }}

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/form.html' as wtf %}
+{% import 'bootstrap5/form.html' as wtf %}
 
 {% block scripts %}
 {{ super() }}
@@ -53,7 +53,7 @@ $(document).ready(function() {
                 <h2 class="col-9 mt-0 text-truncate">
                     Roll {{ loop.index }}: {{ roll.title }} (~{{ roll.get_chance() }})
                 </h2>
-                <div class="col-3 text-right">
+                <div class="col-3 text-end">
                     {{ roll.view_button(text="View", classes="btn-outline-secondary") }}
                     {{ roll.edit_button(text="Edit", classes="btn-outline-secondary") }}
                 </div>
