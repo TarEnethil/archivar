@@ -123,7 +123,7 @@ def include_js(scripts):  # noqa: C901
                        f"{local_url}js/helpers/modal-helper.js"]
         },
         "bootstrap-select": {
-            "cdn": ["https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"],
+            "cdn": ["https://cdn.jsdelivr.net/gh/farhadmammadli/bootstrap-select@main/js/bootstrap-select.min.js"],
             "local": [f"{local_url}js/bootstrap-select.min.js"]
         },
         "multi-select": {
