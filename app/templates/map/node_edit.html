@@ -1,9 +1,8 @@
-{% import 'bootstrap/form.html' as wtf %}
+{% import 'bootstrap5/form.html' as wtf %}
 
 <div class="modal-header">
     <h5 class="modal-title">Edit Location</h5>
-    <button type="button" class="close" data-dismiss="modal">
-        <span>&times</span>
+    <button type="button" class="btn-close" data-bs-dismiss="modal">
     </button>
 </div>
 
@@ -16,7 +15,7 @@
     <!-- TODO: revisit this hack when removing render_form() -->
     {{ button(url="#", text="Save Location", classes="btn-success mr-auto", ids="fake-submit") }}
 
-    <a href="#" class="btn btn-secondary" id="btn-move-node" data="{{ node.id }}" class="ml-auto">
+    <a href="#" class="btn btn-secondary" id="btn-move-node" data="{{ node.id }}" class="ms-auto">
         {{ icon("arrows-alt") }}
         Move Location
     </a>

@@ -390,10 +390,6 @@ class AppProcessorsTest(BaseTestCase):
             # test url not external (SERVE_LOCAL=True)
             self.assertFalse("http" in include_js(["bootstrap"]))
 
-            # test multiple-file-include per key
-            self.assertTrue("jquery.min.js" in include_js(["bootstrap"]))
-            self.assertTrue("bootstrap.min.js" in include_js(["bootstrap"]))
-
             # test inclusion of "helper" files
             self.assertTrue("helpers/datatables.js" in include_js(["datatables"]))
 

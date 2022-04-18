@@ -167,7 +167,7 @@ class LinkGenerator(object):
     def delete_button_nav(self, text="Delete", icon="trash-alt", classes="nav-link bg-danger text-light",
                           ids="delete-link", swap=False):
         return button_nav_fkt(self.delete_url(), text, icon, classes, ids, swap, icon_text_class="text-light",
-                              li_classes="ml-auto")
+                              li_classes="ms-auto")
 
     def view_text(self):
         return "View"
@@ -197,11 +197,11 @@ class ProfilePicture(object):
     def infobox_(self, context, body):
         out = f'\
         <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 infobox"> \
-            <div class="media position-relative p-3 border m-1"> \
-                <div class="infobox-img-container align-self-center"> \
+            <div class="d-flex position-relative p-3 border m-1 align-items-center"> \
+                <div class="flex-shrink-0 infobox-img-container align-self-center"> \
                     <img src="{self.profile_thumbnail_url()}" class="align-self-center"> \
                 </div> \
-                <div class="media-body text-truncate"> \
+                <div class="flex-grow-1 text-truncate"> \
                     {body} \
                 </div> \
             </div> \

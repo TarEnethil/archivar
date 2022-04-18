@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import 'bootstrap/form.html' as wtf %}
+{% import 'bootstrap5/form.html' as wtf %}
 
 {% block styles %}
 {{ super() }}
@@ -26,9 +26,8 @@ moment.updateLocale('en', {
 
 $("#date").wrap('<div class="input-group date" id="datetimepicker_session" data-target-input="nearest"></div>');
 $("#date").attr('data-target', '#datetimepicker_session').addClass("datetimepicker-input");
-iga = $("<div/>").addClass("input-group-append").attr("data-target", "#datetimepicker_session").attr("data-toggle", "datetimepicker");
-igt = $("<div/>").addClass("input-group-text").appendTo(iga);
-$("<span/>").addClass("fas fa-calendar-alt").appendTo(igt);
+iga = $("<div/>").addClass("input-group-text").attr("data-target", "#datetimepicker_session").attr("data-toggle", "datetimepicker");
+$("<span/>").addClass("fas fa-calendar-alt").appendTo(iga);
 iga.appendTo($("#datetimepicker_session"));
 
 var dateformat_string = "YYYY-MM-DD HH:mm"

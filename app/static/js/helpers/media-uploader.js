@@ -38,9 +38,7 @@ class MediaUploader {
               <div class="modal-content"> \
                   <div class="modal-header"> \
                       <h5 class="modal-title">Upload new File</h5> \
-                      <button type="button" class="close" data-dismiss="modal"> \
-                          <span class="fas fa-times"></span> \
-                      </button> \
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button> \
                   </div> \
                   <div class="modal-body"></div> \
                   <div class="modal-footer"> \
@@ -114,7 +112,7 @@ class MediaUploader {
 
       // spawn modal-footer
       $(modal_id + " .modal-footer").html('<button type="button" class="btn btn-success mr-auto" id="fake-submit">Upload File</button> \
-                                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>');
+                                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>');
 
       // hook up fake-submit to real submit button
       $(modal_id + ' .modal-footer #fake-submit').click(function() {

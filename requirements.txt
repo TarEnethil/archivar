@@ -1,6 +1,6 @@
 alembic==1.0.0
 blinker==1.4
-Bootstrap-Flask==1.8.0
+Bootstrap-Flask==2.0.2
 cachetools==4.2.4
 cffi==1.14.5
 click==6.7
