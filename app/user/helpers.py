@@ -1,4 +1,4 @@
-from app.helpers import Role
+from app.helpers import Role, Theme
 
 
 # generate choices for the role SelectField
@@ -9,6 +9,11 @@ def gen_role_choices():
         role_choices.append((role.value, role.name))
 
     return role_choices
+
+
+# generate choices for the Theme SelectField
+def gen_theme_choices():
+    return [(t.value, Theme.description(t.value)) for t in Theme]
 
 
 # generate the choices for the date format SelectField

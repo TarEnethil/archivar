@@ -37,7 +37,7 @@ def load_user_quicklinks():
     return quicklinks
 
 
-def include_css(styles):
+def include_css(styles, extra_attrs=None):
     source = "cdn"
     cache_suffix = ""
     out = ""
@@ -52,6 +52,12 @@ def include_css(styles):
         "bootstrap": {
             "cdn": ["https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"],
             "local": [f"{local_url}css/bootstrap.min.css"]
+        },
+        "bootstrap-night": {
+            "cdn": ["https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-night.min.css",
+                    f"{local_url}css/bootstrap-night-custom.css"],
+            "local": [f"{local_url}css/bootstrap-night.min.css",
+                      f"{local_url}css/bootstrap-night-custom.css"]
         },
         "fontawesome": {
             "cdn": ["https://use.fontawesome.com/releases/v5.15.4/css/fontawesome.css",
@@ -85,10 +91,16 @@ def include_css(styles):
         }
     }
 
+    extra = ""
+
+    if extra_attrs is not None:
+        for key, val in extra_attrs.items():
+            extra += f'{key}="{val}" '
+
     for style in styles:
         if style in s:
             for url in s[style][source]:
-                out += f'<link rel="stylesheet" href="{url}{cache_suffix}">\n'
+                out += f'<link rel="stylesheet" href="{url}{cache_suffix}" {extra}>\n'
         else:
             flash(f"Unknown css-include requested: {style}", "warning")
 

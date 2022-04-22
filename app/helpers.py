@@ -1,4 +1,5 @@
 from app import db
+from app.processors import include_css
 from enum import Enum
 from flask import flash, redirect, url_for, current_app
 from jinja2 import Markup
@@ -13,6 +14,37 @@ class Role(Enum):
     User = 0
     Moderator = 1
     Admin = 2
+
+
+class Theme(Enum):
+    System = 0
+    Light = 1
+    Dark = 2
+
+    @staticmethod
+    def description(self):
+        d = {
+            Theme.System.value: "System Preference",
+            Theme.Light.value: "Bootstrap Light",
+            Theme.Dark.value: "Bootstrap Dark"
+        }
+
+        return d[self]
+
+    @staticmethod
+    def include(self):
+        if self == Theme.System.value:
+            out = include_css(["bootstrap-night"], {"media": "(prefers-color-scheme: dark)"})
+            out += include_css(["bootstrap"], {"media": "(prefers-color-scheme: light)"})
+            return out
+
+        if self == Theme.Light.value:
+            return include_css(["bootstrap"])
+
+        if self == Theme.Dark.value:
+            return include_css(["bootstrap-night"])
+
+        raise UserWarning(f"invalid theme: {self}")
 
 
 # flash generic error message
