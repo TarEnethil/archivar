@@ -320,6 +320,14 @@ class AppHelperTest(BaseTestCase):
         self.assertFalse('my-text<' in btn)
         self.assertTrue('>my-text\n' in btn)
 
+    def test_theme(self, app, client):
+        from app.helpers import Theme
+
+        with app.test_request_context("/"):
+            for t in Theme:
+                self.assertNotEqual("", Theme.description(t.value))
+                self.assertNotEqual("", Theme.include(t.value))
+
 
 class AppProcessorsTest(BaseTestCase):
     def setUp(self, app, client):
@@ -378,6 +386,11 @@ class AppProcessorsTest(BaseTestCase):
             flashes = get_flashed_messages(category_filter=["warning"])
             self.assertEqual(len(flashes), 1)
             self.assertTrue("non-existing-package" in flashes[0])
+
+            # test extra args
+            self.assertTrue('a="b"' in include_css(["bootstrap"], {"a": "b"}))
+            self.assertTrue('a="b"' in include_css(["bootstrap"], {"a": "b", "c": "d"}))
+            self.assertTrue(' c="d"' in include_css(["bootstrap"], {"a": "b", "c": "d"}))
 
     def test_include_js(self, app, client):
         from app.processors import include_js

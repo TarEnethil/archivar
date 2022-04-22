@@ -1,0 +1,149 @@
+:root {
+    --a-dark-grey: #cfcfcf !important;
+    --a-light-grey: #343a40 !important;
+}
+
+.navbar-light {
+    background: #333 !important;
+}
+
+.CodeMirror {
+    background: #5a5a5a !important;
+    color: var(--a-dark-grey) !important;
+}
+
+.CodeMirror-cursor {
+    border-left: 1px solid #cfcfcf !important;
+}
+
+.editor-toolbar {
+    background: #222222 !important;
+}
+
+.editor-toolbar button:hover,
+.editor-toolbar button:focus,
+.editor-toolbar button.active {
+    color: #222222;
+}
+
+.editor-toolbar button.text-primary {
+    color: #007bff !important;
+}
+
+.editor-preview-side {
+    background: #222222;
+}
+
+.custom-markdown {
+    background: #333;
+}
+
+.custom-markdown table {
+    color: #cfcfcf !important;
+}
+
+.custom-markdown thead tr {
+    background: #555 !important;
+}
+
+.custom-markdown tbody tr:nth-of-type(2n) {
+    background: #333 !important;
+}
+
+.custom-markdown tbody tr:nth-of-type(2n+1) {
+    background: #444 !important;
+}
+
+.custom-markdown.phb-style tbody tr:nth-of-type(2n+1) {
+   background: #3c8037 !important;
+}
+
+.phb-style {
+    color: #222;
+    background: #bfb173 !important;
+}
+
+.phb-style pre {
+    background:#dfe5c1 !important;
+    color: #222 !important;
+}
+
+.phb-style code {
+    color: #ab0000 !important;
+}
+
+.infobox div {
+    background: #333 !important;
+}
+
+.leaflet-container {
+    background: inherit !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+    background: #222 !important;
+    color: #cfcfcf !important;
+}
+
+.leaflet-container nav a {
+    color: #cfcfcf !important;
+}
+
+.img-thumbnail,
+.table-thumbnail {
+    background: #555 !important;
+}
+
+#add-session-form {
+    background: #333 !important;
+}
+
+#delete-link {
+    background: #c44133 !important;
+    color: #cfcfcf !important;
+}
+
+.sidebar,
+#location-list {
+    background: #333 !important;
+    color: #cfcfcf !important;
+}
+
+.sidebar .itemlist li.thing:hover,
+#location-list .location:hover {
+    cursor: pointer;
+    background:#222 !important;
+}
+
+.sidebar .close-link-sidebar,
+#location-list .close-link-sidebar {
+    color:#fff !important;
+}
+
+.sidebar .close-link-sidebar:hover,
+.sidebar .close-link-sidebar:focus {
+    color:#ddd !important;
+}
+
+.ms-container .ms-selectable,
+.ms-container .ms-selection {
+    background: #333 !important;
+    color: #cfcfcf !important;
+}
+
+.ms-container div li span {
+    color: #cfcfcf !important;
+}
+
+.nav-tabs .nav-item {
+    background: #333 !important;
+}
+
+.leaflet-container a.btn-outline-primary {
+    color: #cfcfcf !important;
+    border-color: #cfcfcf !important;
+}
+
+/* popup color */
+/* map sidebar color */

@@ -10,7 +10,14 @@
 {% endblock %}
 
 {% block styles %}
-{{ include_css(["bootstrap", "fontawesome"]) }}
+
+{% if current_user.is_authenticated %}
+    {{ current_user.get_theme_include() }}
+{% else %}
+    {{ include_css(["bootstrap"]) }}
+{% endif %}
+
+{{ include_css(["fontawesome"]) }}
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico', av=get_archivar_version()) }}" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css', av=get_archivar_version()) }}">
 {% endblock %}
@@ -34,7 +41,7 @@ $(document).ready(function() {
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     {% if debug_mode() %}
-                    <a class="navbar-brand text-danger" href="{{ url_for('main.index') }}">
+                    <a class="navbar-brand text-danger" id="dev-logo" href="{{ url_for('main.index') }}">
                         {{ icon("code") }} <small class="text-light bg-danger p-1">DEV</small>
                     </a>
                     {% else %}

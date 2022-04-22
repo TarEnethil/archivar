@@ -1,3 +1,8 @@
+:root {
+    --a-dark-grey: #343a40;
+    --a-light-grey: #cfcfcf;
+}
+
 #footer {
     font-size:.9em;
     text-transform:uppercase;
@@ -228,7 +233,7 @@ li.delete-li a:hover {
 .picker {
     width:90%;
     margin:0 auto;
-    background:#eee;
+    background:var(--a-light-grey);
 }
 
 .picker tr {
@@ -242,11 +247,11 @@ li.delete-li a:hover {
 
 .picker td[data-val]:hover {
     cursor:pointer;
-    background:#ccc;
+    background:#999;
 }
 
 .picker td.picker-selected {
-    background:#bbb;
+    background:#777;
 }
 
 tr.invisible_item,
@@ -319,7 +324,7 @@ tr.invisible_item,
 }
 
 .nav-tabs .fas {
-    color:#343a40;
+    color:var(--a-dark-grey);
 }
 
 .fa-big {
@@ -374,6 +379,10 @@ tr.invisible_item,
     background:rgba(0,0,0,0.6);
 }
 
+.infobox div {
+    background: #fafafa;
+}
+
 .infobox a,
 td a,
 #footer a {
@@ -426,4 +435,8 @@ td a,
     border-right: 1px dashed #cccccc;
     width:1px;
     margin:0 auto;
+}
+
+#dev-logo {
+    color: #ab0000;
 }

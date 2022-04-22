@@ -1,4 +1,4 @@
-from app.user.helpers import gen_date_string_choices
+from app.user.helpers import gen_date_string_choices, gen_theme_choices
 from app.user.models import User
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, PasswordField, SubmitField, SelectField, BooleanField, IntegerField
@@ -33,6 +33,7 @@ class EditProfileForm(FlaskForm):
 class SettingsForm(FlaskForm):
     dateformat = SelectField("Date format", choices=gen_date_string_choices(), validators=[InputRequired()])
     editor_height = IntegerField("Min-Height of markdown editor (px)", validators=[InputRequired()])
+    theme = SelectField("Theme", choices=gen_theme_choices(), coerce=int)
     markdown_phb_style = BooleanField("Use PHB-Style for markdown")
     quicklinks = TextAreaField("Quicklinks", render_kw={"rows": 7})
 

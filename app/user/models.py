@@ -1,5 +1,5 @@
 from app import db, login
-from app.helpers import Role
+from app.helpers import Role, Theme
 from app.mixins import LinkGenerator, PermissionTemplate
 from datetime import datetime
 from flask import url_for
@@ -20,6 +20,7 @@ class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
     about = db.Column(db.String(1000))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     must_change_password = db.Column(db.Boolean, default=True)
+    theme = db.Column(db.Integer, default=Theme.System.value)
 
     created = db.Column(db.DateTime, default=datetime.utcnow)
     edited = db.Column(db.DateTime, default=None, onupdate=datetime.utcnow)
@@ -51,6 +52,9 @@ class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def get_theme_include(self):
+        return Theme.include(self.theme)
 
     def get_characters(self):
         if current_user.id == self.id:

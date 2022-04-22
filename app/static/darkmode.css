@@ -1,0 +1,10 @@
+:root {
+    --bs-body-bg: #212529 !important;
+    --bs-body-color: #eeeeee !important;
+    --bs-light-rgb: rgb(33, 37, 41) !important;
+    --bs-dark-rgb:  rgb(248,249,250) !important;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: var(--bs-dark-rgb) !important;
+}

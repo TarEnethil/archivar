@@ -141,6 +141,7 @@ def settings():
     if form.validate_on_submit():
         current_user.dateformat = form.dateformat.data
         current_user.editor_height = form.editor_height.data
+        current_user.theme = form.theme.data
         current_user.markdown_phb_style = form.markdown_phb_style.data
         current_user.quicklinks = form.quicklinks.data
 
@@ -150,6 +151,7 @@ def settings():
     elif request.method == "GET":
         form.dateformat.data = current_user.dateformat
         form.editor_height.data = current_user.editor_height
+        form.theme.data = current_user.theme
         form.markdown_phb_style.data = current_user.markdown_phb_style
         form.quicklinks.data = current_user.quicklinks
 
