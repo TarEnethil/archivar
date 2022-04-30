@@ -100,7 +100,7 @@ class MediaUploader {
             }
 
             // spawn a retry-button which reloads the form
-            var retry_button = $("<button/>").attr("type", "butto").addClass("btn btn-primary mr-auto").text("Upload new File");
+            var retry_button = $("<button/>").attr("type", "butto").addClass("btn btn-primary me-auto").text("Upload new File");
             retry_button.click(function() {
                 _this.open_modal();
             });
@@ -111,7 +111,7 @@ class MediaUploader {
       });
 
       // spawn modal-footer
-      $(modal_id + " .modal-footer").html('<button type="button" class="btn btn-success mr-auto" id="fake-submit">Upload File</button> \
+      $(modal_id + " .modal-footer").html('<button type="button" class="btn btn-success me-auto" id="fake-submit">Upload File</button> \
                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>');
 
       // hook up fake-submit to real submit button

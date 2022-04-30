@@ -38,19 +38,17 @@ $(document).ready(function() {
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse" id="topnav-navbar">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    {% if debug_mode() %}
-                    <a class="navbar-brand text-danger" id="dev-logo" href="{{ url_for('main.index') }}">
-                        {{ icon("code") }} <small class="text-light bg-danger p-1">DEV</small>
-                    </a>
-                    {% else %}
-                    <a class="navbar-brand" href="{{ url_for('main.index') }}">
-                        {{ icon("home") }}
-                    </a>
-                    {% endif %}
-                </li>
+            {% if debug_mode() %}
+            <a class="navbar-brand text-danger ms-2" id="dev-logo" href="{{ url_for('main.index') }}">
+                {{ icon("code") }} <small class="text-light bg-danger p-1">DEV</small>
+            </a>
+            {% else %}
+            <a class="navbar-brand ms-2" href="{{ url_for('main.index') }}">
+                {{ icon("home") }}
+            </a>
+            {% endif %}
 
+            <ul class="navbar-nav me-auto">
                 {% if current_user.is_authenticated %}
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('campaign.index') }}">{{ icon("book") }} Campaigns</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('session.index') }}">{{ icon("file") }} Sessions</a></li>
@@ -79,11 +77,11 @@ $(document).ready(function() {
                 {% if user_ql|length > 0 or global_ql|length > 0 %}
             <ul class="navbar-nav mx-auto">
                     {% if user_ql|length == 1 %}
-                <li class="user-quicklinks nav-item mr-5">
+                <li class="user-quicklinks nav-item me-5">
                     <a class="nav-link" href="{{ user_ql[0][0] }}"> {{ user_ql[0][1] }}</a>
                 </li>
                     {% elif user_ql|length > 1 %}
-                <li class="nav-item dropdown user-quicklinks mr-5">
+                <li class="nav-item dropdown user-quicklinks me-5">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ icon("bolt") }} Quicklinks <span class="caret"></span>
                     </a>
@@ -146,7 +144,7 @@ $(document).ready(function() {
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ icon("user") }} {{ current_user.username }} <span class="caret"></span>
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <li class="nav-item">{{ current_user.view_link(classes="nav-link ps-3") }}</li>
                         <li class="nav-item"><a class="nav-link ps-3" href="{{ url_for('user.settings') }}">Settings</a></li>
                         <li class="nav-item"><a class="nav-link ps-3" href="{{ url_for('main.logout') }}">Logout</a></li>

@@ -67,7 +67,7 @@ class AsyncCategoryLoader {
             </div> \
             <div class="modal-body"></div> \
             <div class="modal-footer"> \
-              <p class="mr-auto left-footer"> \
+              <p class="me-auto left-footer"> \
                 Elements selected: <span class="active-elem-count">0</span> | deselect: \
                 <a href="#" id="deselect-all">all</a> &bullet; \
                 <a href="#" id="deselect-hidden">hidden</a> | \
@@ -451,8 +451,8 @@ class MediaModal extends AsyncCategoryLoader {
 
     // MediaUploader is optional
     if (this.media_uploader) {
-      var upload_button = $("<button/>").addClass("btn btn-primary mr-2").attr("type", "button");
-      upload_button.append($("<span/>").addClass("fas fa-file-upload mr-2"));
+      var upload_button = $("<button/>").addClass("btn btn-primary me-2").attr("type", "button");
+      upload_button.append($("<span/>").addClass("fas fa-file-upload me-2"));
       upload_button.append(" Upload");
       upload_button.click(function() {
         _this.media_uploader.open_modal();
