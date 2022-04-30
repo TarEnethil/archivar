@@ -205,7 +205,7 @@ function on_successful_upload(new_media_info) {
     var footer = media_uploader.get_footer();
 
     // button to add a link to the newly uploaded file
-    var link_button = $('<button/>').attr("type", "button").addClass("btn btn-primary mr-auto").text("Add Link");
+    var link_button = $('<button/>').attr("type", "button").addClass("btn btn-primary me-auto").text("Add Link");
     link_button.click(function() {
       add_to_editor(markdown_link(text, new_media_info["serve-url"]));
       media_uploader.close_modal();
