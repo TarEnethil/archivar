@@ -425,7 +425,7 @@ def tile(filename):
 @bp.route("/sidebar/<int:m_id>", methods=["GET"])
 @login_required
 def sidebar(m_id):
-    map_ = Map.query.filter_by(id=id).first_or_404()
+    map_ = Map.query.filter_by(id=m_id).first_or_404()
     nodes = map_.get_nodes()
 
     d = {}
