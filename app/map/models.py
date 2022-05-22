@@ -1,10 +1,9 @@
-from app import db
+from app import db, markdown
 from app.helpers import urlfriendly
 from app.mixins import LinkGenerator, SimpleChangeTracker, SimplePermissionChecker
 from datetime import datetime
 from flask import url_for
 from flask_login import current_user
-from flask_misaka import markdown
 
 
 class MapSetting(db.Model, SimpleChangeTracker):
@@ -114,7 +113,7 @@ class MapNode(db.Model, SimplePermissionChecker):
             "x": self.coord_x,
             "y": self.coord_y,
             "name": self.name,
-            "desc": markdown(self.description, tables=True, fenced_code=True, escape=True),
+            "desc": markdown.render(self.description),
             "node_type": self.node_type,
             "visible": self.is_visible,
             "created": self.created,
