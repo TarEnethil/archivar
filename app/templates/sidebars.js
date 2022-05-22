@@ -347,10 +347,10 @@ var upload = {
 }
 
 function generateMarkdownConfig(id, withHeading=true) {
-  var toolb = ["bold", "italic", "heading-1", "heading-2", "heading-3", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps, "|", upload];
+  var toolb = ["bold", "italic", "strikethrough", "heading-1", "heading-2", "heading-3", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps, "|", upload];
 
   if (withHeading == false) {
-    toolb = ["bold", "italic", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps, upload];
+    toolb = ["bold", "italic", "strikethrough", "|", "unordered-list", "ordered-list", "|", "link", "image", "table", "horizontal-rule", "|", "side-by-side", "fullscreen", "guide", "|", reference, media, maps, upload];
   }
 
   var previewClasses = ["custom-markdown"];
