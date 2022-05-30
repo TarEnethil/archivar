@@ -99,8 +99,12 @@ class EventModelTest(BaseTestCase):
         event_skip_two_epochs = Event(epoch_id=self.epochs[0].id, year=1, month_id=self.months[0].id, day=1,
                                       duration=100*301+15)
 
+        # re-test for bug #119, let an event end at the last day of a month
+        event_last_of_month = Event(epoch_id=self.epochs[0].id, year=1, month_id=self.months[0].id, day=8, duration=2)
+
         self.add_all([event_month, event_year, event_month_year, event_epoch,
-                      event_month_epoch, event_month_year_epoch, event_skip_two_epochs])
+                      event_month_epoch, event_month_year_epoch, event_skip_two_epochs,
+                      event_last_of_month])
         self.commit()
 
         update_timestamp(event_month.id)
@@ -110,6 +114,7 @@ class EventModelTest(BaseTestCase):
         update_timestamp(event_month_epoch.id)
         update_timestamp(event_month_year_epoch.id)
         update_timestamp(event_skip_two_epochs.id)
+        update_timestamp(event_last_of_month.id)
 
         self.assertEqual(event_month.end_date(use_abbr=False), "6. Month 2 1, Epoch 1")
         self.assertEqual(event_year.end_date(use_abbr=False), "6. Month 1 2, Epoch 1")
@@ -118,6 +123,9 @@ class EventModelTest(BaseTestCase):
         self.assertEqual(event_month_epoch.end_date(use_abbr=False), "6. Month 2 1, Epoch 2")
         self.assertEqual(event_month_year_epoch.end_date(use_abbr=False), "6. Month 2 2, Epoch 2")
         self.assertEqual(event_skip_two_epochs.end_date(use_abbr=False), "6. Month 2 2, Epoch 3")
+
+        # bug #119, this would show "0. Month 2" before
+        self.assertEqual(event_last_of_month.end_date(use_abbr=False), "10. Month 1 1, Epoch 1")
 
     def test_day_of_the_week(self, app, client):
         # with static timestamp
