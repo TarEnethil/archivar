@@ -113,7 +113,7 @@ class Event(db.Model, SimplePermissionChecker, LinkGenerator):
         month_idx = -1
 
         for i, m in enumerate(months):
-            if days_into_year < m.days_before:
+            if days_into_year <= m.days_before:
                 month_idx = max(0, i - 1)
                 break
 
