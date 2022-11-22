@@ -27,7 +27,7 @@ Mako==1.0.7
 Markdown==3.1
 MarkupSafe==1.1.1
 misaka==2.1.1
-Pillow==9.0.1
+Pillow==9.3.0
 pycparser==2.19
 -e git+https://github.com/TarEnethil/pyinfo.git@efdc236fcf15778f169f9afe1b353c484a27c0ce#egg=pyinfo
 python-dateutil==2.7.3
