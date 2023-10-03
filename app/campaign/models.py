@@ -3,8 +3,8 @@ from app.helpers import urlfriendly
 from app.mixins import LinkGenerator, SimpleChangeTracker, PermissionTemplate, ProfilePicture
 from flask import url_for
 from flask_login import current_user
-from jinja2 import Markup
-from jinja2 import contextfunction
+from markupsafe import Markup
+from jinja2 import pass_context
 
 campaign_character_assoc = db.Table("campaign_character_assoc",
                                     db.Column("campaign_id", db.Integer, db.ForeignKey("campaigns.id")),
@@ -52,7 +52,7 @@ class Campaign(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate,
     #####
     # ProfilePicture functions
     #####
-    @contextfunction
+    @pass_context
     def infobox(self, context):
         body = f'<a href="{self.view_url()}" class="stretched-link">{ self.view_text() }</a> \
                  <span class="text-muted d-block">DM: { self.dm.username } | Sessions: { len(self.sessions) }</span>'

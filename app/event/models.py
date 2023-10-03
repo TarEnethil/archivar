@@ -4,7 +4,7 @@ from app.calendar.models import Day, Month, Epoch
 from app.mixins import LinkGenerator, SimpleChangeTracker, SimplePermissionChecker
 from flask import url_for
 from flask_login import current_user
-from jinja2 import Markup
+from markupsafe import Markup
 
 
 class EventSetting(db.Model, SimpleChangeTracker):

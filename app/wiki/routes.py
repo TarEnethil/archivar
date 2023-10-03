@@ -207,4 +207,4 @@ def sidebar():
               .with_entities(WikiEntry.id, WikiEntry.title, WikiEntry.is_visible) \
               .order_by(WikiEntry.title.asc()).all()
 
-    return jsonify(entries)
+    return jsonify([tuple(e) for e in entries])

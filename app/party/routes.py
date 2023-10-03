@@ -129,4 +129,4 @@ def delete(id, name=None):
 def sidebar():
     party = Party.query.with_entities(Party.id, Party.name).order_by(Party.name.asc()).all()
 
-    return jsonify(party)
+    return jsonify([tuple(p) for p in party])

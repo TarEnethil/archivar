@@ -1,4 +1,4 @@
-from jinja2 import Markup
+from markupsafe import Markup
 
 
 def gen_session_choices(char):

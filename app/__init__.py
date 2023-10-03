@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from flask_misaka import Misaka
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
-from jinja2 import Markup
+from markupsafe import Markup
 from sqlalchemy import MetaData
 
 naming_convention = {

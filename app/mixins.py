@@ -3,7 +3,8 @@ from app.helpers import link as link_fkt, button as button_fkt, button_nav as bu
 from datetime import datetime
 from flask import current_app, url_for
 from flask_login import current_user
-from jinja2 import Markup, Template, contextfunction
+from jinja2 import Template, pass_context
+from markupsafe import Markup
 from sqlalchemy import or_
 from sqlalchemy.ext.declarative import declared_attr
 
@@ -40,7 +41,7 @@ class SimpleChangeTracker(object):
         from app.user.models import User
         return db.relationship(User, primaryjoin=lambda: User.id == cls.edited_by_id, foreign_keys=cls.edited_by_id)
 
-    @contextfunction
+    @pass_context
     def print_info(self, context, create=True, edit=True, hr=True):
         if current_user.is_authenticated:
             dateformat = current_user.dateformat

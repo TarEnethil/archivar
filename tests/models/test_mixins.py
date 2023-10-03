@@ -119,7 +119,7 @@ class SimpleChangeTrackerTest(BaseMixinTestCase):
         self.assertLess(delta.total_seconds(), 1.0)
 
     def test_print_info(self, app, client):
-        from flask_login import login_user
+        from flask_login import login_user, logout_user
 
         obj = SCT()
         self.add(obj)
@@ -147,13 +147,16 @@ class SimpleChangeTrackerTest(BaseMixinTestCase):
         self.add(obj)
         self.commit()
 
+        # log out admin again
+        logout_user()
+
         with app.test_request_context("/"):
             info = obj.print_info(context={})
             self.assertTrue("Created" in info)
             self.assertFalse("Edited" in info)
             self.assertTrue("on" in info)
             self.assertTrue("by" in info)
-            self.assertTrue("format('LLL')" in info)  # default value for unauthenticated users
+            self.assertTrue('data-format="LLL"' in info)  # default value for unauthenticated users
 
             obj.flag = True
             self.commit()
@@ -166,7 +169,7 @@ class SimpleChangeTrackerTest(BaseMixinTestCase):
 
             # check for default params and dateformat
             self.assertTrue("<hr" in info)
-            self.assertTrue("format('YYYY')" in info)
+            self.assertTrue('data-format="YYYY"' in info)
 
             info = obj.print_info(context={}, create=False)
             self.assertFalse("Created" in info)

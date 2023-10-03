@@ -8,7 +8,7 @@ from app.user.models import User
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
-from werkzeug import check_password_hash
+from werkzeug.security import check_password_hash
 
 no_perm_url = "main.index"
 

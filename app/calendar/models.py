@@ -2,7 +2,7 @@ from app import db
 from app.helpers import urlfriendly
 from app.mixins import LinkGenerator, SimpleChangeTracker
 from flask import url_for
-from jinja2 import Markup
+from markupsafe import Markup
 
 
 class CalendarSetting(db.Model, SimpleChangeTracker):

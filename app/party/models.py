@@ -3,7 +3,7 @@ from app.helpers import urlfriendly
 from app.mixins import LinkGenerator, SimpleChangeTracker, PermissionTemplate, ProfilePicture
 from flask import url_for
 from flask_login import current_user
-from jinja2 import contextfunction
+from jinja2 import pass_context
 
 
 class Party(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate, ProfilePicture):
@@ -41,7 +41,7 @@ class Party(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate, Pr
     #####
     # ProfilePicture functions
     #####
-    @contextfunction
+    @pass_context
     def infobox(self, context):
         body = f'<a href="{self.view_url()}" class="stretched-link">{ self.name }</a> \
                  <span class="text-muted d-block">Members: { len(self.members) }</span>'
