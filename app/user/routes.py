@@ -40,7 +40,7 @@ def edit(username):  # noqa: C901
     if form.validate_on_submit():
         user.about = form.about.data
 
-        if(form.password.data):
+        if (form.password.data):
             user.set_password(form.password.data)
 
             if current_user.username == user.username:
