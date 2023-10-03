@@ -3,7 +3,7 @@ from app.decorators import admin_required, moderator_required
 from app.helpers import page_title, deny_access
 from app.map import bp
 from app.map.forms import MapNodeTypeCreateForm, MapNodeTypeEditForm, MapSettingsForm, MapNodeForm, MapForm
-from app.map.helpers import upload_node_icon, delete_node_icon, gen_node_type_choices,\
+from app.map.helpers import upload_node_icon, delete_node_icon, gen_node_type_choices, \
     map_changed, gen_submap_choices
 from app.map.models import Map, MapNodeType, MapSetting, MapNode
 from app.wiki.helpers import gen_wiki_entry_choices

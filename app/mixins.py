@@ -94,7 +94,7 @@ class SimplePermissionChecker(PermissionTemplate, SimpleChangeTracker):
     is_visible = db.Column(db.Boolean, default=True)
 
     @declared_attr
-    def is_visible(cls):
+    def is_visible(cls):  # noqa: F811
         return db.Column(db.Boolean, default=True)
 
     def is_viewable_by_user(self):
