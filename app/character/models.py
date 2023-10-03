@@ -3,7 +3,7 @@ from app.helpers import urlfriendly
 from app.mixins import LinkGenerator, SimplePermissionChecker, ProfilePicture
 from flask import url_for
 from flask_login import current_user
-from jinja2 import contextfunction
+from jinja2 import pass_context
 
 character_party_assoc = db.Table("character_party_assoc",
                                  db.Column("character_id", db.Integer, db.ForeignKey("characters.id")),
@@ -66,7 +66,7 @@ class Character(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture
     #####
     # ProfilePicture functions
     #####
-    @contextfunction
+    @pass_context
     def infobox(self, context, add_classes=""):
         body = f'<a href="{self.view_url()}" class="stretched-link {add_classes}">{ self.name }</a> \
                  <span class="text-muted d-block">{ self.race } { self.class_ }</span>'
@@ -128,7 +128,7 @@ class Journal(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture):
     #####
     # ProfilePicture functions
     #####
-    @contextfunction
+    @pass_context
     def infobox(self, context, add_classes=""):
         body = f'<a href="{self.view_url()}" class="stretched-link {add_classes}">{ self.title }</a> \
                  <span class="text-muted d-block">by {self.character.name}</span>'

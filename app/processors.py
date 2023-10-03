@@ -2,7 +2,7 @@ from app.version import version
 from flask import current_app, url_for, flash
 from flask_login import current_user
 from hashlib import md5
-from jinja2 import Markup
+from markupsafe import Markup
 
 
 def load_global_quicklinks():

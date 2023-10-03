@@ -152,7 +152,7 @@ def sidebar():
     chars = Character.get_query_for_visible_items(include_hidden_for_user=True) \
             .with_entities(Character.id, Character.name).order_by(Character.name.asc()).all()
 
-    return jsonify(chars)
+    return jsonify([tuple(c) for c in chars])
 
 
 @bp.route("<int:c_id>/<string:c_name>/journal/", methods=["GET"])

@@ -2,12 +2,12 @@ from app import db
 from app.processors import include_css
 from enum import Enum
 from flask import flash, redirect, url_for, current_app
-from jinja2 import Markup
+from markupsafe import Markup
 from os import path, remove
 from PIL import Image
 from sqlalchemy import func
 from uuid import uuid4
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 
 
 class Role(Enum):
