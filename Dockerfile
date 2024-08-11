@@ -2,7 +2,7 @@
 # Builder (build wheels)
 ##########
 
-FROM python:3.9-alpine as builder
+FROM python:3.12-alpine as builder
 
 WORKDIR /usr/src/archivar-build
 

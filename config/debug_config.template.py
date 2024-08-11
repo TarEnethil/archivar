@@ -10,5 +10,5 @@ class DebugConfig(UserConfig):
     DEBUG = True
     # ENABLE_TOOLBAR = True
     # TOOLBAR_OPTIONS= [("INTERCEPT_REDIRECTS", True), ("TEMPLATE_EDITOR_ENABLED", True), ("PROFILER_ENABLED", True)]
-    # LOG_SQL_QUERIES = True
-    # TRACE_SQL_QUERIES = True
+    # SQLALCHEMY_ECHO = True
+    # SQLALCHEMY_RECORD_QUERIES = True
