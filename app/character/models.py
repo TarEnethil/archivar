@@ -68,8 +68,8 @@ class Character(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture
     #####
     @pass_context
     def infobox(self, context, add_classes=""):
-        body = f'<a href="{self.view_url()}" class="stretched-link {add_classes}">{ self.name }</a> \
-                 <span class="text-muted d-block">{ self.race } { self.class_ }</span>'
+        body = f'<a href="{self.view_url()}" class="stretched-link {add_classes}">{self.name}</a> \
+                 <span class="text-muted d-block">{self.race} {self.class_}</span>'
 
         return self.infobox_(context, body)
 
@@ -130,7 +130,7 @@ class Journal(db.Model, SimplePermissionChecker, LinkGenerator, ProfilePicture):
     #####
     @pass_context
     def infobox(self, context, add_classes=""):
-        body = f'<a href="{self.view_url()}" class="stretched-link {add_classes}">{ self.title }</a> \
+        body = f'<a href="{self.view_url()}" class="stretched-link {add_classes}">{self.title}</a> \
                  <span class="text-muted d-block">by {self.character.name}</span>'
 
         return self.infobox_(context, body)

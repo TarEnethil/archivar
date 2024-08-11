@@ -43,7 +43,7 @@ class Party(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate, Pr
     #####
     @pass_context
     def infobox(self, context):
-        body = f'<a href="{self.view_url()}" class="stretched-link">{ self.name }</a> \
-                 <span class="text-muted d-block">Members: { len(self.members) }</span>'
+        body = f'<a href="{self.view_url()}" class="stretched-link">{self.name}</a> \
+                 <span class="text-muted d-block">Members: {len(self.members)}</span>'
 
         return self.infobox_(context, body)
