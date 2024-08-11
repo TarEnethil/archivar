@@ -1,15 +1,16 @@
 from app import db
 from app.helpers import urlfriendly
-from app.mixins import LinkGenerator, SimpleChangeTracker, PermissionTemplate
+from app.mixins import LinkGenerator, SimpleChangeTracker, PermissionTemplate, ProfilePicture
 from flask import url_for
 from flask_login import current_user
+from jinja2 import pass_context
 
 session_character_assoc = db.Table("session_character_assoc",
                                    db.Column("session_id", db.Integer, db.ForeignKey("sessions.id")),
                                    db.Column("character_id", db.Integer, db.ForeignKey("characters.id")))
 
 
-class Session(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
+class Session(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate, ProfilePicture):
     __tablename__ = "sessions"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
@@ -20,6 +21,8 @@ class Session(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
     campaign_id = db.Column(db.Integer, db.ForeignKey("campaigns.id"))
     campaign = db.relationship("Campaign", backref="sessions")
     session_number = db.Column(db.Integer)
+
+    profile_picture = None  # we only want the infobox functions, not the column
 
     def anchor_text(self):
         return urlfriendly(f"session-{self.session_number}")
@@ -47,3 +50,31 @@ class Session(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate):
 
     def delete_url(self):
         return url_for('session.delete', id=self.id, name=urlfriendly(self.title))
+
+    #####
+    # ProfilePicture functions
+    #####
+    @pass_context
+    def infobox(self, context, info=""):
+        if current_user.is_dm_of(self.campaign):
+            role = "as DM"
+        else:
+            chars = current_user.get_chars_in_session(self)
+
+            if len(chars) == 1:
+                role = f"as {chars[0].name}"
+            elif len(chars) > 1:
+                role = f"as {len(chars)} characters"
+            else:
+                role = ""
+
+        body = f'{info} <a href="{self.view_url()}" class="stretched-link"> {self.view_text()}</a> \
+                 <span class="text-muted d-block">{role}</span>'
+
+        return self.infobox_(context, body)
+
+    def profile_picture_url(self):
+        return self.campaign.profile_picture_url()
+
+    def profile_thumbnail_url(self):
+        return self.campaign.profile_thumbnail_url()

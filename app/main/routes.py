@@ -13,6 +13,7 @@ from app.media.models import MediaItem, MediaSetting, MediaCategory
 from app.party.models import Party
 from app.random.models import RandomTable, RandomTableEntry
 from app.session.models import Session
+from app.session.helpers import get_next_session_for_user, get_last_session_for_user
 from app.user.models import User
 from app.wiki.models import WikiSetting, WikiEntry
 from collections import OrderedDict
@@ -51,7 +52,12 @@ def index():
         return redirect(url_for('main.login'))
 
     settings = GeneralSetting.query.get(1)
-    return render_template("index.html", settings=settings, version=version(), title=page_title("Home"))
+
+    next_session = get_next_session_for_user()
+    last_session = get_last_session_for_user()
+
+    return render_template("index.html", settings=settings, version=version(), title=page_title("Home"),
+                           next_session=next_session, last_session=last_session)
 
 
 @bp.route("/about")
