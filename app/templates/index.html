@@ -6,6 +6,17 @@
 {% endblock %}
 
 {% block app_content %}
+
+<div class="row mb-4 justify-content-around">
+    {% if last_session %}
+        {{ last_session.infobox(info="Last:") }}
+    {% endif %}
+
+    {% if next_session %}
+        {{ next_session.infobox(info="Next up:") }}
+    {% endif %}
+</div>
+
 {% if current_user.is_at_least_moderator() %}
     {{ navbar_start(no_margin=True) }}
         {{ button_nav(url=url_for('main.settings'), text="Edit Text", icon="edit") }}

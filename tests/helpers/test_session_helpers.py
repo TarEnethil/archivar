@@ -90,6 +90,56 @@ class SessionHelperTest(BaseTestCase):
         self.assertEqual(self.session6.session_number, 2)
         self.assertEqual(self.session8.session_number, 3)
 
+    def test_get_last_session_for_user(self, app, client):
+        from app.session.helpers import get_last_session_for_user
+
+        # as DM
+        self.login(client, self.admin)
+        self.assertEqual(get_last_session_for_user(), self.session8)
+
+        # as character
+        self.login(client, self.moderator)
+        self.assertEqual(get_last_session_for_user(), self.session8)
+
+        # as character
+        self.login(client, self.user)
+        self.assertEqual(get_last_session_for_user(), self.session8)
+
+        self.login(client, self.user2)
+        self.assertIsNone(get_last_session_for_user())
+
+    def test_get_next_session_for_user(self, app, client):
+        from app.session.helpers import get_next_session_for_user
+
+        # no session in future at the start
+        for u in [self.admin, self.moderator, self.user, self.user2]:
+            self.login(client, u)
+            self.assertIsNone(get_next_session_for_user())
+
+        # add session in future
+        from app.session.models import Session
+        from datetime import date
+        session9 = Session(title="Session 9", campaign_id=self.campaign1.id,
+                           participants=[self.char_moderator, self.char_user], date=date(2099, 1, 1))
+
+        self.add(session9)
+        self.commit()
+
+        # as DM
+        self.login(client, self.admin)
+        self.assertEqual(get_next_session_for_user(), session9)
+
+        # as character
+        self.login(client, self.moderator)
+        self.assertEqual(get_next_session_for_user(), session9)
+
+        # as character
+        self.login(client, self.user)
+        self.assertEqual(get_next_session_for_user(), session9)
+
+        self.login(client, self.user2)
+        self.assertIsNone(get_next_session_for_user())
+
     def set_up_sessions(self):
         """
         Set up a few extra sessions for campaign 1, so that

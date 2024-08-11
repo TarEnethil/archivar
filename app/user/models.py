@@ -78,6 +78,15 @@ class User(UserMixin, db.Model, LinkGenerator, PermissionTemplate):
 
         return False
 
+    # TODO: far more efficient with a query
+    def get_chars_in_session(self, session):
+        chars = []
+        for char in self.characters:
+            if session in char.sessions:
+                chars.append(char)
+
+        return chars
+
     def is_dm_of(self, campaign):
         return campaign.dm.id == self.id
 

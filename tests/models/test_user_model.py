@@ -221,6 +221,42 @@ class UserModelTest(BaseTestCase):
         self.assertFalse(self.user2.has_char_in_session(self.session2))
         self.assertFalse(self.user2.has_char_in_session(self.session3))
 
+    def test_get_chars_in_session(self, app, client):
+        """
+        Test that get_chars_in_session() is working as expected.
+        """
+        self.set_up_characters()
+        self.set_up_parties()
+        self.set_up_campaigns()
+        self.set_up_sessions()
+
+        self.assertEqual(self.admin.get_chars_in_session(self.session1), [])
+        self.assertEqual(self.admin.get_chars_in_session(self.session2), [])
+        self.assertEqual(self.admin.get_chars_in_session(self.session3), [self.char_admin])
+
+        self.assertEqual(self.moderator.get_chars_in_session(self.session1), [self.char_moderator])
+        self.assertEqual(self.moderator.get_chars_in_session(self.session2), [])
+        self.assertEqual(self.moderator.get_chars_in_session(self.session3), [self.char_moderator_priv])
+
+        self.assertEqual(self.user.get_chars_in_session(self.session1), [self.char_user])
+        self.assertEqual(self.user.get_chars_in_session(self.session2), [self.char_user_priv])
+        self.assertEqual(self.user.get_chars_in_session(self.session3), [])
+
+        self.assertEqual(self.user2.get_chars_in_session(self.session1), [])
+        self.assertEqual(self.user2.get_chars_in_session(self.session2), [])
+        self.assertEqual(self.user2.get_chars_in_session(self.session3), [])
+
+        from app.session.models import Session
+        from datetime import date
+        multisession = Session(title="Multisession", campaign_id=self.campaign1.id,
+                               participants=[self.char_user_priv, self.char_user], date=date(2000, 1, 1))
+        self.add(multisession)
+        self.commit()
+
+        chars = self.user.get_chars_in_session(multisession)
+        self.assertTrue(self.char_user in chars)
+        self.assertTrue(self.char_user_priv in chars)
+
     def test_participated_campaigns(self, app, client):
         """
         Test that participated_campaigns() is working as expected.
