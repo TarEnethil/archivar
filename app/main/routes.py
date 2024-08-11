@@ -17,12 +17,12 @@ from app.user.models import User
 from app.wiki.models import WikiSetting, WikiEntry
 from collections import OrderedDict
 from datetime import datetime
-from distutils.dir_util import copy_tree
+from shutil import copytree
 from flask import render_template, flash, redirect, url_for, request, current_app
 from flask_login import current_user, login_user, login_required, logout_user
 from os import path
 from app.version import version
-from werkzeug.urls import url_parse
+from urllib.parse import urlparse
 
 
 @bp.before_app_request
@@ -114,7 +114,7 @@ def login():
             login_user(user, remember=form.remember_me.data)
             next_page = request.args.get('next')
 
-            if not next_page or url_parse(next_page).netloc != '':
+            if not next_page or urlparse(next_page).netloc != '':
                 next_page = url_for("main.index")
 
             return redirect(next_page)
@@ -203,8 +203,8 @@ def install():
 
                 # copy files from install dir
                 # TODO: catch exceptions
-                copy_tree(path.join(current_app.config["ROOT_DIR"], "install", "mapnodes"),
-                          current_app.config["MAPNODES_DIR"])
+                copytree(path.join(current_app.config["ROOT_DIR"], "install", "mapnodes"),
+                         current_app.config["MAPNODES_DIR"], dirs_exist_ok=True)
 
                 db.session.add(village)
                 db.session.add(town)
@@ -257,10 +257,10 @@ def debug_info():
 
 @bp.after_app_request
 def debug_trace_queries(response):
-    if current_app.config.get("TRACE_SQL_QUERIES"):
-        from flask_sqlalchemy import get_debug_queries
+    if current_app.config.get("SQLALCHEMY_RECORD_QUERIES"):
+        from flask_sqlalchemy.record_queries import get_recorded_queries
 
-        queries = get_debug_queries()
+        queries = get_recorded_queries()
         dur = 0
 
         for query in queries:

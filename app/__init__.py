@@ -53,16 +53,6 @@ def create_app(config=UserConfig):
                 print(f"Setting Flask-Toolbar option: {tup[0]} = {tup[1]}")
                 app.config[f"DEBUG_TB_{tup[0]}"] = tup[1]
 
-        # enable SQLAlchemy query logging to stderr
-        if app.config.get("LOG_SQL_QUERIES") is True:
-            print("Enabling SQL-logging to stderr")
-            app.config["SQLALCHEMY_ECHO"] = True
-
-        # trace the count and length of queries for each request
-        if app.config.get("TRACE_SQL_QUERIES") is True:
-            print("Enabling SQL-Tracing")
-            app.config["SQLALCHEMY_RECORD_QUERIES"] = True
-
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
