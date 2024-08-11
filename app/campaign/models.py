@@ -54,7 +54,7 @@ class Campaign(db.Model, SimpleChangeTracker, LinkGenerator, PermissionTemplate,
     #####
     @pass_context
     def infobox(self, context):
-        body = f'<a href="{self.view_url()}" class="stretched-link">{ self.view_text() }</a> \
-                 <span class="text-muted d-block">DM: { self.dm.username } | Sessions: { len(self.sessions) }</span>'
+        body = f'<a href="{self.view_url()}" class="stretched-link"> {self.view_text()}</a> \
+                 <span class="text-muted d-block">DM: {self.dm.username} | Sessions: {len(self.sessions)}</span>'
 
         return self.infobox_(context, body)
