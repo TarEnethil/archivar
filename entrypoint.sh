@@ -83,7 +83,7 @@ init_datadir() {
     dirs="media/thumbnails logos/thumbnails map mapnodes"
 
     for d in ${dirs}; do
-        su-exec dungeonmaster mkdir -p /opt/data/"$d"
+        su dungeonmaster -c "mkdir -p /opt/data/$d"
 
         if [ $? -ne 0 ]; then
             err "creating dir ${d} failed"
@@ -117,7 +117,7 @@ restore_db() {
 upgrade_db() {
     log "initializing or upgrading database"
 
-    su-exec dungeonmaster flask db upgrade
+    su dungeonmaster -c "flask db upgrade"
 
     if [ $? -ne 0 ]; then
         err "db upgrade failed"
@@ -129,13 +129,13 @@ upgrade_db() {
 run() {
     log "starting server"
 
-    exec su-exec dungeonmaster gunicorn -b :5000 --access-logfile - --error-logfile - dmcp:app
+    exec su dungeonmaster -c "gunicorn -b :5000 --access-logfile - --error-logfile - dmcp:app"
 }
 
 run_tests() {
     log "starting unittests"
 
-    exec su-exec dungeonmaster python3 run_tests.py
+    exec su dungeonmaster -c "python3 run_tests.py"
 }
 
 setup_user

@@ -2,19 +2,19 @@
 # Builder (build wheels)
 ##########
 
-FROM python:3.12-alpine as builder
+FROM python:3.12-slim-bookworm AS builder
 
 WORKDIR /usr/src/archivar-build
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 
 # mostly dependencies for building Pillow
-RUN apk update && \
-    apk add --no-cache build-base gcc git jpeg-dev libffi-dev python3-dev zlib-dev
+RUN apt-get update && \
+    apt-get install -yy build-essential gcc git libjpeg62-turbo-dev libffi-dev python3-dev zlib1g-dev
 
-# lint with flake8
+# l int with flake8
 RUN pip install --upgrade pip
 RUN pip install flake8
 
@@ -37,15 +37,15 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir ./wheels -r requirements.txt
 # Image
 ########
 
-FROM python:3.9-alpine
+FROM python:3.12-slim-bookworm
 
-RUN adduser -D dungeonmaster
+RUN useradd -rm dungeonmaster -u 1000
 
 WORKDIR /home/dungeonmaster
 
-# util-linux for uuidgen, rest for Pillow
-RUN apk update && \
-    apk add --no-cache gnupg jpeg su-exec util-linux shadow zlib
+# mainly pillow dependencies
+RUN apt-get update && \
+    apt-get -yy install gnupg libjpeg-turbo-progs uuid-runtime zlib1g
 
 RUN pip install --upgrade pip && pip install gunicorn
 
@@ -62,7 +62,7 @@ COPY --chown=dungeonmaster:dungeonmaster dmcp.py entrypoint.sh CHANGELOG.md run_
 
 RUN chmod +x entrypoint.sh
 
-ENV FLASK_APP dmcp.py
+ENV FLASK_APP=dmcp.py
 
 EXPOSE 5000
 
