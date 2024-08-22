@@ -16,6 +16,10 @@
     border-left: 1px solid #cfcfcf !important;
 }
 
+.CodeMirror-selected {
+    background: #222 !important;
+}
+
 .editor-toolbar {
     background: #222222 !important;
 }
@@ -44,6 +48,11 @@
 
 .custom-markdown thead tr {
     background: #555 !important;
+}
+
+.custom-markdown pre {
+    background:#555 !important;
+    color: #aaa !important;
 }
 
 .custom-markdown tbody tr:nth-of-type(2n) {
