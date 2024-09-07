@@ -11,7 +11,7 @@
     {% if current_user.is_admin() %}
     {{ navbar_start() }}
         {{ button_nav(url=url_for('map.create'), text="Add Map", icon="plus") }}
-        {{ button_nav(url=url_for('map.list'), text="Map List", icon="plus") }}
+        {{ button_nav(url=url_for('map.list'), text="Map List", icon="list") }}
     {{ navbar_end() }}
     {% endif %}
 
