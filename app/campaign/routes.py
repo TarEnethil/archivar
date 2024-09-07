@@ -19,7 +19,7 @@ no_perm_url = "campaign.index"
 @bp.route("/", methods=["GET"])
 @login_required
 def index():
-    campaigns = Campaign.query.all()
+    campaigns = Campaign.query.order_by(Campaign.id.desc()).all()
 
     return render_template("campaign/list.html", campaigns=campaigns, title=page_title("Campaigns"))
 

@@ -122,7 +122,7 @@ Default Participants
     </thead>
 
     <tbody>
-    {% for session in campaign.sessions %}
+    {% for session in campaign.sessions|reverse %}
         <tr>
             <td>{{ session.view_text() }}</td>
             <td>{{ moment(session.date).format(current_user.dateformat) }} ({{ moment(session.date).fromNow() }})</td>

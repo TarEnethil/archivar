@@ -39,6 +39,6 @@ def get_media(filter_category=None):
     if filter_category:
         media = media.filter_by(category_id=filter_category)
 
-    media = media.order_by(MediaItem.id.asc()).all()
+    media = media.order_by(MediaItem.id.desc()).all()
 
     return media

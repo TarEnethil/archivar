@@ -64,7 +64,7 @@ def gen_submap_choices(zerochoice="*no submap*", ensure=None):
 # get all nodes that are associated with the specified wiki article
 def get_nodes_by_wiki_id(w_id):
     nodes = MapNode.get_query_for_visible_items(include_hidden_for_user=True)
-    nodes = nodes.filter_by(wiki_entry_id=w_id).all()
+    nodes = nodes.filter_by(wiki_entry_id=w_id).order_by(MapNode.id.desc()).all()
 
     return nodes
 

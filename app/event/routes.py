@@ -289,7 +289,7 @@ def settings():
         form.default_epoch.data = settings.default_epoch
         form.default_year.data = settings.default_year
 
-    categories = EventCategory.query.all()
+    categories = EventCategory.query.order_by(EventCategory.id.desc()).all()
 
     return render_template("event/settings.html", settings=settings, categories=categories, form=form,
                            title=page_title("Event Settings"))

@@ -12,8 +12,8 @@ no_perm_url = "random.index"
 @bp.route("/", methods=["GET"])
 @login_required
 def index():
-    dice = DiceSet.query.all()
-    tables = RandomTable.query.all()
+    dice = DiceSet.query.order_by(DiceSet.id.desc()).all()
+    tables = RandomTable.query.order_by(RandomTable.id.desc()).all()
     return render_template("random/index.html", dice=dice, tables=tables, title=page_title("Random Rolls"))
 
 
