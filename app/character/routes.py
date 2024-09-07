@@ -122,8 +122,8 @@ def edit(id, name=None):  # noqa: C901
 @bp.route("/list", methods=["GET"])
 @login_required
 def list():
-    chars = Character.get_visible_items(include_hidden_for_user=True)
-    parties = Party.query.all()
+    chars = Character.get_visible_items(include_hidden_for_user=True, order_desc=True)
+    parties = Party.query.order_by(Party.id.desc()).all()
 
     return render_template("character/list.html", chars=chars, parties=parties,
                            title=page_title("Characters and Parties"))

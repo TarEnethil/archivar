@@ -165,7 +165,7 @@ def settings():
         form.check_interval.data = settings.check_interval
         form.default_map.data = settings.default_map
 
-    node_types = MapNodeType.query.all()
+    node_types = MapNodeType.query.order_by(MapNodeType.id.desc()).all()
 
     return render_template("map/settings.html", form=form, settings=settings, node_types=node_types,
                            title=page_title("Map Settings"))
@@ -174,7 +174,7 @@ def settings():
 @bp.route("/list")
 @login_required
 def list():
-    maps = Map.get_visible_items(include_hidden_for_user=True)
+    maps = Map.get_visible_items(include_hidden_for_user=True, order_desc=True)
 
     return render_template("map/list.html", maps=maps, title=page_title("List of Maps"))
 

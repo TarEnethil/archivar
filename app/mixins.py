@@ -118,8 +118,13 @@ class SimplePermissionChecker(PermissionTemplate, SimpleChangeTracker):
             return cls.query.filter(cls.is_visible.is_(True))
 
     @classmethod
-    def get_visible_items(cls, include_hidden_for_user=False):
-        return cls.get_query_for_visible_items(include_hidden_for_user).all()
+    def get_visible_items(cls, include_hidden_for_user=False, order_desc=False):
+        query = cls.get_query_for_visible_items(include_hidden_for_user)
+
+        if order_desc:
+            query = query.order_by(cls.id.desc())
+
+        return query.all()
 
 
 class LinkGenerator(object):

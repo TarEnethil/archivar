@@ -246,7 +246,7 @@ def category_edit(id, name=None):
 @moderator_required(no_perm_url)
 def settings():
     settings = MediaSetting.query.get(1)
-    categories = MediaCategory.query.all()
+    categories = MediaCategory.query.order_by(MediaCategory.id.desc()).all()
 
     return render_template("media/settings.html", settings=settings, categories=categories,
                            title=page_title("Media Settings"))
