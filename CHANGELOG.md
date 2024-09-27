@@ -1,6 +1,65 @@
 # Changelog
 
 
+## Version 0.6.2 (released 2024-09-27)
+
+* Map: Fix icon in settings
+* Use descending order for most queries
+* Darkmode: Fix some issues in markdown editor
+* Add last and next session to home page
+* Fix new flake8 lints
+* Docker: Switch to debian
+* Dependencies: Bump everything and update to python 3.12
+* Bump dependencies
+* Map: fix sidebars
+* Template: Bootstrap5 fixes
+* Template: add basic user Themes
+* Base: Add support for python3.10+
+* Event: fix end date calculation error
+* Template: add strikethrough button to markdown editor
+* Map: use existing markdown render function
+* Bump pillow from 8.3.2 to 9.0.1
+* tmp: bootstrap-select hack
+* BS5: patched bootstrap-select (jfc)
+* Template: update to bootstrap 5.1.3
+* User: fix password redirect
+* Docker: speed up build
+* Docker: Allow override of uid
+* Calendar: fix markdown editor
+* Base: add more validators
+* Media: fix media.edit when not changing file
+* Deps: Replace Flask-Bootstrap4 with Bootstrap-Flask
+* Style: Harmonize validator names
+* Tests: add missing validator tests
+* Campaign: fix session creation link
+* Event: fix sidebar loading
+* Base: add version-suffix to local files
+* Base: update bootstrap to 4.6.0
+* Bump pillow from 8.1.1 to 8.3.2
+* Template: Update fontawesome to 5.15.4
+* Template: add 'More' dropdown
+* Random: add rollable dice sets
+* Add random endpoint and random tables
+* Bump pillow from 8.2.0 to 8.3.2
+* Bump pillow from 8.1.1 to 8.2.0
+* Wiki: fix lightbox
+* Campaign: improve timeline
+* Map: fix wrong css include
+* Journal: update journal.list style
+* Campaign: add timeline
+* Tests: run tests in CI
+* Tests: add first unit test
+* Refactor app.helpers
+* ROLES.md: Update Party
+* All: convert .format to f-strings
+* Template: add image popups for markdown and profile pictures
+* Workflows: prevent double workflow execution (#91)
+* Devtools: add requirements.txt check to pre-commit-hook
+* Debug: fix pyinfo (#90)
+* Add linting with flake8, fix linter errors, add linting to CI (#89)
+* Make archivar docker-ready
+
+
 ## Version 0.6.1 (released 2021-03-26)
 
 Version 0.6.1 took some time due to a pause in development, but things should be back on track now.
